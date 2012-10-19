@@ -1,0 +1,106 @@
+<html><head></head><body><h1>Pryv API overview</h1>
+<p>The API is the HTTP programming interface to Pryv, which allows you to integrate Pryv activity data (and possibly user account management) into your web or native app.
+
+
+</p>
+<h2>Basics</h2>
+<p>There are two different uses for the API:
+
+</p>
+<ul>
+<li>Most apps will want to interact with <a href="#activity">Pryv activity data</a>. Recording and managing of activity data (events and their organization into folders and tags) is protected by <a href="#data-types-token">data access tokens</a> to allow easy <a href="#overview-sharing">sharing</a>.</li>
+<li>Some apps may need to access <a href="#admin">user account administration</a>, which includes the management of data sharing (via data access tokens) and activity channels (in addition to the user account itself). Administration is protected by personal authentication and expiring sessions.</li>
+</ul>
+<p>[TODO: add simple schema here]
+
+</p>
+<h3>What's activity data?</h3>
+<p>Activity data is, at the core, just <strong>events</strong>: pieces of data attached to moments in time. Events can be thoughts, audio notes, photos, geographical coordinates etc. To allow Pryv apps to play nicely together and help users organize those events, however, there are a few additional things you need to know about:
+
+</p>
+<ul>
+<li>Each event belongs to a <strong>channel</strong>. A channel is a stream of events users usually want to see and manage together. For example, a user's thoughts, diary and social activities (Facebook, Twitter,... ) will be recorded in the same channel. There are a few standard channels there for your app to use (TODO: link to upcoming section listing standard channels &amp; folders), but if you manage rather specific stuff you'll probably want your app to create and use its own channel. Most apps will just deal with a single channel.</li>
+<li>Within a channel, events can be classified and organized using folders, tags, or both:<ul>
+<li><strong>Folders</strong> offer a hierarchical structure for classifying and filtering events. They are exclusive (one event can only be classified into a single folder), and can contain sub-folders (child folders). Depending on your app, you may actively use folders and let the user manage them (as for a time tracking app to classify time spent on particular projects), just use a single folder (as for a social media plugin: a Facebook plugin may store all its events into a "Facebook" folder), or just not care about folders at all (if your app uses its own channel and tags are all you need, for example).</li>
+<li><strong>Tags</strong> offer a flat, many-to-many organization for labeling and filtering events. One event can be tagged with multiple tags. TODO: detail when UX is better defined. For example, personal notes could be tagged as <em>essentials</em> or <em>important</em>, or professional activities could be tagged as <em>prospection</em>, <em>meeting</em>, <em>development</em> or <em>support</em>.</li>
+</ul>
+</li>
+</ul>
+<p>Note that as an open system, to provide true interoperability, Pryv does not set or enforce "ownership" of data per app. Provided the necessary permissions, data stored by a given app can be accessed and manipulated by any other app.
+See the standard channels, folders and tags (TODO: link) we encourage you to use when appropriate if you want your app to integrate nicely within the user's Pryv experience.
+
+</p>
+<h3><a id="overview-sharing"></a>How sharing works</h3>
+<p>[TODO: schema?]
+
+</p>
+<p>Apps access a user's activity data by presenting the API with a <strong>data access token</strong> (or just "token" here). A token can be <em>personal</em> or <em>shared</em>. A personal token is assigned to an app (provided the user's credentials) and used by that app to access the user's data on her behalf (i.e. with full permissions). But end-users don't have to know about personal tokens; end-users care about sharing, which is managed via shared tokens.
+
+</p>
+<p>A <strong>shared token</strong> grants permissions to a specified set of the user's data: channel(s), and within those channels, folder(s), tag(s) and/or a limited time frame can be defined to filter events. Tokens allow sharing in a variety of ways, such as:
+
+</p>
+<ul>
+<li>in-app: the user chooses to share some events with another Pryv user, which is notified and can select to view (and possibly contribute to) the shared data or integrate it with her own (add it to her sharing bookmarks).</li>
+<li>URL copy-paste: the user choose to share data with another person (possibly not a Pryv user), and copies the full URL containing the token into an e-mail or chat message. The other person can open the URL and access the web app to view (and possibly contribute to) the shared data.</li>
+</ul>
+<p>Users can store tokens shared by other users by adding them to their <strong>sharing bookmarks</strong>.
+
+</p>
+<p>For the present time, tokens are not personal. They act exactly like digital keys: if you have the token and the name of the user it belongs to, you can access the data it exposes.
+
+</p>
+<p>For more details see:
+
+</p>
+<ul>
+<li>Tokens <a href="#admin-tokens">management</a> and <a href="#data-types-token">data structure</a></li>
+<li>Bookmarks <a href="#admin-bookmarks">management</a> and <a href="#data-types-bookmark">data structure</a></li>
+</ul>
+<h2>What's the URL?</h2>
+<p>Because Pryv potentially stores each user's data in a different location according to the user's choice, the API's base URL is unique for each user: <code>https://{username}.pryv.io</code> (where <code>{username}</code> is the name of the user whose data you want to access).
+
+
+</p>
+<h2>Calling API methods</h2>
+<p>Most of the API follows REST principles, meaning each item has its own unique resource URL and can be read or modified via HTTP verbs:
+
+</p>
+<ul>
+<li>GET to read the item(s)</li>
+<li>POST to create a new item</li>
+<li>PUT to modify the item</li>
+<li>DELETE to delete the item (note that logical deletion, or trashing, is supported for items like events, folders and channels)</li>
+</ul>
+<p>Here's an example API request:
+</p>
+<pre class="highlighted"><code class="language-http"><span class="request">GET <span class="string">/{channel-id}/events</span> HTTP/1.1</span>
+<span class="attribute">Host</span>: <span class="string">{user-name}.pryv.io</span>
+<span class="attribute">Authorization</span>: <span class="string">{token}</span></code></pre>
+<p>Note that the API also supports Socket.IO, for both calling API methods and receiving live notifications of changes to activity data. See <a href="#socketio">our dedicated section</a>.
+
+
+</p>
+<h2>Data format</h2>
+<p>The API uses JSON for serializing data. Here's what an event can look like:
+</p>
+<pre class="highlighted"><code class="language-json">{
+  "<span class="attribute">id</span>": <span class="value"><span class="string">"5051941d04b8ffd00500000d"</span></span>,
+  "<span class="attribute">time</span>": <span class="value"><span class="number">1347864935.964</span></span>,
+  "<span class="attribute">folderId</span>": <span class="value"><span class="string">"5058370ade44feaa03000015"</span></span>,
+  "<span class="attribute">value</span>": <span class="value">{
+    "<span class="attribute">type</span>": <span class="value"><span class="string">"position:WGS84"</span></span>,
+    "<span class="attribute">value</span>" : <span class="value"><span class="string">"40.714728, -73.998672, 12"</span>
+  </span>}
+</span>}</code></pre>
+<h2>Errors</h2>
+<p>When an error occurs, the API returns a 4xx or 5xx status code, with the response body usually containing an <a href="#data-types-error">error</a> object detailing the cause.
+
+</p>
+<p>Here's an example "401 Unauthorized" error response:
+</p>
+<pre class="highlighted"><code class="language-json">{
+  "<span class="attribute">id</span>": <span class="value"><span class="string">"INVALID_TOKEN"</span></span>,
+  "<span class="attribute">message</span>": <span class="value"><span class="string">"Cannot find token 'bad-token'."</span>
+</span>}</code></pre>
+</body></html>

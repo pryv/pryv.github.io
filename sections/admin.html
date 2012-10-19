@@ -1,0 +1,214 @@
+<html><head></head><body><h1>Administration methods</h1>
+<p>Administration methods allow to manage the user's <a href="#admin-user">account information</a>, <a href="#admin-channels">activity channels</a> and <a href="#admin-tokens">sharing</a> (via access tokens).
+
+
+</p>
+<h2>Authorization</h2>
+<p>Access to admin methods is managed by sessions. To create a session, you must successfully authenticate with a <code>/admin/login</code> request, which will return the session ID. Each request sent during the duration of the session must then contain the session ID in its <code>Authorization</code> header. The session is terminated when <code>/admin/logout</code> is called or when the session times out (TODO: indicate session timeout delay).
+
+</p>
+<p>Here's what an admin request (with a session open) looks like:
+</p>
+<pre class="highlighted"><code class="language-http"><span class="request">GET <span class="string">/admin/channels</span> HTTP/1.1</span>
+<span class="attribute">Host</span>: <span class="string">cassis.pryv.io</span>
+<span class="attribute">Authorization</span>: <span class="string">{session-id}</span></code></pre>
+<h2>Common HTTP headers</h2>
+<ul>
+<li><code>Server-Time</code>: The current server time as a <a href="#data-types-timestamp">timestamp</a>. Keeping reference of the server time is an absolute necessity to properly read and write event times.</li>
+</ul>
+<h2>Common error codes</h2>
+<p>TODO: review and complete
+
+</p>
+<ul>
+<li><code>400 Bad Request</code>, id <code>INVALID_PARAMETERS_FORMAT</code>: The request's parameters do not follow the expected format.</li>
+<li>401 (unauthorized), id <code>INVALID_CREDENTIALS</code>: User credentials are missing or invalid.</li>
+<li>404 (not found), possible cases:<ul>
+<li>Id <code>UNKNOWN_TOKEN</code>: The data access token can't be found.</li>
+<li>Id <code>UNKNOWN_CHANNEL</code>: The activity channel can't be found.</li>
+</ul>
+</li>
+</ul>
+<h2><a id="admin-session"></a>Session management</h2>
+<h3>POST <code>/admin/login</code></h3>
+<p>Opens a new admin session, authenticating with the provided credentials. TODO: possible support for OAuth/OpenID/BrowserID (for now, only local credentials are supported).
+
+</p>
+<h4>Body parameters</h4>
+<ul>
+<li><code>userName</code> (string)</li>
+<li><code>password</code> (string)</li>
+<li><code>appId</code> (string): A URL-friendly name uniquely identifying your app. The value you provide is in any case slugified before use (see <a href="https://github.com/dodo/node-slug/blob/master/src/slug.coffee">how</a>).</li>
+</ul>
+<h4>Successful response: <code>200 OK</code></h4>
+<ul>
+<li><code>sessionID</code> (string): The newly created session's ID, to include in each subsequent request's <code>Authorization</code> header.</li>
+</ul>
+<h3>POST <code>/admin/logout</code></h3>
+<p>Terminates the admin session.
+
+</p>
+<h4>Successful response: <code>200 OK</code></h4>
+<h2><a id="admin-user"></a>User information</h2>
+<h3>GET <code>/admin/user-info</code></h3>
+<p>TODO: get user informations
+Requires session token.
+
+</p>
+<h4>Successful response: <code>200 OK</code></h4>
+<p>TODO: email, display name, language, ...
+
+
+</p>
+<h3>PUT <code>/admin/user-info</code></h3>
+<p>TODO: change user information
+
+
+</p>
+<h3>POST <code>/admin/change-password</code></h3>
+<p>TODO: change user password
+Requires session token, old password, new password.
+
+</p>
+<h4>Specific errors</h4>
+<p>TODO: <code>WRONG_PASSWORD</code>, <code>INVALID_NEW_PASSWORD</code>
+
+
+</p>
+<h2><a id="admin-tokens"></a>Tokens</h2>
+<p>TODO: introductory text
+
+
+</p>
+<h3>POST <code>/admin/get-my-token</code></h3>
+<p>Gets the identifier of the personal token your app should use when accessing the user's data on her behalf. The token is created if it is the first time your app requests it.
+
+</p>
+<h4>Successful response: <code>200 OK</code></h4>
+<ul>
+<li><code>id</code> (<a href="#data-types-identity">identity</a>): Your app's dedicated personal <a href="#data-types-token">token</a> identifier.</li>
+</ul>
+<h3>GET <code>/admin/tokens</code></h3>
+<p>Gets all accessible access tokens, which are the shared tokens. (Your private app token identifier is retrieved with <code>POST /admin/get-my-token</code>.)
+
+</p>
+<h4>Successful response: <code>200 OK</code></h4>
+<p>An array of <a href="#data-types-token">access tokens</a> containing all accessible access tokens in the user's account, ordered by name.
+
+
+</p>
+<h3>POST <code>/admin/tokens</code></h3>
+<p>Creates a new shared access token.
+
+</p>
+<h4>Body parameters</h4>
+<p>The new token's data: see <a href="#data-types-token">access token</a>.
+
+</p>
+<h4>Successful response: <code>201 Created</code></h4>
+<ul>
+<li><code>id</code> (<a href="#data-types-identity">identity</a>): The created token's id.</li>
+</ul>
+<h3>PUT <code>/admin/tokens/{token-id}</code></h3>
+<p>Modifies the specified shared token.
+
+</p>
+<h4>Body parameters</h4>
+<p>New values for the token's fields: see <a href="#data-types-token">access token</a>. All fields are optional, and only modified values must be included. TODO: example
+
+</p>
+<h4>Successful response: <code>200 OK</code></h4>
+<h3>DELETE <code>/admin/tokens/{token-id}</code></h3>
+<p>Deletes the specified shared token.
+
+</p>
+<h4>Successful response: <code>200 OK</code></h4>
+<h2><a id="admin-bookmarks"></a>Bookmarks</h2>
+<p>TODO: introductory text
+
+
+</p>
+<h3>GET <code>/admin/bookmarks</code></h3>
+<p>Gets all of the user's sharing bookmarks.
+
+</p>
+<h4>Successful response: <code>200 OK</code></h4>
+<p>An array of <a href="#data-types-bookmark">bookmarks</a> containing all sharing bookmarks in the user's account, ordered by name.
+
+
+</p>
+<h3>POST <code>/admin/bookmarks</code></h3>
+<p>Creates a new sharing bookmark.
+
+</p>
+<h4>Body parameters</h4>
+<p>The new bookmark's data: see <a href="#data-types-bookmark">bookmark</a>.
+
+</p>
+<h4>Successful response: <code>201 Created</code></h4>
+<ul>
+<li><code>id</code> (<a href="#data-types-identity">identity</a>): The created bookmark's id.</li>
+</ul>
+<h3>PUT <code>/admin/bookmarks/{bookmark-id}</code></h3>
+<p>Modifies the specified sharing bookmark.
+
+</p>
+<h4>Body parameters</h4>
+<p>New values for the bookmark's fields: see <a href="#data-types-bookmark">bookmark</a>. All fields are optional, and only modified values must be included. TODO: example
+
+</p>
+<h4>Successful response: <code>200 OK</code></h4>
+<h3>DELETE <code>/admin/bookmarks/{bookmark-id}</code></h3>
+<p>Deletes the specified sharing bookmark.
+
+</p>
+<h4>Successful response: <code>200 OK</code></h4>
+<h2><a id="admin-channels"></a>Channels</h2>
+<p>TODO: introductory text.
+
+
+</p>
+<h3>GET <code>/admin/channels</code></h3>
+<p>Gets activity channels.
+
+</p>
+<h4>Query string parameters</h4>
+<ul>
+<li><code>state</code> (<code>default</code>, <code>trashed</code> or <code>all</code>): Optional. Indicates what items to return depending on their state. By default, only items that are not in the trash are returned; <code>trashed</code> returns only items in the trash, while <code>all</code> return all items regardless of their state.</li>
+</ul>
+<h4>Successful response: <code>200 OK</code></h4>
+<p>An array of <a href="#data-types-channel">activity channels</a>) containing all channels in the user's account matching the specified state, ordered by name.
+
+
+</p>
+<h3>POST <code>/admin/channels</code></h3>
+<p>Creates a new activity channel.
+
+</p>
+<h4>Body parameters</h4>
+<p>The new channel's data: see <a href="#data-types-channel">activity channel</a>.
+
+</p>
+<h4>Successful response: <code>201 Created</code></h4>
+<ul>
+<li><code>id</code> (<a href="#data-types-identity">identity</a>): The created channel's id.</li>
+</ul>
+<h3>PUT <code>/admin/channels/{channel-id}</code></h3>
+<p>Modifies the activity channel's attributes.
+
+</p>
+<h4>Body parameters</h4>
+<p>New values for the channel's fields: see <a href="#data-types-channel">activity channel</a>. All fields are optional, and only modified values must be included. TODO: example
+
+</p>
+<h4>Successful response: <code>200 OK</code></h4>
+<h3>DELETE <code>/admin/channels/{channel-id}</code></h3>
+<p>Trashes or deletes the given channel, depending on its current state:
+
+</p>
+<ul>
+<li>If the channel is not already in the trash, it will be moved to the trash (i.e. flagged as <code>trashed</code>)</li>
+<li>If the channel is already in the trash, it will be irreversibly deleted with all the folders and events it contains.</li>
+</ul>
+<h4>Successful response: <code>200 OK</code></h4>
+</body></html>

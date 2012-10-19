@@ -1,0 +1,204 @@
+<html><head></head><body><h1>Data types</h1>
+<p>TODO: introductory text.
+
+
+</p>
+<h2><a id="data-types-token"></a>Token</h2>
+<p>A data access token defines how a user's activity data (channels, folders and events) is accessed. Personal access tokens are transparently generated (provided the user's credentials) in the <a href="#admin">administration</a> when requested by client applications, but users can define additional tokens for letting other users view and possibly contribute to their activity data.
+
+</p>
+<p>Fields:
+
+</p>
+<ul>
+<li><code>id</code> (string): Unique, read-only. The server-assigned identifier for the token. This is used to specify the token in requests with token authorization.</li>
+<li><code>name</code> (string): Unique. The name identifying the token for the user. It can be the client application's name for automatically generated personal tokens, or any user-defined value for manually created tokens.</li>
+<li><code>type</code> (<code>"personal"</code> or <code>"shared"</code>): Optional. Personal tokens have full access to data, while shared tokens are only granted access to data defined in field <code>permissions</code>. Default: <code>"shared"</code>. Note that personal tokens are not open for viewing and management by third party apps by default - if you need to manage personal tokens, please get in touch with us (TODO: link).</li>
+<li><code>permissions</code>: an array of channel permission objects as described below. Ignored for personal tokens. Shared tokens are only granted access to activity data objects listed in here.<ul>
+<li><code>channelId</code> (<a href="#data-types-identity">identity</a>): The accessible channel's id.</li>
+<li><code>folderPermissions</code>: an array of folder permission objects:<ul>
+<li><code>folderId</code> (<a href="#data-types-identity">identity</a>): The accessible folder's id. A  value of <code>null</code> can be used to set permissions for the root of the folders structure. If the folder has child folders, they will be accessible too.</li>
+<li><code>type</code> (<code>"read"</code>, <code>"contribute"</code> or <code>"manage"</code>): The type of access to the folder's data. With <code>"contribute"</code>, the token's holder can see and record events for the folder (and its child folders, if any); with <code>"manage"</code>, the token's holder can in addition create, modify and delete child folders.</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>TODO: example
+
+
+</p>
+<h2><a id="data-types-bookmark"></a>Bookmark</h2>
+<p>Sharing bookmarks allow the user to store tokens shared with her by other users.
+
+</p>
+<p>Fields:
+
+</p>
+<ul>
+<li><code>id</code> (<a href="#data-types-identity">identity</a>): Unique, read-only. The server-assigned identifier for the bookmark.</li>
+<li><code>name</code> (string): Unique. A name identifying the bookmark for the user.</li>
+<li><code>userName</code> (string): The name of the shared token's owner user. Not modifiable after creation.</li>
+<li><code>tokenId</code> <a href="#data-types-identity">identity</a>: The identifier of the shared token itself. Not modifiable after creation.</li>
+</ul>
+<p>TODO: example
+
+
+</p>
+<h2><a id="data-types-channel"></a>Channel</h2>
+<p>Each activity channel represents a "stream" or "type" of activity to track, acting as a storage bucket for related events.
+Fields:
+
+</p>
+<ul>
+<li><code>id</code> (<a href="#data-types-identity">identity</a>): Unique, read-only. The server-assigned identifier for the channel.</li>
+<li><code>name</code> (string): Unique. The name identifying the channel for users.</li>
+<li><code>strictMode</code> (boolean): Optional. If <code>true</code>, the system will ensure that timed events in this channel never overlap; if <code>false</code>, overlapping will be allowed. <strong>This will be implemented later: currently all channels are considered "strict".</strong></li>
+<li><code>clientData</code> (<a href="#data-types-additional-data">item additional data</a>): Optional. Additional client data for the channel.</li>
+<li><code>timeCount</code> (<a href="#data-types-timestamp">timestamp</a>): Read-only. Only optionally returned when querying channels, indicating the total time tracked in that channel since a given reference date and time. <strong>This will be implemented later.</strong></li>
+<li><code>trashed</code> (boolean): Optional. <code>true</code> if the channel is in the trash.</li>
+</ul>
+<p>TODO: example
+
+
+</p>
+<h2><a id="data-types-folder"></a>Folder</h2>
+<p>Activity folders are the possible states or categories you track the channel's activity events into (folders are always specific to an activity channel). Every period event belongs to one folder, while mark events can be recorded "off-folder" as well. Activity folders follow a hierarchical tree structure: every folder can contain "child" folders (sub-folders).
+
+</p>
+<p>Fields:
+
+</p>
+<ul>
+<li><code>id</code> (<a href="#data-types-identity">identity</a>): Unique, read-only. The server-assigned identifier for the folder.</li>
+<li><code>name</code> (string): A name identifying the folder for users. The name must be unique among the folder's siblings in the folders tree structure.</li>
+<li><code>parentId</code> (<a href="#data-types-identity">identity</a>): Optional. The identifier of the folder's parent, if any. A value of <code>null</code> indicates that the folder has no parent (i.e. root folder).</li>
+<li><code>hidden</code> (<code>true</code> or <code>false</code>): Optional. Whether the folder is currently in use or visible. Default: <code>true</code>.</li>
+<li><code>clientData</code> (<a href="#data-types-additional-data">item additional data</a>):  Optional. Additional client data for the folder.</li>
+<li><code>timeCount</code> (<a href="#data-types-timestamp">timestamp</a>): Read-only. Only optionally returned when querying folders, indicating the total time spent in that folder, including sub-folders, since a given reference date and time. <strong>This will be implemented later.</strong></li>
+<li><code>children</code> (array of folders): Read-only. The folder's sub-folders, if any. This field cannot be set in requests creating a new folders: folders are created individually by design.</li>
+<li><code>trashed</code> (boolean): Optional. <code>true</code> if the folder is in the trash.</li>
+</ul>
+<h3>Example</h3>
+<p>A folder structure for activities:
+
+</p>
+<pre class="highlighted"><code class="language-javascript">[
+  { <span class="string">"name"</span>: <span class="string">"Sport"</span>, <span class="string">"id"</span>: <span class="string">"sport"</span>, <span class="string">"parentId"</span>: <span class="literal">null</span>,
+    <span class="string">"children"</span>: [
+      { <span class="string">"name"</span>: <span class="string">"Jogging"</span>, <span class="string">"id"</span>: <span class="string">"jogging"</span>, <span class="string">"parentId"</span>: <span class="string">"sport"</span>, <span class="string">"children"</span>: [] },
+      { <span class="string">"name"</span>: <span class="string">"Bicycling"</span>, <span class="string">"id"</span>: <span class="string">"bicycling"</span>, <span class="string">"parentId"</span>: <span class="string">"sport"</span>, <span class="string">"children"</span>: [] }
+  ]},
+  { <span class="string">"name"</span>: <span class="string">"Work"</span>, <span class="string">"id"</span>: <span class="string">"work"</span>, <span class="string">"parentId"</span>: <span class="literal">null</span>,
+    <span class="string">"children"</span>: [
+      { <span class="string">"name"</span>: <span class="string">"Noble Works Co."</span>, <span class="string">"id"</span>: <span class="string">"noble-works"</span>,<span class="string">"parentId"</span>: <span class="string">"work"</span>, <span class="string">"children"</span>: [
+          { <span class="string">"name"</span>: <span class="string">"Last Be First"</span>, <span class="string">"id"</span>: <span class="string">"last-be-first"</span>,<span class="string">"parentId"</span>: <span class="string">"noble-works"</span>, <span class="string">"children"</span>: [] },
+          { <span class="string">"name"</span>: <span class="string">"Big Tree"</span>, <span class="string">"id"</span>: <span class="string">"big-tree"</span>,<span class="string">"parentId"</span>: <span class="string">"noble-works"</span>, <span class="string">"children"</span>: [] },
+          { <span class="string">"name"</span>: <span class="string">"Inner Light"</span>, <span class="string">"id"</span>: <span class="string">"inner-light"</span>,<span class="string">"parentId"</span>: <span class="string">"noble-works"</span>, <span class="string">"children"</span>: [] }
+      ]},
+      { <span class="string">"name"</span>: <span class="string">"Freelancing"</span>, <span class="string">"id"</span>: <span class="string">"freelancing"</span>,<span class="string">"parentId"</span>: <span class="string">"work"</span>, <span class="string">"children"</span>: [
+          { <span class="string">"name"</span>: <span class="string">"Funky Veggies"</span>, <span class="string">"id"</span>: <span class="string">"funky-veggies"</span>,<span class="string">"parentId"</span>: <span class="string">"freelancing"</span>, <span class="string">"children"</span>: [] },
+          { <span class="string">"name"</span>: <span class="string">"Jojo Lapin &amp; sons"</span>, <span class="string">"id"</span>: <span class="string">"jojo-lapin"</span>,<span class="string">"parentId"</span>: <span class="string">"freelancing"</span>, <span class="string">"children"</span>: [] }
+      ]}
+    ]
+  }
+];</code></pre>
+<h2><a id="data-types-event"></a>Event</h2>
+<p>Activity events can be period events, which are associated with a period of time, or mark events, which are just associated with a single point in time:
+
+</p>
+<ul>
+<li>Period events are used to track everything with a duration, like time spent drafting a project proposal, meeting with the customer or staying at a particular location.</li>
+<li>Mark events are used to track everything else, like a note, a log message, a GPS location, a temperature measurement, or a stock market asset value.</li>
+</ul>
+<p>Differentiating them is simple: period events carry a duration, while mark events do not. Like folders, events always belong to an activity channel.
+
+</p>
+<p>Fields:
+
+</p>
+<ul>
+<li><code>id</code> (<a href="#data-types-identity">identity</a>): Unique, read-only. The server-assigned identifier for the event.</li>
+<li><code>time</code> (<a href="#data-types-timestamp">timestamp</a>): The event's time. For period events, this is the time the event started.</li>
+<li><code>clientId</code> (string): A client-assigned identifier for the event when created offline, for temporary reference. Only used in batch event creation requests. [TODO: currently not implemented; linked to batch creation request.]</li>
+<li><code>folderId</code>(<a href="#data-types-identity">identity</a>): Optional. Indicates the particular folder the event is associated with, if any.</li>
+<li><code>duration</code> (<a href="#data-types-timestamp">timestamp</a> difference): Optional. If present, indicates that the event is a period event. Running period events have a duration set to <code>null</code>. (We use a dedicated field for duration - instead of using the <code>value</code> field - as we need specific processing of event durations, intervals and overlapping.)</li>
+<li><code>value</code> (object): Optional. The value associated with the event, if any. This may be a mathematical value (e.g. mass, money, length, position, etc.), or a link to a page, a picture or an attached file. To facilitate interoperability, event values are expected to have the following structure:<ul>
+<li><code>type</code> (TODO: value type): The value's type in the form <code>{type}:{unit}</code>, for example <code>mass:kg</code>. [TODO: link to the value types directory when ready.]</li>
+<li><code>value</code> (boolean, number, string or <code>null</code>): The actual value in the specified type.</li>
+</ul>
+</li>
+<li><code>comment</code> (string): Optional. User comment or note for the event.</li>
+<li><code>attachments</code>: Optional and read-only. An object describing the files attached to the event. Each of its properties corresponds to one file and has the following structure:<ul>
+<li><code>fileName</code> (string): The file's name. The attached file's URL is obtained by appending this file name to the event's resource URL.</li>
+<li><code>type</code> (string): The MIME type of the file.</li>
+<li><code>size</code> (number): The size of the file, in bytes.</li>
+</ul>
+</li>
+<li><code>clientData</code> (<a href="#data-types-additional-data">additional item data</a>):  Optional. Additional client data for the event.</li>
+<li><code>trashed</code> (boolean): Optional. <code>true</code> if the event is in the trash.</li>
+<li><code>modified</code> (<a href="#data-types-timestamp">timestamp</a>): Read-only. The time the event was last modified.</li>
+</ul>
+<h3>Example</h3>
+<p>TODO: review after tags are implemented.
+
+</p>
+<pre class="highlighted"><code class="language-javascript">[
+  { <span class="string">"time"</span> : <span class="number">1350365877.359</span>, <span class="string">"comment"</span> : <span class="string">"Some pics"</span>, <span class="string">"id"</span> : <span class="string">"event_0"</span>, <span class="string">"folderId"</span> : <span class="literal">null</span>,
+    <span class="string">"attachments"</span> : {
+      <span class="string">"Gina"</span> : { <span class="string">"fileName"</span> : <span class="string">"gina.jpeg"</span>, <span class="string">"type"</span> : <span class="string">"image/jpeg"</span>, <span class="string">"size"</span> : <span class="number">1236701</span> },
+      <span class="string">"Enzo"</span> : { <span class="string">"fileName"</span> : <span class="string">"enzo.jpeg"</span>, <span class="string">"type"</span> : <span class="string">"image/jpeg"</span>, <span class="string">"size"</span> : <span class="number">1127465</span> }},
+      <span class="string">"modified"</span> : <span class="number">1350463077.359</span> },
+  { <span class="string">"time"</span> : <span class="number">1350369477.359</span>, <span class="string">"duration"</span> : <span class="number">7140</span>, <span class="string">"comment"</span>: <span class="string">"A period of work"</span>,
+    <span class="string">"id"</span> : <span class="string">"event_1"</span>, <span class="string">"folderId"</span> : <span class="string">"free-veggies"</span>, <span class="string">"modified"</span> : <span class="number">1350369477.359</span> },
+  { <span class="string">"time"</span> : <span class="number">1350373077.359</span>, <span class="string">"comment"</span> : <span class="string">"A position"</span>, <span class="string">"id"</span> : <span class="string">"event_2"</span>, <span class="string">"folderId"</span> : <span class="literal">null</span>,
+    <span class="string">"value"</span>: { <span class="string">"type"</span>: <span class="string">"position:WGS84"</span>, <span class="string">"value"</span>: <span class="string">"40.714728, -73.998672, 12"</span> },
+    <span class="string">"modified"</span> : <span class="number">1350373077.359</span> }
+]</code></pre>
+<h2><a id="data-types-additional-data"></a>Item additional data</h2>
+<p>A JSON object offering free storage for clients to support extra functionality. TODO: details (no media files, limited size...) and example
+
+</p>
+<p>TODO: "commonly used data directory" to help data reuse:
+
+</p>
+<ul>
+<li><code>color</code></li>
+<li><code>url</code></li>
+<li><code>imageIcon</code> (! file size)</li>
+<li>...</li>
+</ul>
+<h2><a id="data-types-error"></a>Error</h2>
+<p>Fields:
+
+</p>
+<ul>
+<li><code>id</code> (string): Identifier for the error; complements the response's HTTP error code.</li>
+<li><code>message</code> (string): A human-readable description of the error.</li>
+<li><code>subErrors</code> (array of errors): Optional. Lists the detailed causes of the main error, if any.</li>
+</ul>
+<h2>Simple types</h2>
+<h3><a id="data-types-identity"></a>Item identity</h3>
+<p>TODO: decide depending on the choosen database. The best would be to keep human readable identifier (see slugify). Validation rule in that case: <code>/^[a-zA-Z0-9._-]{1,100}$/</code> (alphanum between 3 and 100 chars).
+
+</p>
+<ul>
+<li>The identity of every activity channel must be unique within its owning user's data</li>
+<li>The identity of every activity folder or event must be unique within its containing channel</li>
+</ul>
+<h3><a id="data-types-timestamp"></a>Timestamp</h3>
+<p>A positive floating-point number representing a number of seconds since any reference date and time, <strong>independently from the time zone</strong>. Because date and time synchronization between server time and client time is done by the client simply comparing the current server timestamp with its own, the reference date and time does not matter.
+
+</p>
+<p>Here are some examples of getting a valid timestamp in various environments:
+
+</p>
+<ul>
+<li>JavaScript: <code>Date.now() / 1000</code></li>
+<li>PHP (5+): <code>microtime(true)</code></li>
+<li>TODO: more examples</li>
+</ul>
+<h3><a id="data-types-language-code"></a>Two-letter ISO language code</h3>
+<p>A two-letter string specifying a language following the ISO 639-1 standard (see <a href="http://en.wikipedia.org/wiki/ISO_639-1">the related Wikipedia definition</a>).
+</p>
+</body></html>

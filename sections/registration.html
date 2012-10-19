@@ -1,0 +1,248 @@
+<html><head></head><body><h1>Registration service</h1>
+<p>TODO: review the entire chapter
+
+</p>
+<p>The register service handles user's directory and manages user creation.
+
+</p>
+<p>Registration of users is normally done manually from the <a href="https://pryv.io">Pryv </a><a href="https://pryv.io">https://pryv.io</a> homepage.
+
+</p>
+<p>Read this document <strong>if you plan to write a registration client</strong> or for your own curiosity.
+
+
+</p>
+<h3>Common error codes</h3>
+<ul>
+<li>500 (internal error), code <code>INTERNAL_ERROR</code>: Something went bad on the server.</li>
+</ul>
+<h3><a id="registration-translations"></a>Messages translations</h3>
+<p>We offer key based translations files for messages.
+
+</p>
+<p>As today only the folowing languages are availables
+
+</p>
+<ul>
+<li>English: <strong>"en"</strong> /messages-en.js</li>
+<li>French: <strong>"fr"</strong> /messages-fr.js</li>
+</ul>
+<h3><a id="registration-rules"></a>User name and password rules</h3>
+<ul>
+<li>User name: <code>/^[a-zA-Z0-9]{5,21}$/</code>(alphanumeric between 5 an 21 chars) case-insensitive.</li>
+<li>Password: Any chars between 6 and 99 chars, with no trailing or starting spaces.</li>
+</ul>
+<h2>HTTP API</h2>
+<h3><a id="registration-server"></a>GET the server of a userName</h3>
+<p>This is normaly handled by DNS queries as <strong>userName</strong>.pryv.io should point to a <em>xyz</em>.pryv.net server.
+
+</p>
+<p>You may use this as a fallback in case of DNS inconsistency.
+
+</p>
+<p>Like for <a href="#registration-confirm">Confirm</a> there is two methods
+
+</p>
+<ul>
+<li>GET will do a redirect</li>
+<li>POST will return JSON data.</li>
+</ul>
+<h4>GET <code>/{user-name}/server</code></h4>
+<p>Responses as redirects
+
+</p>
+<h5>Response (JSON)</h5>
+<ul>
+<li>200 to <a href="https://*xyz*.pryv.net/?userName=">https://*xyz*.pryv.net/?userName=</a>.....</li>
+</ul>
+<h5>Specific errors</h5>
+<ul>
+<li>200 to <a href="https://pryv.io/?error=UNKOWN_USER_NAME">https://pryv.io/?error=UNKOWN_USER_NAME</a></li>
+</ul>
+<h4>POST <code>/{user-name}/server</code></h4>
+<h5>Response (JSON)</h5>
+<ul>
+<li>200 <code>server</code>: may be an IPv4, iPv6 or a fully qualified hostname</li>
+</ul>
+<p>exemple : (everything went fine)
+
+</p>
+<pre class="highlighted"><code class="json">{"<span class="attribute">server</span>": <span class="value"><span class="string">"xyz.pryv.net"</span></span>, "<span class="attribute">alias", "userName.pryv.io"}</span></code></pre>
+<h5>Specific errors</h5>
+<ul>
+<li>400 (bad request), code <code>INVALID_USER_NAME</code></li>
+<li>404 (not found), code <code>UNKOWN_USER_NAME</code></li>
+</ul>
+<h3>Check if username exists</h3>
+<h4><a id="registration-check"></a>GET <code>/{user-name}/check</code></h4>
+<p>Checks whether the given user name already exists.
+
+</p>
+<h5>Response (JSON)</h5>
+<ul>
+<li>200 <code>exists</code> (<code>true</code> or <code>false</code>): <code>true</code> if the given user name is already in use</li>
+</ul>
+<p>exemple :
+
+</p>
+<pre class="highlighted"><code class="json">{"<span class="attribute">exists</span>": <span class="value"><span class="string">"true"</span></span>}</code></pre>
+<h5>Specific errors</h5>
+<ul>
+<li>400 (bad request), id <code>INVALID_USER_NAME</code>: The given name cannot be used as a user name see: <a href="#registration-rules">Rules</a>.</li>
+</ul>
+<p>exemple :
+
+</p>
+<pre class="highlighted"><code class="json">{"<span class="attribute">message</span>": <span class="value"><span class="string">"Invalid user name"</span></span>,
+  "<span class="attribute">detail</span>": <span class="value"><span class="string">"User name must be made of 5 to 21 alphanumeric characters."</span></span>,
+      "<span class="attribute">id</span>": <span class="value"><span class="string">"INVALID_USER_NAME"</span></span>}</code></pre>
+<h3>Register a new User: Confirmation, Step 1 / 2</h3>
+<h4>POST <code>/init</code></h4>
+<p>Initializes user creation, will be confirmed by POST <code>/challengeToken/confirm</code>, see: <a href="#registration-confirm">Confirm</a>.
+
+</p>
+<p>The <strong>challengeToken</strong> is sent by mail. Unconfirmed user creations are deleted after 24 hours.
+
+</p>
+<p>If your software runs on a platform on which you can trust the user identity, you may skip the confirm step. For this, please contact our devloppement team.
+
+</p>
+<h5>Post parameters (JSON)</h5>
+<ul>
+<li><code>userName</code> (string): The user's unique name.</li>
+<li><code>password</code> (string): The user's password for accessing administration functions.</li>
+<li><code>email</code> (string): The user's e-mail address, unique to that user.</li>
+<li><code>languageCode</code> (<a href="/DataTypes#TODO">two-letter ISO language code</a>): The user's preferred language. TODO: note about actual usage in service and clients.</li>
+</ul>
+<h5>Response (JSON)</h5>
+<ul>
+<li>200 id <code>INIT_DONE</code> : Registration started</li>
+</ul>
+<p>exemple :
+
+</p>
+<pre class="highlighted"><code class="json">{"<span class="attribute">message</span>": <span class="value"><span class="string">"Registration started"</span></span>,
+  "<span class="attribute">detail</span>": <span class="value"><span class="string">"An e-mail has been sent, check your mailbox to confirm."</span>
+      <span class="string">"id"</span>: <span class="string">"INIT_DONE"</span></span>}</code></pre>
+<h5>Specific errors</h5>
+<ul>
+<li>400 (bad request), id <code>INVALID_DATA</code>: with a set of errors<ul>
+<li>id <code>EXISTING_USER_NAME</code>: The requested userName is alerady used. You may check avalability with <code>GET /{user-name}/check</code>, see: <a href="#registration-check">Check</a>.</li>
+<li>id <code>INVALID_USER_NAME</code>: The given name cannot be used as a user name, see: <a href="#registration-rules">Rules</a>.</li>
+<li>id <code>INVALID_PASSWORD</code>: The given password does not fit password policy see: <a href="#registration-rules">Rules</a>.</li>
+<li>id <code>INVALID_EMAIL</code>: The given email is not recognized as valid.</li>
+</ul>
+</li>
+</ul>
+<p>see: <a href="#registration-translations">messages translations</a>
+
+</p>
+<p>exemple : (all requested data are empty)
+
+</p>
+<pre class="highlighted"><code class="json">{"<span class="attribute">message</span>": <span class="value"><span class="string">"Invalid Data"</span></span>,
+  "<span class="attribute">detail</span>": <span class="value"><span class="string">"Some of the data transmited is invalid."</span></span>,
+      "<span class="attribute">id</span>": <span class="value"><span class="string">"INVALID_DATA"</span></span>,
+  "<span class="attribute">errors</span>":<span class="value">[{"<span class="attribute">message</span>": <span class="value"><span class="string">"Invalid user name"</span></span>,
+              "<span class="attribute">detail</span>": <span class="value"><span class="string">"User name must be made of 5 to 21 alpha..."</span></span>,
+                  "<span class="attribute">id</span>": <span class="value"><span class="string">"INVALID_USER_NAME"</span></span>},
+            {"<span class="attribute">message</span>": <span class="value"><span class="string">"Invalid password"</span></span>,
+              "<span class="attribute">detail</span>": <span class="value"><span class="string">"Password must be between 6 and 50 characters"</span></span>,
+                  "<span class="attribute">id</span>": <span class="value"><span class="string">"INVALID_PASSWORD"</span></span>},
+            {"<span class="attribute">message</span>": <span class="value"><span class="string">"Invalid email adress"</span></span>,
+              "<span class="attribute">detail</span>": <span class="value"><span class="string">"E-mail address format not recognized"</span></span>,
+                  "<span class="attribute">id</span>": <span class="value"><span class="string">"INVALID_EMAIL"</span></span>}
+           ]
+ </span>}</code></pre>
+<h3><a id="registration-confirm"></a>Register a new User: Confirmation, Step 2 / 2</h3>
+<p>Confirms user creation for the given user.
+
+</p>
+<p>For now the token is sent by mail, this step is usually handeled by our web page.
+
+</p>
+<p>Note: if the user is already confirmed, this will send an error, but also the server hostname to use.
+
+
+</p>
+<p><strong>Two methods: </strong>
+
+</p>
+<ul>
+<li>GET is designed to triggered by a single link (from an e-mail). So it does a redirect to the user web page in case of success.</li>
+<li>POST will return JSON data.</li>
+</ul>
+<h4>GET <code>/{challenge}/confirm</code></h4>
+<h5>Response (REDIRECT)</h5>
+<ul>
+<li>200 <code>server</code>: may be an IPv4, iPv6 or a fully qualified hostname</li>
+</ul>
+<p>exemple : (everything went fine)
+
+</p>
+<pre class="highlighted"><code class="json">{"<span class="attribute">server</span>": <span class="value"><span class="string">"test1.pryv.net"</span></span>, "<span class="attribute">alias</span>": <span class="value"><span class="string">"userName.pryv.io"</span></span>}</code></pre>
+<h4>POST <code>/{challenge}/confirm</code></h4>
+<p>See GET for a redirect to web site solution
+
+</p>
+<p>Confirms user creation for the given user.
+
+</p>
+<p>For now the token is sent by mail, this step is usually handeled by our web page.
+
+</p>
+<p>Note: if user is already confirmed, this will send an error, but also the server hostname to use.
+
+</p>
+<h5>Post parameters (JSON)</h5>
+<ul>
+<li><code>challenge</code> (string): The code sent by e-mail to user to confirm it's registration</li>
+</ul>
+<h5>Response (JSON)</h5>
+<ul>
+<li>200 <code>server</code>: may be an IPv4, iPv6 or a fully qualified hostname</li>
+</ul>
+<p>exemple : (everything went fine)
+
+</p>
+<pre class="highlighted"><code class="json">{"<span class="attribute">server</span>": <span class="value"><span class="string">"xyz.pryv.net"</span></span>, "<span class="attribute">alias</span>": <span class="value"><span class="string">"userName.pryv.io"</span></span>}</code></pre>
+<h5>Specific errors</h5>
+<ul>
+<li>400 (bad request), code <code>INVALID_CHALLENGE</code>: the response is badly formatted.</li>
+<li>404 (not found), code <code>NO_PENDING_CREATION</code>: There is no pending user creation for the given user name. Confirmations must be done within 24 hours.</li>
+<li>400 (bad request), code <code>ALREADY_CONFIRMED</code>: This user has allready been confirmed. <strong>!! but you may proceed to server !!</strong></li>
+</ul>
+<p>exemple : This username has already been confirmed
+
+</p>
+<pre class="highlighted"><code class="json">{"<span class="attribute">message</span>": <span class="value"><span class="string">"Already confirmed"</span></span>,
+  "<span class="attribute">detail</span>": <span class="value"><span class="string">"The registration for this user has already been confirmed."</span></span>,
+      "<span class="attribute">id</span>": <span class="value"><span class="string">"ALREADY_CONFIRMED"</span></span>,
+  "<span class="attribute">server</span>": <span class="value"><span class="string">"test2.pryv.net"</span></span>,
+   "<span class="attribute">alias</span>": <span class="value"><span class="string">"userName.pryv.io"</span></span>}</code></pre>
+<h2>WEB access</h2>
+<p>TODO: remove or put elsewhere?
+
+</p>
+<h3>The Homepage</h3>
+<p><a href="http://pryv.io">http://pryv.io</a>
+
+</p>
+<h3>Error fallback</h3>
+<h4><a href="https://pryv.io/error.html?id=NO_PENDING_CREATION">https://pryv.io/error.html?id=NO_PENDING_CREATION</a></h4>
+<p>Confirmation failed: <code>GET /{challenge}/confirm</code>
+
+</p>
+<h4><a href="https://pryv.io/error.html?id=INVALID_CHALLENGE">https://pryv.io/error.html?id=INVALID_CHALLENGE</a></h4>
+<p>Confirmation failed: <code>GET /{challenge}/confirm</code>
+
+</p>
+<h4><a href="https://pryv.io/error.html?id=INVALID_USER_NAME">https://pryv.io/error.html?id=INVALID_USER_NAME</a></h4>
+<p>Server request failed: <code>GET /{username}/server</code>
+
+</p>
+<h4><a href="https://pryv.io/error.html?id=UNKOWN_USER_NAME">https://pryv.io/error.html?id=UNKOWN_USER_NAME</a></h4>
+<p>Server request  failed: <code>GET /{challenge}/server</code>
+
+</p>
+</body></html>

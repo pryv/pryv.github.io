@@ -1,0 +1,29 @@
+<html><head></head><body><h1>Socket.IO support</h1>
+<p>The activity service supports real-time interaction with <a href="http://socket.io">Socket.IO</a>, both by accepting equivalent messages for most API methods and by emitting data change notification messages. (Code examples below are in Javascript.)
+
+
+</p>
+<h3>Calling API methods</h3>
+<p>Every method in the activity service can be called by sending a corresponding Socket.IO <code>command</code> message, providing a data object specifying the command (or method) and possible parameters, and a callback function for the response:
+</p>
+<pre class="highlighted"><code class="language-javascript">socket.emit(<span class="string">'command'</span>, {id: <span class="string">'{id}'</span>, params: {<span class="comment">/*parameters*/</span>}}, <span class="function"><span class="keyword">function</span> <span class="params">(error, data)</span> {</span>
+  <span class="comment">// handle response here</span>
+});</code></pre>
+<p>Command ids are indicated for each API method below and are modeled after the equivalent URL path. For example, here's how you could call <code>GET /{channel-id}/events</code>:
+</p>
+<pre class="highlighted"><code class="language-javascript"><span class="keyword">var</span> cmdData = {
+  id: <span class="string">'{channel-id}.events.get'</span>,
+  params: {
+    sortAscending: <span class="literal">true</span>
+  }
+};
+socket.emit(<span class="string">'command'</span>, cmdData, <span class="function"><span class="keyword">function</span> <span class="params">(error, data)</span> {</span>
+  <span class="comment">// handle response</span>
+});</code></pre>
+<h3>Receiving data change notifications</h3>
+<p>You can be notified of changes to channels, folders and events by subscribing to the corresponding messages <code>channelsChanged</code>, <code>foldersChanged</code> and <code>eventsChanged</code>. For example:
+</p>
+<pre class="highlighted"><code class="language-javascript">socket.on(<span class="string">'eventsChanged'</span>, <span class="keyword">function</span>() {
+  <span class="comment">// retrieve latest changes and update views</span>
+});</code></pre>
+</body></html>

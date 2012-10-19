@@ -1,0 +1,874 @@
+<!DOCTYPE html><html lang="en" class="no-js"><head><meta charset="UTF-8" /><title>Pryv API documentation</title><meta name="description" content="TODO" /><meta name="viewport" content="width=device-width, initial-scale=1" /><link rel="stylesheet" type="text/css" href="github.css" /><link rel="stylesheet" type="text/css" href="highlight.css" /><link rel="stylesheet" type="text/css" href="style.css" /><script src="scripts/modernizr.min.js"></script><script src="http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.js"></script><script src="scripts/jquery.toc.min.js"></script></head><body><div id="main"><header id="pageHeader"></header><div id="sections"><section id="overview"><h1>Pryv API overview</h1>
+<p>The API is the HTTP programming interface to Pryv, which allows you to integrate Pryv activity data (and possibly user account management) into your web or native app.
+
+
+</p>
+<h2>Basics</h2>
+<p>There are two different uses for the API:
+
+</p>
+<ul>
+<li>Most apps will want to interact with <a href="#activity">Pryv activity data</a>. Recording and managing of activity data (events and their organization into folders and tags) is protected by <a href="#data-types-token">data access tokens</a> to allow easy <a href="#overview-sharing">sharing</a>.</li>
+<li>Some apps may need to access <a href="#admin">user account administration</a>, which includes the management of data sharing (via data access tokens) and activity channels (in addition to the user account itself). Administration is protected by personal authentication and expiring sessions.</li>
+</ul>
+<p>[TODO: add simple schema here]
+
+</p>
+<h3>What's activity data?</h3>
+<p>Activity data is, at the core, just <strong>events</strong>: pieces of data attached to moments in time. Events can be thoughts, audio notes, photos, geographical coordinates etc. To allow Pryv apps to play nicely together and help users organize those events, however, there are a few additional things you need to know about:
+
+</p>
+<ul>
+<li>Each event belongs to a <strong>channel</strong>. A channel is a stream of events users usually want to see and manage together. For example, a user's thoughts, diary and social activities (Facebook, Twitter,... ) will be recorded in the same channel. There are a few standard channels there for your app to use (TODO: link to upcoming section listing standard channels &amp; folders), but if you manage rather specific stuff you'll probably want your app to create and use its own channel. Most apps will just deal with a single channel.</li>
+<li>Within a channel, events can be classified and organized using folders, tags, or both:<ul>
+<li><strong>Folders</strong> offer a hierarchical structure for classifying and filtering events. They are exclusive (one event can only be classified into a single folder), and can contain sub-folders (child folders). Depending on your app, you may actively use folders and let the user manage them (as for a time tracking app to classify time spent on particular projects), just use a single folder (as for a social media plugin: a Facebook plugin may store all its events into a "Facebook" folder), or just not care about folders at all (if your app uses its own channel and tags are all you need, for example).</li>
+<li><strong>Tags</strong> offer a flat, many-to-many organization for labeling and filtering events. One event can be tagged with multiple tags. TODO: detail when UX is better defined. For example, personal notes could be tagged as <em>essentials</em> or <em>important</em>, or professional activities could be tagged as <em>prospection</em>, <em>meeting</em>, <em>development</em> or <em>support</em>.</li>
+</ul>
+</li>
+</ul>
+<p>Note that as an open system, to provide true interoperability, Pryv does not set or enforce "ownership" of data per app. Provided the necessary permissions, data stored by a given app can be accessed and manipulated by any other app.
+See the standard channels, folders and tags (TODO: link) we encourage you to use when appropriate if you want your app to integrate nicely within the user's Pryv experience.
+
+</p>
+<h3><a id="overview-sharing"></a>How sharing works</h3>
+<p>[TODO: schema?]
+
+</p>
+<p>Apps access a user's activity data by presenting the API with a <strong>data access token</strong> (or just "token" here). A token can be <em>personal</em> or <em>shared</em>. A personal token is assigned to an app (provided the user's credentials) and used by that app to access the user's data on her behalf (i.e. with full permissions). But end-users don't have to know about personal tokens; end-users care about sharing, which is managed via shared tokens.
+
+</p>
+<p>A <strong>shared token</strong> grants permissions to a specified set of the user's data: channel(s), and within those channels, folder(s), tag(s) and/or a limited time frame can be defined to filter events. Tokens allow sharing in a variety of ways, such as:
+
+</p>
+<ul>
+<li>in-app: the user chooses to share some events with another Pryv user, which is notified and can select to view (and possibly contribute to) the shared data or integrate it with her own (add it to her sharing bookmarks).</li>
+<li>URL copy-paste: the user choose to share data with another person (possibly not a Pryv user), and copies the full URL containing the token into an e-mail or chat message. The other person can open the URL and access the web app to view (and possibly contribute to) the shared data.</li>
+</ul>
+<p>Users can store tokens shared by other users by adding them to their <strong>sharing bookmarks</strong>.
+
+</p>
+<p>For the present time, tokens are not personal. They act exactly like digital keys: if you have the token and the name of the user it belongs to, you can access the data it exposes.
+
+</p>
+<p>For more details see:
+
+</p>
+<ul>
+<li>Tokens <a href="#admin-tokens">management</a> and <a href="#data-types-token">data structure</a></li>
+<li>Bookmarks <a href="#admin-bookmarks">management</a> and <a href="#data-types-bookmark">data structure</a></li>
+</ul>
+<h2>What's the URL?</h2>
+<p>Because Pryv potentially stores each user's data in a different location according to the user's choice, the API's base URL is unique for each user: <code>https://{username}.pryv.io</code> (where <code>{username}</code> is the name of the user whose data you want to access).
+
+
+</p>
+<h2>Calling API methods</h2>
+<p>Most of the API follows REST principles, meaning each item has its own unique resource URL and can be read or modified via HTTP verbs:
+
+</p>
+<ul>
+<li>GET to read the item(s)</li>
+<li>POST to create a new item</li>
+<li>PUT to modify the item</li>
+<li>DELETE to delete the item (note that logical deletion, or trashing, is supported for items like events, folders and channels)</li>
+</ul>
+<p>Here's an example API request:
+</p>
+<pre class="highlighted"><code class="language-http"><span class="request">GET <span class="string">/{channel-id}/events</span> HTTP/1.1</span>
+<span class="attribute">Host</span>: <span class="string">{user-name}.pryv.io</span>
+<span class="attribute">Authorization</span>: <span class="string">{token}</span></code></pre>
+<p>Note that the API also supports Socket.IO, for both calling API methods and receiving live notifications of changes to activity data. See <a href="#socketio">our dedicated section</a>.
+
+
+</p>
+<h2>Data format</h2>
+<p>The API uses JSON for serializing data. Here's what an event can look like:
+</p>
+<pre class="highlighted"><code class="language-json">{
+  "<span class="attribute">id</span>": <span class="value"><span class="string">"5051941d04b8ffd00500000d"</span></span>,
+  "<span class="attribute">time</span>": <span class="value"><span class="number">1347864935.964</span></span>,
+  "<span class="attribute">folderId</span>": <span class="value"><span class="string">"5058370ade44feaa03000015"</span></span>,
+  "<span class="attribute">value</span>": <span class="value">{
+    "<span class="attribute">type</span>": <span class="value"><span class="string">"position:WGS84"</span></span>,
+    "<span class="attribute">value</span>" : <span class="value"><span class="string">"40.714728, -73.998672, 12"</span>
+  </span>}
+</span>}</code></pre>
+<h2>Errors</h2>
+<p>When an error occurs, the API returns a 4xx or 5xx status code, with the response body usually containing an <a href="#data-types-error">error</a> object detailing the cause.
+
+</p>
+<p>Here's an example "401 Unauthorized" error response:
+</p>
+<pre class="highlighted"><code class="language-json">{
+  "<span class="attribute">id</span>": <span class="value"><span class="string">"INVALID_TOKEN"</span></span>,
+  "<span class="attribute">message</span>": <span class="value"><span class="string">"Cannot find token 'bad-token'."</span>
+</span>}</code></pre>
+</section><section id="activity"><h1>Activity methods</h1>
+<p>TODO: introductory text
+
+
+</p>
+<h2>Authorization</h2>
+<p>All requests for retrieving and manipulating activity data must carry a valid <a href="#data-types-token">data access token</a> in the HTTP <code>Authorization</code> header. (You get the token itself either by retrieving it in the <a href="#admin-tokens">administration</a> or from sharing.)
+
+</p>
+<p>Here's what a proper request looks like:
+</p>
+<pre class="highlighted"><code class="language-http"><span class="request">GET <span class="string">/{channel-id}/events</span> HTTP/1.1</span>
+<span class="attribute">Host</span>: <span class="string">yacinthe.pryv.io</span>
+<span class="attribute">Authorization</span>: <span class="string">{valid-token}</span></code></pre>
+<h2>Common HTTP headers</h2>
+<p>Some headers are included in every response to authorized requests:
+
+</p>
+<ul>
+<li><code>Server-Time</code>: The current server time as a <a href="#data-types-timestamp">timestamp</a>. Keeping reference of the server time is an absolute necessity to properly read and write event times.</li>
+</ul>
+<h2>Common errors</h2>
+<p>Here are errors commonly returned for requests:
+
+</p>
+<ul>
+<li><code>400 Bad Request</code>, id <code>INVALID_REQUEST_STRUCTURE</code>: The request's structure is not that expected. This can happen e.g. with invalid JSON syntax, or when using an unexpected multipart structure for uploading file attachments.</li>
+<li><code>400 Bad Request</code>, id <code>INVALID_PARAMETERS_FORMAT</code>: The request's parameters do not follow the expected format.</li>
+<li><code>401 Unauthorized</code>, id <code>INVALID_TOKEN</code>: The data access token is missing or invalid.</li>
+<li><code>403 Forbidden</code>: The given data access token does not grant permission for this operation. See <a href="#data-types-token">data access tokens</a> for more details about tokens and permissions.</li>
+<li><code>404 Not Found</code>, possible cases:<ul>
+<li>Id <code>UNKNOWN_CHANNEL</code>: The activity channel can't be found.</li>
+<li>Id <code>UNKNOWN_FOLDER</code>: The activity folder can't be found in the specified channel.</li>
+<li>Id <code>UNKNOWN_EVENT</code>: The event can't be found in the specified channel.</li>
+<li>Id <code>UNKNOWN_ATTACHMENT</code>: The attached file can't be found for the specified event.</li>
+</ul>
+</li>
+</ul>
+<h2>Channels</h2>
+<p>For retrieving <a href="#data-types-channel">channels</a>. Manipulating channels is done in the <a href="#admin-channels">administration</a>.
+
+
+</p>
+<h3>GET <code>/channels</code></h3>
+<p><em>Socket.IO command id: <code>channels.get</code></em>
+
+</p>
+<p>Gets the activity channels accessible with the given token (and that are not in the trash).
+
+</p>
+<h4>Successful response: <code>200 OK</code></h4>
+<p>An array of <a href="#data-types-channel">activity channels</a> containing the channels accessible with the given token.
+
+
+</p>
+<h2>Folders</h2>
+<p>Methods to retrieve and manipulate <a href="#data-types-folder">folders</a>.
+
+
+</p>
+<h3>GET <code>/{channel-id}/folders</code></h3>
+<p><em>Socket.IO command id: <code>{channel-id}.folders.get</code></em>
+
+</p>
+<p>Gets the folders accessible with the given token, either from the root level or only descending from a specified parent folder.
+
+</p>
+<h4>Query string parameters</h4>
+<ul>
+<li><code>parentId</code> (<a href="#data-types-identity">identity</a>): The id of the parent folder to use as root for the request, or nothing to return all accessible folders from the root level.</li>
+<li><code>includeHidden</code> (<code>true</code> or <code>false</code>): Optional. When <code>true</code>, folders that are currently hidden will be included in the result. Default: <code>false</code>.</li>
+<li><code>state</code> (<code>default</code>, <code>trashed</code> or <code>all</code>): Optional. Indicates what items to return depending on their state. By default, only items that are not in the trash are returned; <code>trashed</code> returns only items in the trash, while <code>all</code> return all items regardless of their state.</li>
+<li><code>timeCountBase</code> (<a href="#data-types-timestamp">timestamp</a>): Optional. If specified, the returned folders will include the summed duration of all their period events, starting from this timestamp (see <code>timeCount</code> in <a href="#data-types-folder">activity folder</a>); otherwise no time count values will be returned.</li>
+</ul>
+<h4>Successful response: <code>200 OK</code></h4>
+<p>An array of <a href="#data-types-folder">activity folders</a> containing the tree of the folders accessible with the given token, sorted by name.
+
+</p>
+<p>TODO: example (with and without time accounting)
+
+
+</p>
+<h3>POST <code>/{channel-id}/folders</code></h3>
+<p><em>Socket.IO command id: <code>{channel-id}.folders.create</code></em>
+
+</p>
+<p>Creates a new folder at the root level or as a child folder to the specified folder.
+
+</p>
+<h4>Body parameters</h4>
+<p>The new folder's data: see <a href="#data-types-folder">activity folder</a>.
+
+</p>
+<h4>Successful response: <code>201 Created</code></h4>
+<ul>
+<li><code>id</code> (<a href="#data-types-identity">identity</a>): The created folder's id.</li>
+</ul>
+<h4>Specific errors</h4>
+<ul>
+<li><code>400 Bad Request</code>, id <code>ITEM_NAME_ALREADY_EXISTS</code>: A sibling folder already exists with the same name.</li>
+</ul>
+<h3>PUT <code>/{channel-id}/folders/{folder-id}</code></h3>
+<p><em>Socket.IO command id: <code>{channel-id}.folders.update</code></em>
+
+</p>
+<p>Modifies the activity folder's attributes.
+
+</p>
+<h4>Body parameters</h4>
+<p>New values for the folder's fields: see <a href="#data-types-folder">activity folder</a>. All fields are optional, and only modified values must be included.
+
+</p>
+<p>TODO: example
+
+</p>
+<h4>Successful response: <code>200 OK</code></h4>
+<h4>Specific errors</h4>
+<ul>
+<li><code>400 Bad Request</code>, id <code>UNKNOWN_FOLDER</code>: The specified parent folder's id is unknown.</li>
+<li><code>400 Bad Request</code>, id <code>ITEM_NAME_ALREADY_EXISTS</code>: A sibling folder already exists with the same name.</li>
+</ul>
+<h3>DELETE <code>/{channel-id}/folders/{folder-id}</code></h3>
+<p><em>Socket.IO command id: <code>{channel-id}.folders.delete</code></em>
+
+</p>
+<p>Trashes or deletes the specified folder, depending on its current state:
+
+</p>
+<ul>
+<li>If the folder is not already in the trash, it will be moved to the trash (i.e. flagged as <code>trashed</code>)</li>
+<li>If the folder is already in the trash, it will be irreversibly deleted with its possible descendants. If events exist that refer to the deleted item(s), you must indicate how to handle them with the parameter <code>mergeEventsWithParent</code>..</li>
+</ul>
+<h4>Query string parameters</h4>
+<ul>
+<li><code>mergeEventsWithParent</code> (<code>true</code> or <code>false</code>): Required if actually deleting the item and if it (or any of its descendants) has linked events, ignored otherwise. If <code>true</code>, the linked events will be assigned to the parent of the deleted item; if <code>false</code>, the linked events will be deleted.</li>
+</ul>
+<h4>Successful response: <code>200 OK</code></h4>
+<h4>Specific errors</h4>
+<ul>
+<li><code>400 Bad Request</code>, id <code>MISSING_PARAMETER</code>: There are events referring to the deleted items and the <code>mergeEventsWithParent</code> parameter is missing.</li>
+</ul>
+<h2>Events</h2>
+<p>Methods to retrieve and manipulate <a href="#data-types-event">events</a>.
+
+
+</p>
+<h3>GET <code>/{channel-id}/events</code></h3>
+<p><em>Socket.IO command id: <code>{channel-id}.events.get</code></em>
+
+</p>
+<p>Queries the list of events.
+
+</p>
+<h4>Query string parameters</h4>
+<ul>
+<li><code>onlyFolders</code> (array of <a href="#data-types-identity">identity</a>): Optional. If set, only events linked to those folders (including child folders) will be returned. By default, events linked to all accessible folders are returned.</li>
+<li><code>fromTime</code> (<a href="#data-types-timestamp">timestamp</a>): Optional. TODO. Default is 24 hours before <code>toTime</code>, if set.</li>
+<li><code>toTime</code> (<a href="#data-types-timestamp">timestamp</a>): Optional. TODO. Default is the current time.</li>
+<li><code>state</code> (<code>default</code>, <code>trashed</code> or <code>all</code>): Optional. Indicates what items to return depending on their state. By default, only items that are not in the trash are returned; <code>trashed</code> returns only items in the trash, while <code>all</code> return all items regardless of their state.</li>
+<li><code>sortAscending</code> (<code>true</code> or <code>false</code>): If <code>true</code>, events will be sorted from oldest to newest. Default: false (sort descending).</li>
+<li><code>skip</code> (number): Optional. The number of items to skip in the results.</li>
+<li><code>limit</code> (number): Optional. The number of items to return in the results. A default value of 20 items is used if no other range limiting parameter is specified (<code>fromTime</code>, <code>toTime</code>).</li>
+<li><code>modifiedSince</code> (<a href="#data-types-timestamp">timestamp</a>): Optional. If specified, only events modified since that time will be returned.</li>
+</ul>
+<h4>Successful response: <code>200 OK</code></h4>
+<p>An array of <a href="#data-types-event">activity events</a> containing the events ordered by time (see <code>sortAscending</code> below).
+
+</p>
+<h4>Specific errors</h4>
+<ul>
+<li><code>400 Bad Request</code>, id <code>UNKNOWN_FOLDER</code>: TODO may happen if one of the specified folders doesn't exist</li>
+</ul>
+<h3>POST <code>/{channel-id}/events</code></h3>
+<p><em>Socket.IO command id: <code>{channel-id}.events.create</code></em>
+
+</p>
+<p>Records a new event. Events recorded this way must be completed events, i.e. either period events with a known duration or mark events. To start a running period event, post a <code>events/start</code> request.
+
+</p>
+<p>In addition to the usual JSON, this request accepts standard multipart/form-data content to support the creation of event with attached files in a single request. When sending a multipart request, one content part must hold the JSON for the new event and all other content parts must be the attached files.
+
+</p>
+<p>TODO: example
+
+</p>
+<h4>Body parameters</h4>
+<p>The new event's data: see <a href="#data-types-event">activity event</a>.
+
+</p>
+<h4>Successful response: <code>201 Created</code></h4>
+<ul>
+<li><code>id</code> (<a href="#data-types-identity">identity</a>): The new event's id.</li>
+<li><code>stoppedId</code> (<a href="#data-types-identity">identity</a>): If set, indicates the id of the previously running period event that was stopped as a consequence of inserting the new event.</li>
+</ul>
+<h4>Specific errors</h4>
+<ul>
+<li><code>400 Bad Request</code>, id <code>UNKNOWN_FOLDER</code>: The specified folder cannot be found.</li>
+</ul>
+<h3>POST <code>/{channel-id}/events/start</code></h3>
+<p><em>Socket.IO command id: <code>{channel-id}.events.start</code></em>
+
+</p>
+<p>Starts a new period event, stopping the previously running period event if any. See POST <code>/{channel-id}/events</code> for details. TODO: detail
+
+</p>
+<h4>Successful response: <code>201 Created</code></h4>
+<h4>Specific errors</h4>
+<ul>
+<li><code>400 Bad Request</code>, id <code>MISSING_FOLDER</code>: The mandatory folder is missing.</li>
+<li><code>400 Bad Request</code>, id <code>INVALID_OPERATION</code>: A period event cannot start if another period event already exists at a later time.</li>
+<li><code>400 Bad request</code>, id <code>PERIODS_OVERLAP</code>: TODO (data: array of overlapped ids)</li>
+</ul>
+<h3>POST <code>/{channel-id}/events/stop</code></h3>
+<p><em>Socket.IO command id: <code>{channel-id}.events.stop</code></em>
+
+</p>
+<p>Stops the previously running period event. See POST <code>/{channel-id}/events</code> for details. TODO: detail
+
+</p>
+<h4>Successful response: <code>200 OK</code></h4>
+<ul>
+<li><code>stoppedId</code> (<a href="#data-types-identity">identity</a>): The id of the previously running period event that was stopped, or null if no running event was found.</li>
+</ul>
+<h3>TODO: GET <code>/{channel-id}/events/start</code> and <code>.../stop</code> and <code>.../record</code> alternatives to the above to allow simple calls via e.g. wget/curl</h3>
+<h3>GET <code>/{channel-id}/events/running</code></h3>
+<p><em>Socket.IO command id: <code>{channel-id}.events.getRunning</code></em>
+
+</p>
+<p>Gets the currently running period events.
+
+</p>
+<h4>Successful response: <code>200 OK</code></h4>
+<p>An array of <a href="#data-types-event">activity events</a> containing the running period events.
+
+
+</p>
+<h3>PUT <code>/{channel-id}/events/{event-id}</code></h3>
+<p><em>Socket.IO command id: <code>{channel-id}.events.update</code></em>
+
+</p>
+<p>Modifies the activity event's attributes.
+
+</p>
+<h4>Body parameters</h4>
+<p>New values for the event's fields: see <a href="#data-types-event">activity event</a>. All fields are optional, and only modified values must be included. TODO: example
+
+</p>
+<h4>Successful response: <code>200 OK</code></h4>
+<ul>
+<li><code>stoppedId</code> (<a href="#data-types-identity">identity</a>): If set, indicates the id of the previously running period event that was stopped as a consequence of modifying the event.</li>
+</ul>
+<h4>Specific errors</h4>
+<ul>
+<li><code>400 Bad Request</code>, id <code>INVALID_OPERATION</code>: Returned for period events, if attempting to set the event's duration to <code>undefined</code> (i.e. still running) while one or more other period events were recorded after it.</li>
+<li><code>400 Bad Request</code>, id <code>PERIODS_OVERLAP</code>: Returned for period events, if attempting to change the event's duration to a value that causes an overlap with one or more subsequent period event(s). TODO format (list of unspecified overlapped event ids, or "too many" if more than 10)</li>
+</ul>
+<h3>POST <code>/{channel-id}/events/{event-id}</code></h3>
+<p>Adds one or more file attachments to the event. This request expects standard multipart/form-data content, with all content parts being the attached files.
+
+</p>
+<p>TODO: example
+
+</p>
+<h4>Successful response: <code>200 OK</code></h4>
+<h3>DELETE <code>/{channel-id}/events/{event-id}</code></h3>
+<p><em>Socket.IO command id: <code>{channel-id}.events.delete</code></em>
+
+</p>
+<p>Trashes or deletes the specified event, depending on its current state:
+
+</p>
+<ul>
+<li>If the event is not already in the trash, it will be moved to the trash (i.e. flagged as <code>trashed</code>)</li>
+<li>If the event is already in the trash, it will be irreversibly deleted (including all its attached files, if any).</li>
+</ul>
+<h4>Successful response: <code>200 OK</code></h4>
+<h3>GET <code>/{channel-id}/events/{event-id}/{file-name}</code></h3>
+<p>Gets the attached file.
+
+</p>
+<h4>Successful response: <code>200 OK</code></h4>
+<h3>DELETE <code>/{channel-id}/events/{event-id}/{file-name}</code></h3>
+<p><em>Socket.IO command id: <code>{channel-id}.events.deleteAttachedFile</code></em>
+
+</p>
+<p>Irreversibly deletes the attached file.
+
+</p>
+<h4>Successful response: <code>200 OK</code></h4>
+<h3>POST <code>/{channel-id}/events/batch</code></h3>
+<p>TODO: this is currently unimplemented and may stay that way.
+Batch upload events that were recorded by the client while offline. If the client-recorded events overlap events on the server, the request will be rejected (see errors below); it is the client's responsibility to retrieve updated server data and adjust its own before uploading.
+
+</p>
+<h4>Body parameters</h4>
+<ul>
+<li><code>events</code> (array of <a href="#data-types-event">activity events</a>): The client-recorded events. The <code>clientId</code> must be set for each event. Each event's time must be set in server time.</li>
+</ul>
+<h4>Successful response: <code>200 OK</code></h4>
+<ul>
+<li><code>addedEvents</code> (array of <a href="#data-types-event">activity events</a>: The successfully added events, with their server-assigned ids and <code>clientId</code> for reference.</li>
+</ul>
+<h4>Specific errors</h4>
+<ul>
+<li><code>400 Bad Request</code>, id <code>INVALID_TIME</code>: TODO</li>
+<li><code>400 Bad Request</code>, id <code>UNKNOWN_FOLDER</code>: TODO</li>
+<li><code>400 Bad Request</code>, id <code>PERIODS_OVERLAP</code>: TODO (list of unspecified overlapped event ids)</li>
+</ul>
+</section><section id="admin"><h1>Administration methods</h1>
+<p>Administration methods allow to manage the user's <a href="#admin-user">account information</a>, <a href="#admin-channels">activity channels</a> and <a href="#admin-tokens">sharing</a> (via access tokens).
+
+
+</p>
+<h2>Authorization</h2>
+<p>Access to admin methods is managed by sessions. To create a session, you must successfully authenticate with a <code>/admin/login</code> request, which will return the session ID. Each request sent during the duration of the session must then contain the session ID in its <code>Authorization</code> header. The session is terminated when <code>/admin/logout</code> is called or when the session times out (TODO: indicate session timeout delay).
+
+</p>
+<p>Here's what an admin request (with a session open) looks like:
+</p>
+<pre class="highlighted"><code class="language-http"><span class="request">GET <span class="string">/admin/channels</span> HTTP/1.1</span>
+<span class="attribute">Host</span>: <span class="string">cassis.pryv.io</span>
+<span class="attribute">Authorization</span>: <span class="string">{session-id}</span></code></pre>
+<h2>Common HTTP headers</h2>
+<ul>
+<li><code>Server-Time</code>: The current server time as a <a href="#data-types-timestamp">timestamp</a>. Keeping reference of the server time is an absolute necessity to properly read and write event times.</li>
+</ul>
+<h2>Common error codes</h2>
+<p>TODO: review and complete
+
+</p>
+<ul>
+<li><code>400 Bad Request</code>, id <code>INVALID_PARAMETERS_FORMAT</code>: The request's parameters do not follow the expected format.</li>
+<li>401 (unauthorized), id <code>INVALID_CREDENTIALS</code>: User credentials are missing or invalid.</li>
+<li>404 (not found), possible cases:<ul>
+<li>Id <code>UNKNOWN_TOKEN</code>: The data access token can't be found.</li>
+<li>Id <code>UNKNOWN_CHANNEL</code>: The activity channel can't be found.</li>
+</ul>
+</li>
+</ul>
+<h2><a id="admin-session"></a>Session management</h2>
+<h3>POST <code>/admin/login</code></h3>
+<p>Opens a new admin session, authenticating with the provided credentials. TODO: possible support for OAuth/OpenID/BrowserID (for now, only local credentials are supported).
+
+</p>
+<h4>Body parameters</h4>
+<ul>
+<li><code>userName</code> (string)</li>
+<li><code>password</code> (string)</li>
+<li><code>appId</code> (string): A URL-friendly name uniquely identifying your app. The value you provide is in any case slugified before use (see <a href="https://github.com/dodo/node-slug/blob/master/src/slug.coffee">how</a>).</li>
+</ul>
+<h4>Successful response: <code>200 OK</code></h4>
+<ul>
+<li><code>sessionID</code> (string): The newly created session's ID, to include in each subsequent request's <code>Authorization</code> header.</li>
+</ul>
+<h3>POST <code>/admin/logout</code></h3>
+<p>Terminates the admin session.
+
+</p>
+<h4>Successful response: <code>200 OK</code></h4>
+<h2><a id="admin-user"></a>User information</h2>
+<h3>GET <code>/admin/user-info</code></h3>
+<p>TODO: get user informations
+Requires session token.
+
+</p>
+<h4>Successful response: <code>200 OK</code></h4>
+<p>TODO: email, display name, language, ...
+
+
+</p>
+<h3>PUT <code>/admin/user-info</code></h3>
+<p>TODO: change user information
+
+
+</p>
+<h3>POST <code>/admin/change-password</code></h3>
+<p>TODO: change user password
+Requires session token, old password, new password.
+
+</p>
+<h4>Specific errors</h4>
+<p>TODO: <code>WRONG_PASSWORD</code>, <code>INVALID_NEW_PASSWORD</code>
+
+
+</p>
+<h2><a id="admin-tokens"></a>Tokens</h2>
+<p>TODO: introductory text
+
+
+</p>
+<h3>POST <code>/admin/get-my-token</code></h3>
+<p>Gets the identifier of the personal token your app should use when accessing the user's data on her behalf. The token is created if it is the first time your app requests it.
+
+</p>
+<h4>Successful response: <code>200 OK</code></h4>
+<ul>
+<li><code>id</code> (<a href="#data-types-identity">identity</a>): Your app's dedicated personal <a href="#data-types-token">token</a> identifier.</li>
+</ul>
+<h3>GET <code>/admin/tokens</code></h3>
+<p>Gets all accessible access tokens, which are the shared tokens. (Your private app token identifier is retrieved with <code>POST /admin/get-my-token</code>.)
+
+</p>
+<h4>Successful response: <code>200 OK</code></h4>
+<p>An array of <a href="#data-types-token">access tokens</a> containing all accessible access tokens in the user's account, ordered by name.
+
+
+</p>
+<h3>POST <code>/admin/tokens</code></h3>
+<p>Creates a new shared access token.
+
+</p>
+<h4>Body parameters</h4>
+<p>The new token's data: see <a href="#data-types-token">access token</a>.
+
+</p>
+<h4>Successful response: <code>201 Created</code></h4>
+<ul>
+<li><code>id</code> (<a href="#data-types-identity">identity</a>): The created token's id.</li>
+</ul>
+<h3>PUT <code>/admin/tokens/{token-id}</code></h3>
+<p>Modifies the specified shared token.
+
+</p>
+<h4>Body parameters</h4>
+<p>New values for the token's fields: see <a href="#data-types-token">access token</a>. All fields are optional, and only modified values must be included. TODO: example
+
+</p>
+<h4>Successful response: <code>200 OK</code></h4>
+<h3>DELETE <code>/admin/tokens/{token-id}</code></h3>
+<p>Deletes the specified shared token.
+
+</p>
+<h4>Successful response: <code>200 OK</code></h4>
+<h2><a id="admin-bookmarks"></a>Bookmarks</h2>
+<p>TODO: introductory text
+
+
+</p>
+<h3>GET <code>/admin/bookmarks</code></h3>
+<p>Gets all of the user's sharing bookmarks.
+
+</p>
+<h4>Successful response: <code>200 OK</code></h4>
+<p>An array of <a href="#data-types-bookmark">bookmarks</a> containing all sharing bookmarks in the user's account, ordered by name.
+
+
+</p>
+<h3>POST <code>/admin/bookmarks</code></h3>
+<p>Creates a new sharing bookmark.
+
+</p>
+<h4>Body parameters</h4>
+<p>The new bookmark's data: see <a href="#data-types-bookmark">bookmark</a>.
+
+</p>
+<h4>Successful response: <code>201 Created</code></h4>
+<ul>
+<li><code>id</code> (<a href="#data-types-identity">identity</a>): The created bookmark's id.</li>
+</ul>
+<h3>PUT <code>/admin/bookmarks/{bookmark-id}</code></h3>
+<p>Modifies the specified sharing bookmark.
+
+</p>
+<h4>Body parameters</h4>
+<p>New values for the bookmark's fields: see <a href="#data-types-bookmark">bookmark</a>. All fields are optional, and only modified values must be included. TODO: example
+
+</p>
+<h4>Successful response: <code>200 OK</code></h4>
+<h3>DELETE <code>/admin/bookmarks/{bookmark-id}</code></h3>
+<p>Deletes the specified sharing bookmark.
+
+</p>
+<h4>Successful response: <code>200 OK</code></h4>
+<h2><a id="admin-channels"></a>Channels</h2>
+<p>TODO: introductory text.
+
+
+</p>
+<h3>GET <code>/admin/channels</code></h3>
+<p>Gets activity channels.
+
+</p>
+<h4>Query string parameters</h4>
+<ul>
+<li><code>state</code> (<code>default</code>, <code>trashed</code> or <code>all</code>): Optional. Indicates what items to return depending on their state. By default, only items that are not in the trash are returned; <code>trashed</code> returns only items in the trash, while <code>all</code> return all items regardless of their state.</li>
+</ul>
+<h4>Successful response: <code>200 OK</code></h4>
+<p>An array of <a href="#data-types-channel">activity channels</a>) containing all channels in the user's account matching the specified state, ordered by name.
+
+
+</p>
+<h3>POST <code>/admin/channels</code></h3>
+<p>Creates a new activity channel.
+
+</p>
+<h4>Body parameters</h4>
+<p>The new channel's data: see <a href="#data-types-channel">activity channel</a>.
+
+</p>
+<h4>Successful response: <code>201 Created</code></h4>
+<ul>
+<li><code>id</code> (<a href="#data-types-identity">identity</a>): The created channel's id.</li>
+</ul>
+<h3>PUT <code>/admin/channels/{channel-id}</code></h3>
+<p>Modifies the activity channel's attributes.
+
+</p>
+<h4>Body parameters</h4>
+<p>New values for the channel's fields: see <a href="#data-types-channel">activity channel</a>. All fields are optional, and only modified values must be included. TODO: example
+
+</p>
+<h4>Successful response: <code>200 OK</code></h4>
+<h3>DELETE <code>/admin/channels/{channel-id}</code></h3>
+<p>Trashes or deletes the given channel, depending on its current state:
+
+</p>
+<ul>
+<li>If the channel is not already in the trash, it will be moved to the trash (i.e. flagged as <code>trashed</code>)</li>
+<li>If the channel is already in the trash, it will be irreversibly deleted with all the folders and events it contains.</li>
+</ul>
+<h4>Successful response: <code>200 OK</code></h4>
+</section><section id="socketio"><h1>Socket.IO support</h1>
+<p>The activity service supports real-time interaction with <a href="http://socket.io">Socket.IO</a>, both by accepting equivalent messages for most API methods and by emitting data change notification messages. (Code examples below are in Javascript.)
+
+
+</p>
+<h3>Calling API methods</h3>
+<p>Every method in the activity service can be called by sending a corresponding Socket.IO <code>command</code> message, providing a data object specifying the command (or method) and possible parameters, and a callback function for the response:
+</p>
+<pre class="highlighted"><code class="language-javascript">socket.emit(<span class="string">'command'</span>, {id: <span class="string">'{id}'</span>, params: {<span class="comment">/*parameters*/</span>}}, <span class="function"><span class="keyword">function</span> <span class="params">(error, data)</span> {</span>
+  <span class="comment">// handle response here</span>
+});</code></pre>
+<p>Command ids are indicated for each API method below and are modeled after the equivalent URL path. For example, here's how you could call <code>GET /{channel-id}/events</code>:
+</p>
+<pre class="highlighted"><code class="language-javascript"><span class="keyword">var</span> cmdData = {
+  id: <span class="string">'{channel-id}.events.get'</span>,
+  params: {
+    sortAscending: <span class="literal">true</span>
+  }
+};
+socket.emit(<span class="string">'command'</span>, cmdData, <span class="function"><span class="keyword">function</span> <span class="params">(error, data)</span> {</span>
+  <span class="comment">// handle response</span>
+});</code></pre>
+<h3>Receiving data change notifications</h3>
+<p>You can be notified of changes to channels, folders and events by subscribing to the corresponding messages <code>channelsChanged</code>, <code>foldersChanged</code> and <code>eventsChanged</code>. For example:
+</p>
+<pre class="highlighted"><code class="language-javascript">socket.on(<span class="string">'eventsChanged'</span>, <span class="keyword">function</span>() {
+  <span class="comment">// retrieve latest changes and update views</span>
+});</code></pre>
+</section><section id="data-types"><h1>Data types</h1>
+<p>TODO: introductory text.
+
+
+</p>
+<h2><a id="data-types-token"></a>Token</h2>
+<p>A data access token defines how a user's activity data (channels, folders and events) is accessed. Personal access tokens are transparently generated (provided the user's credentials) in the <a href="#admin">administration</a> when requested by client applications, but users can define additional tokens for letting other users view and possibly contribute to their activity data.
+
+</p>
+<p>Fields:
+
+</p>
+<ul>
+<li><code>id</code> (string): Unique, read-only. The server-assigned identifier for the token. This is used to specify the token in requests with token authorization.</li>
+<li><code>name</code> (string): Unique. The name identifying the token for the user. It can be the client application's name for automatically generated personal tokens, or any user-defined value for manually created tokens.</li>
+<li><code>type</code> (<code>"personal"</code> or <code>"shared"</code>): Optional. Personal tokens have full access to data, while shared tokens are only granted access to data defined in field <code>permissions</code>. Default: <code>"shared"</code>. Note that personal tokens are not open for viewing and management by third party apps by default - if you need to manage personal tokens, please get in touch with us (TODO: link).</li>
+<li><code>permissions</code>: an array of channel permission objects as described below. Ignored for personal tokens. Shared tokens are only granted access to activity data objects listed in here.<ul>
+<li><code>channelId</code> (<a href="#data-types-identity">identity</a>): The accessible channel's id.</li>
+<li><code>folderPermissions</code>: an array of folder permission objects:<ul>
+<li><code>folderId</code> (<a href="#data-types-identity">identity</a>): The accessible folder's id. A  value of <code>null</code> can be used to set permissions for the root of the folders structure. If the folder has child folders, they will be accessible too.</li>
+<li><code>type</code> (<code>"read"</code>, <code>"contribute"</code> or <code>"manage"</code>): The type of access to the folder's data. With <code>"contribute"</code>, the token's holder can see and record events for the folder (and its child folders, if any); with <code>"manage"</code>, the token's holder can in addition create, modify and delete child folders.</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>TODO: example
+
+
+</p>
+<h2><a id="data-types-bookmark"></a>Bookmark</h2>
+<p>Sharing bookmarks allow the user to store tokens shared with her by other users.
+
+</p>
+<p>Fields:
+
+</p>
+<ul>
+<li><code>id</code> (<a href="#data-types-identity">identity</a>): Unique, read-only. The server-assigned identifier for the bookmark.</li>
+<li><code>name</code> (string): Unique. A name identifying the bookmark for the user.</li>
+<li><code>userName</code> (string): The name of the shared token's owner user. Not modifiable after creation.</li>
+<li><code>tokenId</code> <a href="#data-types-identity">identity</a>: The identifier of the shared token itself. Not modifiable after creation.</li>
+</ul>
+<p>TODO: example
+
+
+</p>
+<h2><a id="data-types-channel"></a>Channel</h2>
+<p>Each activity channel represents a "stream" or "type" of activity to track, acting as a storage bucket for related events.
+Fields:
+
+</p>
+<ul>
+<li><code>id</code> (<a href="#data-types-identity">identity</a>): Unique, read-only. The server-assigned identifier for the channel.</li>
+<li><code>name</code> (string): Unique. The name identifying the channel for users.</li>
+<li><code>strictMode</code> (boolean): Optional. If <code>true</code>, the system will ensure that timed events in this channel never overlap; if <code>false</code>, overlapping will be allowed. <strong>This will be implemented later: currently all channels are considered "strict".</strong></li>
+<li><code>clientData</code> (<a href="#data-types-additional-data">item additional data</a>): Optional. Additional client data for the channel.</li>
+<li><code>timeCount</code> (<a href="#data-types-timestamp">timestamp</a>): Read-only. Only optionally returned when querying channels, indicating the total time tracked in that channel since a given reference date and time. <strong>This will be implemented later.</strong></li>
+<li><code>trashed</code> (boolean): Optional. <code>true</code> if the channel is in the trash.</li>
+</ul>
+<p>TODO: example
+
+
+</p>
+<h2><a id="data-types-folder"></a>Folder</h2>
+<p>Activity folders are the possible states or categories you track the channel's activity events into (folders are always specific to an activity channel). Every period event belongs to one folder, while mark events can be recorded "off-folder" as well. Activity folders follow a hierarchical tree structure: every folder can contain "child" folders (sub-folders).
+
+</p>
+<p>Fields:
+
+</p>
+<ul>
+<li><code>id</code> (<a href="#data-types-identity">identity</a>): Unique, read-only. The server-assigned identifier for the folder.</li>
+<li><code>name</code> (string): A name identifying the folder for users. The name must be unique among the folder's siblings in the folders tree structure.</li>
+<li><code>parentId</code> (<a href="#data-types-identity">identity</a>): Optional. The identifier of the folder's parent, if any. A value of <code>null</code> indicates that the folder has no parent (i.e. root folder).</li>
+<li><code>hidden</code> (<code>true</code> or <code>false</code>): Optional. Whether the folder is currently in use or visible. Default: <code>true</code>.</li>
+<li><code>clientData</code> (<a href="#data-types-additional-data">item additional data</a>):  Optional. Additional client data for the folder.</li>
+<li><code>timeCount</code> (<a href="#data-types-timestamp">timestamp</a>): Read-only. Only optionally returned when querying folders, indicating the total time spent in that folder, including sub-folders, since a given reference date and time. <strong>This will be implemented later.</strong></li>
+<li><code>children</code> (array of folders): Read-only. The folder's sub-folders, if any. This field cannot be set in requests creating a new folders: folders are created individually by design.</li>
+<li><code>trashed</code> (boolean): Optional. <code>true</code> if the folder is in the trash.</li>
+</ul>
+<h3>Example</h3>
+<p>A folder structure for activities:
+
+</p>
+<pre class="highlighted"><code class="language-javascript">[
+  { <span class="string">"name"</span>: <span class="string">"Sport"</span>, <span class="string">"id"</span>: <span class="string">"sport"</span>, <span class="string">"parentId"</span>: <span class="literal">null</span>,
+    <span class="string">"children"</span>: [
+      { <span class="string">"name"</span>: <span class="string">"Jogging"</span>, <span class="string">"id"</span>: <span class="string">"jogging"</span>, <span class="string">"parentId"</span>: <span class="string">"sport"</span>, <span class="string">"children"</span>: [] },
+      { <span class="string">"name"</span>: <span class="string">"Bicycling"</span>, <span class="string">"id"</span>: <span class="string">"bicycling"</span>, <span class="string">"parentId"</span>: <span class="string">"sport"</span>, <span class="string">"children"</span>: [] }
+  ]},
+  { <span class="string">"name"</span>: <span class="string">"Work"</span>, <span class="string">"id"</span>: <span class="string">"work"</span>, <span class="string">"parentId"</span>: <span class="literal">null</span>,
+    <span class="string">"children"</span>: [
+      { <span class="string">"name"</span>: <span class="string">"Noble Works Co."</span>, <span class="string">"id"</span>: <span class="string">"noble-works"</span>,<span class="string">"parentId"</span>: <span class="string">"work"</span>, <span class="string">"children"</span>: [
+          { <span class="string">"name"</span>: <span class="string">"Last Be First"</span>, <span class="string">"id"</span>: <span class="string">"last-be-first"</span>,<span class="string">"parentId"</span>: <span class="string">"noble-works"</span>, <span class="string">"children"</span>: [] },
+          { <span class="string">"name"</span>: <span class="string">"Big Tree"</span>, <span class="string">"id"</span>: <span class="string">"big-tree"</span>,<span class="string">"parentId"</span>: <span class="string">"noble-works"</span>, <span class="string">"children"</span>: [] },
+          { <span class="string">"name"</span>: <span class="string">"Inner Light"</span>, <span class="string">"id"</span>: <span class="string">"inner-light"</span>,<span class="string">"parentId"</span>: <span class="string">"noble-works"</span>, <span class="string">"children"</span>: [] }
+      ]},
+      { <span class="string">"name"</span>: <span class="string">"Freelancing"</span>, <span class="string">"id"</span>: <span class="string">"freelancing"</span>,<span class="string">"parentId"</span>: <span class="string">"work"</span>, <span class="string">"children"</span>: [
+          { <span class="string">"name"</span>: <span class="string">"Funky Veggies"</span>, <span class="string">"id"</span>: <span class="string">"funky-veggies"</span>,<span class="string">"parentId"</span>: <span class="string">"freelancing"</span>, <span class="string">"children"</span>: [] },
+          { <span class="string">"name"</span>: <span class="string">"Jojo Lapin &amp; sons"</span>, <span class="string">"id"</span>: <span class="string">"jojo-lapin"</span>,<span class="string">"parentId"</span>: <span class="string">"freelancing"</span>, <span class="string">"children"</span>: [] }
+      ]}
+    ]
+  }
+];</code></pre>
+<h2><a id="data-types-event"></a>Event</h2>
+<p>Activity events can be period events, which are associated with a period of time, or mark events, which are just associated with a single point in time:
+
+</p>
+<ul>
+<li>Period events are used to track everything with a duration, like time spent drafting a project proposal, meeting with the customer or staying at a particular location.</li>
+<li>Mark events are used to track everything else, like a note, a log message, a GPS location, a temperature measurement, or a stock market asset value.</li>
+</ul>
+<p>Differentiating them is simple: period events carry a duration, while mark events do not. Like folders, events always belong to an activity channel.
+
+</p>
+<p>Fields:
+
+</p>
+<ul>
+<li><code>id</code> (<a href="#data-types-identity">identity</a>): Unique, read-only. The server-assigned identifier for the event.</li>
+<li><code>time</code> (<a href="#data-types-timestamp">timestamp</a>): The event's time. For period events, this is the time the event started.</li>
+<li><code>clientId</code> (string): A client-assigned identifier for the event when created offline, for temporary reference. Only used in batch event creation requests. [TODO: currently not implemented; linked to batch creation request.]</li>
+<li><code>folderId</code>(<a href="#data-types-identity">identity</a>): Optional. Indicates the particular folder the event is associated with, if any.</li>
+<li><code>duration</code> (<a href="#data-types-timestamp">timestamp</a> difference): Optional. If present, indicates that the event is a period event. Running period events have a duration set to <code>null</code>. (We use a dedicated field for duration - instead of using the <code>value</code> field - as we need specific processing of event durations, intervals and overlapping.)</li>
+<li><code>value</code> (object): Optional. The value associated with the event, if any. This may be a mathematical value (e.g. mass, money, length, position, etc.), or a link to a page, a picture or an attached file. To facilitate interoperability, event values are expected to have the following structure:<ul>
+<li><code>type</code> (TODO: value type): The value's type in the form <code>{type}:{unit}</code>, for example <code>mass:kg</code>. [TODO: link to the value types directory when ready.]</li>
+<li><code>value</code> (boolean, number, string or <code>null</code>): The actual value in the specified type.</li>
+</ul>
+</li>
+<li><code>comment</code> (string): Optional. User comment or note for the event.</li>
+<li><code>attachments</code>: Optional and read-only. An object describing the files attached to the event. Each of its properties corresponds to one file and has the following structure:<ul>
+<li><code>fileName</code> (string): The file's name. The attached file's URL is obtained by appending this file name to the event's resource URL.</li>
+<li><code>type</code> (string): The MIME type of the file.</li>
+<li><code>size</code> (number): The size of the file, in bytes.</li>
+</ul>
+</li>
+<li><code>clientData</code> (<a href="#data-types-additional-data">additional item data</a>):  Optional. Additional client data for the event.</li>
+<li><code>trashed</code> (boolean): Optional. <code>true</code> if the event is in the trash.</li>
+<li><code>modified</code> (<a href="#data-types-timestamp">timestamp</a>): Read-only. The time the event was last modified.</li>
+</ul>
+<h3>Example</h3>
+<p>TODO: review after tags are implemented.
+
+</p>
+<pre class="highlighted"><code class="language-javascript">[
+  { <span class="string">"time"</span> : <span class="number">1350365877.359</span>, <span class="string">"comment"</span> : <span class="string">"Some pics"</span>, <span class="string">"id"</span> : <span class="string">"event_0"</span>, <span class="string">"folderId"</span> : <span class="literal">null</span>,
+    <span class="string">"attachments"</span> : {
+      <span class="string">"Gina"</span> : { <span class="string">"fileName"</span> : <span class="string">"gina.jpeg"</span>, <span class="string">"type"</span> : <span class="string">"image/jpeg"</span>, <span class="string">"size"</span> : <span class="number">1236701</span> },
+      <span class="string">"Enzo"</span> : { <span class="string">"fileName"</span> : <span class="string">"enzo.jpeg"</span>, <span class="string">"type"</span> : <span class="string">"image/jpeg"</span>, <span class="string">"size"</span> : <span class="number">1127465</span> }},
+      <span class="string">"modified"</span> : <span class="number">1350463077.359</span> },
+  { <span class="string">"time"</span> : <span class="number">1350369477.359</span>, <span class="string">"duration"</span> : <span class="number">7140</span>, <span class="string">"comment"</span>: <span class="string">"A period of work"</span>,
+    <span class="string">"id"</span> : <span class="string">"event_1"</span>, <span class="string">"folderId"</span> : <span class="string">"free-veggies"</span>, <span class="string">"modified"</span> : <span class="number">1350369477.359</span> },
+  { <span class="string">"time"</span> : <span class="number">1350373077.359</span>, <span class="string">"comment"</span> : <span class="string">"A position"</span>, <span class="string">"id"</span> : <span class="string">"event_2"</span>, <span class="string">"folderId"</span> : <span class="literal">null</span>,
+    <span class="string">"value"</span>: { <span class="string">"type"</span>: <span class="string">"position:WGS84"</span>, <span class="string">"value"</span>: <span class="string">"40.714728, -73.998672, 12"</span> },
+    <span class="string">"modified"</span> : <span class="number">1350373077.359</span> }
+]</code></pre>
+<h2><a id="data-types-additional-data"></a>Item additional data</h2>
+<p>A JSON object offering free storage for clients to support extra functionality. TODO: details (no media files, limited size...) and example
+
+</p>
+<p>TODO: "commonly used data directory" to help data reuse:
+
+</p>
+<ul>
+<li><code>color</code></li>
+<li><code>url</code></li>
+<li><code>imageIcon</code> (! file size)</li>
+<li>...</li>
+</ul>
+<h2><a id="data-types-error"></a>Error</h2>
+<p>Fields:
+
+</p>
+<ul>
+<li><code>id</code> (string): Identifier for the error; complements the response's HTTP error code.</li>
+<li><code>message</code> (string): A human-readable description of the error.</li>
+<li><code>subErrors</code> (array of errors): Optional. Lists the detailed causes of the main error, if any.</li>
+</ul>
+<h2>Simple types</h2>
+<h3><a id="data-types-identity"></a>Item identity</h3>
+<p>TODO: decide depending on the choosen database. The best would be to keep human readable identifier (see slugify). Validation rule in that case: <code>/^[a-zA-Z0-9._-]{1,100}$/</code> (alphanum between 3 and 100 chars).
+
+</p>
+<ul>
+<li>The identity of every activity channel must be unique within its owning user's data</li>
+<li>The identity of every activity folder or event must be unique within its containing channel</li>
+</ul>
+<h3><a id="data-types-timestamp"></a>Timestamp</h3>
+<p>A positive floating-point number representing a number of seconds since any reference date and time, <strong>independently from the time zone</strong>. Because date and time synchronization between server time and client time is done by the client simply comparing the current server timestamp with its own, the reference date and time does not matter.
+
+</p>
+<p>Here are some examples of getting a valid timestamp in various environments:
+
+</p>
+<ul>
+<li>JavaScript: <code>Date.now() / 1000</code></li>
+<li>PHP (5+): <code>microtime(true)</code></li>
+<li>TODO: more examples</li>
+</ul>
+<h3><a id="data-types-language-code"></a>Two-letter ISO language code</h3>
+<p>A two-letter string specifying a language following the ISO 639-1 standard (see <a href="http://en.wikipedia.org/wiki/ISO_639-1">the related Wikipedia definition</a>).
+</p>
+</section></div></div><div id="toc"></div><script>jQuery(document).ready(function($) {
+  $('#toc').toc({
+    'selectors': 'h1,h2',
+    'container': '#sections',
+    'smoothScrolling': false,
+    'prefix': 'toc',
+    'onHighlight': function(el) {},
+    'highlightOnScroll': true,
+    'highlightOffset': 100,
+    'anchorName': function(i, heading, prefix) {
+      return prefix+i;
+    },
+    'headerText': function(i, heading, $heading) {
+      return $heading.text();
+    }
+  });
+});</script></body></html>
