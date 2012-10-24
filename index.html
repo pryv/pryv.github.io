@@ -109,7 +109,7 @@ See the standard channels, folders and tags (TODO: link) we encourage you to use
 
 </p>
 <h2>Authorization</h2>
-<p>All requests for retrieving and manipulating activity data must carry a valid <a href="#data-types-access">access token</a> in the HTTP <code>Authorization</code> header. (You get the token itself either by retrieving it in the <a href="#admin-accesses">administration</a> or from sharing.)
+<p>All requests for retrieving and manipulating activity data must carry a valid <a href="#data-types-access">access token</a> in the HTTP <code>Authorization</code> header or, alternatively, in a query string's <code>auth</code> parameter.  (You get the token itself either by retrieving it in the <a href="#admin-accesses">administration</a> or from sharing.)
 
 </p>
 <p>Here's what a proper request looks like:
@@ -117,6 +117,10 @@ See the standard channels, folders and tags (TODO: link) we encourage you to use
 <pre class="highlighted"><code class="language-http"><span class="request">GET <span class="string">/{channel-id}/events</span> HTTP/1.1</span>
 <span class="attribute">Host</span>: <span class="string">yacinthe.pryv.io</span>
 <span class="attribute">Authorization</span>: <span class="string">{access-token}</span></code></pre>
+<p>Or, alternatively, passing the access token in the query string:
+</p>
+<pre class="highlighted"><code class="language-http"><span class="request">GET <span class="string">/{channel-id}/events?auth={access-token}</span> HTTP/1.1</span>
+<span class="attribute">Host</span>: <span class="string">yacinthe.pryv.io</span></code></pre>
 <h2>Common HTTP headers</h2>
 <p>Some headers are included in every response to authorized requests:
 
