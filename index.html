@@ -93,6 +93,14 @@ See the standard channels, folders and tags (TODO: link) we encourage you to use
     "<span class="attribute">value</span>" : <span class="value"><span class="string">"40.714728, -73.998672, 12"</span>
   </span>}
 </span>}</code></pre>
+<h2>Common HTTP headers</h2>
+<p>The following headers are included in every response:
+
+</p>
+<ul>
+<li><code>API-Version</code>: The version of the API in the form <code>{major}.{minor}.{revision}</code>.</li>
+<li><code>Server-Time</code>: The current server time as a <a href="#data-types-timestamp">timestamp</a>. Keeping reference of the server time is an absolute necessity to properly read and write event times.</li>
+</ul>
 <h2>Errors</h2>
 <p>When an error occurs, the API returns a 4xx or 5xx status code, with the response body usually containing an <a href="#data-types-error">error</a> object detailing the cause.
 
@@ -121,13 +129,6 @@ See the standard channels, folders and tags (TODO: link) we encourage you to use
 </p>
 <pre class="highlighted"><code class="language-http"><span class="request">GET <span class="string">/{channel-id}/events?auth={access-token}</span> HTTP/1.1</span>
 <span class="attribute">Host</span>: <span class="string">yacinthe.pryv.io</span></code></pre>
-<h2>Common HTTP headers</h2>
-<p>Some headers are included in every response to authorized requests:
-
-</p>
-<ul>
-<li><code>Server-Time</code>: The current server time as a <a href="#data-types-timestamp">timestamp</a>. Keeping reference of the server time is an absolute necessity to properly read and write event times.</li>
-</ul>
 <h2>Common errors</h2>
 <p>Here are errors commonly returned for requests:
 
@@ -429,10 +430,6 @@ Batch upload events that were recorded by the client while offline. If the clien
 <pre class="highlighted"><code class="language-http"><span class="request">GET <span class="string">/admin/channels</span> HTTP/1.1</span>
 <span class="attribute">Host</span>: <span class="string">cassis.pryv.io</span>
 <span class="attribute">Authorization</span>: <span class="string">{session-id}</span></code></pre>
-<h2>Common HTTP headers</h2>
-<ul>
-<li><code>Server-Time</code>: The current server time as a <a href="#data-types-timestamp">timestamp</a>. Keeping reference of the server time is an absolute necessity to properly read and write event times.</li>
-</ul>
 <h2>Common errors</h2>
 <p>TODO: review and complete
 
