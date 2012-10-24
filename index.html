@@ -8,8 +8,8 @@
 
 </p>
 <ul>
-<li>Most apps will want to interact with <a href="#activity">Pryv activity data</a>. Recording and managing of activity data (events and their organization into folders and tags) is protected by <a href="#data-types-token">data access tokens</a> to allow easy <a href="#overview-sharing">sharing</a>.</li>
-<li>Some apps may need to access <a href="#admin">user account administration</a>, which includes the management of data sharing (via data access tokens) and activity channels (in addition to the user account itself). Administration is protected by personal authentication and expiring sessions.</li>
+<li>Most apps will want to interact with <a href="#activity">Pryv activity data</a>. Recording and managing of activity data (events and their organization into folders and tags) is protected by <a href="#data-types-access">accesses</a> to allow easy <a href="#overview-sharing">sharing</a>.</li>
+<li>Some apps may need to access <a href="#admin">user account administration</a>, which includes the management of data sharing (via accesses) and activity channels (in addition to the user account itself). Administration is protected by personal authentication and expiring sessions.</li>
 </ul>
 <p>[TODO: add simple schema here]
 
@@ -34,27 +34,27 @@ See the standard channels, folders and tags (TODO: link) we encourage you to use
 <p>[TODO: schema?]
 
 </p>
-<p>Apps access a user's activity data by presenting the API with a <strong>data access token</strong> (or just "token" here). A token can be <em>personal</em> or <em>shared</em>. A personal token is assigned to an app (provided the user's credentials) and used by that app to access the user's data on her behalf (i.e. with full permissions). But end-users don't have to know about personal tokens; end-users care about sharing, which is managed via shared tokens.
+<p>Apps access a user's activity data by presenting the API with an <strong>access token</strong>, that identifies a specific <strong>access</strong> to the data. An access can be <em>personal</em> or <em>shared</em>. A personal access is assigned to an app (provided the user's credentials) and its token is used by that app to access the user's data on her behalf (i.e. with full permissions). Personal accesses aren't shared, however; sharing is managed via shared accesses.
 
 </p>
-<p>A <strong>shared token</strong> grants permissions to a specified set of the user's data: channel(s), and within those channels, folder(s), tag(s) and/or a limited time frame can be defined to filter events. Tokens allow sharing in a variety of ways, such as:
+<p>A <strong>shared access</strong> grants permissions to a specified set of the user's data: channel(s), and within those channels, folder(s), tag(s) and/or a limited time frame can be defined to filter events. Accesses allow sharing in a variety of ways, such as:
 
 </p>
 <ul>
-<li>in-app: the user chooses to share some events with another Pryv user, which is notified and can select to view (and possibly contribute to) the shared data or integrate it with her own (add it to her sharing bookmarks).</li>
-<li>URL copy-paste: the user choose to share data with another person (possibly not a Pryv user), and copies the full URL containing the token into an e-mail or chat message. The other person can open the URL and access the web app to view (and possibly contribute to) the shared data.</li>
+<li>in-app: the user chooses to share some events with another Pryv user, which is notified and can select to view (and possibly contribute to) the shared data and/or integrate it with her own (add it to her sharing bookmarks).</li>
+<li>URL copy-paste: the user choose to share data with another person (possibly not a Pryv user), and copies the full URL containing the access token into an e-mail or chat message. The other person can open the URL and access the web app to view (and possibly contribute to) the shared data.</li>
 </ul>
-<p>Users can store tokens shared by other users by adding them to their <strong>sharing bookmarks</strong>.
+<p>Users can store access tokens shared by other users by adding them to their <strong>sharing bookmarks</strong>.
 
 </p>
-<p>For the present time, tokens are not personal. They act exactly like digital keys: if you have the token and the name of the user it belongs to, you can access the data it exposes.
+<p>For the present time, accesses are not personal. Access tokens act exactly like digital keys: if you have the token and the name of the user with the access it identifies, you can access the data.
 
 </p>
 <p>For more details see:
 
 </p>
 <ul>
-<li>Tokens <a href="#admin-tokens">management</a> and <a href="#data-types-token">data structure</a></li>
+<li>Accesses <a href="#admin-accesses">management</a> and <a href="#data-types-access">data structure</a></li>
 <li>Bookmarks <a href="#admin-bookmarks">management</a> and <a href="#data-types-bookmark">data structure</a></li>
 </ul>
 <h2>What's the URL?</h2>
@@ -76,8 +76,8 @@ See the standard channels, folders and tags (TODO: link) we encourage you to use
 </p>
 <pre class="highlighted"><code class="language-http"><span class="request">GET <span class="string">/{channel-id}/events</span> HTTP/1.1</span>
 <span class="attribute">Host</span>: <span class="string">{user-name}.pryv.io</span>
-<span class="attribute">Authorization</span>: <span class="string">{token}</span></code></pre>
-<p>Note that the API also supports Socket.IO, for both calling API methods and receiving live notifications of changes to activity data. See <a href="#socketio">our dedicated section</a>.
+<span class="attribute">Authorization</span>: <span class="string">{access-token}</span></code></pre>
+<p>Note that the API also supports Socket.IO, for both calling API methods and receiving live notifications of changes to activity data. See <a href="#socketio">the dedicated section</a>.
 
 
 </p>
@@ -100,8 +100,8 @@ See the standard channels, folders and tags (TODO: link) we encourage you to use
 <p>Here's an example "401 Unauthorized" error response:
 </p>
 <pre class="highlighted"><code class="language-json">{
-  "<span class="attribute">id</span>": <span class="value"><span class="string">"INVALID_TOKEN"</span></span>,
-  "<span class="attribute">message</span>": <span class="value"><span class="string">"Cannot find token 'bad-token'."</span>
+  "<span class="attribute">id</span>": <span class="value"><span class="string">"INVALID_ACCESS_TOKEN"</span></span>,
+  "<span class="attribute">message</span>": <span class="value"><span class="string">"Cannot find access with token 'bad-token'."</span>
 </span>}</code></pre>
 </section><section id="activity"><h1>Activity methods</h1>
 <p>TODO: introductory text
@@ -109,14 +109,14 @@ See the standard channels, folders and tags (TODO: link) we encourage you to use
 
 </p>
 <h2>Authorization</h2>
-<p>All requests for retrieving and manipulating activity data must carry a valid <a href="#data-types-token">data access token</a> in the HTTP <code>Authorization</code> header. (You get the token itself either by retrieving it in the <a href="#admin-tokens">administration</a> or from sharing.)
+<p>All requests for retrieving and manipulating activity data must carry a valid <a href="#data-types-access">access token</a> in the HTTP <code>Authorization</code> header. (You get the token itself either by retrieving it in the <a href="#admin-accesses">administration</a> or from sharing.)
 
 </p>
 <p>Here's what a proper request looks like:
 </p>
 <pre class="highlighted"><code class="language-http"><span class="request">GET <span class="string">/{channel-id}/events</span> HTTP/1.1</span>
 <span class="attribute">Host</span>: <span class="string">yacinthe.pryv.io</span>
-<span class="attribute">Authorization</span>: <span class="string">{valid-token}</span></code></pre>
+<span class="attribute">Authorization</span>: <span class="string">{access-token}</span></code></pre>
 <h2>Common HTTP headers</h2>
 <p>Some headers are included in every response to authorized requests:
 
@@ -131,8 +131,8 @@ See the standard channels, folders and tags (TODO: link) we encourage you to use
 <ul>
 <li><code>400 Bad Request</code>, id <code>INVALID_REQUEST_STRUCTURE</code>: The request's structure is not that expected. This can happen e.g. with invalid JSON syntax, or when using an unexpected multipart structure for uploading file attachments.</li>
 <li><code>400 Bad Request</code>, id <code>INVALID_PARAMETERS_FORMAT</code>: The request's parameters do not follow the expected format.</li>
-<li><code>401 Unauthorized</code>, id <code>INVALID_TOKEN</code>: The data access token is missing or invalid.</li>
-<li><code>403 Forbidden</code>: The given data access token does not grant permission for this operation. See <a href="#data-types-token">data access tokens</a> for more details about tokens and permissions.</li>
+<li><code>401 Unauthorized</code>, id <code>INVALID_ACCESS_TOKEN</code>: The data access token is missing or invalid.</li>
+<li><code>403 Forbidden</code>: The given access token does not grant permission for this operation. See <a href="#data-types-access">accesses</a> for more details about accesses and permissions.</li>
 <li><code>404 Not Found</code>, possible cases:<ul>
 <li>Id <code>UNKNOWN_CHANNEL</code>: The activity channel can't be found.</li>
 <li>Id <code>UNKNOWN_FOLDER</code>: The activity folder can't be found in the specified channel.</li>
@@ -150,11 +150,11 @@ See the standard channels, folders and tags (TODO: link) we encourage you to use
 <p><em>Socket.IO command id: <code>channels.get</code></em>
 
 </p>
-<p>Gets the activity channels accessible with the given token (and that are not in the trash).
+<p>Gets the accessible activity channels (excluding those in the trash).
 
 </p>
 <h4>Successful response: <code>200 OK</code></h4>
-<p>An array of <a href="#data-types-channel">activity channels</a> containing the channels accessible with the given token.
+<p>An array of <a href="#data-types-channel">activity channels</a> containing the accessible channels.
 
 
 </p>
@@ -167,7 +167,7 @@ See the standard channels, folders and tags (TODO: link) we encourage you to use
 <p><em>Socket.IO command id: <code>{channel-id}.folders.get</code></em>
 
 </p>
-<p>Gets the folders accessible with the given token, either from the root level or only descending from a specified parent folder.
+<p>Gets the accessible folders, either from the root level or only descending from a specified parent folder.
 
 </p>
 <h4>Query string parameters</h4>
@@ -178,7 +178,7 @@ See the standard channels, folders and tags (TODO: link) we encourage you to use
 <li><code>timeCountBase</code> (<a href="#data-types-timestamp">timestamp</a>): Optional. If specified, the returned folders will include the summed duration of all their period events, starting from this timestamp (see <code>timeCount</code> in <a href="#data-types-folder">activity folder</a>); otherwise no time count values will be returned.</li>
 </ul>
 <h4>Successful response: <code>200 OK</code></h4>
-<p>An array of <a href="#data-types-folder">activity folders</a> containing the tree of the folders accessible with the given token, sorted by name.
+<p>An array of <a href="#data-types-folder">activity folders</a> containing the tree of the accessible folders, sorted by name.
 
 </p>
 <p>TODO: example (with and without time accounting)
@@ -253,7 +253,7 @@ See the standard channels, folders and tags (TODO: link) we encourage you to use
 <p><em>Socket.IO command id: <code>{channel-id}.events.get</code></em>
 
 </p>
-<p>Queries the list of events.
+<p>Queries accessible events.
 
 </p>
 <h4>Query string parameters</h4>
@@ -268,7 +268,7 @@ See the standard channels, folders and tags (TODO: link) we encourage you to use
 <li><code>modifiedSince</code> (<a href="#data-types-timestamp">timestamp</a>): Optional. If specified, only events modified since that time will be returned.</li>
 </ul>
 <h4>Successful response: <code>200 OK</code></h4>
-<p>An array of <a href="#data-types-event">activity events</a> containing the events ordered by time (see <code>sortAscending</code> below).
+<p>An array of <a href="#data-types-event">activity events</a> containing the accessible events ordered by time (see <code>sortAscending</code> above).
 
 </p>
 <h4>Specific errors</h4>
@@ -412,7 +412,7 @@ Batch upload events that were recorded by the client while offline. If the clien
 <li><code>400 Bad Request</code>, id <code>PERIODS_OVERLAP</code>: TODO (list of unspecified overlapped event ids)</li>
 </ul>
 </section><section id="admin"><h1>Administration methods</h1>
-<p>Administration methods allow to manage the user's <a href="#admin-user">account information</a>, <a href="#admin-channels">activity channels</a> and <a href="#admin-tokens">sharing</a> (via access tokens).
+<p>Administration methods allow to manage the user's <a href="#admin-user">account information</a>, <a href="#admin-channels">activity channels</a> and <a href="#admin-accesses">sharing</a> (via accesses).
 
 
 </p>
@@ -429,7 +429,7 @@ Batch upload events that were recorded by the client while offline. If the clien
 <ul>
 <li><code>Server-Time</code>: The current server time as a <a href="#data-types-timestamp">timestamp</a>. Keeping reference of the server time is an absolute necessity to properly read and write event times.</li>
 </ul>
-<h2>Common error codes</h2>
+<h2>Common errors</h2>
 <p>TODO: review and complete
 
 </p>
@@ -437,7 +437,7 @@ Batch upload events that were recorded by the client while offline. If the clien
 <li><code>400 Bad Request</code>, id <code>INVALID_PARAMETERS_FORMAT</code>: The request's parameters do not follow the expected format.</li>
 <li>401 (unauthorized), id <code>INVALID_CREDENTIALS</code>: User credentials are missing or invalid.</li>
 <li>404 (not found), possible cases:<ul>
-<li>Id <code>UNKNOWN_TOKEN</code>: The data access token can't be found.</li>
+<li>Id <code>UNKNOWN_ACCESS</code>: The data access can't be found.</li>
 <li>Id <code>UNKNOWN_CHANNEL</code>: The activity channel can't be found.</li>
 </ul>
 </li>
@@ -488,51 +488,51 @@ Requires session token, old password, new password.
 
 
 </p>
-<h2><a id="admin-tokens"></a>Tokens</h2>
+<h2><a id="admin-accesses"></a>Accesses</h2>
 <p>TODO: introductory text
 
 
 </p>
-<h3>POST <code>/admin/get-my-token</code></h3>
-<p>Gets the identifier of the personal token your app should use when accessing the user's data on her behalf. The token is created if it is the first time your app requests it.
+<h3>POST <code>/admin/get-app-token</code></h3>
+<p>Gets the token of the personal access your app must use when accessing the user's data on her behalf. The access is created if it is the first time your app (identified by its id when logging in) requests it.
 
 </p>
 <h4>Successful response: <code>200 OK</code></h4>
 <ul>
-<li><code>id</code> (<a href="#data-types-identity">identity</a>): Your app's dedicated personal <a href="#data-types-token">token</a> identifier.</li>
+<li><code>id</code> (<a href="#data-types-identity">identity</a>): Your app's dedicated personal <a href="#data-types-access">access</a> token.</li>
 </ul>
-<h3>GET <code>/admin/tokens</code></h3>
-<p>Gets all accessible access tokens, which are the shared tokens. (Your private app token identifier is retrieved with <code>POST /admin/get-my-token</code>.)
+<h3>GET <code>/admin/accesses</code></h3>
+<p>Gets all manageable accesses, which are the shared accesses. (Your app's own access token is retrieved with <code>POST /admin/get-app-token</code>.)
 
 </p>
 <h4>Successful response: <code>200 OK</code></h4>
-<p>An array of <a href="#data-types-token">access tokens</a> containing all accessible access tokens in the user's account, ordered by name.
+<p>An array of <a href="#data-types-access">accesses</a> containing all manageable accesses in the user's account, ordered by name.
 
 
 </p>
-<h3>POST <code>/admin/tokens</code></h3>
-<p>Creates a new shared access token.
+<h3>POST <code>/admin/accesses</code></h3>
+<p>Creates a new shared access.
 
 </p>
 <h4>Body parameters</h4>
-<p>The new token's data: see <a href="#data-types-token">access token</a>.
+<p>The new access's data: see <a href="#data-types-access">access</a>.
 
 </p>
 <h4>Successful response: <code>201 Created</code></h4>
 <ul>
-<li><code>id</code> (<a href="#data-types-identity">identity</a>): The created token's id.</li>
+<li><code>token</code> (<a href="#data-types-identity">identity</a>): The created access's token.</li>
 </ul>
-<h3>PUT <code>/admin/tokens/{token-id}</code></h3>
-<p>Modifies the specified shared token.
+<h3>PUT <code>/admin/accesses/{token}</code></h3>
+<p>Modifies the specified shared access.
 
 </p>
 <h4>Body parameters</h4>
-<p>New values for the token's fields: see <a href="#data-types-token">access token</a>. All fields are optional, and only modified values must be included. TODO: example
+<p>New values for the access's fields: see <a href="#data-types-access">access</a>. All fields are optional, and only modified values must be included. TODO: example
 
 </p>
 <h4>Successful response: <code>200 OK</code></h4>
-<h3>DELETE <code>/admin/tokens/{token-id}</code></h3>
-<p>Deletes the specified shared token.
+<h3>DELETE <code>/admin/accesses/{token}</code></h3>
+<p>Deletes the specified shared access.
 
 </p>
 <h4>Successful response: <code>200 OK</code></h4>
@@ -657,22 +657,22 @@ socket.emit(<span class="string">'command'</span>, cmdData, <span class="functio
 
 
 </p>
-<h2><a id="data-types-token"></a>Token</h2>
-<p>A data access token defines how a user's activity data (channels, folders and events) is accessed. Personal access tokens are transparently generated (provided the user's credentials) in the <a href="#admin">administration</a> when requested by client applications, but users can define additional tokens for letting other users view and possibly contribute to their activity data.
+<h2><a id="data-types-access"></a>Access</h2>
+<p>An access defines a set of permissions on a user's activity data (channels, folders and events). Personal accesses are automatically generated, per app, in the <a href="#admin">administration</a>, but shared accesses can be freely defined for letting other users view and possibly contribute to their activity data. (See <a href="#overview-sharing">how sharing works</a>.)
 
 </p>
 <p>Fields:
 
 </p>
 <ul>
-<li><code>id</code> (string): Unique, read-only. The server-assigned identifier for the token. This is used to specify the token in requests with token authorization.</li>
-<li><code>name</code> (string): Unique. The name identifying the token for the user. It can be the client application's name for automatically generated personal tokens, or any user-defined value for manually created tokens.</li>
-<li><code>type</code> (<code>"personal"</code> or <code>"shared"</code>): Optional. Personal tokens have full access to data, while shared tokens are only granted access to data defined in field <code>permissions</code>. Default: <code>"shared"</code>. Note that personal tokens are not open for viewing and management by third party apps by default - if you need to manage personal tokens, please get in touch with us (TODO: link).</li>
-<li><code>permissions</code>: an array of channel permission objects as described below. Ignored for personal tokens. Shared tokens are only granted access to activity data objects listed in here.<ul>
+<li><code>token</code> (string): Unique, read-only. The server-assigned token for the access. This is used to identify the access in requests to activity data.</li>
+<li><code>name</code> (string): Unique. The name identifying the access for the user. It can be the client application's name for automatically generated personal accesses, or any user-defined value for manually created accesses.</li>
+<li><code>type</code> (<code>"personal"</code> or <code>"shared"</code>): Optional. Personal accesses have full access to data, while shared accesses are only granted access to data defined in field <code>permissions</code>. Default: <code>"shared"</code>. Note that personal accesses are not open for viewing and management by third party apps by default - if you need to manage personal accesses, please get in touch with us (TODO: link).</li>
+<li><code>permissions</code>: an array of channel permission objects as described below. Ignored for personal accesses. Shared accesses are only granted access to activity data objects listed in here.<ul>
 <li><code>channelId</code> (<a href="#data-types-identity">identity</a>): The accessible channel's id.</li>
 <li><code>folderPermissions</code>: an array of folder permission objects:<ul>
 <li><code>folderId</code> (<a href="#data-types-identity">identity</a>): The accessible folder's id. A  value of <code>null</code> can be used to set permissions for the root of the folders structure. If the folder has child folders, they will be accessible too.</li>
-<li><code>type</code> (<code>"read"</code>, <code>"contribute"</code> or <code>"manage"</code>): The type of access to the folder's data. With <code>"contribute"</code>, the token's holder can see and record events for the folder (and its child folders, if any); with <code>"manage"</code>, the token's holder can in addition create, modify and delete child folders.</li>
+<li><code>type</code> (<code>"read"</code>, <code>"contribute"</code> or <code>"manage"</code>): The type of access to the folder's data. With <code>"contribute"</code>, the access's token holder(s) can see and record events for the folder (and its child folders, if any); with <code>"manage"</code>, the access's token holder(s) can in addition create, modify and delete child folders.</li>
 </ul>
 </li>
 </ul>
@@ -683,7 +683,7 @@ socket.emit(<span class="string">'command'</span>, cmdData, <span class="functio
 
 </p>
 <h2><a id="data-types-bookmark"></a>Bookmark</h2>
-<p>Sharing bookmarks allow the user to store tokens shared with her by other users.
+<p>Sharing bookmarks allow the user to keep track of accesses shared with her by other users.
 
 </p>
 <p>Fields:
@@ -692,8 +692,8 @@ socket.emit(<span class="string">'command'</span>, cmdData, <span class="functio
 <ul>
 <li><code>id</code> (<a href="#data-types-identity">identity</a>): Unique, read-only. The server-assigned identifier for the bookmark.</li>
 <li><code>name</code> (string): Unique. A name identifying the bookmark for the user.</li>
-<li><code>url</code> (string): The url pointing to the shared token's owning user's server. Not modifiable after creation.</li>
-<li><code>tokenId</code> <a href="#data-types-identity">identity</a>: The identifier of the shared token itself. Not modifiable after creation.</li>
+<li><code>url</code> (string): The url pointing to the shared access's owning user's server. Not modifiable after creation.</li>
+<li><code>accessToken</code> <a href="#data-types-identity">identity</a>: The token of the shared access itself. Not modifiable after creation.</li>
 </ul>
 <p>TODO: example
 

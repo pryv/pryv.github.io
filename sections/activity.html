@@ -4,14 +4,14 @@
 
 </p>
 <h2>Authorization</h2>
-<p>All requests for retrieving and manipulating activity data must carry a valid <a href="#data-types-token">data access token</a> in the HTTP <code>Authorization</code> header. (You get the token itself either by retrieving it in the <a href="#admin-tokens">administration</a> or from sharing.)
+<p>All requests for retrieving and manipulating activity data must carry a valid <a href="#data-types-access">access token</a> in the HTTP <code>Authorization</code> header. (You get the token itself either by retrieving it in the <a href="#admin-accesses">administration</a> or from sharing.)
 
 </p>
 <p>Here's what a proper request looks like:
 </p>
 <pre class="highlighted"><code class="language-http"><span class="request">GET <span class="string">/{channel-id}/events</span> HTTP/1.1</span>
 <span class="attribute">Host</span>: <span class="string">yacinthe.pryv.io</span>
-<span class="attribute">Authorization</span>: <span class="string">{valid-token}</span></code></pre>
+<span class="attribute">Authorization</span>: <span class="string">{access-token}</span></code></pre>
 <h2>Common HTTP headers</h2>
 <p>Some headers are included in every response to authorized requests:
 
@@ -26,8 +26,8 @@
 <ul>
 <li><code>400 Bad Request</code>, id <code>INVALID_REQUEST_STRUCTURE</code>: The request's structure is not that expected. This can happen e.g. with invalid JSON syntax, or when using an unexpected multipart structure for uploading file attachments.</li>
 <li><code>400 Bad Request</code>, id <code>INVALID_PARAMETERS_FORMAT</code>: The request's parameters do not follow the expected format.</li>
-<li><code>401 Unauthorized</code>, id <code>INVALID_TOKEN</code>: The data access token is missing or invalid.</li>
-<li><code>403 Forbidden</code>: The given data access token does not grant permission for this operation. See <a href="#data-types-token">data access tokens</a> for more details about tokens and permissions.</li>
+<li><code>401 Unauthorized</code>, id <code>INVALID_ACCESS_TOKEN</code>: The data access token is missing or invalid.</li>
+<li><code>403 Forbidden</code>: The given access token does not grant permission for this operation. See <a href="#data-types-access">accesses</a> for more details about accesses and permissions.</li>
 <li><code>404 Not Found</code>, possible cases:<ul>
 <li>Id <code>UNKNOWN_CHANNEL</code>: The activity channel can't be found.</li>
 <li>Id <code>UNKNOWN_FOLDER</code>: The activity folder can't be found in the specified channel.</li>
@@ -45,11 +45,11 @@
 <p><em>Socket.IO command id: <code>channels.get</code></em>
 
 </p>
-<p>Gets the activity channels accessible with the given token (and that are not in the trash).
+<p>Gets the accessible activity channels (excluding those in the trash).
 
 </p>
 <h4>Successful response: <code>200 OK</code></h4>
-<p>An array of <a href="#data-types-channel">activity channels</a> containing the channels accessible with the given token.
+<p>An array of <a href="#data-types-channel">activity channels</a> containing the accessible channels.
 
 
 </p>
@@ -62,7 +62,7 @@
 <p><em>Socket.IO command id: <code>{channel-id}.folders.get</code></em>
 
 </p>
-<p>Gets the folders accessible with the given token, either from the root level or only descending from a specified parent folder.
+<p>Gets the accessible folders, either from the root level or only descending from a specified parent folder.
 
 </p>
 <h4>Query string parameters</h4>
@@ -73,7 +73,7 @@
 <li><code>timeCountBase</code> (<a href="#data-types-timestamp">timestamp</a>): Optional. If specified, the returned folders will include the summed duration of all their period events, starting from this timestamp (see <code>timeCount</code> in <a href="#data-types-folder">activity folder</a>); otherwise no time count values will be returned.</li>
 </ul>
 <h4>Successful response: <code>200 OK</code></h4>
-<p>An array of <a href="#data-types-folder">activity folders</a> containing the tree of the folders accessible with the given token, sorted by name.
+<p>An array of <a href="#data-types-folder">activity folders</a> containing the tree of the accessible folders, sorted by name.
 
 </p>
 <p>TODO: example (with and without time accounting)
@@ -148,7 +148,7 @@
 <p><em>Socket.IO command id: <code>{channel-id}.events.get</code></em>
 
 </p>
-<p>Queries the list of events.
+<p>Queries accessible events.
 
 </p>
 <h4>Query string parameters</h4>
@@ -163,7 +163,7 @@
 <li><code>modifiedSince</code> (<a href="#data-types-timestamp">timestamp</a>): Optional. If specified, only events modified since that time will be returned.</li>
 </ul>
 <h4>Successful response: <code>200 OK</code></h4>
-<p>An array of <a href="#data-types-event">activity events</a> containing the events ordered by time (see <code>sortAscending</code> below).
+<p>An array of <a href="#data-types-event">activity events</a> containing the accessible events ordered by time (see <code>sortAscending</code> above).
 
 </p>
 <h4>Specific errors</h4>

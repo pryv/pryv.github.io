@@ -1,5 +1,5 @@
 <html><head></head><body><h1>Administration methods</h1>
-<p>Administration methods allow to manage the user's <a href="#admin-user">account information</a>, <a href="#admin-channels">activity channels</a> and <a href="#admin-tokens">sharing</a> (via access tokens).
+<p>Administration methods allow to manage the user's <a href="#admin-user">account information</a>, <a href="#admin-channels">activity channels</a> and <a href="#admin-accesses">sharing</a> (via accesses).
 
 
 </p>
@@ -16,7 +16,7 @@
 <ul>
 <li><code>Server-Time</code>: The current server time as a <a href="#data-types-timestamp">timestamp</a>. Keeping reference of the server time is an absolute necessity to properly read and write event times.</li>
 </ul>
-<h2>Common error codes</h2>
+<h2>Common errors</h2>
 <p>TODO: review and complete
 
 </p>
@@ -24,7 +24,7 @@
 <li><code>400 Bad Request</code>, id <code>INVALID_PARAMETERS_FORMAT</code>: The request's parameters do not follow the expected format.</li>
 <li>401 (unauthorized), id <code>INVALID_CREDENTIALS</code>: User credentials are missing or invalid.</li>
 <li>404 (not found), possible cases:<ul>
-<li>Id <code>UNKNOWN_TOKEN</code>: The data access token can't be found.</li>
+<li>Id <code>UNKNOWN_ACCESS</code>: The data access can't be found.</li>
 <li>Id <code>UNKNOWN_CHANNEL</code>: The activity channel can't be found.</li>
 </ul>
 </li>
@@ -75,51 +75,51 @@ Requires session token, old password, new password.
 
 
 </p>
-<h2><a id="admin-tokens"></a>Tokens</h2>
+<h2><a id="admin-accesses"></a>Accesses</h2>
 <p>TODO: introductory text
 
 
 </p>
-<h3>POST <code>/admin/get-my-token</code></h3>
-<p>Gets the identifier of the personal token your app should use when accessing the user's data on her behalf. The token is created if it is the first time your app requests it.
+<h3>POST <code>/admin/get-app-token</code></h3>
+<p>Gets the token of the personal access your app must use when accessing the user's data on her behalf. The access is created if it is the first time your app (identified by its id when logging in) requests it.
 
 </p>
 <h4>Successful response: <code>200 OK</code></h4>
 <ul>
-<li><code>id</code> (<a href="#data-types-identity">identity</a>): Your app's dedicated personal <a href="#data-types-token">token</a> identifier.</li>
+<li><code>id</code> (<a href="#data-types-identity">identity</a>): Your app's dedicated personal <a href="#data-types-access">access</a> token.</li>
 </ul>
-<h3>GET <code>/admin/tokens</code></h3>
-<p>Gets all accessible access tokens, which are the shared tokens. (Your private app token identifier is retrieved with <code>POST /admin/get-my-token</code>.)
+<h3>GET <code>/admin/accesses</code></h3>
+<p>Gets all manageable accesses, which are the shared accesses. (Your app's own access token is retrieved with <code>POST /admin/get-app-token</code>.)
 
 </p>
 <h4>Successful response: <code>200 OK</code></h4>
-<p>An array of <a href="#data-types-token">access tokens</a> containing all accessible access tokens in the user's account, ordered by name.
+<p>An array of <a href="#data-types-access">accesses</a> containing all manageable accesses in the user's account, ordered by name.
 
 
 </p>
-<h3>POST <code>/admin/tokens</code></h3>
-<p>Creates a new shared access token.
+<h3>POST <code>/admin/accesses</code></h3>
+<p>Creates a new shared access.
 
 </p>
 <h4>Body parameters</h4>
-<p>The new token's data: see <a href="#data-types-token">access token</a>.
+<p>The new access's data: see <a href="#data-types-access">access</a>.
 
 </p>
 <h4>Successful response: <code>201 Created</code></h4>
 <ul>
-<li><code>id</code> (<a href="#data-types-identity">identity</a>): The created token's id.</li>
+<li><code>token</code> (<a href="#data-types-identity">identity</a>): The created access's token.</li>
 </ul>
-<h3>PUT <code>/admin/tokens/{token-id}</code></h3>
-<p>Modifies the specified shared token.
+<h3>PUT <code>/admin/accesses/{token}</code></h3>
+<p>Modifies the specified shared access.
 
 </p>
 <h4>Body parameters</h4>
-<p>New values for the token's fields: see <a href="#data-types-token">access token</a>. All fields are optional, and only modified values must be included. TODO: example
+<p>New values for the access's fields: see <a href="#data-types-access">access</a>. All fields are optional, and only modified values must be included. TODO: example
 
 </p>
 <h4>Successful response: <code>200 OK</code></h4>
-<h3>DELETE <code>/admin/tokens/{token-id}</code></h3>
-<p>Deletes the specified shared token.
+<h3>DELETE <code>/admin/accesses/{token}</code></h3>
+<p>Deletes the specified shared access.
 
 </p>
 <h4>Successful response: <code>200 OK</code></h4>

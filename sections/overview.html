@@ -8,8 +8,8 @@
 
 </p>
 <ul>
-<li>Most apps will want to interact with <a href="#activity">Pryv activity data</a>. Recording and managing of activity data (events and their organization into folders and tags) is protected by <a href="#data-types-token">data access tokens</a> to allow easy <a href="#overview-sharing">sharing</a>.</li>
-<li>Some apps may need to access <a href="#admin">user account administration</a>, which includes the management of data sharing (via data access tokens) and activity channels (in addition to the user account itself). Administration is protected by personal authentication and expiring sessions.</li>
+<li>Most apps will want to interact with <a href="#activity">Pryv activity data</a>. Recording and managing of activity data (events and their organization into folders and tags) is protected by <a href="#data-types-access">accesses</a> to allow easy <a href="#overview-sharing">sharing</a>.</li>
+<li>Some apps may need to access <a href="#admin">user account administration</a>, which includes the management of data sharing (via accesses) and activity channels (in addition to the user account itself). Administration is protected by personal authentication and expiring sessions.</li>
 </ul>
 <p>[TODO: add simple schema here]
 
@@ -34,27 +34,27 @@ See the standard channels, folders and tags (TODO: link) we encourage you to use
 <p>[TODO: schema?]
 
 </p>
-<p>Apps access a user's activity data by presenting the API with a <strong>data access token</strong> (or just "token" here). A token can be <em>personal</em> or <em>shared</em>. A personal token is assigned to an app (provided the user's credentials) and used by that app to access the user's data on her behalf (i.e. with full permissions). But end-users don't have to know about personal tokens; end-users care about sharing, which is managed via shared tokens.
+<p>Apps access a user's activity data by presenting the API with an <strong>access token</strong>, that identifies a specific <strong>access</strong> to the data. An access can be <em>personal</em> or <em>shared</em>. A personal access is assigned to an app (provided the user's credentials) and its token is used by that app to access the user's data on her behalf (i.e. with full permissions). Personal accesses aren't shared, however; sharing is managed via shared accesses.
 
 </p>
-<p>A <strong>shared token</strong> grants permissions to a specified set of the user's data: channel(s), and within those channels, folder(s), tag(s) and/or a limited time frame can be defined to filter events. Tokens allow sharing in a variety of ways, such as:
+<p>A <strong>shared access</strong> grants permissions to a specified set of the user's data: channel(s), and within those channels, folder(s), tag(s) and/or a limited time frame can be defined to filter events. Accesses allow sharing in a variety of ways, such as:
 
 </p>
 <ul>
-<li>in-app: the user chooses to share some events with another Pryv user, which is notified and can select to view (and possibly contribute to) the shared data or integrate it with her own (add it to her sharing bookmarks).</li>
-<li>URL copy-paste: the user choose to share data with another person (possibly not a Pryv user), and copies the full URL containing the token into an e-mail or chat message. The other person can open the URL and access the web app to view (and possibly contribute to) the shared data.</li>
+<li>in-app: the user chooses to share some events with another Pryv user, which is notified and can select to view (and possibly contribute to) the shared data and/or integrate it with her own (add it to her sharing bookmarks).</li>
+<li>URL copy-paste: the user choose to share data with another person (possibly not a Pryv user), and copies the full URL containing the access token into an e-mail or chat message. The other person can open the URL and access the web app to view (and possibly contribute to) the shared data.</li>
 </ul>
-<p>Users can store tokens shared by other users by adding them to their <strong>sharing bookmarks</strong>.
+<p>Users can store access tokens shared by other users by adding them to their <strong>sharing bookmarks</strong>.
 
 </p>
-<p>For the present time, tokens are not personal. They act exactly like digital keys: if you have the token and the name of the user it belongs to, you can access the data it exposes.
+<p>For the present time, accesses are not personal. Access tokens act exactly like digital keys: if you have the token and the name of the user with the access it identifies, you can access the data.
 
 </p>
 <p>For more details see:
 
 </p>
 <ul>
-<li>Tokens <a href="#admin-tokens">management</a> and <a href="#data-types-token">data structure</a></li>
+<li>Accesses <a href="#admin-accesses">management</a> and <a href="#data-types-access">data structure</a></li>
 <li>Bookmarks <a href="#admin-bookmarks">management</a> and <a href="#data-types-bookmark">data structure</a></li>
 </ul>
 <h2>What's the URL?</h2>
@@ -76,8 +76,8 @@ See the standard channels, folders and tags (TODO: link) we encourage you to use
 </p>
 <pre class="highlighted"><code class="language-http"><span class="request">GET <span class="string">/{channel-id}/events</span> HTTP/1.1</span>
 <span class="attribute">Host</span>: <span class="string">{user-name}.pryv.io</span>
-<span class="attribute">Authorization</span>: <span class="string">{token}</span></code></pre>
-<p>Note that the API also supports Socket.IO, for both calling API methods and receiving live notifications of changes to activity data. See <a href="#socketio">our dedicated section</a>.
+<span class="attribute">Authorization</span>: <span class="string">{access-token}</span></code></pre>
+<p>Note that the API also supports Socket.IO, for both calling API methods and receiving live notifications of changes to activity data. See <a href="#socketio">the dedicated section</a>.
 
 
 </p>
@@ -100,7 +100,7 @@ See the standard channels, folders and tags (TODO: link) we encourage you to use
 <p>Here's an example "401 Unauthorized" error response:
 </p>
 <pre class="highlighted"><code class="language-json">{
-  "<span class="attribute">id</span>": <span class="value"><span class="string">"INVALID_TOKEN"</span></span>,
-  "<span class="attribute">message</span>": <span class="value"><span class="string">"Cannot find token 'bad-token'."</span>
+  "<span class="attribute">id</span>": <span class="value"><span class="string">"INVALID_ACCESS_TOKEN"</span></span>,
+  "<span class="attribute">message</span>": <span class="value"><span class="string">"Cannot find access with token 'bad-token'."</span>
 </span>}</code></pre>
 </body></html>
