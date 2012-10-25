@@ -163,92 +163,6 @@ See the standard channels, folders and tags (TODO: link) we encourage you to use
 
 
 </p>
-<h2>Folders</h2>
-<p>Methods to retrieve and manipulate <a href="#data-types-folder">folders</a>.
-
-
-</p>
-<h3>GET <code>/{channel-id}/folders</code></h3>
-<p><em>Socket.IO command id: <code>{channel-id}.folders.get</code></em>
-
-</p>
-<p>Gets the accessible folders, either from the root level or only descending from a specified parent folder.
-
-</p>
-<h4>Query string parameters</h4>
-<ul>
-<li><code>parentId</code> (<a href="#data-types-identity">identity</a>): The id of the parent folder to use as root for the request, or nothing to return all accessible folders from the root level.</li>
-<li><code>includeHidden</code> (<code>true</code> or <code>false</code>): Optional. When <code>true</code>, folders that are currently hidden will be included in the result. Default: <code>false</code>.</li>
-<li><code>state</code> (<code>default</code>, <code>trashed</code> or <code>all</code>): Optional. Indicates what items to return depending on their state. By default, only items that are not in the trash are returned; <code>trashed</code> returns only items in the trash, while <code>all</code> return all items regardless of their state.</li>
-<li><code>timeCountBase</code> (<a href="#data-types-timestamp">timestamp</a>): Optional. If specified, the returned folders will include the summed duration of all their period events, starting from this timestamp (see <code>timeCount</code> in <a href="#data-types-folder">activity folder</a>); otherwise no time count values will be returned.</li>
-</ul>
-<h4>Successful response: <code>200 OK</code></h4>
-<p>An array of <a href="#data-types-folder">activity folders</a> containing the tree of the accessible folders, sorted by name.
-
-</p>
-<p>TODO: example (with and without time accounting)
-
-
-</p>
-<h3>POST <code>/{channel-id}/folders</code></h3>
-<p><em>Socket.IO command id: <code>{channel-id}.folders.create</code></em>
-
-</p>
-<p>Creates a new folder at the root level or as a child folder to the specified folder.
-
-</p>
-<h4>Body parameters</h4>
-<p>The new folder's data: see <a href="#data-types-folder">activity folder</a>.
-
-</p>
-<h4>Successful response: <code>201 Created</code></h4>
-<ul>
-<li><code>id</code> (<a href="#data-types-identity">identity</a>): The created folder's id.</li>
-</ul>
-<h4>Specific errors</h4>
-<ul>
-<li><code>400 Bad Request</code>, id <code>ITEM_NAME_ALREADY_EXISTS</code>: A sibling folder already exists with the same name.</li>
-</ul>
-<h3>PUT <code>/{channel-id}/folders/{folder-id}</code></h3>
-<p><em>Socket.IO command id: <code>{channel-id}.folders.update</code></em>
-
-</p>
-<p>Modifies the activity folder's attributes.
-
-</p>
-<h4>Body parameters</h4>
-<p>New values for the folder's fields: see <a href="#data-types-folder">activity folder</a>. All fields are optional, and only modified values must be included.
-
-</p>
-<p>TODO: example
-
-</p>
-<h4>Successful response: <code>200 OK</code></h4>
-<h4>Specific errors</h4>
-<ul>
-<li><code>400 Bad Request</code>, id <code>UNKNOWN_FOLDER</code>: The specified parent folder's id is unknown.</li>
-<li><code>400 Bad Request</code>, id <code>ITEM_NAME_ALREADY_EXISTS</code>: A sibling folder already exists with the same name.</li>
-</ul>
-<h3>DELETE <code>/{channel-id}/folders/{folder-id}</code></h3>
-<p><em>Socket.IO command id: <code>{channel-id}.folders.delete</code></em>
-
-</p>
-<p>Trashes or deletes the specified folder, depending on its current state:
-
-</p>
-<ul>
-<li>If the folder is not already in the trash, it will be moved to the trash (i.e. flagged as <code>trashed</code>)</li>
-<li>If the folder is already in the trash, it will be irreversibly deleted with its possible descendants. If events exist that refer to the deleted item(s), you must indicate how to handle them with the parameter <code>mergeEventsWithParent</code>..</li>
-</ul>
-<h4>Query string parameters</h4>
-<ul>
-<li><code>mergeEventsWithParent</code> (<code>true</code> or <code>false</code>): Required if actually deleting the item and if it (or any of its descendants) has linked events, ignored otherwise. If <code>true</code>, the linked events will be assigned to the parent of the deleted item; if <code>false</code>, the linked events will be deleted.</li>
-</ul>
-<h4>Successful response: <code>200 OK</code></h4>
-<h4>Specific errors</h4>
-<ul>
-<li><code>400 Bad Request</code>, id <code>MISSING_PARAMETER</code>: There are events referring to the deleted items and the <code>mergeEventsWithParent</code> parameter is missing.</li>
-</ul>
 <h2>Events</h2>
 <p>Methods to retrieve and manipulate <a href="#data-types-event">events</a>.
 
@@ -263,13 +177,13 @@ See the standard channels, folders and tags (TODO: link) we encourage you to use
 </p>
 <h4>Query string parameters</h4>
 <ul>
-<li><code>onlyFolders</code> (array of <a href="#data-types-identity">identity</a>): Optional. If set, only events linked to those folders (including child folders) will be returned. By default, events linked to all accessible folders are returned.</li>
 <li><code>fromTime</code> (<a href="#data-types-timestamp">timestamp</a>): Optional. TODO. Default is 24 hours before <code>toTime</code>, if set.</li>
 <li><code>toTime</code> (<a href="#data-types-timestamp">timestamp</a>): Optional. TODO. Default is the current time.</li>
-<li><code>state</code> (<code>default</code>, <code>trashed</code> or <code>all</code>): Optional. Indicates what items to return depending on their state. By default, only items that are not in the trash are returned; <code>trashed</code> returns only items in the trash, while <code>all</code> return all items regardless of their state.</li>
+<li><code>onlyFolders</code> (array of <a href="#data-types-identity">identity</a>): Optional. If set, only events assigned to the specified folders and their sub-folders will be returned. To retrieve events that are not assigned to any folder, just include a <code>null</code> value in the array. By default, all accessible events are returned (regardless of their folder assignment).</li>
 <li><code>sortAscending</code> (<code>true</code> or <code>false</code>): If <code>true</code>, events will be sorted from oldest to newest. Default: false (sort descending).</li>
 <li><code>skip</code> (number): Optional. The number of items to skip in the results.</li>
 <li><code>limit</code> (number): Optional. The number of items to return in the results. A default value of 20 items is used if no other range limiting parameter is specified (<code>fromTime</code>, <code>toTime</code>).</li>
+<li><code>state</code> (<code>default</code>, <code>trashed</code> or <code>all</code>): Optional. Indicates what items to return depending on their state. By default, only items that are not in the trash are returned; <code>trashed</code> returns only items in the trash, while <code>all</code> return all items regardless of their state.</li>
 <li><code>modifiedSince</code> (<a href="#data-types-timestamp">timestamp</a>): Optional. If specified, only events modified since that time will be returned.</li>
 </ul>
 <h4>Successful response: <code>200 OK</code></h4>
@@ -415,6 +329,92 @@ Batch upload events that were recorded by the client while offline. If the clien
 <li><code>400 Bad Request</code>, id <code>INVALID_TIME</code>: TODO</li>
 <li><code>400 Bad Request</code>, id <code>UNKNOWN_FOLDER</code>: TODO</li>
 <li><code>400 Bad Request</code>, id <code>PERIODS_OVERLAP</code>: TODO (list of unspecified overlapped event ids)</li>
+</ul>
+<h2>Folders</h2>
+<p>Methods to retrieve and manipulate <a href="#data-types-folder">folders</a>.
+
+
+</p>
+<h3>GET <code>/{channel-id}/folders</code></h3>
+<p><em>Socket.IO command id: <code>{channel-id}.folders.get</code></em>
+
+</p>
+<p>Gets the accessible folders, either from the root level or only descending from a specified parent folder.
+
+</p>
+<h4>Query string parameters</h4>
+<ul>
+<li><code>parentId</code> (<a href="#data-types-identity">identity</a>): Optional. The id of the parent folder to use as root for the request. Default: <code>null</code> (returns all accessible folders from the root level).</li>
+<li><code>includeHidden</code> (<code>true</code> or <code>false</code>): Optional. When <code>true</code>, folders that are currently hidden will be included in the result. Default: <code>false</code>.</li>
+<li><code>state</code> (<code>default</code>, <code>trashed</code> or <code>all</code>): Optional. Indicates what items to return depending on their state. By default, only items that are not in the trash are returned; <code>trashed</code> returns only items in the trash, while <code>all</code> return all items regardless of their state.</li>
+<li><code>timeCountBase</code> (<a href="#data-types-timestamp">timestamp</a>): Optional. If specified, the returned folders will include the summed duration of all their period events, starting from this timestamp (see <code>timeCount</code> in <a href="#data-types-folder">activity folder</a>); otherwise no time count values will be returned.</li>
+</ul>
+<h4>Successful response: <code>200 OK</code></h4>
+<p>An array of <a href="#data-types-folder">activity folders</a> containing the tree of the accessible folders, sorted by name.
+
+</p>
+<p>TODO: example (with and without time accounting)
+
+
+</p>
+<h3>POST <code>/{channel-id}/folders</code></h3>
+<p><em>Socket.IO command id: <code>{channel-id}.folders.create</code></em>
+
+</p>
+<p>Creates a new folder at the root level or as a child folder to the specified folder.
+
+</p>
+<h4>Body parameters</h4>
+<p>The new folder's data: see <a href="#data-types-folder">activity folder</a>.
+
+</p>
+<h4>Successful response: <code>201 Created</code></h4>
+<ul>
+<li><code>id</code> (<a href="#data-types-identity">identity</a>): The created folder's id.</li>
+</ul>
+<h4>Specific errors</h4>
+<ul>
+<li><code>400 Bad Request</code>, id <code>ITEM_NAME_ALREADY_EXISTS</code>: A sibling folder already exists with the same name.</li>
+</ul>
+<h3>PUT <code>/{channel-id}/folders/{folder-id}</code></h3>
+<p><em>Socket.IO command id: <code>{channel-id}.folders.update</code></em>
+
+</p>
+<p>Modifies the activity folder's attributes.
+
+</p>
+<h4>Body parameters</h4>
+<p>New values for the folder's fields: see <a href="#data-types-folder">activity folder</a>. All fields are optional, and only modified values must be included.
+
+</p>
+<p>TODO: example
+
+</p>
+<h4>Successful response: <code>200 OK</code></h4>
+<h4>Specific errors</h4>
+<ul>
+<li><code>400 Bad Request</code>, id <code>UNKNOWN_FOLDER</code>: The specified parent folder's id is unknown.</li>
+<li><code>400 Bad Request</code>, id <code>ITEM_NAME_ALREADY_EXISTS</code>: A sibling folder already exists with the same name.</li>
+</ul>
+<h3>DELETE <code>/{channel-id}/folders/{folder-id}</code></h3>
+<p><em>Socket.IO command id: <code>{channel-id}.folders.delete</code></em>
+
+</p>
+<p>Trashes or deletes the specified folder, depending on its current state:
+
+</p>
+<ul>
+<li>If the folder is not already in the trash, it will be moved to the trash (i.e. flagged as <code>trashed</code>)</li>
+<li>If the folder is already in the trash, it will be irreversibly deleted with its possible descendants. If events exist that refer to the deleted item(s), you must indicate how to handle them with the parameter <code>mergeEventsWithParent</code>..</li>
+</ul>
+<h4>Query string parameters</h4>
+<ul>
+<li><code>mergeEventsWithParent</code> (<code>true</code> or <code>false</code>): Required if actually deleting the item and if it (or any of its descendants) has linked events, ignored otherwise. If <code>true</code>, the linked events will be assigned to the parent of the deleted item; if <code>false</code>, the linked events will be deleted.</li>
+</ul>
+<h4>Successful response: <code>200 OK</code></h4>
+<h4>Specific errors</h4>
+<ul>
+<li><code>400 Bad Request</code>, id <code>MISSING_PARAMETER</code>: There are events referring to the deleted items and the <code>mergeEventsWithParent</code> parameter is missing.</li>
 </ul>
 </section><section id="admin"><h1>Administration methods</h1>
 <p>Administration methods allow to manage the user's <a href="#admin-user">account information</a>, <a href="#admin-channels">activity channels</a> and <a href="#admin-accesses">sharing</a> (via accesses).
@@ -717,47 +717,6 @@ Fields:
 
 
 </p>
-<h2><a id="data-types-folder"></a>Folder</h2>
-<p>Activity folders are the possible states or categories you track the channel's activity events into (folders are always specific to an activity channel). Every period event belongs to one folder, while mark events can be recorded "off-folder" as well. Activity folders follow a hierarchical tree structure: every folder can contain "child" folders (sub-folders).
-
-</p>
-<p>Fields:
-
-</p>
-<ul>
-<li><code>id</code> (<a href="#data-types-identity">identity</a>): Unique, read-only. The server-assigned identifier for the folder.</li>
-<li><code>name</code> (string): A name identifying the folder for users. The name must be unique among the folder's siblings in the folders tree structure.</li>
-<li><code>parentId</code> (<a href="#data-types-identity">identity</a>): Optional. The identifier of the folder's parent, if any. A value of <code>null</code> indicates that the folder has no parent (i.e. root folder).</li>
-<li><code>hidden</code> (<code>true</code> or <code>false</code>): Optional. Whether the folder is currently in use or visible. Default: <code>true</code>.</li>
-<li><code>clientData</code> (<a href="#data-types-additional-data">item additional data</a>):  Optional. Additional client data for the folder.</li>
-<li><code>timeCount</code> (<a href="#data-types-timestamp">timestamp</a>): Read-only. Only optionally returned when querying folders, indicating the total time spent in that folder, including sub-folders, since a given reference date and time. <strong>This will be implemented later.</strong></li>
-<li><code>children</code> (array of folders): Read-only. The folder's sub-folders, if any. This field cannot be set in requests creating a new folders: folders are created individually by design.</li>
-<li><code>trashed</code> (boolean): Optional. <code>true</code> if the folder is in the trash.</li>
-</ul>
-<h3>Example</h3>
-<p>A folder structure for activities:
-
-</p>
-<pre class="highlighted"><code class="language-javascript">[
-  { <span class="string">"name"</span>: <span class="string">"Sport"</span>, <span class="string">"id"</span>: <span class="string">"sport"</span>, <span class="string">"parentId"</span>: <span class="literal">null</span>,
-    <span class="string">"children"</span>: [
-      { <span class="string">"name"</span>: <span class="string">"Jogging"</span>, <span class="string">"id"</span>: <span class="string">"jogging"</span>, <span class="string">"parentId"</span>: <span class="string">"sport"</span>, <span class="string">"children"</span>: [] },
-      { <span class="string">"name"</span>: <span class="string">"Bicycling"</span>, <span class="string">"id"</span>: <span class="string">"bicycling"</span>, <span class="string">"parentId"</span>: <span class="string">"sport"</span>, <span class="string">"children"</span>: [] }
-  ]},
-  { <span class="string">"name"</span>: <span class="string">"Work"</span>, <span class="string">"id"</span>: <span class="string">"work"</span>, <span class="string">"parentId"</span>: <span class="literal">null</span>,
-    <span class="string">"children"</span>: [
-      { <span class="string">"name"</span>: <span class="string">"Noble Works Co."</span>, <span class="string">"id"</span>: <span class="string">"noble-works"</span>,<span class="string">"parentId"</span>: <span class="string">"work"</span>, <span class="string">"children"</span>: [
-          { <span class="string">"name"</span>: <span class="string">"Last Be First"</span>, <span class="string">"id"</span>: <span class="string">"last-be-first"</span>,<span class="string">"parentId"</span>: <span class="string">"noble-works"</span>, <span class="string">"children"</span>: [] },
-          { <span class="string">"name"</span>: <span class="string">"Big Tree"</span>, <span class="string">"id"</span>: <span class="string">"big-tree"</span>,<span class="string">"parentId"</span>: <span class="string">"noble-works"</span>, <span class="string">"children"</span>: [] },
-          { <span class="string">"name"</span>: <span class="string">"Inner Light"</span>, <span class="string">"id"</span>: <span class="string">"inner-light"</span>,<span class="string">"parentId"</span>: <span class="string">"noble-works"</span>, <span class="string">"children"</span>: [] }
-      ]},
-      { <span class="string">"name"</span>: <span class="string">"Freelancing"</span>, <span class="string">"id"</span>: <span class="string">"freelancing"</span>,<span class="string">"parentId"</span>: <span class="string">"work"</span>, <span class="string">"children"</span>: [
-          { <span class="string">"name"</span>: <span class="string">"Funky Veggies"</span>, <span class="string">"id"</span>: <span class="string">"funky-veggies"</span>,<span class="string">"parentId"</span>: <span class="string">"freelancing"</span>, <span class="string">"children"</span>: [] },
-          { <span class="string">"name"</span>: <span class="string">"Jojo Lapin &amp; sons"</span>, <span class="string">"id"</span>: <span class="string">"jojo-lapin"</span>,<span class="string">"parentId"</span>: <span class="string">"freelancing"</span>, <span class="string">"children"</span>: [] }
-      ]}
-    ]
-  }
-];</code></pre>
 <h2><a id="data-types-event"></a>Event</h2>
 <p>Activity events can be period events, which are associated with a period of time, or mark events, which are just associated with a single point in time:
 
@@ -810,6 +769,47 @@ Fields:
     <span class="string">"value"</span>: { <span class="string">"type"</span>: <span class="string">"position:WGS84"</span>, <span class="string">"value"</span>: <span class="string">"40.714728, -73.998672, 12"</span> },
     <span class="string">"modified"</span> : <span class="number">1350373077.359</span> }
 ]</code></pre>
+<h2><a id="data-types-folder"></a>Folder</h2>
+<p>Activity folders are the possible states or categories you track the channel's activity events into (folders are always specific to an activity channel). Every period event belongs to one folder, while mark events can be recorded "off-folder" as well. Activity folders follow a hierarchical tree structure: every folder can contain "child" folders (sub-folders).
+
+</p>
+<p>Fields:
+
+</p>
+<ul>
+<li><code>id</code> (<a href="#data-types-identity">identity</a>): Unique, read-only. The server-assigned identifier for the folder.</li>
+<li><code>name</code> (string): A name identifying the folder for users. The name must be unique among the folder's siblings in the folders tree structure.</li>
+<li><code>parentId</code> (<a href="#data-types-identity">identity</a>): Optional. The identifier of the folder's parent, if any. A value of <code>null</code> indicates that the folder has no parent (i.e. root folder).</li>
+<li><code>hidden</code> (<code>true</code> or <code>false</code>): Optional. Whether the folder is currently in use or visible. Default: <code>true</code>.</li>
+<li><code>clientData</code> (<a href="#data-types-additional-data">item additional data</a>):  Optional. Additional client data for the folder.</li>
+<li><code>timeCount</code> (<a href="#data-types-timestamp">timestamp</a>): Read-only. Only optionally returned when querying folders, indicating the total time spent in that folder, including sub-folders, since a given reference date and time. <strong>This will be implemented later.</strong></li>
+<li><code>children</code> (array of folders): Read-only. The folder's sub-folders, if any. This field cannot be set in requests creating a new folders: folders are created individually by design.</li>
+<li><code>trashed</code> (boolean): Optional. <code>true</code> if the folder is in the trash.</li>
+</ul>
+<h3>Example</h3>
+<p>A folder structure for activities:
+
+</p>
+<pre class="highlighted"><code class="language-javascript">[
+  { <span class="string">"name"</span>: <span class="string">"Sport"</span>, <span class="string">"id"</span>: <span class="string">"sport"</span>, <span class="string">"parentId"</span>: <span class="literal">null</span>,
+    <span class="string">"children"</span>: [
+      { <span class="string">"name"</span>: <span class="string">"Jogging"</span>, <span class="string">"id"</span>: <span class="string">"jogging"</span>, <span class="string">"parentId"</span>: <span class="string">"sport"</span>, <span class="string">"children"</span>: [] },
+      { <span class="string">"name"</span>: <span class="string">"Bicycling"</span>, <span class="string">"id"</span>: <span class="string">"bicycling"</span>, <span class="string">"parentId"</span>: <span class="string">"sport"</span>, <span class="string">"children"</span>: [] }
+  ]},
+  { <span class="string">"name"</span>: <span class="string">"Work"</span>, <span class="string">"id"</span>: <span class="string">"work"</span>, <span class="string">"parentId"</span>: <span class="literal">null</span>,
+    <span class="string">"children"</span>: [
+      { <span class="string">"name"</span>: <span class="string">"Noble Works Co."</span>, <span class="string">"id"</span>: <span class="string">"noble-works"</span>,<span class="string">"parentId"</span>: <span class="string">"work"</span>, <span class="string">"children"</span>: [
+          { <span class="string">"name"</span>: <span class="string">"Last Be First"</span>, <span class="string">"id"</span>: <span class="string">"last-be-first"</span>,<span class="string">"parentId"</span>: <span class="string">"noble-works"</span>, <span class="string">"children"</span>: [] },
+          { <span class="string">"name"</span>: <span class="string">"Big Tree"</span>, <span class="string">"id"</span>: <span class="string">"big-tree"</span>,<span class="string">"parentId"</span>: <span class="string">"noble-works"</span>, <span class="string">"children"</span>: [] },
+          { <span class="string">"name"</span>: <span class="string">"Inner Light"</span>, <span class="string">"id"</span>: <span class="string">"inner-light"</span>,<span class="string">"parentId"</span>: <span class="string">"noble-works"</span>, <span class="string">"children"</span>: [] }
+      ]},
+      { <span class="string">"name"</span>: <span class="string">"Freelancing"</span>, <span class="string">"id"</span>: <span class="string">"freelancing"</span>,<span class="string">"parentId"</span>: <span class="string">"work"</span>, <span class="string">"children"</span>: [
+          { <span class="string">"name"</span>: <span class="string">"Funky Veggies"</span>, <span class="string">"id"</span>: <span class="string">"funky-veggies"</span>,<span class="string">"parentId"</span>: <span class="string">"freelancing"</span>, <span class="string">"children"</span>: [] },
+          { <span class="string">"name"</span>: <span class="string">"Jojo Lapin &amp; sons"</span>, <span class="string">"id"</span>: <span class="string">"jojo-lapin"</span>,<span class="string">"parentId"</span>: <span class="string">"freelancing"</span>, <span class="string">"children"</span>: [] }
+      ]}
+    ]
+  }
+];</code></pre>
 <h2><a id="data-types-additional-data"></a>Item additional data</h2>
 <p>A JSON object offering free storage for clients to support extra functionality. TODO: details (no media files, limited size...) and example
 

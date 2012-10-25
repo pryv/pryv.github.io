@@ -62,47 +62,6 @@ Fields:
 
 
 </p>
-<h2><a id="data-types-folder"></a>Folder</h2>
-<p>Activity folders are the possible states or categories you track the channel's activity events into (folders are always specific to an activity channel). Every period event belongs to one folder, while mark events can be recorded "off-folder" as well. Activity folders follow a hierarchical tree structure: every folder can contain "child" folders (sub-folders).
-
-</p>
-<p>Fields:
-
-</p>
-<ul>
-<li><code>id</code> (<a href="#data-types-identity">identity</a>): Unique, read-only. The server-assigned identifier for the folder.</li>
-<li><code>name</code> (string): A name identifying the folder for users. The name must be unique among the folder's siblings in the folders tree structure.</li>
-<li><code>parentId</code> (<a href="#data-types-identity">identity</a>): Optional. The identifier of the folder's parent, if any. A value of <code>null</code> indicates that the folder has no parent (i.e. root folder).</li>
-<li><code>hidden</code> (<code>true</code> or <code>false</code>): Optional. Whether the folder is currently in use or visible. Default: <code>true</code>.</li>
-<li><code>clientData</code> (<a href="#data-types-additional-data">item additional data</a>):  Optional. Additional client data for the folder.</li>
-<li><code>timeCount</code> (<a href="#data-types-timestamp">timestamp</a>): Read-only. Only optionally returned when querying folders, indicating the total time spent in that folder, including sub-folders, since a given reference date and time. <strong>This will be implemented later.</strong></li>
-<li><code>children</code> (array of folders): Read-only. The folder's sub-folders, if any. This field cannot be set in requests creating a new folders: folders are created individually by design.</li>
-<li><code>trashed</code> (boolean): Optional. <code>true</code> if the folder is in the trash.</li>
-</ul>
-<h3>Example</h3>
-<p>A folder structure for activities:
-
-</p>
-<pre class="highlighted"><code class="language-javascript">[
-  { <span class="string">"name"</span>: <span class="string">"Sport"</span>, <span class="string">"id"</span>: <span class="string">"sport"</span>, <span class="string">"parentId"</span>: <span class="literal">null</span>,
-    <span class="string">"children"</span>: [
-      { <span class="string">"name"</span>: <span class="string">"Jogging"</span>, <span class="string">"id"</span>: <span class="string">"jogging"</span>, <span class="string">"parentId"</span>: <span class="string">"sport"</span>, <span class="string">"children"</span>: [] },
-      { <span class="string">"name"</span>: <span class="string">"Bicycling"</span>, <span class="string">"id"</span>: <span class="string">"bicycling"</span>, <span class="string">"parentId"</span>: <span class="string">"sport"</span>, <span class="string">"children"</span>: [] }
-  ]},
-  { <span class="string">"name"</span>: <span class="string">"Work"</span>, <span class="string">"id"</span>: <span class="string">"work"</span>, <span class="string">"parentId"</span>: <span class="literal">null</span>,
-    <span class="string">"children"</span>: [
-      { <span class="string">"name"</span>: <span class="string">"Noble Works Co."</span>, <span class="string">"id"</span>: <span class="string">"noble-works"</span>,<span class="string">"parentId"</span>: <span class="string">"work"</span>, <span class="string">"children"</span>: [
-          { <span class="string">"name"</span>: <span class="string">"Last Be First"</span>, <span class="string">"id"</span>: <span class="string">"last-be-first"</span>,<span class="string">"parentId"</span>: <span class="string">"noble-works"</span>, <span class="string">"children"</span>: [] },
-          { <span class="string">"name"</span>: <span class="string">"Big Tree"</span>, <span class="string">"id"</span>: <span class="string">"big-tree"</span>,<span class="string">"parentId"</span>: <span class="string">"noble-works"</span>, <span class="string">"children"</span>: [] },
-          { <span class="string">"name"</span>: <span class="string">"Inner Light"</span>, <span class="string">"id"</span>: <span class="string">"inner-light"</span>,<span class="string">"parentId"</span>: <span class="string">"noble-works"</span>, <span class="string">"children"</span>: [] }
-      ]},
-      { <span class="string">"name"</span>: <span class="string">"Freelancing"</span>, <span class="string">"id"</span>: <span class="string">"freelancing"</span>,<span class="string">"parentId"</span>: <span class="string">"work"</span>, <span class="string">"children"</span>: [
-          { <span class="string">"name"</span>: <span class="string">"Funky Veggies"</span>, <span class="string">"id"</span>: <span class="string">"funky-veggies"</span>,<span class="string">"parentId"</span>: <span class="string">"freelancing"</span>, <span class="string">"children"</span>: [] },
-          { <span class="string">"name"</span>: <span class="string">"Jojo Lapin &amp; sons"</span>, <span class="string">"id"</span>: <span class="string">"jojo-lapin"</span>,<span class="string">"parentId"</span>: <span class="string">"freelancing"</span>, <span class="string">"children"</span>: [] }
-      ]}
-    ]
-  }
-];</code></pre>
 <h2><a id="data-types-event"></a>Event</h2>
 <p>Activity events can be period events, which are associated with a period of time, or mark events, which are just associated with a single point in time:
 
@@ -155,6 +114,47 @@ Fields:
     <span class="string">"value"</span>: { <span class="string">"type"</span>: <span class="string">"position:WGS84"</span>, <span class="string">"value"</span>: <span class="string">"40.714728, -73.998672, 12"</span> },
     <span class="string">"modified"</span> : <span class="number">1350373077.359</span> }
 ]</code></pre>
+<h2><a id="data-types-folder"></a>Folder</h2>
+<p>Activity folders are the possible states or categories you track the channel's activity events into (folders are always specific to an activity channel). Every period event belongs to one folder, while mark events can be recorded "off-folder" as well. Activity folders follow a hierarchical tree structure: every folder can contain "child" folders (sub-folders).
+
+</p>
+<p>Fields:
+
+</p>
+<ul>
+<li><code>id</code> (<a href="#data-types-identity">identity</a>): Unique, read-only. The server-assigned identifier for the folder.</li>
+<li><code>name</code> (string): A name identifying the folder for users. The name must be unique among the folder's siblings in the folders tree structure.</li>
+<li><code>parentId</code> (<a href="#data-types-identity">identity</a>): Optional. The identifier of the folder's parent, if any. A value of <code>null</code> indicates that the folder has no parent (i.e. root folder).</li>
+<li><code>hidden</code> (<code>true</code> or <code>false</code>): Optional. Whether the folder is currently in use or visible. Default: <code>true</code>.</li>
+<li><code>clientData</code> (<a href="#data-types-additional-data">item additional data</a>):  Optional. Additional client data for the folder.</li>
+<li><code>timeCount</code> (<a href="#data-types-timestamp">timestamp</a>): Read-only. Only optionally returned when querying folders, indicating the total time spent in that folder, including sub-folders, since a given reference date and time. <strong>This will be implemented later.</strong></li>
+<li><code>children</code> (array of folders): Read-only. The folder's sub-folders, if any. This field cannot be set in requests creating a new folders: folders are created individually by design.</li>
+<li><code>trashed</code> (boolean): Optional. <code>true</code> if the folder is in the trash.</li>
+</ul>
+<h3>Example</h3>
+<p>A folder structure for activities:
+
+</p>
+<pre class="highlighted"><code class="language-javascript">[
+  { <span class="string">"name"</span>: <span class="string">"Sport"</span>, <span class="string">"id"</span>: <span class="string">"sport"</span>, <span class="string">"parentId"</span>: <span class="literal">null</span>,
+    <span class="string">"children"</span>: [
+      { <span class="string">"name"</span>: <span class="string">"Jogging"</span>, <span class="string">"id"</span>: <span class="string">"jogging"</span>, <span class="string">"parentId"</span>: <span class="string">"sport"</span>, <span class="string">"children"</span>: [] },
+      { <span class="string">"name"</span>: <span class="string">"Bicycling"</span>, <span class="string">"id"</span>: <span class="string">"bicycling"</span>, <span class="string">"parentId"</span>: <span class="string">"sport"</span>, <span class="string">"children"</span>: [] }
+  ]},
+  { <span class="string">"name"</span>: <span class="string">"Work"</span>, <span class="string">"id"</span>: <span class="string">"work"</span>, <span class="string">"parentId"</span>: <span class="literal">null</span>,
+    <span class="string">"children"</span>: [
+      { <span class="string">"name"</span>: <span class="string">"Noble Works Co."</span>, <span class="string">"id"</span>: <span class="string">"noble-works"</span>,<span class="string">"parentId"</span>: <span class="string">"work"</span>, <span class="string">"children"</span>: [
+          { <span class="string">"name"</span>: <span class="string">"Last Be First"</span>, <span class="string">"id"</span>: <span class="string">"last-be-first"</span>,<span class="string">"parentId"</span>: <span class="string">"noble-works"</span>, <span class="string">"children"</span>: [] },
+          { <span class="string">"name"</span>: <span class="string">"Big Tree"</span>, <span class="string">"id"</span>: <span class="string">"big-tree"</span>,<span class="string">"parentId"</span>: <span class="string">"noble-works"</span>, <span class="string">"children"</span>: [] },
+          { <span class="string">"name"</span>: <span class="string">"Inner Light"</span>, <span class="string">"id"</span>: <span class="string">"inner-light"</span>,<span class="string">"parentId"</span>: <span class="string">"noble-works"</span>, <span class="string">"children"</span>: [] }
+      ]},
+      { <span class="string">"name"</span>: <span class="string">"Freelancing"</span>, <span class="string">"id"</span>: <span class="string">"freelancing"</span>,<span class="string">"parentId"</span>: <span class="string">"work"</span>, <span class="string">"children"</span>: [
+          { <span class="string">"name"</span>: <span class="string">"Funky Veggies"</span>, <span class="string">"id"</span>: <span class="string">"funky-veggies"</span>,<span class="string">"parentId"</span>: <span class="string">"freelancing"</span>, <span class="string">"children"</span>: [] },
+          { <span class="string">"name"</span>: <span class="string">"Jojo Lapin &amp; sons"</span>, <span class="string">"id"</span>: <span class="string">"jojo-lapin"</span>,<span class="string">"parentId"</span>: <span class="string">"freelancing"</span>, <span class="string">"children"</span>: [] }
+      ]}
+    ]
+  }
+];</code></pre>
 <h2><a id="data-types-additional-data"></a>Item additional data</h2>
 <p>A JSON object offering free storage for clients to support extra functionality. TODO: details (no media files, limited size...) and example
 
