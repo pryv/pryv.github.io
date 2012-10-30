@@ -11,7 +11,7 @@
 
 </p>
 <ul>
-<li><code>token</code> (string): Unique, read-only. The server-assigned token for the access. This is used to identify the access in requests to activity data.</li>
+<li><code>token</code> (string): Unique, read-only (except at creation). The token identifying the access. Automatically generated if not set when creating the access.</li>
 <li><code>name</code> (string): Unique. The name identifying the access for the user. It can be the client application's name for automatically generated personal accesses, or any user-defined value for manually created accesses.</li>
 <li><code>type</code> (<code>"personal"</code> or <code>"shared"</code>): Optional. Personal accesses have full access to data, while shared accesses are only granted access to data defined in field <code>permissions</code>. Default: <code>"shared"</code>. Note that personal accesses are not open for viewing and management by third party apps by default - if you need to manage personal accesses, please get in touch with us (TODO: link).</li>
 <li><code>permissions</code>: an array of channel permission objects as described below. Ignored for personal accesses. Shared accesses are only granted access to activity data objects listed in here.<ul>
@@ -51,7 +51,7 @@ Fields:
 
 </p>
 <ul>
-<li><code>id</code> (<a href="#data-types-identity">identity</a>): Unique, read-only. The server-assigned identifier for the channel.</li>
+<li><code>id</code> (<a href="#data-types-identity">identity</a>): Unique, read-only (except at creation). The identifier for the channel. Automatically generated if not set when creating the channel.</li>
 <li><code>name</code> (string): Unique. The name identifying the channel for users.</li>
 <li><code>strictMode</code> (boolean): Optional. If <code>true</code>, the system will ensure that timed events in this channel never overlap; if <code>false</code>, overlapping will be allowed. <strong>This will be implemented later: currently all channels are considered "strict".</strong></li>
 <li><code>clientData</code> (<a href="#data-types-additional-data">item additional data</a>): Optional. Additional client data for the channel.</li>
@@ -122,7 +122,7 @@ Fields:
 
 </p>
 <ul>
-<li><code>id</code> (<a href="#data-types-identity">identity</a>): Unique, read-only. The server-assigned identifier for the folder.</li>
+<li><code>id</code> (<a href="#data-types-identity">identity</a>): Unique, read-only (except at creation). The identifier for the folder. Automatically generated if not set when creating the folder.</li>
 <li><code>name</code> (string): A name identifying the folder for users. The name must be unique among the folder's siblings in the folders tree structure.</li>
 <li><code>parentId</code> (<a href="#data-types-identity">identity</a>): Optional. The identifier of the folder's parent, if any. A value of <code>null</code> indicates that the folder has no parent (i.e. root folder).</li>
 <li><code>hidden</code> (<code>true</code> or <code>false</code>): Optional. Whether the folder is currently in use or visible. Default: <code>true</code>.</li>
