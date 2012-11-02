@@ -1,8 +1,14 @@
 <html><head></head><body><h1>Socket.IO support</h1>
 <p>The activity service supports real-time interaction with <a href="http://socket.io">Socket.IO</a>, both by accepting equivalent messages for most API methods and by emitting data change notification messages. (Code examples below are in Javascript.)
 
+</p>
+<h3>Connecting</h3>
+<p>In order to use socket.io, the client has to load the socket.io.js file served by the activity server at the following URL: <code>https://{username}.pryv.io/socket.io/socket.io.js</code>.
 
 </p>
+<p>Once the js file is loaded, the second step is to initialize a connection with socket.io by calling <code>var socket = io.connect(url, params)</code> where <code>url</code> is typically constructed as: 
+</p>
+<pre class="highlighted"><code class="ruby">https<span class="symbol">:</span>/<span class="regexp">/{username}.pryv.io:443/</span>{username}<span class="number">?a</span>uthorization={accessToken}&amp;resource=<span class="regexp">/{username}</span></code></pre>
 <h3>Calling API methods</h3>
 <p>Every method in the activity service can be called by sending a corresponding Socket.IO <code>command</code> message, providing a data object specifying the command (or method) and possible parameters, and a callback function for the response:
 </p>
