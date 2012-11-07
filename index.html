@@ -122,13 +122,13 @@ See the standard channels, folders and tags (TODO: link) we encourage you to use
 </p>
 <p>Here's what a proper request looks like:
 </p>
-<pre class="highlighted"><code class="language-http"><span class="request">GET <span class="string">/{channel-id}/events</span> HTTP/1.1</span>
-<span class="attribute">Host</span>: <span class="string">yacinthe.pryv.io</span>
+<pre class="highlighted"><code class="language-http"><span class="request">GET <span class="string">/{channel</span> id}/events <span class="string">HTTP/1.1
+Host:</span> yacinthe.pryv.io</span>
 <span class="attribute">Authorization</span>: <span class="string">{access-token}</span></code></pre>
 <p>Or, alternatively, passing the access token in the query string:
 </p>
-<pre class="highlighted"><code class="language-http"><span class="request">GET <span class="string">/{channel-id}/events?auth={access-token}</span> HTTP/1.1</span>
-<span class="attribute">Host</span>: <span class="string">yacinthe.pryv.io</span></code></pre>
+<pre class="highlighted"><code class="language-http"><span class="request">GET <span class="string">/{channel</span> id}/events?auth={access-token} <span class="string">HTTP/1.1
+Host:</span> yacinthe.pryv.io</span></code></pre>
 <h2>Common errors</h2>
 <p>Here are errors commonly returned for requests:
 
@@ -168,8 +168,8 @@ See the standard channels, folders and tags (TODO: link) we encourage you to use
 
 
 </p>
-<h3>GET <code>/{channel-id}/events</code></h3>
-<p><em>Socket.IO command id: <code>{channel-id}.events.get</code></em>
+<h3>GET <code>/{channel id}/events</code></h3>
+<p><em>Socket.IO command id: <code>{channel id}.events.get</code></em>
 
 </p>
 <p>Queries accessible events.
@@ -194,8 +194,8 @@ See the standard channels, folders and tags (TODO: link) we encourage you to use
 <ul>
 <li><code>400 Bad Request</code>, id <code>UNKNOWN_FOLDER</code>: TODO may happen if one of the specified folders doesn't exist</li>
 </ul>
-<h3>POST <code>/{channel-id}/events</code></h3>
-<p><em>Socket.IO command id: <code>{channel-id}.events.create</code></em>
+<h3>POST <code>/{channel id}/events</code></h3>
+<p><em>Socket.IO command id: <code>{channel id}.events.create</code></em>
 
 </p>
 <p>Records a new event. Events recorded this way must be completed events, i.e. either period events with a known duration or mark events. To start a running period event, post a <code>events/start</code> request.
@@ -220,11 +220,11 @@ See the standard channels, folders and tags (TODO: link) we encourage you to use
 <ul>
 <li><code>400 Bad Request</code>, id <code>UNKNOWN_FOLDER</code>: The specified folder cannot be found.</li>
 </ul>
-<h3>POST <code>/{channel-id}/events/start</code></h3>
-<p><em>Socket.IO command id: <code>{channel-id}.events.start</code></em>
+<h3>POST <code>/{channel id}/events/start</code></h3>
+<p><em>Socket.IO command id: <code>{channel id}.events.start</code></em>
 
 </p>
-<p>Starts a new period event, stopping the previously running period event if any. See POST <code>/{channel-id}/events</code> for details. TODO: detail
+<p>Starts a new period event, stopping the previously running period event if any. See POST <code>/{channel id}/events</code> for details. TODO: detail
 
 </p>
 <h4>Successful response: <code>201 Created</code></h4>
@@ -234,20 +234,20 @@ See the standard channels, folders and tags (TODO: link) we encourage you to use
 <li><code>400 Bad Request</code>, id <code>INVALID_OPERATION</code>: A period event cannot start if another period event already exists at a later time.</li>
 <li><code>400 Bad request</code>, id <code>PERIODS_OVERLAP</code>: TODO (data: array of overlapped ids)</li>
 </ul>
-<h3>POST <code>/{channel-id}/events/stop</code></h3>
-<p><em>Socket.IO command id: <code>{channel-id}.events.stop</code></em>
+<h3>POST <code>/{channel id}/events/stop</code></h3>
+<p><em>Socket.IO command id: <code>{channel id}.events.stop</code></em>
 
 </p>
-<p>Stops the previously running period event. See POST <code>/{channel-id}/events</code> for details. TODO: detail
+<p>Stops the previously running period event. See POST <code>/{channel id}/events</code> for details. TODO: detail
 
 </p>
 <h4>Successful response: <code>200 OK</code></h4>
 <ul>
 <li><code>stoppedId</code> (<a href="#data-types-identity">identity</a>): The id of the previously running period event that was stopped, or null if no running event was found.</li>
 </ul>
-<h3>TODO: GET <code>/{channel-id}/events/start</code> and <code>.../stop</code> and <code>.../record</code> alternatives to the above to allow simple calls via e.g. wget/curl</h3>
-<h3>GET <code>/{channel-id}/events/running</code></h3>
-<p><em>Socket.IO command id: <code>{channel-id}.events.getRunning</code></em>
+<h3>TODO: GET <code>/{channel id}/events/start</code> and <code>.../stop</code> and <code>.../record</code> alternatives to the above to allow simple calls via e.g. wget/curl</h3>
+<h3>GET <code>/{channel id}/events/running</code></h3>
+<p><em>Socket.IO command id: <code>{channel id}.events.getRunning</code></em>
 
 </p>
 <p>Gets the currently running period events.
@@ -258,8 +258,8 @@ See the standard channels, folders and tags (TODO: link) we encourage you to use
 
 
 </p>
-<h3>PUT <code>/{channel-id}/events/{event-id}</code></h3>
-<p><em>Socket.IO command id: <code>{channel-id}.events.update</code></em>
+<h3>PUT <code>/{channel id}/events/{event id}</code></h3>
+<p><em>Socket.IO command id: <code>{channel id}.events.update</code></em>
 
 </p>
 <p>Modifies the activity event's attributes.
@@ -278,7 +278,7 @@ See the standard channels, folders and tags (TODO: link) we encourage you to use
 <li><code>400 Bad Request</code>, id <code>INVALID_OPERATION</code>: Returned for period events, if attempting to set the event's duration to <code>undefined</code> (i.e. still running) while one or more other period events were recorded after it.</li>
 <li><code>400 Bad Request</code>, id <code>PERIODS_OVERLAP</code>: Returned for period events, if attempting to change the event's duration to a value that causes an overlap with one or more subsequent period event(s). TODO format (list of unspecified overlapped event ids, or "too many" if more than 10)</li>
 </ul>
-<h3>POST <code>/{channel-id}/events/{event-id}</code></h3>
+<h3>POST <code>/{channel id}/events/{event id}</code></h3>
 <p>Adds one or more file attachments to the event. This request expects standard multipart/form-data content, with all content parts being the attached files.
 
 </p>
@@ -286,8 +286,8 @@ See the standard channels, folders and tags (TODO: link) we encourage you to use
 
 </p>
 <h4>Successful response: <code>200 OK</code></h4>
-<h3>DELETE <code>/{channel-id}/events/{event-id}</code></h3>
-<p><em>Socket.IO command id: <code>{channel-id}.events.delete</code></em>
+<h3>DELETE <code>/{channel id}/events/{event id}</code></h3>
+<p><em>Socket.IO command id: <code>{channel id}.events.delete</code></em>
 
 </p>
 <p>Trashes or deletes the specified event, depending on its current state:
@@ -298,20 +298,20 @@ See the standard channels, folders and tags (TODO: link) we encourage you to use
 <li>If the event is already in the trash, it will be irreversibly deleted (including all its attached files, if any).</li>
 </ul>
 <h4>Successful response: <code>200 OK</code></h4>
-<h3>GET <code>/{channel-id}/events/{event-id}/{file-name}</code></h3>
+<h3>GET <code>/{channel id}/events/{event id}/{file name}</code></h3>
 <p>Gets the attached file.
 
 </p>
 <h4>Successful response: <code>200 OK</code></h4>
-<h3>DELETE <code>/{channel-id}/events/{event-id}/{file-name}</code></h3>
-<p><em>Socket.IO command id: <code>{channel-id}.events.deleteAttachedFile</code></em>
+<h3>DELETE <code>/{channel id}/events/{event id}/{file name}</code></h3>
+<p><em>Socket.IO command id: <code>{channel id}.events.deleteAttachedFile</code></em>
 
 </p>
 <p>Irreversibly deletes the attached file.
 
 </p>
 <h4>Successful response: <code>200 OK</code></h4>
-<h3>POST <code>/{channel-id}/events/batch</code></h3>
+<h3>POST <code>/{channel id}/events/batch</code></h3>
 <p>TODO: this is currently unimplemented and may stay that way.
 Batch upload events that were recorded by the client while offline. If the client-recorded events overlap events on the server, the request will be rejected (see errors below); it is the client's responsibility to retrieve updated server data and adjust its own before uploading.
 
@@ -335,8 +335,8 @@ Batch upload events that were recorded by the client while offline. If the clien
 
 
 </p>
-<h3>GET <code>/{channel-id}/folders</code></h3>
-<p><em>Socket.IO command id: <code>{channel-id}.folders.get</code></em>
+<h3>GET <code>/{channel id}/folders</code></h3>
+<p><em>Socket.IO command id: <code>{channel id}.folders.get</code></em>
 
 </p>
 <p>Gets the accessible folders, either from the root level or only descending from a specified parent folder.
@@ -357,8 +357,8 @@ Batch upload events that were recorded by the client while offline. If the clien
 
 
 </p>
-<h3>POST <code>/{channel-id}/folders</code></h3>
-<p><em>Socket.IO command id: <code>{channel-id}.folders.create</code></em>
+<h3>POST <code>/{channel id}/folders</code></h3>
+<p><em>Socket.IO command id: <code>{channel id}.folders.create</code></em>
 
 </p>
 <p>Creates a new folder at the root level or as a child folder to the specified folder.
@@ -377,8 +377,8 @@ Batch upload events that were recorded by the client while offline. If the clien
 <li><code>400 Bad Request</code>, id <code>ITEM_NAME_ALREADY_EXISTS</code>: A sibling folder already exists with the same name.</li>
 <li><code>400 Bad Request</code>, id <code>INVALID_ITEM_ID</code>: Occurs if trying to set the id to an invalid value (e.g. a reserved word like <code>"null"</code>).</li>
 </ul>
-<h3>PUT <code>/{channel-id}/folders/{folder-id}</code></h3>
-<p><em>Socket.IO command id: <code>{channel-id}.folders.update</code></em>
+<h3>PUT <code>/{channel id}/folders/{folder id}</code></h3>
+<p><em>Socket.IO command id: <code>{channel id}.folders.update</code></em>
 
 </p>
 <p>Modifies the activity folder's attributes.
@@ -397,8 +397,8 @@ Batch upload events that were recorded by the client while offline. If the clien
 <li><code>400 Bad Request</code>, id <code>UNKNOWN_FOLDER</code>: The specified parent folder's id is unknown.</li>
 <li><code>400 Bad Request</code>, id <code>ITEM_NAME_ALREADY_EXISTS</code>: A sibling folder already exists with the same name.</li>
 </ul>
-<h3>DELETE <code>/{channel-id}/folders/{folder-id}</code></h3>
-<p><em>Socket.IO command id: <code>{channel-id}.folders.delete</code></em>
+<h3>DELETE <code>/{channel id}/folders/{folder id}</code></h3>
+<p><em>Socket.IO command id: <code>{channel id}.folders.delete</code></em>
 
 </p>
 <p>Trashes or deletes the specified folder, depending on its current state:
@@ -568,7 +568,7 @@ Requires session token, old password, new password.
 <ul>
 <li><code>id</code> (<a href="#data-types-identity">identity</a>): The created bookmark's id.</li>
 </ul>
-<h3>PUT <code>/admin/bookmarks/{bookmark-id}</code></h3>
+<h3>PUT <code>/admin/bookmarks/{bookmark id}</code></h3>
 <p>Modifies the specified sharing bookmark.
 
 </p>
@@ -577,7 +577,7 @@ Requires session token, old password, new password.
 
 </p>
 <h4>Successful response: <code>200 OK</code></h4>
-<h3>DELETE <code>/admin/bookmarks/{bookmark-id}</code></h3>
+<h3>DELETE <code>/admin/bookmarks/{bookmark id}</code></h3>
 <p>Deletes the specified sharing bookmark.
 
 </p>
@@ -616,7 +616,7 @@ Requires session token, old password, new password.
 <ul>
 <li><code>400 Bad Request</code>, id <code>INVALID_ITEM_ID</code>: Occurs if trying to set the id to an invalid value (e.g. a reserved word like <code>"null"</code>).</li>
 </ul>
-<h3>PUT <code>/admin/channels/{channel-id}</code></h3>
+<h3>PUT <code>/admin/channels/{channel id}</code></h3>
 <p>Modifies the activity channel's attributes.
 
 </p>
@@ -625,7 +625,7 @@ Requires session token, old password, new password.
 
 </p>
 <h4>Successful response: <code>200 OK</code></h4>
-<h3>DELETE <code>/admin/channels/{channel-id}</code></h3>
+<h3>DELETE <code>/admin/channels/{channel id}</code></h3>
 <p>Trashes or deletes the given channel, depending on its current state:
 
 </p>
@@ -875,6 +875,101 @@ Fields:
 <h3><a id="data-types-language-code"></a>Two-letter ISO language code</h3>
 <p>A two-letter string specifying a language following the ISO 639-1 standard (see <a href="http://en.wikipedia.org/wiki/ISO_639-1">the related Wikipedia definition</a>).
 </p>
+</section><section id="public-channels"><h1>Public channels</h1>
+<p><em>TODO: this should be a separate page. Wait till the final dev site structure is defined.</em>
+
+</p>
+<p>Public channels are channels of general interest (like news or weather) that can be integrated into users' Pryv view to add context to their own events (or just browsed independantly as-is). Unlike Pryv users' data and because they are public and read-only, public channels can be hosted anywhere – that means you can create your own public channel for users to enrich their Pryv experience. The public channels directory within Pryv lists all the channels that were registered to us and validated, but users are free to add channels from any URL.
+
+</p>
+<p>This section describes the public channel API, both for those of you who want to implement it for publishing their own channels and for those who want to integrate public channels into their app. The public channel API itself is a small subset of the Pryv API.
+
+</p>
+<p>TODO: add link(s) to example public channel implementation(s), and possibly a simple tutorial.
+
+
+</p>
+<h2>General stuff</h2>
+<h3><strong>*.pryv.io</strong> URLs</h3>
+<p>Public channels are not limited to <strong>*.pryv.io</strong> URLs; they can be published anywhere. When publishing your own channel, you are free to use any hostname and path you like. If however you'd like to use a <strong>*.pryv.io</strong> URL, just get in touch with us (TODO: add info about how to register for a *.pryv.io name + how to check if a name is available).
+
+
+</p>
+<h3>Authorization and encryption</h3>
+<p>As you can expect, there is no authorization mechanism for accessing public channels. There's no need either to encrypt public channels with TLS (HTTPS), but we don't enforce any restriction there.
+
+
+</p>
+<h2>HTTP headers</h2>
+<p>The following headers must be included in every response:
+
+</p>
+<ul>
+<li><code>API-Version</code>: The version of the public channel API in the form <code>{major}.{minor}.{revision}</code>. (TODO: indicate documented version somewhere.)</li>
+<li><code>Server-Time</code>: The current server time as a <a href="#data-types-timestamp">timestamp</a>, which must of course be consistent with the times of events in the channel.</li>
+</ul>
+<h2>Common errors</h2>
+<p>Here are errors commonly returned for requests:
+
+</p>
+<ul>
+<li><code>400 Bad Request</code>, id <code>INVALID_PARAMETERS_FORMAT</code>: The request's parameters do not follow the expected format.</li>
+<li><code>404 Not Found</code>, possible cases:<ul>
+<li>Id <code>UNKNOWN_FOLDER</code>: The activity folder can't be found in the specified channel.</li>
+<li>Id <code>UNKNOWN_ATTACHMENT</code>: The attached file can't be found for the specified event.</li>
+</ul>
+</li>
+</ul>
+<h2>Events</h2>
+<p>Methods to retrieve <a href="#data-types-event">events</a>. The events on public channels are the same as those in the Pryv API.
+
+
+</p>
+<h3>GET <code>{channel base path}/events</code></h3>
+<p>Queries the channel's events. This is the only method that must be implemented for every public channel.
+
+</p>
+<h4>Query string parameters</h4>
+<ul>
+<li><code>fromTime</code> (<a href="#data-types-timestamp">timestamp</a>): Optional. TODO. Default is 24 hours before <code>toTime</code>, if set.</li>
+<li><code>toTime</code> (<a href="#data-types-timestamp">timestamp</a>): Optional. TODO. Default is the current time.</li>
+<li><code>onlyFolders</code> (array of <a href="#data-types-identity">identity</a>): Optional. If set, only events assigned to the specified folders and their sub-folders will be returned. To retrieve events that are not assigned to any folder, just include a <code>null</code> value in the array. By default, all accessible events are returned (regardless of their folder assignment).</li>
+<li><code>sortAscending</code> (<code>true</code> or <code>false</code>): If <code>true</code>, events will be sorted from oldest to newest. Default: false (sort descending).</li>
+<li><code>skip</code> (number): Optional. The number of items to skip in the results.</li>
+<li><code>limit</code> (number): Optional. The number of items to return in the results. A default value of 20 items is used if no other range limiting parameter is specified (<code>fromTime</code>, <code>toTime</code>).</li>
+<li><code>modifiedSince</code> (<a href="#data-types-timestamp">timestamp</a>): Optional. If specified, only events modified since that time will be returned.</li>
+</ul>
+<h4>Successful response: <code>200 OK</code></h4>
+<p>An array of <a href="#data-types-event">activity events</a> containing the accessible events ordered by time (see <code>sortAscending</code> above).
+
+</p>
+<h4>Specific errors</h4>
+<ul>
+<li><code>400 Bad Request</code>, id <code>UNKNOWN_FOLDER</code>: TODO may happen if one of the specified folders doesn't exist</li>
+</ul>
+<h3>GET <code>{channel base path}/events/{event-id}/{file-name}</code></h3>
+<p>Gets the attached file. This method must be implemented if some of your public channel's events contain attachments.
+
+</p>
+<h4>Successful response: <code>200 OK</code></h4>
+<h2>Folders</h2>
+<p><a href="#data-types-folder">Folders</a> provide an organization structure for channels that need it; implementing folders in public channels is by no means mandatory. The folders on public channels are the same as those in the Pryv API.
+
+
+</p>
+<h3>GET <code>{channel base path}/folders</code></h3>
+<p>Gets the channel's folders, either from the root level or only descending from a specified parent folder.
+
+</p>
+<h4>Query string parameters</h4>
+<ul>
+<li><code>parentId</code> (<a href="#data-types-identity">identity</a>): Optional. The id of the parent folder to use as root for the request. Default: <code>null</code> (returns all folders from the root level).</li>
+</ul>
+<h4>Successful response: <code>200 OK</code></h4>
+<p>An array of <a href="#data-types-folder">activity folders</a> containing the tree of the folders, sorted by name.
+
+</p>
+<p>TODO: example</p>
 </section></div></div><div id="toc"></div><script>jQuery(document).ready(function($) {
   $('#toc').toc({
     'selectors': 'h1,h2',

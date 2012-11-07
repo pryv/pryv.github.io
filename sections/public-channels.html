@@ -1,0 +1,95 @@
+<h1>Public channels</h1>
+<p><em>TODO: this should be a separate page. Wait till the final dev site structure is defined.</em>
+
+</p>
+<p>Public channels are channels of general interest (like news or weather) that can be integrated into users&#39; Pryv view to add context to their own events (or just browsed independantly as-is). Unlike Pryv users&#39; data and because they are public and read-only, public channels can be hosted anywhere – that means you can create your own public channel for users to enrich their Pryv experience. The public channels directory within Pryv lists all the channels that were registered to us and validated, but users are free to add channels from any URL.
+
+</p>
+<p>This section describes the public channel API, both for those of you who want to implement it for publishing their own channels and for those who want to integrate public channels into their app. The public channel API itself is a small subset of the Pryv API.
+
+</p>
+<p>TODO: add link(s) to example public channel implementation(s), and possibly a simple tutorial.
+
+
+</p>
+<h2>General stuff</h2>
+<h3><strong>*.pryv.io</strong> URLs</h3>
+<p>Public channels are not limited to <strong>*.pryv.io</strong> URLs; they can be published anywhere. When publishing your own channel, you are free to use any hostname and path you like. If however you&#39;d like to use a <strong>*.pryv.io</strong> URL, just get in touch with us (TODO: add info about how to register for a *.pryv.io name + how to check if a name is available).
+
+
+</p>
+<h3>Authorization and encryption</h3>
+<p>As you can expect, there is no authorization mechanism for accessing public channels. There&#39;s no need either to encrypt public channels with TLS (HTTPS), but we don&#39;t enforce any restriction there.
+
+
+</p>
+<h2>HTTP headers</h2>
+<p>The following headers must be included in every response:
+
+</p>
+<ul>
+<li><code>API-Version</code>: The version of the public channel API in the form <code>{major}.{minor}.{revision}</code>. (TODO: indicate documented version somewhere.)</li>
+<li><code>Server-Time</code>: The current server time as a <a href="#data-types-timestamp">timestamp</a>, which must of course be consistent with the times of events in the channel.</li>
+</ul>
+<h2>Common errors</h2>
+<p>Here are errors commonly returned for requests:
+
+</p>
+<ul>
+<li><code>400 Bad Request</code>, id <code>INVALID_PARAMETERS_FORMAT</code>: The request&#39;s parameters do not follow the expected format.</li>
+<li><code>404 Not Found</code>, possible cases:<ul>
+<li>Id <code>UNKNOWN_FOLDER</code>: The activity folder can&#39;t be found in the specified channel.</li>
+<li>Id <code>UNKNOWN_ATTACHMENT</code>: The attached file can&#39;t be found for the specified event.</li>
+</ul>
+</li>
+</ul>
+<h2>Events</h2>
+<p>Methods to retrieve <a href="#data-types-event">events</a>. The events on public channels are the same as those in the Pryv API.
+
+
+</p>
+<h3>GET <code>{channel base path}/events</code></h3>
+<p>Queries the channel&#39;s events. This is the only method that must be implemented for every public channel.
+
+</p>
+<h4>Query string parameters</h4>
+<ul>
+<li><code>fromTime</code> (<a href="#data-types-timestamp">timestamp</a>): Optional. TODO. Default is 24 hours before <code>toTime</code>, if set.</li>
+<li><code>toTime</code> (<a href="#data-types-timestamp">timestamp</a>): Optional. TODO. Default is the current time.</li>
+<li><code>onlyFolders</code> (array of <a href="#data-types-identity">identity</a>): Optional. If set, only events assigned to the specified folders and their sub-folders will be returned. To retrieve events that are not assigned to any folder, just include a <code>null</code> value in the array. By default, all accessible events are returned (regardless of their folder assignment).</li>
+<li><code>sortAscending</code> (<code>true</code> or <code>false</code>): If <code>true</code>, events will be sorted from oldest to newest. Default: false (sort descending).</li>
+<li><code>skip</code> (number): Optional. The number of items to skip in the results.</li>
+<li><code>limit</code> (number): Optional. The number of items to return in the results. A default value of 20 items is used if no other range limiting parameter is specified (<code>fromTime</code>, <code>toTime</code>).</li>
+<li><code>modifiedSince</code> (<a href="#data-types-timestamp">timestamp</a>): Optional. If specified, only events modified since that time will be returned.</li>
+</ul>
+<h4>Successful response: <code>200 OK</code></h4>
+<p>An array of <a href="#data-types-event">activity events</a> containing the accessible events ordered by time (see <code>sortAscending</code> above).
+
+</p>
+<h4>Specific errors</h4>
+<ul>
+<li><code>400 Bad Request</code>, id <code>UNKNOWN_FOLDER</code>: TODO may happen if one of the specified folders doesn&#39;t exist</li>
+</ul>
+<h3>GET <code>{channel base path}/events/{event-id}/{file-name}</code></h3>
+<p>Gets the attached file. This method must be implemented if some of your public channel&#39;s events contain attachments.
+
+</p>
+<h4>Successful response: <code>200 OK</code></h4>
+<h2>Folders</h2>
+<p><a href="#data-types-folder">Folders</a> provide an organization structure for channels that need it; implementing folders in public channels is by no means mandatory. The folders on public channels are the same as those in the Pryv API.
+
+
+</p>
+<h3>GET <code>{channel base path}/folders</code></h3>
+<p>Gets the channel&#39;s folders, either from the root level or only descending from a specified parent folder.
+
+</p>
+<h4>Query string parameters</h4>
+<ul>
+<li><code>parentId</code> (<a href="#data-types-identity">identity</a>): Optional. The id of the parent folder to use as root for the request. Default: <code>null</code> (returns all folders from the root level).</li>
+</ul>
+<h4>Successful response: <code>200 OK</code></h4>
+<p>An array of <a href="#data-types-folder">activity folders</a> containing the tree of the folders, sorted by name.
+
+</p>
+<p>TODO: example</p>
