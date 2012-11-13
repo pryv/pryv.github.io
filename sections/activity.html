@@ -48,8 +48,9 @@ Host:</span> yacinthe.pryv.io</span></code></pre>
 <h4>Successful response: <code>200 OK</code></h4>
 <p>An array of <a href="#data-types-channel">activity channels</a> containing the accessible channels.
 
-
 </p>
+<h4>cURL example</h4>
+<pre class="highlighted"><code class="language-bash">$ curl -i -H <span class="string">"Content-Type: application/json"</span> -H <span class="string">"Accept: application/json"</span> https://{userName}.pryv.io/channels?auth={access-token}</code></pre>
 <h2>Events</h2>
 <p>Methods to retrieve and manipulate <a href="#data-types-event">events</a>.
 
@@ -81,6 +82,8 @@ Host:</span> yacinthe.pryv.io</span></code></pre>
 <ul>
 <li><code>400 Bad Request</code>, id <code>UNKNOWN_FOLDER</code>: TODO may happen if one of the specified folders doesn't exist</li>
 </ul>
+<h4>cURL example</h4>
+<pre class="highlighted"><code class="language-bash">$ curl -i -H <span class="string">"Content-Type: application/json"</span> -H <span class="string">"Accept: application/json"</span> https://{userName}.pryv.io/{channel id}/events?auth={access-token}</code></pre>
 <h3>POST <code>/{channel id}/events</code></h3>
 <p><em>Socket.IO command id: <code>{channel id}.events.create</code></em>
 
@@ -107,6 +110,8 @@ Host:</span> yacinthe.pryv.io</span></code></pre>
 <ul>
 <li><code>400 Bad Request</code>, id <code>UNKNOWN_FOLDER</code>: The specified folder cannot be found.</li>
 </ul>
+<h4>cURL example</h4>
+<pre class="highlighted"><code class="language-bash">$ curl -i -H <span class="string">"Content-Type: application/json"</span> -H <span class="string">"Accept: application/json"</span> -X POST -d <span class="string">'{"folderId":"{folder id}"}'</span> https://{userName}.pryv.io/{channel id}/events?auth={access-token}</code></pre>
 <h3>POST <code>/{channel id}/events/start</code></h3>
 <p><em>Socket.IO command id: <code>{channel id}.events.start</code></em>
 
@@ -121,6 +126,8 @@ Host:</span> yacinthe.pryv.io</span></code></pre>
 <li><code>400 Bad Request</code>, id <code>INVALID_OPERATION</code>: A period event cannot start if another period event already exists at a later time.</li>
 <li><code>400 Bad request</code>, id <code>PERIODS_OVERLAP</code>: TODO (data: array of overlapped ids)</li>
 </ul>
+<h4>cURL example</h4>
+<pre class="highlighted"><code class="language-bash">$ curl -i -H <span class="string">"Content-Type: application/json"</span> -H <span class="string">"Accept: application/json"</span> -X POST -d <span class="string">'{"folderId":"{folder id}"}'</span> https://{userName}.pryv.io/{channel id}/events/start?auth={access-token}</code></pre>
 <h3>POST <code>/{channel id}/events/stop</code></h3>
 <p><em>Socket.IO command id: <code>{channel id}.events.stop</code></em>
 
@@ -132,6 +139,9 @@ Host:</span> yacinthe.pryv.io</span></code></pre>
 <ul>
 <li><code>stoppedId</code> (<a href="#data-types-identity">identity</a>): The id of the previously running period event that was stopped, or null if no running event was found.</li>
 </ul>
+<h4>cURL example</h4>
+<pre class="highlighted"><code class="language-bash">
+</code></pre>
 <h3>TODO: GET <code>/{channel id}/events/start</code> and <code>.../stop</code> and <code>.../record</code> alternatives to the above to allow simple calls via e.g. wget/curl</h3>
 <h3>GET <code>/{channel id}/events/running</code></h3>
 <p><em>Socket.IO command id: <code>{channel id}.events.getRunning</code></em>
@@ -143,8 +153,10 @@ Host:</span> yacinthe.pryv.io</span></code></pre>
 <h4>Successful response: <code>200 OK</code></h4>
 <p>An array of <a href="#data-types-event">activity events</a> containing the running period events.
 
-
 </p>
+<h4>cURL example</h4>
+<pre class="highlighted"><code class="language-bash">
+</code></pre>
 <h3>PUT <code>/{channel id}/events/{event id}</code></h3>
 <p><em>Socket.IO command id: <code>{channel id}.events.update</code></em>
 
@@ -165,6 +177,9 @@ Host:</span> yacinthe.pryv.io</span></code></pre>
 <li><code>400 Bad Request</code>, id <code>INVALID_OPERATION</code>: Returned for period events, if attempting to set the event's duration to <code>undefined</code> (i.e. still running) while one or more other period events were recorded after it.</li>
 <li><code>400 Bad Request</code>, id <code>PERIODS_OVERLAP</code>: Returned for period events, if attempting to change the event's duration to a value that causes an overlap with one or more subsequent period event(s). TODO format (list of unspecified overlapped event ids, or "too many" if more than 10)</li>
 </ul>
+<h4>cURL example</h4>
+<pre class="highlighted"><code class="language-bash">
+</code></pre>
 <h3>POST <code>/{channel id}/events/{event id}</code></h3>
 <p>Adds one or more file attachments to the event. This request expects standard multipart/form-data content, with all content parts being the attached files.
 
@@ -173,6 +188,9 @@ Host:</span> yacinthe.pryv.io</span></code></pre>
 
 </p>
 <h4>Successful response: <code>200 OK</code></h4>
+<h4>cURL example</h4>
+<pre class="highlighted"><code class="language-bash">
+</code></pre>
 <h3>DELETE <code>/{channel id}/events/{event id}</code></h3>
 <p><em>Socket.IO command id: <code>{channel id}.events.delete</code></em>
 
@@ -185,11 +203,17 @@ Host:</span> yacinthe.pryv.io</span></code></pre>
 <li>If the event is already in the trash, it will be irreversibly deleted (including all its attached files, if any).</li>
 </ul>
 <h4>Successful response: <code>200 OK</code></h4>
+<h4>cURL example</h4>
+<pre class="highlighted"><code class="language-bash">
+</code></pre>
 <h3>GET <code>/{channel id}/events/{event id}/{file name}</code></h3>
 <p>Gets the attached file.
 
 </p>
 <h4>Successful response: <code>200 OK</code></h4>
+<h4>cURL example</h4>
+<pre class="highlighted"><code class="language-bash">
+</code></pre>
 <h3>DELETE <code>/{channel id}/events/{event id}/{file name}</code></h3>
 <p><em>Socket.IO command id: <code>{channel id}.events.deleteAttachedFile</code></em>
 
@@ -198,6 +222,9 @@ Host:</span> yacinthe.pryv.io</span></code></pre>
 
 </p>
 <h4>Successful response: <code>200 OK</code></h4>
+<h4>cURL example</h4>
+<pre class="highlighted"><code class="language-bash">
+</code></pre>
 <h3>POST <code>/{channel id}/events/batch</code></h3>
 <p>TODO: this is currently unimplemented and may stay that way.
 Batch upload events that were recorded by the client while offline. If the client-recorded events overlap events on the server, the request will be rejected (see errors below); it is the client's responsibility to retrieve updated server data and adjust its own before uploading.
@@ -217,6 +244,9 @@ Batch upload events that were recorded by the client while offline. If the clien
 <li><code>400 Bad Request</code>, id <code>UNKNOWN_FOLDER</code>: TODO</li>
 <li><code>400 Bad Request</code>, id <code>PERIODS_OVERLAP</code>: TODO (list of unspecified overlapped event ids)</li>
 </ul>
+<h4>cURL example</h4>
+<pre class="highlighted"><code class="language-bash">
+</code></pre>
 <h2>Folders</h2>
 <p>Methods to retrieve and manipulate <a href="#data-types-folder">folders</a>.
 
@@ -248,6 +278,9 @@ Batch upload events that were recorded by the client while offline. If the clien
 
 
 </p>
+<h4>cURL example</h4>
+<pre class="highlighted"><code class="language-bash">
+</code></pre>
 <h3>POST <code>/{channel id}/folders</code></h3>
 <p><em>Socket.IO command id: <code>{channel id}.folders.create</code></em>
 
@@ -268,6 +301,9 @@ Batch upload events that were recorded by the client while offline. If the clien
 <li><code>400 Bad Request</code>, id <code>ITEM_NAME_ALREADY_EXISTS</code>: A sibling folder already exists with the same name.</li>
 <li><code>400 Bad Request</code>, id <code>INVALID_ITEM_ID</code>: Occurs if trying to set the id to an invalid value (e.g. a reserved word like <code>"null"</code>).</li>
 </ul>
+<h4>cURL example</h4>
+<pre class="highlighted"><code class="language-bash">
+</code></pre>
 <h3>PUT <code>/{channel id}/folders/{folder id}</code></h3>
 <p><em>Socket.IO command id: <code>{channel id}.folders.update</code></em>
 
@@ -288,6 +324,9 @@ Batch upload events that were recorded by the client while offline. If the clien
 <li><code>400 Bad Request</code>, id <code>UNKNOWN_FOLDER</code>: The specified parent folder's id is unknown.</li>
 <li><code>400 Bad Request</code>, id <code>ITEM_NAME_ALREADY_EXISTS</code>: A sibling folder already exists with the same name.</li>
 </ul>
+<h4>cURL example</h4>
+<pre class="highlighted"><code class="language-bash">
+</code></pre>
 <h3>DELETE <code>/{channel id}/folders/{folder id}</code></h3>
 <p><em>Socket.IO command id: <code>{channel id}.folders.delete</code></em>
 
@@ -308,4 +347,7 @@ Batch upload events that were recorded by the client while offline. If the clien
 <ul>
 <li><code>400 Bad Request</code>, id <code>MISSING_PARAMETER</code>: There are events referring to the deleted items and the <code>mergeEventsWithParent</code> parameter is missing.</li>
 </ul>
+<h4>cURL example</h4>
+<pre class="highlighted"><code class="language-bash">
+</code></pre>
 </body></html>

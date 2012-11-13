@@ -161,8 +161,9 @@ Host:</span> yacinthe.pryv.io</span></code></pre>
 <h4>Successful response: <code>200 OK</code></h4>
 <p>An array of <a href="#data-types-channel">activity channels</a> containing the accessible channels.
 
-
 </p>
+<h4>cURL example</h4>
+<pre class="highlighted"><code class="language-bash">$ curl -i -H <span class="string">"Content-Type: application/json"</span> -H <span class="string">"Accept: application/json"</span> https://{userName}.pryv.io/channels?auth={access-token}</code></pre>
 <h2>Events</h2>
 <p>Methods to retrieve and manipulate <a href="#data-types-event">events</a>.
 
@@ -194,6 +195,8 @@ Host:</span> yacinthe.pryv.io</span></code></pre>
 <ul>
 <li><code>400 Bad Request</code>, id <code>UNKNOWN_FOLDER</code>: TODO may happen if one of the specified folders doesn't exist</li>
 </ul>
+<h4>cURL example</h4>
+<pre class="highlighted"><code class="language-bash">$ curl -i -H <span class="string">"Content-Type: application/json"</span> -H <span class="string">"Accept: application/json"</span> https://{userName}.pryv.io/{channel id}/events?auth={access-token}</code></pre>
 <h3>POST <code>/{channel id}/events</code></h3>
 <p><em>Socket.IO command id: <code>{channel id}.events.create</code></em>
 
@@ -220,6 +223,8 @@ Host:</span> yacinthe.pryv.io</span></code></pre>
 <ul>
 <li><code>400 Bad Request</code>, id <code>UNKNOWN_FOLDER</code>: The specified folder cannot be found.</li>
 </ul>
+<h4>cURL example</h4>
+<pre class="highlighted"><code class="language-bash">$ curl -i -H <span class="string">"Content-Type: application/json"</span> -H <span class="string">"Accept: application/json"</span> -X POST -d <span class="string">'{"folderId":"{folder id}"}'</span> https://{userName}.pryv.io/{channel id}/events?auth={access-token}</code></pre>
 <h3>POST <code>/{channel id}/events/start</code></h3>
 <p><em>Socket.IO command id: <code>{channel id}.events.start</code></em>
 
@@ -234,6 +239,8 @@ Host:</span> yacinthe.pryv.io</span></code></pre>
 <li><code>400 Bad Request</code>, id <code>INVALID_OPERATION</code>: A period event cannot start if another period event already exists at a later time.</li>
 <li><code>400 Bad request</code>, id <code>PERIODS_OVERLAP</code>: TODO (data: array of overlapped ids)</li>
 </ul>
+<h4>cURL example</h4>
+<pre class="highlighted"><code class="language-bash">$ curl -i -H <span class="string">"Content-Type: application/json"</span> -H <span class="string">"Accept: application/json"</span> -X POST -d <span class="string">'{"folderId":"{folder id}"}'</span> https://{userName}.pryv.io/{channel id}/events/start?auth={access-token}</code></pre>
 <h3>POST <code>/{channel id}/events/stop</code></h3>
 <p><em>Socket.IO command id: <code>{channel id}.events.stop</code></em>
 
@@ -245,6 +252,9 @@ Host:</span> yacinthe.pryv.io</span></code></pre>
 <ul>
 <li><code>stoppedId</code> (<a href="#data-types-identity">identity</a>): The id of the previously running period event that was stopped, or null if no running event was found.</li>
 </ul>
+<h4>cURL example</h4>
+<pre class="highlighted"><code class="language-bash">
+</code></pre>
 <h3>TODO: GET <code>/{channel id}/events/start</code> and <code>.../stop</code> and <code>.../record</code> alternatives to the above to allow simple calls via e.g. wget/curl</h3>
 <h3>GET <code>/{channel id}/events/running</code></h3>
 <p><em>Socket.IO command id: <code>{channel id}.events.getRunning</code></em>
@@ -256,8 +266,10 @@ Host:</span> yacinthe.pryv.io</span></code></pre>
 <h4>Successful response: <code>200 OK</code></h4>
 <p>An array of <a href="#data-types-event">activity events</a> containing the running period events.
 
-
 </p>
+<h4>cURL example</h4>
+<pre class="highlighted"><code class="language-bash">
+</code></pre>
 <h3>PUT <code>/{channel id}/events/{event id}</code></h3>
 <p><em>Socket.IO command id: <code>{channel id}.events.update</code></em>
 
@@ -278,6 +290,9 @@ Host:</span> yacinthe.pryv.io</span></code></pre>
 <li><code>400 Bad Request</code>, id <code>INVALID_OPERATION</code>: Returned for period events, if attempting to set the event's duration to <code>undefined</code> (i.e. still running) while one or more other period events were recorded after it.</li>
 <li><code>400 Bad Request</code>, id <code>PERIODS_OVERLAP</code>: Returned for period events, if attempting to change the event's duration to a value that causes an overlap with one or more subsequent period event(s). TODO format (list of unspecified overlapped event ids, or "too many" if more than 10)</li>
 </ul>
+<h4>cURL example</h4>
+<pre class="highlighted"><code class="language-bash">
+</code></pre>
 <h3>POST <code>/{channel id}/events/{event id}</code></h3>
 <p>Adds one or more file attachments to the event. This request expects standard multipart/form-data content, with all content parts being the attached files.
 
@@ -286,6 +301,9 @@ Host:</span> yacinthe.pryv.io</span></code></pre>
 
 </p>
 <h4>Successful response: <code>200 OK</code></h4>
+<h4>cURL example</h4>
+<pre class="highlighted"><code class="language-bash">
+</code></pre>
 <h3>DELETE <code>/{channel id}/events/{event id}</code></h3>
 <p><em>Socket.IO command id: <code>{channel id}.events.delete</code></em>
 
@@ -298,11 +316,17 @@ Host:</span> yacinthe.pryv.io</span></code></pre>
 <li>If the event is already in the trash, it will be irreversibly deleted (including all its attached files, if any).</li>
 </ul>
 <h4>Successful response: <code>200 OK</code></h4>
+<h4>cURL example</h4>
+<pre class="highlighted"><code class="language-bash">
+</code></pre>
 <h3>GET <code>/{channel id}/events/{event id}/{file name}</code></h3>
 <p>Gets the attached file.
 
 </p>
 <h4>Successful response: <code>200 OK</code></h4>
+<h4>cURL example</h4>
+<pre class="highlighted"><code class="language-bash">
+</code></pre>
 <h3>DELETE <code>/{channel id}/events/{event id}/{file name}</code></h3>
 <p><em>Socket.IO command id: <code>{channel id}.events.deleteAttachedFile</code></em>
 
@@ -311,6 +335,9 @@ Host:</span> yacinthe.pryv.io</span></code></pre>
 
 </p>
 <h4>Successful response: <code>200 OK</code></h4>
+<h4>cURL example</h4>
+<pre class="highlighted"><code class="language-bash">
+</code></pre>
 <h3>POST <code>/{channel id}/events/batch</code></h3>
 <p>TODO: this is currently unimplemented and may stay that way.
 Batch upload events that were recorded by the client while offline. If the client-recorded events overlap events on the server, the request will be rejected (see errors below); it is the client's responsibility to retrieve updated server data and adjust its own before uploading.
@@ -330,6 +357,9 @@ Batch upload events that were recorded by the client while offline. If the clien
 <li><code>400 Bad Request</code>, id <code>UNKNOWN_FOLDER</code>: TODO</li>
 <li><code>400 Bad Request</code>, id <code>PERIODS_OVERLAP</code>: TODO (list of unspecified overlapped event ids)</li>
 </ul>
+<h4>cURL example</h4>
+<pre class="highlighted"><code class="language-bash">
+</code></pre>
 <h2>Folders</h2>
 <p>Methods to retrieve and manipulate <a href="#data-types-folder">folders</a>.
 
@@ -361,6 +391,9 @@ Batch upload events that were recorded by the client while offline. If the clien
 
 
 </p>
+<h4>cURL example</h4>
+<pre class="highlighted"><code class="language-bash">
+</code></pre>
 <h3>POST <code>/{channel id}/folders</code></h3>
 <p><em>Socket.IO command id: <code>{channel id}.folders.create</code></em>
 
@@ -381,6 +414,9 @@ Batch upload events that were recorded by the client while offline. If the clien
 <li><code>400 Bad Request</code>, id <code>ITEM_NAME_ALREADY_EXISTS</code>: A sibling folder already exists with the same name.</li>
 <li><code>400 Bad Request</code>, id <code>INVALID_ITEM_ID</code>: Occurs if trying to set the id to an invalid value (e.g. a reserved word like <code>"null"</code>).</li>
 </ul>
+<h4>cURL example</h4>
+<pre class="highlighted"><code class="language-bash">
+</code></pre>
 <h3>PUT <code>/{channel id}/folders/{folder id}</code></h3>
 <p><em>Socket.IO command id: <code>{channel id}.folders.update</code></em>
 
@@ -401,6 +437,9 @@ Batch upload events that were recorded by the client while offline. If the clien
 <li><code>400 Bad Request</code>, id <code>UNKNOWN_FOLDER</code>: The specified parent folder's id is unknown.</li>
 <li><code>400 Bad Request</code>, id <code>ITEM_NAME_ALREADY_EXISTS</code>: A sibling folder already exists with the same name.</li>
 </ul>
+<h4>cURL example</h4>
+<pre class="highlighted"><code class="language-bash">
+</code></pre>
 <h3>DELETE <code>/{channel id}/folders/{folder id}</code></h3>
 <p><em>Socket.IO command id: <code>{channel id}.folders.delete</code></em>
 
@@ -421,6 +460,9 @@ Batch upload events that were recorded by the client while offline. If the clien
 <ul>
 <li><code>400 Bad Request</code>, id <code>MISSING_PARAMETER</code>: There are events referring to the deleted items and the <code>mergeEventsWithParent</code> parameter is missing.</li>
 </ul>
+<h4>cURL example</h4>
+<pre class="highlighted"><code class="language-bash">
+</code></pre>
 </section><section id="admin"><h1>Administration methods</h1>
 <p>Administration methods allow to manage the user's <a href="#admin-user">account information</a>, <a href="#admin-channels">activity channels</a> and <a href="#admin-accesses">sharing</a> (via accesses).
 
@@ -463,11 +505,15 @@ Batch upload events that were recorded by the client while offline. If the clien
 <ul>
 <li><code>sessionID</code> (string): The newly created session's ID, to include in each subsequent request's <code>Authorization</code> header.</li>
 </ul>
+<h4>cURL example</h4>
+<pre class="highlighted"><code class="language-bash">$ curl -i -H <span class="string">"Content-Type: application/json"</span> -X POST -d <span class="string">'{"userName":"{userName}","password":"{password}","appId":"{appId}"}'</span> https://{userName}.pryv.io/admin/login</code></pre>
 <h3>POST <code>/admin/logout</code></h3>
 <p>Terminates the admin session.
 
 </p>
 <h4>Successful response: <code>200 OK</code></h4>
+<h4>cURL example</h4>
+<pre class="highlighted"><code class="language-bash">curl -i -H <span class="string">"Content-Type: application/json"</span> -H <span class="string">"Authorization: {session id}"</span> -X POST -d <span class="string">"{}"</span> https://{userName}.pryv.io/admin/logout</code></pre>
 <h2><a id="admin-user"></a>User information</h2>
 <h3>GET <code>/admin/user-info</code></h3>
 <p>TODO: get user informations
@@ -477,13 +523,17 @@ Requires session token.
 <h4>Successful response: <code>200 OK</code></h4>
 <p>TODO: email, display name, language, ...
 
-
 </p>
+<h4>Successful response: <code>200 OK</code></h4>
+<h4>cURL example</h4>
+<pre class="highlighted"><code class="language-bash">curl -i -H <span class="string">"Content-Type: application/json"</span> -H <span class="string">"Authorization: {session id}"</span> https://{userName}.pryv.io/admin/user-info</code></pre>
 <h3>PUT <code>/admin/user-info</code></h3>
 <p>TODO: change user information
 
-
 </p>
+<h4>cURL example</h4>
+<pre class="highlighted"><code class="language-bash">
+</code></pre>
 <h3>POST <code>/admin/change-password</code></h3>
 <p>TODO: change user password
 Requires session token, old password, new password.
@@ -492,8 +542,10 @@ Requires session token, old password, new password.
 <h4>Specific errors</h4>
 <p>TODO: <code>WRONG_PASSWORD</code>, <code>INVALID_NEW_PASSWORD</code>
 
-
 </p>
+<h4>cURL example</h4>
+<pre class="highlighted"><code class="language-bash">
+</code></pre>
 <h2><a id="admin-accesses"></a>Accesses</h2>
 <p>TODO: introductory text
 
@@ -507,6 +559,8 @@ Requires session token, old password, new password.
 <ul>
 <li><code>id</code> (<a href="#data-types-identity">identity</a>): Your app's dedicated personal <a href="#data-types-access">access</a> token.</li>
 </ul>
+<h4>cURL example</h4>
+<pre class="highlighted"><code class="language-bash">$ curl -i -H <span class="string">"Authorization: {session id}"</span> -X POST https://{userName}.pryv.io/admin/get-app-token</code></pre>
 <h3>GET <code>/admin/accesses</code></h3>
 <p>Gets all manageable accesses, which are the shared accesses. (Your app's own access token is retrieved with <code>POST /admin/get-app-token</code>.)
 
@@ -514,8 +568,9 @@ Requires session token, old password, new password.
 <h4>Successful response: <code>200 OK</code></h4>
 <p>An array of <a href="#data-types-access">accesses</a> containing all manageable accesses in the user's account, ordered by name.
 
-
 </p>
+<h4>cURL example</h4>
+<pre class="highlighted"><code class="language-bash">$ curl -i -H <span class="string">"Authorization: {session id}"</span> https://{userName}.pryv.io/admin/accesses</code></pre>
 <h3>POST <code>/admin/accesses</code></h3>
 <p>Creates a new shared access.
 
@@ -532,6 +587,9 @@ Requires session token, old password, new password.
 <ul>
 <li><code>400 Bad Request</code>, id <code>INVALID_ITEM_ID</code>: Occurs if trying to set the token to an invalid value (e.g. a reserved word like <code>"null"</code>).</li>
 </ul>
+<h4>cURL example</h4>
+<pre class="highlighted"><code class="language-bash">
+</code></pre>
 <h3>PUT <code>/admin/accesses/{token}</code></h3>
 <p>Modifies the specified shared access.
 
@@ -541,11 +599,17 @@ Requires session token, old password, new password.
 
 </p>
 <h4>Successful response: <code>200 OK</code></h4>
+<h4>cURL example</h4>
+<pre class="highlighted"><code class="language-bash">
+</code></pre>
 <h3>DELETE <code>/admin/accesses/{token}</code></h3>
 <p>Deletes the specified shared access.
 
 </p>
 <h4>Successful response: <code>200 OK</code></h4>
+<h4>cURL example</h4>
+<pre class="highlighted"><code class="language-bash">
+</code></pre>
 <h2><a id="admin-bookmarks"></a>Bookmarks</h2>
 <p>TODO: introductory text
 
@@ -558,8 +622,10 @@ Requires session token, old password, new password.
 <h4>Successful response: <code>200 OK</code></h4>
 <p>An array of <a href="#data-types-bookmark">bookmarks</a> containing all sharing bookmarks in the user's account, ordered by name.
 
-
 </p>
+<h4>cURL example</h4>
+<pre class="highlighted"><code class="language-bash">
+</code></pre>
 <h3>POST <code>/admin/bookmarks</code></h3>
 <p>Creates a new sharing bookmark.
 
@@ -572,6 +638,9 @@ Requires session token, old password, new password.
 <ul>
 <li><code>id</code> (<a href="#data-types-identity">identity</a>): The created bookmark's id.</li>
 </ul>
+<h4>cURL example</h4>
+<pre class="highlighted"><code class="language-bash">
+</code></pre>
 <h3>PUT <code>/admin/bookmarks/{bookmark id}</code></h3>
 <p>Modifies the specified sharing bookmark.
 
@@ -581,11 +650,17 @@ Requires session token, old password, new password.
 
 </p>
 <h4>Successful response: <code>200 OK</code></h4>
+<h4>cURL example</h4>
+<pre class="highlighted"><code class="language-bash">
+</code></pre>
 <h3>DELETE <code>/admin/bookmarks/{bookmark id}</code></h3>
 <p>Deletes the specified sharing bookmark.
 
 </p>
 <h4>Successful response: <code>200 OK</code></h4>
+<h4>cURL example</h4>
+<pre class="highlighted"><code class="language-bash">
+</code></pre>
 <h2><a id="admin-channels"></a>Channels</h2>
 <p>TODO: introductory text.
 
@@ -604,6 +679,9 @@ Requires session token, old password, new password.
 
 
 </p>
+<h4>cURL example</h4>
+<pre class="highlighted"><code class="language-bash">
+</code></pre>
 <h3>POST <code>/admin/channels</code></h3>
 <p>Creates a new activity channel.
 
@@ -620,6 +698,9 @@ Requires session token, old password, new password.
 <ul>
 <li><code>400 Bad Request</code>, id <code>INVALID_ITEM_ID</code>: Occurs if trying to set the id to an invalid value (e.g. a reserved word like <code>"null"</code>).</li>
 </ul>
+<h4>cURL example</h4>
+<pre class="highlighted"><code class="language-bash">
+</code></pre>
 <h3>PUT <code>/admin/channels/{channel id}</code></h3>
 <p>Modifies the activity channel's attributes.
 
@@ -629,6 +710,9 @@ Requires session token, old password, new password.
 
 </p>
 <h4>Successful response: <code>200 OK</code></h4>
+<h4>cURL example</h4>
+<pre class="highlighted"><code class="language-bash">
+</code></pre>
 <h3>DELETE <code>/admin/channels/{channel id}</code></h3>
 <p>Trashes or deletes the given channel, depending on its current state:
 
@@ -638,6 +722,9 @@ Requires session token, old password, new password.
 <li>If the channel is already in the trash, it will be irreversibly deleted with all the folders and events it contains.</li>
 </ul>
 <h4>Successful response: <code>200 OK</code></h4>
+<h4>cURL example</h4>
+<pre class="highlighted"><code class="language-bash">
+</code></pre>
 </section><section id="socketio"><h1>Socket.IO support</h1>
 <p>The activity service supports real-time interaction with <a href="http://socket.io">Socket.IO</a>, both by accepting equivalent messages for most API methods and by emitting data change notification messages. (Code examples below are in Javascript.)
 
@@ -877,8 +964,7 @@ Fields:
 <li>TODO: more examples</li>
 </ul>
 <h3><a id="data-types-language-code"></a>Two-letter ISO language code</h3>
-<p>A two-letter string specifying a language following the ISO 639-1 standard (see <a href="http://en.wikipedia.org/wiki/ISO_639-1">the related Wikipedia definition</a>).
-</p>
+<p>A two-letter string specifying a language following the ISO 639-1 standard (see <a href="http://en.wikipedia.org/wiki/ISO_639-1">the related Wikipedia definition</a>).</p>
 </section><section id="public-channels"><h1>Public channels</h1>
 <p><em>TODO: this should be a separate page. Wait till the final dev site structure is defined.</em>
 

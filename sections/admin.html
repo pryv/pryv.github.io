@@ -40,11 +40,15 @@
 <ul>
 <li><code>sessionID</code> (string): The newly created session's ID, to include in each subsequent request's <code>Authorization</code> header.</li>
 </ul>
+<h4>cURL example</h4>
+<pre class="highlighted"><code class="language-bash">$ curl -i -H <span class="string">"Content-Type: application/json"</span> -X POST -d <span class="string">'{"userName":"{userName}","password":"{password}","appId":"{appId}"}'</span> https://{userName}.pryv.io/admin/login</code></pre>
 <h3>POST <code>/admin/logout</code></h3>
 <p>Terminates the admin session.
 
 </p>
 <h4>Successful response: <code>200 OK</code></h4>
+<h4>cURL example</h4>
+<pre class="highlighted"><code class="language-bash">curl -i -H <span class="string">"Content-Type: application/json"</span> -H <span class="string">"Authorization: {session id}"</span> -X POST -d <span class="string">"{}"</span> https://{userName}.pryv.io/admin/logout</code></pre>
 <h2><a id="admin-user"></a>User information</h2>
 <h3>GET <code>/admin/user-info</code></h3>
 <p>TODO: get user informations
@@ -54,13 +58,17 @@ Requires session token.
 <h4>Successful response: <code>200 OK</code></h4>
 <p>TODO: email, display name, language, ...
 
-
 </p>
+<h4>Successful response: <code>200 OK</code></h4>
+<h4>cURL example</h4>
+<pre class="highlighted"><code class="language-bash">curl -i -H <span class="string">"Content-Type: application/json"</span> -H <span class="string">"Authorization: {session id}"</span> https://{userName}.pryv.io/admin/user-info</code></pre>
 <h3>PUT <code>/admin/user-info</code></h3>
 <p>TODO: change user information
 
-
 </p>
+<h4>cURL example</h4>
+<pre class="highlighted"><code class="language-bash">
+</code></pre>
 <h3>POST <code>/admin/change-password</code></h3>
 <p>TODO: change user password
 Requires session token, old password, new password.
@@ -69,8 +77,10 @@ Requires session token, old password, new password.
 <h4>Specific errors</h4>
 <p>TODO: <code>WRONG_PASSWORD</code>, <code>INVALID_NEW_PASSWORD</code>
 
-
 </p>
+<h4>cURL example</h4>
+<pre class="highlighted"><code class="language-bash">
+</code></pre>
 <h2><a id="admin-accesses"></a>Accesses</h2>
 <p>TODO: introductory text
 
@@ -84,6 +94,8 @@ Requires session token, old password, new password.
 <ul>
 <li><code>id</code> (<a href="#data-types-identity">identity</a>): Your app's dedicated personal <a href="#data-types-access">access</a> token.</li>
 </ul>
+<h4>cURL example</h4>
+<pre class="highlighted"><code class="language-bash">$ curl -i -H <span class="string">"Authorization: {session id}"</span> -X POST https://{userName}.pryv.io/admin/get-app-token</code></pre>
 <h3>GET <code>/admin/accesses</code></h3>
 <p>Gets all manageable accesses, which are the shared accesses. (Your app's own access token is retrieved with <code>POST /admin/get-app-token</code>.)
 
@@ -91,8 +103,9 @@ Requires session token, old password, new password.
 <h4>Successful response: <code>200 OK</code></h4>
 <p>An array of <a href="#data-types-access">accesses</a> containing all manageable accesses in the user's account, ordered by name.
 
-
 </p>
+<h4>cURL example</h4>
+<pre class="highlighted"><code class="language-bash">$ curl -i -H <span class="string">"Authorization: {session id}"</span> https://{userName}.pryv.io/admin/accesses</code></pre>
 <h3>POST <code>/admin/accesses</code></h3>
 <p>Creates a new shared access.
 
@@ -109,6 +122,9 @@ Requires session token, old password, new password.
 <ul>
 <li><code>400 Bad Request</code>, id <code>INVALID_ITEM_ID</code>: Occurs if trying to set the token to an invalid value (e.g. a reserved word like <code>"null"</code>).</li>
 </ul>
+<h4>cURL example</h4>
+<pre class="highlighted"><code class="language-bash">
+</code></pre>
 <h3>PUT <code>/admin/accesses/{token}</code></h3>
 <p>Modifies the specified shared access.
 
@@ -118,11 +134,17 @@ Requires session token, old password, new password.
 
 </p>
 <h4>Successful response: <code>200 OK</code></h4>
+<h4>cURL example</h4>
+<pre class="highlighted"><code class="language-bash">
+</code></pre>
 <h3>DELETE <code>/admin/accesses/{token}</code></h3>
 <p>Deletes the specified shared access.
 
 </p>
 <h4>Successful response: <code>200 OK</code></h4>
+<h4>cURL example</h4>
+<pre class="highlighted"><code class="language-bash">
+</code></pre>
 <h2><a id="admin-bookmarks"></a>Bookmarks</h2>
 <p>TODO: introductory text
 
@@ -135,8 +157,10 @@ Requires session token, old password, new password.
 <h4>Successful response: <code>200 OK</code></h4>
 <p>An array of <a href="#data-types-bookmark">bookmarks</a> containing all sharing bookmarks in the user's account, ordered by name.
 
-
 </p>
+<h4>cURL example</h4>
+<pre class="highlighted"><code class="language-bash">
+</code></pre>
 <h3>POST <code>/admin/bookmarks</code></h3>
 <p>Creates a new sharing bookmark.
 
@@ -149,6 +173,9 @@ Requires session token, old password, new password.
 <ul>
 <li><code>id</code> (<a href="#data-types-identity">identity</a>): The created bookmark's id.</li>
 </ul>
+<h4>cURL example</h4>
+<pre class="highlighted"><code class="language-bash">
+</code></pre>
 <h3>PUT <code>/admin/bookmarks/{bookmark id}</code></h3>
 <p>Modifies the specified sharing bookmark.
 
@@ -158,11 +185,17 @@ Requires session token, old password, new password.
 
 </p>
 <h4>Successful response: <code>200 OK</code></h4>
+<h4>cURL example</h4>
+<pre class="highlighted"><code class="language-bash">
+</code></pre>
 <h3>DELETE <code>/admin/bookmarks/{bookmark id}</code></h3>
 <p>Deletes the specified sharing bookmark.
 
 </p>
 <h4>Successful response: <code>200 OK</code></h4>
+<h4>cURL example</h4>
+<pre class="highlighted"><code class="language-bash">
+</code></pre>
 <h2><a id="admin-channels"></a>Channels</h2>
 <p>TODO: introductory text.
 
@@ -181,6 +214,9 @@ Requires session token, old password, new password.
 
 
 </p>
+<h4>cURL example</h4>
+<pre class="highlighted"><code class="language-bash">
+</code></pre>
 <h3>POST <code>/admin/channels</code></h3>
 <p>Creates a new activity channel.
 
@@ -197,6 +233,9 @@ Requires session token, old password, new password.
 <ul>
 <li><code>400 Bad Request</code>, id <code>INVALID_ITEM_ID</code>: Occurs if trying to set the id to an invalid value (e.g. a reserved word like <code>"null"</code>).</li>
 </ul>
+<h4>cURL example</h4>
+<pre class="highlighted"><code class="language-bash">
+</code></pre>
 <h3>PUT <code>/admin/channels/{channel id}</code></h3>
 <p>Modifies the activity channel's attributes.
 
@@ -206,6 +245,9 @@ Requires session token, old password, new password.
 
 </p>
 <h4>Successful response: <code>200 OK</code></h4>
+<h4>cURL example</h4>
+<pre class="highlighted"><code class="language-bash">
+</code></pre>
 <h3>DELETE <code>/admin/channels/{channel id}</code></h3>
 <p>Trashes or deletes the given channel, depending on its current state:
 
@@ -215,4 +257,7 @@ Requires session token, old password, new password.
 <li>If the channel is already in the trash, it will be irreversibly deleted with all the folders and events it contains.</li>
 </ul>
 <h4>Successful response: <code>200 OK</code></h4>
+<h4>cURL example</h4>
+<pre class="highlighted"><code class="language-bash">
+</code></pre>
 </body></html>
