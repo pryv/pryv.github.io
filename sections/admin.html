@@ -18,8 +18,8 @@
 </p>
 <ul>
 <li><code>400 Bad Request</code>, id <code>INVALID_PARAMETERS_FORMAT</code>: The request's parameters do not follow the expected format.</li>
-<li>401 (unauthorized), id <code>INVALID_CREDENTIALS</code>: User credentials are missing or invalid.</li>
-<li>404 (not found), possible cases:<ul>
+<li><code>401 Unauthorized</code>, id <code>INVALID_CREDENTIALS</code>: User credentials are missing or invalid.</li>
+<li><code>404 Not Found</code>, possible cases:<ul>
 <li>Id <code>UNKNOWN_ACCESS</code>: The data access can't be found.</li>
 <li>Id <code>UNKNOWN_CHANNEL</code>: The activity channel can't be found.</li>
 </ul>
@@ -41,14 +41,14 @@
 <li><code>sessionID</code> (string): The newly created session's ID, to include in each subsequent request's <code>Authorization</code> header.</li>
 </ul>
 <h4>cURL example</h4>
-<pre class="highlighted"><code class="language-bash">$ curl -i -H <span class="string">"Content-Type: application/json"</span> -X POST -d <span class="string">'{"userName":"{userName}","password":"{password}","appId":"{appId}"}'</span> https://{userName}.pryv.io/admin/login</code></pre>
+<pre class="highlighted"><code class="language-bash">curl -i -H <span class="string">"Content-Type: application/json"</span> -X POST -d <span class="string">'{"userName":"{username}","password":"{password}","appId":"{appId}"}'</span> https://{username}.pryv.io/admin/login</code></pre>
 <h3>POST <code>/admin/logout</code></h3>
 <p>Terminates the admin session.
 
 </p>
 <h4>Successful response: <code>200 OK</code></h4>
 <h4>cURL example</h4>
-<pre class="highlighted"><code class="language-bash">curl -i -H <span class="string">"Content-Type: application/json"</span> -H <span class="string">"Authorization: {session id}"</span> -X POST -d <span class="string">"{}"</span> https://{userName}.pryv.io/admin/logout</code></pre>
+<pre class="highlighted"><code class="language-bash">curl -i -H <span class="string">"Content-Type: application/json"</span> -H <span class="string">"Authorization: {session-id}"</span> -X POST -d <span class="string">"{}"</span> https://{username}.pryv.io/admin/logout</code></pre>
 <h2><a id="admin-user"></a>User information</h2>
 <h3>GET <code>/admin/user-info</code></h3>
 <p>TODO: get user informations
@@ -61,7 +61,7 @@ Requires session token.
 </p>
 <h4>Successful response: <code>200 OK</code></h4>
 <h4>cURL example</h4>
-<pre class="highlighted"><code class="language-bash">curl -i -H <span class="string">"Content-Type: application/json"</span> -H <span class="string">"Authorization: {session id}"</span> https://{userName}.pryv.io/admin/user-info</code></pre>
+<pre class="highlighted"><code class="language-bash">curl -i -H <span class="string">"Authorization: {session-id}"</span> https://{username}.pryv.io/admin/user-info</code></pre>
 <h3>PUT <code>/admin/user-info</code></h3>
 <p>TODO: change user information
 
@@ -95,7 +95,7 @@ Requires session token, old password, new password.
 <li><code>id</code> (<a href="#data-types-identity">identity</a>): Your app's dedicated personal <a href="#data-types-access">access</a> token.</li>
 </ul>
 <h4>cURL example</h4>
-<pre class="highlighted"><code class="language-bash">$ curl -i -H <span class="string">"Authorization: {session id}"</span> -X POST https://{userName}.pryv.io/admin/get-app-token</code></pre>
+<pre class="highlighted"><code class="language-bash">curl -i -H <span class="string">"Authorization: {session-id}"</span> -X POST https://{username}.pryv.io/admin/get-app-token</code></pre>
 <h3>GET <code>/admin/accesses</code></h3>
 <p>Gets all manageable accesses, which are the shared accesses. (Your app's own access token is retrieved with <code>POST /admin/get-app-token</code>.)
 
@@ -105,7 +105,7 @@ Requires session token, old password, new password.
 
 </p>
 <h4>cURL example</h4>
-<pre class="highlighted"><code class="language-bash">$ curl -i -H <span class="string">"Authorization: {session id}"</span> https://{userName}.pryv.io/admin/accesses</code></pre>
+<pre class="highlighted"><code class="language-bash">curl -i -H <span class="string">"Authorization: {session-id}"</span> https://{username}.pryv.io/admin/accesses</code></pre>
 <h3>POST <code>/admin/accesses</code></h3>
 <p>Creates a new shared access.
 
@@ -176,7 +176,7 @@ Requires session token, old password, new password.
 <h4>cURL example</h4>
 <pre class="highlighted"><code class="language-bash">
 </code></pre>
-<h3>PUT <code>/admin/bookmarks/{bookmark id}</code></h3>
+<h3>PUT <code>/admin/bookmarks/{bookmark-id}</code></h3>
 <p>Modifies the specified sharing bookmark.
 
 </p>
@@ -188,74 +188,10 @@ Requires session token, old password, new password.
 <h4>cURL example</h4>
 <pre class="highlighted"><code class="language-bash">
 </code></pre>
-<h3>DELETE <code>/admin/bookmarks/{bookmark id}</code></h3>
+<h3>DELETE <code>/admin/bookmarks/{bookmark-id}</code></h3>
 <p>Deletes the specified sharing bookmark.
 
 </p>
-<h4>Successful response: <code>200 OK</code></h4>
-<h4>cURL example</h4>
-<pre class="highlighted"><code class="language-bash">
-</code></pre>
-<h2><a id="admin-channels"></a>Channels</h2>
-<p>TODO: introductory text.
-
-
-</p>
-<h3>GET <code>/admin/channels</code></h3>
-<p>Gets activity channels.
-
-</p>
-<h4>Query string parameters</h4>
-<ul>
-<li><code>state</code> (<code>default</code>, <code>trashed</code> or <code>all</code>): Optional. Indicates what items to return depending on their state. By default, only items that are not in the trash are returned; <code>trashed</code> returns only items in the trash, while <code>all</code> return all items regardless of their state.</li>
-</ul>
-<h4>Successful response: <code>200 OK</code></h4>
-<p>An array of <a href="#data-types-channel">activity channels</a>) containing all channels in the user's account matching the specified state, ordered by name.
-
-
-</p>
-<h4>cURL example</h4>
-<pre class="highlighted"><code class="language-bash">
-</code></pre>
-<h3>POST <code>/admin/channels</code></h3>
-<p>Creates a new activity channel.
-
-</p>
-<h4>Body parameters</h4>
-<p>The new channel's data: see <a href="#data-types-channel">activity channel</a>.
-
-</p>
-<h4>Successful response: <code>201 Created</code></h4>
-<ul>
-<li><code>id</code> (<a href="#data-types-identity">identity</a>): The created channel's id.</li>
-</ul>
-<h4>Specific errors</h4>
-<ul>
-<li><code>400 Bad Request</code>, id <code>INVALID_ITEM_ID</code>: Occurs if trying to set the id to an invalid value (e.g. a reserved word like <code>"null"</code>).</li>
-</ul>
-<h4>cURL example</h4>
-<pre class="highlighted"><code class="language-bash">
-</code></pre>
-<h3>PUT <code>/admin/channels/{channel id}</code></h3>
-<p>Modifies the activity channel's attributes.
-
-</p>
-<h4>Body parameters</h4>
-<p>New values for the channel's fields: see <a href="#data-types-channel">activity channel</a>. All fields are optional, and only modified values must be included. TODO: example
-
-</p>
-<h4>Successful response: <code>200 OK</code></h4>
-<h4>cURL example</h4>
-<pre class="highlighted"><code class="language-bash">
-</code></pre>
-<h3>DELETE <code>/admin/channels/{channel id}</code></h3>
-<p>Trashes or deletes the given channel, depending on its current state:
-
-</p>
-<ul>
-<li>If the channel is not already in the trash, it will be moved to the trash (i.e. flagged as <code>trashed</code>)</li>
-<li>If the channel is already in the trash, it will be irreversibly deleted with all the folders and events it contains.</li>
-</ul>
 <h4>Successful response: <code>200 OK</code></h4>
 <h4>cURL example</h4>
 <pre class="highlighted"><code class="language-bash">

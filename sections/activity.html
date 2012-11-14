@@ -9,13 +9,13 @@
 </p>
 <p>Here's what a proper request looks like:
 </p>
-<pre class="highlighted"><code class="language-http"><span class="request">GET <span class="string">/{channel</span> id}/events <span class="string">HTTP/1.1
-Host:</span> yacinthe.pryv.io</span>
+<pre class="highlighted"><code class="language-http"><span class="request">GET <span class="string">/{channel-id}/events</span> HTTP/1.1</span>
+<span class="attribute">Host</span>: <span class="string">yacinthe.pryv.io</span>
 <span class="attribute">Authorization</span>: <span class="string">{access-token}</span></code></pre>
 <p>Or, alternatively, passing the access token in the query string:
 </p>
-<pre class="highlighted"><code class="language-http"><span class="request">GET <span class="string">/{channel</span> id}/events?auth={access-token} <span class="string">HTTP/1.1
-Host:</span> yacinthe.pryv.io</span></code></pre>
+<pre class="highlighted"><code class="language-http"><span class="request">GET <span class="string">/{channel-id}/events?auth={access-token}</span> HTTP/1.1</span>
+<span class="attribute">Host</span>: <span class="string">yacinthe.pryv.io</span></code></pre>
 <h2>Common errors</h2>
 <p>Here are errors commonly returned for requests:
 
@@ -34,7 +34,7 @@ Host:</span> yacinthe.pryv.io</span></code></pre>
 </li>
 </ul>
 <h2>Channels</h2>
-<p>For retrieving <a href="#data-types-channel">channels</a>. Manipulating channels is done in the <a href="#admin-channels">administration</a>.
+<p>For retrieving and manipulating <a href="#data-types-channel">channels</a>.
 
 
 </p>
@@ -45,19 +45,69 @@ Host:</span> yacinthe.pryv.io</span></code></pre>
 <p>Gets the accessible activity channels (excluding those in the trash).
 
 </p>
+<h4>Query string parameters</h4>
+<ul>
+<li><code>state</code> (<code>default</code>, <code>trashed</code> or <code>all</code>): Optional. Indicates what items to return depending on their state. By default, only items that are not in the trash are returned; <code>trashed</code> returns only items in the trash, while <code>all</code> return all items regardless of their state.</li>
+</ul>
 <h4>Successful response: <code>200 OK</code></h4>
-<p>An array of <a href="#data-types-channel">activity channels</a> containing the accessible channels.
+<p>An array of <a href="#data-types-channel">activity channels</a>) containing the accessible channels in the user's account matching the specified state, ordered by name.
 
 </p>
 <h4>cURL example</h4>
-<pre class="highlighted"><code class="language-bash">$ curl -i -H <span class="string">"Content-Type: application/json"</span> -H <span class="string">"Accept: application/json"</span> https://{userName}.pryv.io/channels?auth={access-token}</code></pre>
+<pre class="highlighted"><code class="language-bash">curl -i https://{username}.pryv.io/channels?auth={access-token}</code></pre>
+<h3>POST <code>/admin/channels</code></h3>
+<p>Creates a new activity channel. Only personal accesses allow creating new channels.
+
+</p>
+<h4>Body parameters</h4>
+<p>The new channel's data: see <a href="#data-types-channel">activity channel</a>.
+
+</p>
+<h4>Successful response: <code>201 Created</code></h4>
+<ul>
+<li><code>id</code> (<a href="#data-types-identity">identity</a>): The created channel's id.</li>
+</ul>
+<h4>Specific errors</h4>
+<ul>
+<li><code>400 Bad Request</code>, id <code>INVALID_ITEM_ID</code>: Occurs if trying to set the id to an invalid value (e.g. a reserved word like <code>"null"</code>).</li>
+</ul>
+<h4>cURL example</h4>
+<pre class="highlighted"><code class="language-bash">
+</code></pre>
+<h3>PUT <code>/admin/channels/{channel-id}</code></h3>
+<p>Modifies the activity channel's attributes.
+
+</p>
+<h4>Body parameters</h4>
+<p>New values for the channel's fields: see <a href="#data-types-channel">activity channel</a>. All fields are optional, and only modified values must be included. TODO: example
+
+</p>
+<h4>Successful response: <code>200 OK</code></h4>
+<h4>cURL example</h4>
+<pre class="highlighted"><code class="language-bash">
+</code></pre>
+<h3>DELETE <code>/admin/channels/{channel-id}</code></h3>
+<p>Trashes or deletes the given channel, depending on its current state:
+
+</p>
+<ul>
+<li>If the channel is not already in the trash, it will be moved to the trash (i.e. flagged as <code>trashed</code>)</li>
+<li>If the channel is already in the trash, it will be irreversibly deleted with all the folders and events it contains.</li>
+</ul>
+<p>Only personal accesses allow deleting channels.
+
+</p>
+<h4>Successful response: <code>200 OK</code></h4>
+<h4>cURL example</h4>
+<pre class="highlighted"><code class="language-bash">
+</code></pre>
 <h2>Events</h2>
 <p>Methods to retrieve and manipulate <a href="#data-types-event">events</a>.
 
 
 </p>
-<h3>GET <code>/{channel id}/events</code></h3>
-<p><em>Socket.IO command id: <code>{channel id}.events.get</code></em>
+<h3>GET <code>/{channel-id}/events</code></h3>
+<p><em>Socket.IO command id: <code>{channel-id}.events.get</code></em>
 
 </p>
 <p>Queries accessible events.
@@ -83,9 +133,9 @@ Host:</span> yacinthe.pryv.io</span></code></pre>
 <li><code>400 Bad Request</code>, id <code>UNKNOWN_FOLDER</code>: TODO may happen if one of the specified folders doesn't exist</li>
 </ul>
 <h4>cURL example</h4>
-<pre class="highlighted"><code class="language-bash">$ curl -i -H <span class="string">"Content-Type: application/json"</span> -H <span class="string">"Accept: application/json"</span> https://{userName}.pryv.io/{channel id}/events?auth={access-token}</code></pre>
-<h3>POST <code>/{channel id}/events</code></h3>
-<p><em>Socket.IO command id: <code>{channel id}.events.create</code></em>
+<pre class="highlighted"><code class="language-bash">curl -i https://{username}.pryv.io/{channel-id}/events?auth={access-token}</code></pre>
+<h3>POST <code>/{channel-id}/events</code></h3>
+<p><em>Socket.IO command id: <code>{channel-id}.events.create</code></em>
 
 </p>
 <p>Records a new event. Events recorded this way must be completed events, i.e. either period events with a known duration or mark events. To start a running period event, post a <code>events/start</code> request.
@@ -111,12 +161,12 @@ Host:</span> yacinthe.pryv.io</span></code></pre>
 <li><code>400 Bad Request</code>, id <code>UNKNOWN_FOLDER</code>: The specified folder cannot be found.</li>
 </ul>
 <h4>cURL example</h4>
-<pre class="highlighted"><code class="language-bash">$ curl -i -H <span class="string">"Content-Type: application/json"</span> -H <span class="string">"Accept: application/json"</span> -X POST -d <span class="string">'{"folderId":"{folder id}"}'</span> https://{userName}.pryv.io/{channel id}/events?auth={access-token}</code></pre>
-<h3>POST <code>/{channel id}/events/start</code></h3>
-<p><em>Socket.IO command id: <code>{channel id}.events.start</code></em>
+<pre class="highlighted"><code class="language-bash">curl -i -H <span class="string">"Content-Type: application/json"</span> -X POST -d <span class="string">'{"folderId":"{folder-id}"}'</span> https://{username}.pryv.io/{channel-id}/events?auth={access-token}</code></pre>
+<h3>POST <code>/{channel-id}/events/start</code></h3>
+<p><em>Socket.IO command id: <code>{channel-id}.events.start</code></em>
 
 </p>
-<p>Starts a new period event, stopping the previously running period event if any. See POST <code>/{channel id}/events</code> for details. TODO: detail
+<p>Starts a new period event, stopping the previously running period event if any. See POST <code>/{channel-id}/events</code> for details. TODO: detail
 
 </p>
 <h4>Successful response: <code>201 Created</code></h4>
@@ -127,12 +177,12 @@ Host:</span> yacinthe.pryv.io</span></code></pre>
 <li><code>400 Bad request</code>, id <code>PERIODS_OVERLAP</code>: TODO (data: array of overlapped ids)</li>
 </ul>
 <h4>cURL example</h4>
-<pre class="highlighted"><code class="language-bash">$ curl -i -H <span class="string">"Content-Type: application/json"</span> -H <span class="string">"Accept: application/json"</span> -X POST -d <span class="string">'{"folderId":"{folder id}"}'</span> https://{userName}.pryv.io/{channel id}/events/start?auth={access-token}</code></pre>
-<h3>POST <code>/{channel id}/events/stop</code></h3>
-<p><em>Socket.IO command id: <code>{channel id}.events.stop</code></em>
+<pre class="highlighted"><code class="language-bash">curl -i -H <span class="string">"Content-Type: application/json"</span> -X POST -d <span class="string">'{"folderId":"{folder-id}"}'</span> https://{username}.pryv.io/{channel-id}/events/start?auth={access-token}</code></pre>
+<h3>POST <code>/{channel-id}/events/stop</code></h3>
+<p><em>Socket.IO command id: <code>{channel-id}.events.stop</code></em>
 
 </p>
-<p>Stops the previously running period event. See POST <code>/{channel id}/events</code> for details. TODO: detail
+<p>Stops the previously running period event. See POST <code>/{channel-id}/events</code> for details. TODO: detail
 
 </p>
 <h4>Successful response: <code>200 OK</code></h4>
@@ -142,9 +192,9 @@ Host:</span> yacinthe.pryv.io</span></code></pre>
 <h4>cURL example</h4>
 <pre class="highlighted"><code class="language-bash">
 </code></pre>
-<h3>TODO: GET <code>/{channel id}/events/start</code> and <code>.../stop</code> and <code>.../record</code> alternatives to the above to allow simple calls via e.g. wget/curl</h3>
-<h3>GET <code>/{channel id}/events/running</code></h3>
-<p><em>Socket.IO command id: <code>{channel id}.events.getRunning</code></em>
+<h3>TODO: GET <code>/{channel-id}/events/start</code> and <code>.../stop</code> and <code>.../record</code> alternatives to the above to allow simple calls via e.g. wget/curl</h3>
+<h3>GET <code>/{channel-id}/events/running</code></h3>
+<p><em>Socket.IO command id: <code>{channel-id}.events.getRunning</code></em>
 
 </p>
 <p>Gets the currently running period events.
@@ -157,8 +207,8 @@ Host:</span> yacinthe.pryv.io</span></code></pre>
 <h4>cURL example</h4>
 <pre class="highlighted"><code class="language-bash">
 </code></pre>
-<h3>PUT <code>/{channel id}/events/{event id}</code></h3>
-<p><em>Socket.IO command id: <code>{channel id}.events.update</code></em>
+<h3>PUT <code>/{channel-id}/events/{event-id}</code></h3>
+<p><em>Socket.IO command id: <code>{channel-id}.events.update</code></em>
 
 </p>
 <p>Modifies the activity event's attributes.
@@ -180,7 +230,7 @@ Host:</span> yacinthe.pryv.io</span></code></pre>
 <h4>cURL example</h4>
 <pre class="highlighted"><code class="language-bash">
 </code></pre>
-<h3>POST <code>/{channel id}/events/{event id}</code></h3>
+<h3>POST <code>/{channel-id}/events/{event-id}</code></h3>
 <p>Adds one or more file attachments to the event. This request expects standard multipart/form-data content, with all content parts being the attached files.
 
 </p>
@@ -191,8 +241,8 @@ Host:</span> yacinthe.pryv.io</span></code></pre>
 <h4>cURL example</h4>
 <pre class="highlighted"><code class="language-bash">
 </code></pre>
-<h3>DELETE <code>/{channel id}/events/{event id}</code></h3>
-<p><em>Socket.IO command id: <code>{channel id}.events.delete</code></em>
+<h3>DELETE <code>/{channel-id}/events/{event-id}</code></h3>
+<p><em>Socket.IO command id: <code>{channel-id}.events.delete</code></em>
 
 </p>
 <p>Trashes or deletes the specified event, depending on its current state:
@@ -206,7 +256,7 @@ Host:</span> yacinthe.pryv.io</span></code></pre>
 <h4>cURL example</h4>
 <pre class="highlighted"><code class="language-bash">
 </code></pre>
-<h3>GET <code>/{channel id}/events/{event id}/{file name}</code></h3>
+<h3>GET <code>/{channel-id}/events/{event-id}/{file name}</code></h3>
 <p>Gets the attached file.
 
 </p>
@@ -214,8 +264,8 @@ Host:</span> yacinthe.pryv.io</span></code></pre>
 <h4>cURL example</h4>
 <pre class="highlighted"><code class="language-bash">
 </code></pre>
-<h3>DELETE <code>/{channel id}/events/{event id}/{file name}</code></h3>
-<p><em>Socket.IO command id: <code>{channel id}.events.deleteAttachedFile</code></em>
+<h3>DELETE <code>/{channel-id}/events/{event-id}/{file name}</code></h3>
+<p><em>Socket.IO command id: <code>{channel-id}.events.deleteAttachedFile</code></em>
 
 </p>
 <p>Irreversibly deletes the attached file.
@@ -225,7 +275,7 @@ Host:</span> yacinthe.pryv.io</span></code></pre>
 <h4>cURL example</h4>
 <pre class="highlighted"><code class="language-bash">
 </code></pre>
-<h3>POST <code>/{channel id}/events/batch</code></h3>
+<h3>POST <code>/{channel-id}/events/batch</code></h3>
 <p>TODO: this is currently unimplemented and may stay that way.
 Batch upload events that were recorded by the client while offline. If the client-recorded events overlap events on the server, the request will be rejected (see errors below); it is the client's responsibility to retrieve updated server data and adjust its own before uploading.
 
@@ -252,8 +302,8 @@ Batch upload events that were recorded by the client while offline. If the clien
 
 
 </p>
-<h3>GET <code>/{channel id}/folders</code></h3>
-<p><em>Socket.IO command id: <code>{channel id}.folders.get</code></em>
+<h3>GET <code>/{channel-id}/folders</code></h3>
+<p><em>Socket.IO command id: <code>{channel-id}.folders.get</code></em>
 
 </p>
 <p>Gets the accessible folders, either from the root level or only descending from a specified parent folder.
@@ -281,8 +331,8 @@ Batch upload events that were recorded by the client while offline. If the clien
 <h4>cURL example</h4>
 <pre class="highlighted"><code class="language-bash">
 </code></pre>
-<h3>POST <code>/{channel id}/folders</code></h3>
-<p><em>Socket.IO command id: <code>{channel id}.folders.create</code></em>
+<h3>POST <code>/{channel-id}/folders</code></h3>
+<p><em>Socket.IO command id: <code>{channel-id}.folders.create</code></em>
 
 </p>
 <p>Creates a new folder at the root level or as a child folder to the specified folder.
@@ -304,8 +354,8 @@ Batch upload events that were recorded by the client while offline. If the clien
 <h4>cURL example</h4>
 <pre class="highlighted"><code class="language-bash">
 </code></pre>
-<h3>PUT <code>/{channel id}/folders/{folder id}</code></h3>
-<p><em>Socket.IO command id: <code>{channel id}.folders.update</code></em>
+<h3>PUT <code>/{channel-id}/folders/{folder-id}</code></h3>
+<p><em>Socket.IO command id: <code>{channel-id}.folders.update</code></em>
 
 </p>
 <p>Modifies the activity folder's attributes.
@@ -327,8 +377,8 @@ Batch upload events that were recorded by the client while offline. If the clien
 <h4>cURL example</h4>
 <pre class="highlighted"><code class="language-bash">
 </code></pre>
-<h3>DELETE <code>/{channel id}/folders/{folder id}</code></h3>
-<p><em>Socket.IO command id: <code>{channel id}.folders.delete</code></em>
+<h3>DELETE <code>/{channel-id}/folders/{folder-id}</code></h3>
+<p><em>Socket.IO command id: <code>{channel-id}.folders.delete</code></em>
 
 </p>
 <p>Trashes or deletes the specified folder, depending on its current state:
