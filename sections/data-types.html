@@ -4,7 +4,7 @@
 
 </p>
 <h2><a id="data-types-access"></a>Access</h2>
-<p>An access defines a set of permissions on a user's activity data (channels, folders and events). Personal accesses are automatically generated, per app, in the <a href="#admin">administration</a>, but shared accesses can be freely defined for letting other users view and possibly contribute to their activity data. (See <a href="#overview-sharing">how sharing works</a>.)
+<p>An access defines a set of permissions on a user's activity data (channels, folders and events). (See <a href="#overview-sharing">how sharing works</a>.)
 
 </p>
 <p>Fields:
@@ -13,7 +13,7 @@
 <ul>
 <li><code>token</code> (string): Unique, read-only (except at creation). The token identifying the access. Automatically generated if not set when creating the access.</li>
 <li><code>name</code> (string): Unique. The name identifying the access for the user. It can be the client application's name for automatically generated personal accesses, or any user-defined value for manually created accesses.</li>
-<li><code>type</code> (<code>"personal"</code> or <code>"shared"</code>): Optional. Personal accesses have full access to data, while shared accesses are only granted access to data defined in field <code>permissions</code>. Default: <code>"shared"</code>. Note that personal accesses are not open for viewing and management by third party apps by default - if you need to manage personal accesses, please get in touch with us (TODO: link).</li>
+<li><code>type</code> (<code>"personal"</code>, <code>"app"</code> or <code>"shared"</code>): Optional. The type – or usage – of the access. Default: <code>"shared"</code>.</li>
 <li><code>permissions</code>: an array of channel permission objects as described below. Ignored for personal accesses. Shared accesses are only granted access to activity data objects listed in here.<ul>
 <li><code>channelId</code> (<a href="#data-types-identity">identity</a>): The accessible channel's id.</li>
 <li><code>level</code> (<code>"read"</code>, <code>"contribute"</code> or <code>"manage"</code>): The level of access to the channel. With <code>"contribute"</code>, the access's token holder(s) can see and record events in the channel; with <code>"manage"</code>, the access's token holder(s) can in addition modify the channel itself. This is overridden if specific folder permissions are defined (see below).</li>
