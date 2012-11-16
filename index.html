@@ -125,7 +125,7 @@ See the standard channels, folders and tags (TODO: link) we encourage you to use
 
 </p>
 <h2>Authorization</h2>
-<p>All requests for retrieving and manipulating activity data must carry a valid <a href="#data-types-access">access token</a> in the HTTP <code>Authorization</code> header or, alternatively, in a query string's <code>auth</code> parameter.  (You get the token itself either by retrieving it in the <a href="#admin-accesses">administration</a> or from sharing.)
+<p>All requests for retrieving and manipulating activity data must carry a valid <a href="#data-types-access">access token</a> in the HTTP <code>Authorization</code> header or, alternatively, in the query string's <code>auth</code> parameter.  (You get the token itself either by retrieving it in the <a href="#admin-accesses">administration</a> or from sharing.)
 
 </p>
 <p>Here's what a proper request looks like:
@@ -527,14 +527,18 @@ Batch upload events that were recorded by the client while offline. If the clien
 
 </p>
 <h2>Authorization</h2>
-<p>Access to admin methods is managed by sessions. To create a session, you must successfully authenticate with a <code>/admin/login</code> request, which will return the session ID. Each request sent during the duration of the session must then contain the session ID in its <code>Authorization</code> header. The session is terminated when <code>/admin/logout</code> is called or when the session times out (TODO: indicate session timeout delay).
+<p>Access to admin methods is managed by sessions. To create a session, you must successfully authenticate with a <code>/admin/login</code> request, which will return the session ID. Each request sent during the duration of the session must then contain the session ID in its <code>Authorization</code> header or, alternatively, in the query string's <code>auth</code> parameter. The session is terminated when <code>/admin/logout</code> is called or when the session times out (TODO: indicate session timeout delay).
 
 </p>
 <p>Here's what an admin request (with a session open) looks like:
 </p>
-<pre class="highlighted"><code class="language-http"><span class="request">GET <span class="string">/admin/channels</span> HTTP/1.1</span>
+<pre class="highlighted"><code class="language-http"><span class="request">GET <span class="string">/admin/accesses</span> HTTP/1.1</span>
 <span class="attribute">Host</span>: <span class="string">cassis.pryv.io</span>
 <span class="attribute">Authorization</span>: <span class="string">{session-id}</span></code></pre>
+<p>Or, alternatively, passing the access token in the query string:
+</p>
+<pre class="highlighted"><code class="language-http"><span class="request">GET <span class="string">/admin/accesses?auth={session-id}</span> HTTP/1.1</span>
+<span class="attribute">Host</span>: <span class="string">cassis.pryv.io</span></code></pre>
 <h2>Common errors</h2>
 <p>TODO: review and complete
 
