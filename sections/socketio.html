@@ -31,9 +31,14 @@ socket.emit(<span class="string">'command'</span>, cmdData, <span class="functio
   <span class="comment">// handle response</span>
 });</code></pre>
 <h3>Receiving data change notifications</h3>
-<p>You can be notified of changes to channels, folders and events by subscribing to the corresponding messages <code>channelsChanged</code>, <code>foldersChanged</code> and <code>eventsChanged</code>. For example:
+<p>You can be notified of changes to channels, folders and events by subscribing to the corresponding messages <code>channelsChanged</code>, <code>eventsChanged</code> and <code>foldersChanged</code>. For the latter two, the message is passed a parameters object with a <code>channelId</code> property to help you refresh only what's necessary.
+For example:
 </p>
-<pre class="highlighted"><code class="language-javascript">socket.on(<span class="string">'eventsChanged'</span>, <span class="keyword">function</span>() {
-  <span class="comment">// retrieve latest changes and update views</span>
+<pre class="highlighted"><code class="language-javascript">socket.on(<span class="string">'channelsChanged'</span>, <span class="keyword">function</span>() { <span class="comment">// no scope parameter for channels</span>
+  <span class="comment">// ... (retrieve latest changes and update)</span>
+});
+socket.on(<span class="string">'eventsChanged'</span>, <span class="keyword">function</span>(scope) {
+  <span class="comment">// scope.channelId contains the related channel id</span>
+  <span class="comment">// ... (retrieve latest changes and update)</span>
 });</code></pre>
 </body></html>
