@@ -1,0 +1,150 @@
+<html><head></head><body><h1>Default Channels and Folders</h1>
+<h2><code>diary</code> Channel</h2>
+<p>The diary channel aggregates all the thoughts and notes of a user, including her social activities.
+
+</p>
+<h3><code>notes</code> Folder</h3>
+<p>For all text notes.
+
+</p>
+<h4>Examples:</h4>
+<ol>
+<li><p>Simple text note:</p>
+<pre class="highlighted"><code class="language-json">{
+value: {
+ type: "note:TEXT",
+ value: "I like cheese"
+},
+comment: "",
+date: "20110512 12:12:12",
+duration: null,
+tags: [],
+attach: null 
+}</code></pre>
+</li>
+<li><p>Html note with  an attached picture <code>sunset.jpg</code>:</p>
+<pre class="highlighted"><code class="language-json">{
+value: {
+ type: "note:HTML",
+ value: "&lt;p&gt;&lt;img src="sunset.jpg" /&gt; My nice poem goes here&lt;/p&gt;"
+},
+comment: "",
+date: "20110512 12:12:12",
+duration: null,
+tags: [],
+attach: "sunset.jpg" 
+}</code></pre>
+</li>
+</ol>
+<h3><code>social</code> Folder</h3>
+<p>For all social content. Events are usually saved in the subfolder corresponding to the concerned social network.
+
+</p>
+<h3><code>social/facebook</code> Folder</h3>
+<p>For all facebook events.
+
+</p>
+<h4>Examples:</h4>
+<ol>
+<li><p>A facebook post with attached picture <code>zz.jpg</code>:</p>
+<pre class="highlighted"><code class="language-json">{
+value: {
+ type: "note:facebook",
+ value: {
+   fbid: "609329217"
+   value: "blah blah &lt;b&gt;blah&lt;/b&gt; &lt;img src=zz.jpg&gt;"
+ }
+},
+comment: "",
+date: "20110512 12:12:12",
+duration: null,
+tags: [],
+attach: "zz.jpg" 
+}</code></pre>
+</li>
+<li><p>A facebook friend with attached avatar <code>pict1.jpg</code>:</p>
+<pre class="highlighted"><code class="language-json">{
+value: {
+ type: "relation:facebook",
+ value: {
+   fbid:"8912819d21", 
+   name:"Toby", 
+   class:"friend", 
+   avatar:"pict1.jpg"
+ }
+},
+comment: "",
+date: "20110512 12:12:12",
+duration: null,
+tags: [],
+attach: "pict1.jpg" 
+}</code></pre>
+</li>
+</ol>
+<h3><code>social/twitter</code> Folder</h3>
+<p>For all twitter-related events.
+
+</p>
+<h4>Examples:</h4>
+<ol>
+<li>A tweet:<pre class="highlighted"><code class="language-json">{
+value: {
+ type: "note:tweet",
+ value: {
+   from:"pryv", 
+   content:"Blah blah .. love Pryv .. so cool for you!"
+ }  
+},
+comment: "",
+date: "20110512 12:12:12",
+duration: null,
+tags: [],
+attach: null 
+}</code></pre>
+</li>
+</ol>
+<h3><code>social/twitter/followers</code> Folder</h3>
+<p>To keep track of the user's number of followers at a given time.
+
+</p>
+<h4>Examples:</h4>
+<ol>
+<li>Number of followers:<pre class="highlighted"><code class="language-json">{
+value: {
+ type: "dimensionless",
+ value: 45 
+},
+comment: "followers",
+date: "20110512 12:12:12",
+duration: null,
+tags: [],
+attach: null 
+}</code></pre>
+</li>
+</ol>
+<h3><code>social/conversation</code> Folder</h3>
+<p>In this folder, the user can keep track of her discussions on the phone, on skype, etc.
+
+</p>
+<h4>Examples:</h4>
+<ol>
+<li>A phone call:<pre class="highlighted"><code class="language-json">{
+value: {
+ type: "call:tel",
+ value: [{tel:"+41.765766535"}]
+},
+comment: "",
+date: "20110512 12:12:12",
+duration: 360000,
+tags: ["person:tom"],
+attach: null 
+}</code></pre>
+</li>
+</ol>
+<h3><code>position</code> Folder</h3>
+<p>A user can save geolocation data in this folder.
+
+</p>
+<h4>Examples:</h4>
+<p>TODO</p>
+</body></html>
