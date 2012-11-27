@@ -400,4 +400,58 @@ Batch upload events that were recorded by the client while offline. If the clien
 <h4>cURL example</h4>
 <pre class="highlighted"><code class="language-bash">
 </code></pre>
+<h2><a id="activity-accesses"></a>Accesses</h2>
+<p>While full access management is reserved for trusted apps via <a href="#admin-accesses">methods in the administration</a>, any app can retrieve and manage shared accesses depending on its own permissions. All methods here only deal with shared accesses whose permissions are a subset of that linked to the token used for the requests. (You'll get a <code>403 Forbidden</code> error if trying to touch other types of accesses, or shared accesses with greater permissions.)
+
+
+</p>
+<h3>GET <code>/admin/accesses</code></h3>
+<p>Gets all manageable shared accesses.
+
+</p>
+<h4>Successful response: <code>200 OK</code></h4>
+<p>An array of <a href="#data-types-access">accesses</a> containing all manageable shared accesses in the user's account, ordered by name.
+
+</p>
+<h4>cURL example</h4>
+<pre class="highlighted"><code class="language-bash">curl -i -H <span class="string">"Authorization: {access-token}"</span> https://{username}.pryv.io/accesses</code></pre>
+<h3>POST <code>/accesses</code></h3>
+<p>Creates a new shared access. You can only create accesses whose permissions are a subset of those linked to your own access token.
+
+</p>
+<h4>Body parameters</h4>
+<p>The new access's data: see <a href="#data-types-access">access</a>.
+
+</p>
+<h4>Successful response: <code>201 Created</code></h4>
+<ul>
+<li><code>token</code> (<a href="#data-types-identity">identity</a>): The created access's token.</li>
+</ul>
+<h4>Specific errors</h4>
+<ul>
+<li><code>400 Bad Request</code>, id <code>INVALID_ITEM_ID</code>: Occurs if trying to set the token to an invalid value (e.g. a reserved word like <code>"null"</code>).</li>
+</ul>
+<h4>cURL example</h4>
+<pre class="highlighted"><code class="language-bash">
+</code></pre>
+<h3>PUT <code>/admin/accesses/{token}</code></h3>
+<p>Modifies the specified shared access. You can only modify accesses whose permissions are a subset of those linked to your own access token.
+
+</p>
+<h4>Body parameters</h4>
+<p>New values for the access's fields: see <a href="#data-types-access">access</a>. All fields are optional, and only modified values must be included. TODO: example
+
+</p>
+<h4>Successful response: <code>200 OK</code></h4>
+<h4>cURL example</h4>
+<pre class="highlighted"><code class="language-bash">
+</code></pre>
+<h3>DELETE <code>/admin/accesses/{token}</code></h3>
+<p>Deletes the specified shared access. You can only delete accesses whose permissions are a subset of those linked to your own access token.
+
+</p>
+<h4>Successful response: <code>200 OK</code></h4>
+<h4>cURL example</h4>
+<pre class="highlighted"><code class="language-bash">
+</code></pre>
 </body></html>
