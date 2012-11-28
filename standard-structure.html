@@ -1,281 +1,68 @@
-<!DOCTYPE html><html lang="en" class="no-js"><head><meta charset="UTF-8" /><title>Pryv API standard data structure</title><meta name="description" content="TODO" /><meta name="viewport" content="width=device-width, initial-scale=1" /><link rel="stylesheet" type="text/css" href="github.css" /><link rel="stylesheet" type="text/css" href="highlight.css" /><link rel="stylesheet" type="text/css" href="style.css" /><script src="scripts/modernizr.min.js"></script><script src="http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.js"></script><script src="scripts/jquery.toc.min.js"></script></head><body><div id="main"><header id="pageHeader"></header><div id="structures"><section id="introduction"><h1>Introduction</h1>
-<p>In this section, we introduce the default channels and folders that are present in a user's pryv storage. You can choose in which folder and channel to save the events created by your app, according to the descriptions below.
-
-</p>
-<p>Should there be no adequate channel or folder for your specific purposes, it is possible to add custom ones, see the <a href="reference.html">API&nbsp;reference</a>.</p>
-</section><section id="diary"><h1>Default Channels and Folders</h1>
-<h2><code>diary</code> Channel</h2>
-<p>The diary channel aggregates all the thoughts and notes of a user, including her social activities.
-
-</p>
-<h3><code>notes</code> Folder</h3>
-<p>For all text notes.
-
-</p>
-<h4>Examples:</h4>
-<ol>
-<li><p>Simple text note:</p>
-<pre class="highlighted"><code class="language-json">{
-value: {
- type: "note:TEXT",
- value: "I like cheese"
-},
-description: "",
-date: "20110512 12:12:12",
-duration: null,
-tags: [],
-attach: null
-}</code></pre>
-</li>
-<li><p>Html note with  an attached picture <code>sunset.jpg</code>:</p>
-<pre class="highlighted"><code class="language-json">{
-value: {
- type: "note:HTML",
- value: "&lt;p&gt;&lt;img src="sunset.jpg" /&gt; My nice poem goes here&lt;/p&gt;"
-},
-description: "",
-date: "20110512 12:12:12",
-duration: null,
-tags: [],
-attach: "sunset.jpg"
-}</code></pre>
-</li>
-</ol>
-<h3><code>social</code> Folder</h3>
-<p>For all social content. Events are usually saved in the subfolder corresponding to the concerned social network.
-
-</p>
-<h3><code>social/facebook</code> Folder</h3>
-<p>For all facebook events.
-
-</p>
-<h4>Examples:</h4>
-<ol>
-<li><p>A facebook post with attached picture <code>zz.jpg</code>:</p>
-<pre class="highlighted"><code class="language-json">{
-value: {
- type: "note:facebook",
- value: {
-   fbid: "609329217"
-   value: "blah blah &lt;b&gt;blah&lt;/b&gt; &lt;img src=zz.jpg&gt;"
- }
-},
-description: "",
-date: "20110512 12:12:12",
-duration: null,
-tags: [],
-attach: "zz.jpg"
-}</code></pre>
-</li>
-<li><p>A facebook friend with attached avatar <code>pict1.jpg</code>:</p>
-<pre class="highlighted"><code class="language-json">{
-value: {
- type: "relation:facebook",
- value: {
-   fbid:"8912819d21",
-   name:"Toby",
-   class:"friend",
-   avatar:"pict1.jpg"
- }
-},
-description: "",
-date: "20110512 12:12:12",
-duration: null,
-tags: [],
-attach: "pict1.jpg"
-}</code></pre>
-</li>
-</ol>
-<h3><code>social/twitter</code> Folder</h3>
-<p>For all twitter-related events.
-
-</p>
-<h4>Examples:</h4>
-<ol>
-<li>A tweet:<pre class="highlighted"><code class="language-json">{
-value: {
- type: "note:tweet",
- value: {
-   from:"pryv",
-   content:"Blah blah .. love Pryv .. so cool for you!"
- }
-},
-description: "",
-date: "20110512 12:12:12",
-duration: null,
-tags: [],
-attach: null
-}</code></pre>
-</li>
-</ol>
-<h3><code>social/twitter/followers</code> Folder</h3>
-<p>To keep track of the user's number of followers at a given time.
-
-</p>
-<h4>Examples:</h4>
-<ol>
-<li>Number of followers:<pre class="highlighted"><code class="language-json">{
-value: {
- type: "dimensionless",
- value: 45
-},
-description: "followers",
-date: "20110512 12:12:12",
-duration: null,
-tags: [],
-attach: null
-}</code></pre>
-</li>
-</ol>
-<h3><code>social/conversation</code> Folder</h3>
-<p>In this folder, the user can keep track of her discussions on the phone, on skype, etc.
-
-</p>
-<h4>Examples:</h4>
-<ol>
-<li>A phone call:<pre class="highlighted"><code class="language-json">{
-value: {
- type: "call:tel",
- value: [{tel:"+41.765766535"}]
-},
-description: "",
-date: "20110512 12:12:12",
-duration: 360000,
-tags: ["person:tom"],
-attach: null
-}</code></pre>
-</li>
-</ol>
-<h3><code>position</code> Folder</h3>
-<p>A user can save geolocation data in this folder.
-
-</p>
-<h4>Examples:</h4>
-<p>TODO</p>
-</section><section id="activities"><h2><code>activities</code> Channel</h2>
-<p>The activities channel is a default channel where a user can save her various work and leisure activities.
-
-</p>
-<h3><code>entertainment</code> Folder</h3>
-<h3><code>sport</code> Folder</h3>
-<h3><code>work</code> Folder</h3>
-<p>This folder contains all events related to the user's work. The user should be able to save her work activities in different subfolders depending on the type of work she is achieving.
-
-</p>
-<h3><code>work/projectA</code> Folder</h3>
-<p>This is an example of folder you could create in this channel for a specific project the user has been working on that would perfectly fit inside <code>work</code>.
-
-</p>
-<h4>Examples:</h4>
-<ol>
-<li><p>The user has fixed a bug:</p>
-<pre class="highlighted"><code class="language-json">{
-value: {
- type: "activity",
- value: null
-},
-description: "Bug #123",
-date: "20110512 12:12:12",
-duration: 360000,
-tags: ["task:development"],
-attach: null
-}</code></pre>
-</li>
-<li><p>The user has worked on a report for Mr. A:</p>
-<pre class="highlighted"><code class="language-json">{
-value: {
- type: "activity",
- value: null
-},
-description: "report for Mr A.",
-date: "20110512 12:12:12",
-duration: 123712,
-tags: ["task:reporting"],
-attach: null
-}</code></pre>
-</li>
-</ol>
-<h3><code>parties</code> Folder</h3>
-<p>A perfect place to save all party pictures for instance.
-
-</p>
-<h4>Examples:</h4>
-<ol>
-<li>A picture from the user's latest fun activity.<pre class="highlighted"><code class="language-json">{
-value: {
- type: "picture",
- value: {
-   file: "pic1.jpg",
-   dimension: .... TODO
- }
-},
-description: "",
-date: "20110512 12:12:12",
-duration: null,
-tags: ["event:john's wedding"],
-attach: "pict1.jpg"
-}</code></pre>
-</li>
-</ol>
-</section><section id="health"><h2><code>health</code> Channel</h2>
-<p>This channel is dedicated to the user and her close family's health. The goal here is to save all the data related to one's health: weight, medication, doctor visits, etc.
-
-</p>
-<h3><code>medication</code> Folder</h3>
-<p>Folder to keep track of what medication has been taken when.
-
-</p>
-<h4>Examples:</h4>
-<p>TODO
-
-</p>
-<h3><code>feeling</code> Folder</h3>
-<p>This is an example of folder you could create in this channel. Why not store how the user feels every day?
-
-</p>
-<h4>Examples:</h4>
-<p>TODO</p>
-</section><section id="householding"><h2><code>householding</code> Channel</h2>
-<p>A place to save all the user's data related to householding:&nbsp;shopping lists, bills, the plumber's visits, etc.
-
-</p>
-<h3><code>shopping</code> Folder</h3>
-<p>This is an example of folder you could create in this channel. All household shopping-related data.
-
-</p>
-<h4>Examples:</h4>
-<p>TODO
-
-</p>
-<h3><code>facilities</code> Folder</h3>
-<p>This is an example of folder you could create in this channel.
-
-</p>
-<h4>Examples:</h4>
-<p>TODO</p>
-</section><section id="finance"><h2><code>finance</code> Channel</h2>
-<p>A channel to save all financial aspects of the user's life.
-
-</p>
-<h3><code>bank ABC</code> Folder</h3>
-<p>This is an example of folder you could create in this channel. A subfolder could be created for each bank account of the user for instance.
-
-</p>
-<h4>Examples:</h4>
-<p>TODO</p>
-</section><section id="kids"><h2><code>kids</code> Channel</h2>
-<p>A channel for the user to save all her children pictures.
-
-</p>
-<h3><code>john</code> Folder</h3>
-<p>This is an example of folder you could create in this channel. The idea here is to create one folder for each child of the user.
-
-</p>
-<h4>Examples:</h4>
-<p>TODO</p>
-</section></div></div><div id="toc"></div><script>jQuery(document).ready(function($) {
+<!DOCTYPE html><html lang="en" class="no-js"><head><meta charset="UTF-8"><title>Pryv API standard data structure</title><meta name="description" content="TODO"><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="stylesheet" type="text/css" href="bootstrap.min.css"><link rel="stylesheet" type="text/css" href="github.css"><link rel="stylesheet" type="text/css" href="highlight.css"><link rel="stylesheet" type="text/css" href="style.css"><script src="scripts/modernizr.min.js"></script><script src="http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.js"></script><script src="scripts/jquery.toc.min.js"></script></head><body><div id="main"><header id="pageHeader"><a href="index.html">Home</a></header><div id="structures"><h1>Standard Data Structures</h1><h2>Introduction</h2><div>In this section, we present all the channels and folders we recommend to use in Pryv. Where appropriate, we also present fictional elements to illustrate how and where you could create your own channels and folders.</div><h2>Conventions </h2><div><ul><li> <code>recommended</code> in this document, whenever this keyword is used, it means that the concerned channel or folder is predefined and known to Pryv. Its <code>id</code> is reserved and can be used to access it. We advise you to use the <code>recommended</code> channels and folders as much as possible, unless the specific needs of your app requires a dedicated channel/folder that doesn't correspond to any presented here.</li><li> <code>example</code> in this document, this keyword is used to represent channels and folders that are given here as examples of elements you could create to fit your app's purposes. They are not predefined in Pryv and thus have no fixed <code>id</code>.</li><li> <code>id</code> this property exists for all channels and folders and represents their unique identifier. In this document, in cases where the channel/folder is given as an example, the <code>id</code> property is not provided as it could be anything.</li></ul></div><h2>Data Structures </h2><h3>diary Channel </h3><div id="info" class="well"><div>To save all your personal thoughts, pictures and others.</div><div>This channel is:  <code>recommended</code></div></div><h4>Folders</h4><table><thead><tr><th> </th><th>name</th><th>id</th><th>description</th></tr></thead><tbody><tr><td><code>recommended</code></td><td>notes</td><td>notes</td><td>For taking notes.</td></tr><tr><td><code>recommended</code></td><td>social</td><td>social</td><td>For all social content. Events are usually saved in the subfolder corresponding to the concerned social network.</td></tr><!-- Prepend folder name with its path.--><tr><td><code>recommended</code></td><td>social/facebook</td><td>social/facebook</td><td>For all facebook events.</td></tr><!-- Prepend folder name with its path.--><tr><td><code>recommended</code></td><td>social/twitter</td><td>social/twitter</td><td>For twitter-related events.</td></tr><!-- Prepend folder name with its path.--><tr><td><code>recommended</code></td><td>social/twitter/followers</td><td>social/twitter/followers</td><td>To keep track of the user's number of followers at a given time.</td></tr><!-- Prepend folder name with its path.--><tr><td><code>recommended</code></td><td>social/conversation</td><td>social/conversation</td><td>In this folder, the user can keep track of her discussions on the phone, on skype, etc.</td></tr></tbody></table><h4> <a onclick="javascript:$(&quot;diary&quot;).toggle()">Examples of Events</a></h4><diary style="display:none;"><div>Events saved in notes</div><pre>{
+    &quot;date&quot;: &quot;20120808 12:32:12&quot;,
+    &quot;value&quot;: &quot;I like cheese.&quot;,
+    &quot;type&quot;: &quot;notes:text&quot;,
+    &quot;description&quot;: &quot;a simple text note.&quot;,
+    &quot;duration&quot;: null
+}</pre><pre>{
+    &quot;date&quot;: &quot;20110512 12:12:12&quot;,
+    &quot;value&quot;: &quot;&lt;p&gt;&lt;img src='sunset.jpg' /&gt; My nice poem goes here&lt;/p&gt;&quot;,
+    &quot;type&quot;: &quot;notes:html&quot;,
+    &quot;description&quot;: &quot;&quot;,
+    &quot;duration&quot;: null
+}</pre><div>Events saved in social/facebook</div><pre>{
+    &quot;date&quot;: &quot;20110512 12:12:12&quot;,
+    &quot;value&quot;: {
+        &quot;id&quot;: &quot;322193&quot;,
+        &quot;from&quot;: {
+            &quot;name&quot;: &quot;John Doe&quot;,
+            &quot;id&quot;: &quot;223&quot;
+        },
+        &quot;message&quot;: &quot;happy to be in warm India today when I see my friends' pics in Switzerland :)&quot;
+    },
+    &quot;type&quot;: &quot;notes:facebook&quot;,
+    &quot;description&quot;: &quot;&quot;,
+    &quot;duration&quot;: null
+}</pre><div>Events saved in social/twitter</div><pre>{
+    &quot;date&quot;: &quot;20110512 12:12:12&quot;,
+    &quot;value&quot;: {
+        &quot;from&quot;: &quot;pryv&quot;,
+        &quot;content&quot;: &quot;Blah blah .. love Pryv .. so cool for you!&quot;
+    },
+    &quot;type&quot;: &quot;note:tweet&quot;,
+    &quot;description&quot;: &quot;&quot;,
+    &quot;duration&quot;: null
+}</pre><div>Events saved in social/twitter/followers</div><pre>{
+    &quot;date&quot;: &quot;20110512 12:12:12&quot;,
+    &quot;value&quot;: 45,
+    &quot;type&quot;: &quot;dimensionless&quot;,
+    &quot;description&quot;: &quot;followers&quot;,
+    &quot;duration&quot;: null
+}</pre><div>Events saved in social/conversation</div><pre>{
+    &quot;date&quot;: &quot;20110512 12:12:12&quot;,
+    &quot;value&quot;: [
+        {
+            &quot;tel&quot;: &quot;+41.765766535&quot;
+        }
+    ],
+    &quot;type&quot;: &quot;call:tel&quot;,
+    &quot;description&quot;: &quot;Call with mom.&quot;,
+    &quot;duration&quot;: 360000
+}</pre></diary><h3>activity Channel </h3><div id="info" class="well"><div>Where a user can save her various work and leisure activities.</div><div>This channel is:  <code>recommended</code></div></div><h4>Folders</h4><table><thead><tr><th> </th><th>name</th><th>id</th><th>description</th></tr></thead><tbody><tr><td><code>recommended</code></td><td>entertainment</td><td>entertainment</td><td>For leisure activities.</td></tr><tr><td><code>recommended</code></td><td>sports</td><td>sports</td><td>For sports activities.</td></tr><tr><td><code>recommended</code></td><td>work</td><td>work</td><td>This folder contains all events related to the user's work. The user should be able to save her work activities in different subfolders depending on the type of work she is achieving.</td></tr><!-- Prepend folder name with its path.--><tr><td><code>example</code></td><td>work/projectABC</td><td></td><td>This is an example of folder the user could create in this channel for a specific project she has been working on.</td></tr><tr><td><code>recommended</code></td><td>parties</td><td>parties</td><td>Ideal to keep pictures of your crazy parties.</td></tr></tbody></table><h4> <a onclick="javascript:$(&quot;activity&quot;).toggle()">Examples of Events</a></h4><activity style="display:none;"><div>Events saved in work/projectABC</div><pre>{
+    &quot;date&quot;: &quot;20110512 12:12:12&quot;,
+    &quot;value&quot;: null,
+    &quot;type&quot;: &quot;activity&quot;,
+    &quot;description&quot;: &quot;Resolved bug #123&quot;,
+    &quot;duration&quot;: 360000
+}</pre><pre>{
+    &quot;date&quot;: &quot;20110512 12:12:12&quot;,
+    &quot;value&quot;: null,
+    &quot;type&quot;: &quot;activity&quot;,
+    &quot;description&quot;: &quot;Report for Mr A.&quot;,
+    &quot;duration&quot;: 123712
+}</pre></activity><h3>health Channel </h3><div id="info" class="well"><div>This channel is dedicated to the user and her close family's health. The goal here is to save all the data related to one's health: weight, medication, doctor visits, etc.</div><div>This channel is:  <code>recommended</code></div></div><h4>Folders</h4><table><thead><tr><th> </th><th>name</th><th>description</th></tr></thead><tbody><tr><td><code>example</code></td><td>feeling</td><td>This is an example of folder you could create in this channel. Why not store here how the user feels every day?</td><td></td></tr><tr><td><code>example</code></td><td>medication</td><td>Example of folder where you could keep track of what medication has been taken when.</td><td></td></tr></tbody></table><h4> <a onclick="javascript:$(&quot;health&quot;).toggle()">Examples of Events</a></h4><health style="display:none;">No examples for this channel.</health><h3>position Channel </h3><div id="info" class="well"><div>This channel is especially suited for all events automatically saved by the user's devices. Imagine an iphone app recording the user's position every 10 minutes. Here is the perfect place to save this data.</div><div>This channel is:  <code>recommended</code></div></div><h4>Folders</h4><table><thead><tr><th> </th><th>name</th><th>description</th></tr></thead><tbody><tr><td><code>example</code></td><td>iphone</td><td>This is an example of folder where you could record geolocation information coming from the user's iphone.</td><td></td></tr><tr><td><code>example</code></td><td>computer</td><td>This is an example of folder where you could record geolocation information coming from the user's computer.</td><td></td></tr></tbody></table><h4> <a onclick="javascript:$(&quot;position&quot;).toggle()">Examples of Events</a></h4><position style="display:none;">No examples for this channel.</position><h3>finance Channel </h3><div id="info" class="well"><div>A channel to save all financial aspects of the user's life.</div><div>This channel is:  <code>recommended</code></div></div><h4>Folders</h4><table><thead><tr><th> </th><th>name</th><th>description</th></tr></thead><tbody><tr><td><code>example</code></td><td>bank ABC</td><td>This is an example of folder you could create in this channel. A subfolder could be created for each bank account of the user for instance.</td><td></td></tr></tbody></table><h4> <a onclick="javascript:$(&quot;finance&quot;).toggle()">Examples of Events</a></h4><finance style="display:none;">No examples for this channel.</finance><h3>householding Channel </h3><div id="info" class="well"><div>A place to save all the user's data related to householding: shopping lists, bills, the plumber's visits, etc.</div><div>This channel is:  <code>recommended</code></div></div><h4>Folders</h4><table><thead><tr><th> </th><th>name</th><th>description</th></tr></thead><tbody><tr><td><code>example</code></td><td>shopping</td><td>This is an example of folder you could create in this channel to save all household shopping-related data.</td><td></td></tr><tr><td><code>example</code></td><td>facilities</td><td>This is an example of folder you could create in this channel.</td><td></td></tr></tbody></table><h4> <a onclick="javascript:$(&quot;householding&quot;).toggle()">Examples of Events</a></h4><householding style="display:none;">No examples for this channel.</householding><h3>kids Channel </h3><div id="info" class="well"><div>A channel for the user to save all her children pictures.</div><div>This channel is:  <code>recommended</code></div></div><h4>Folders</h4><table><thead><tr><th> </th><th>name</th><th>description</th></tr></thead><tbody><tr><td><code>example</code></td><td>John</td><td>This is an example of folder you could create in this channel. The idea here is to create one folder for each child of the user.</td><td></td></tr></tbody></table><h4> <a onclick="javascript:$(&quot;kids&quot;).toggle()">Examples of Events</a></h4><kids style="display:none;">No examples for this channel.</kids></div></div><div id="toc"></div><script>jQuery(document).ready(function($) {
   $('#toc').toc({
-    'selectors': 'h1,h2,h3',
+    'selectors': 'h2,h3',
     'container': '#structures',
     'smoothScrolling': false,
     'prefix': 'toc',
