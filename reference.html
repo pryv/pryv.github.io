@@ -769,7 +769,7 @@ socket.on(<span class="string">'eventsChanged'</span>, <span class="keyword">fun
 <ul>
 <li><code>token</code> (string): Unique, read-only (except at creation). The token identifying the access. Automatically generated if not set when creating the access.</li>
 <li><code>name</code> (string): Unique. The name identifying the access for the user. It can be the client application's name for automatically generated personal accesses, or any user-defined value for manually created accesses.</li>
-<li><code>type</code> (<code>"personal"</code>, <code>"app"</code> or <code>"shared"</code>): Optional. The type – or usage – of the access. Default: <code>"shared"</code>.</li>
+<li><code>type</code> (<code>"personal"</code>, <code>"app"</code> or <code>"shared"</code>): Optional. The type — or usage — of the access. Default: <code>"shared"</code>.</li>
 <li><code>permissions</code>: an array of channel permission objects as described below. Ignored for personal accesses. Shared accesses are only granted access to activity data objects listed in here.<ul>
 <li><code>channelId</code> (<a href="#data-structure-identity">identity</a>): The accessible channel's id.</li>
 <li><code>level</code> (<code>"read"</code>, <code>"contribute"</code> or <code>"manage"</code>): The level of access to the channel. With <code>"contribute"</code>, the access's token holder(s) can see and record events in the channel; with <code>"manage"</code>, the access's token holder(s) can in addition modify the channel itself. This is overridden if specific folder permissions are defined (see below).</li>
@@ -839,14 +839,14 @@ Fields:
 <ul>
 <li><code>id</code> (<a href="#data-structure-identity">identity</a>): Unique, read-only. The server-assigned identifier for the event.</li>
 <li><code>time</code> (<a href="#data-structure-timestamp">timestamp</a>): The event's time. For period events, this is the time the event started.</li>
-<li><code>clientId</code> (string): A client-assigned identifier for the event when created offline, for temporary reference. Only used in batch event creation requests. [TODO: currently not implemented; linked to batch creation request.]</li>
-<li><code>folderId</code>(<a href="#data-structure-identity">identity</a>): Optional. Indicates the particular folder the event is associated with, if any.</li>
-<li><code>duration</code> (<a href="#data-structure-timestamp">timestamp</a> difference): Optional. If present, indicates that the event is a period event. Running period events have a duration set to <code>null</code>. (We use a dedicated field for duration - instead of using the <code>value</code> field - as we need specific processing of event durations, intervals and overlapping.)</li>
-<li><code>value</code> (object): Optional. The value associated with the event, if any. This may be a mathematical value (e.g. mass, money, length, position, etc.), or a link to a page, a picture or an attached file. To facilitate interoperability, event values are expected to have the following structure:<ul>
-<li><code>type</code> (TODO: value type): The value's type in the form <code>{type}:{unit}</code>, for example <code>mass:kg</code>. [TODO: link to the value types directory when ready.]</li>
-<li><code>value</code> (boolean, number, string or <code>null</code>): The actual value in the specified type.</li>
+<li><code>duration</code> (<a href="#data-structure-timestamp">timestamp</a> difference): Optional. If present, indicates that the event is a period event. Running period events have a duration set to <code>null</code>. (We use a dedicated field for duration — instead of using the <code>value</code> field — as we do specific processing of event durations, intervals and overlapping.)</li>
+<li><code>type</code> (object): The type of the event. See the <a href="value-types.html">value types directory</a> for a list of standard types.<ul>
+<li><code>class</code> (string): The type's class. Events in the same class are considered comparable and convertible.</li>
+<li><code>format</code> (string): The type's format. Depending on the class, it may indicate a measurement unit, a currency, a string format, an object structure, etc. Together with <code>class</code>, it indicates how to handle the event's <code>value</code>, if any.</li>
 </ul>
 </li>
+<li><code>value</code> (any type): Optional. The value associated with the event, if any. Depending on the <code>type</code>, this may be a mathematical value (e.g. mass, money, length, position, etc.), a link to a page, location coordinates, etc.</li>
+<li><code>folderId</code>(<a href="#data-structure-identity">identity</a>): Optional. Indicates the particular folder the event is associated with, if any.</li>
 <li><code>description</code> (string): Optional. User description or comment for the event.</li>
 <li><code>attachments</code>: Optional and read-only. An object describing the files attached to the event. Each of its properties corresponds to one file and has the following structure:<ul>
 <li><code>fileName</code> (string): The file's name. The attached file's URL is obtained by appending this file name to the event's resource URL.</li>
