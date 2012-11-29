@@ -41,10 +41,10 @@
 </p>
 <ul>
 <li><code>API-Version</code>: The version of the API in the form <code>{major}.{minor}.{revision}</code>.</li>
-<li><code>Server-Time</code>: The current server time as a <a href="#data-types-timestamp">timestamp</a>. Keeping reference of the server time is an absolute necessity to properly read and write event times.</li>
+<li><code>Server-Time</code>: The current server time as a <a href="#data-structure-timestamp">timestamp</a>. Keeping reference of the server time is an absolute necessity to properly read and write event times.</li>
 </ul>
 <h2>Errors</h2>
-<p>When an error occurs, the API returns a 4xx or 5xx status code, with the response body usually containing an <a href="#data-types-error">error</a> object detailing the cause.
+<p>When an error occurs, the API returns a 4xx or 5xx status code, with the response body usually containing an <a href="#data-structure-error">error</a> object detailing the cause.
 
 </p>
 <p>Here's an example "401 Unauthorized" error response:
@@ -59,7 +59,7 @@
 
 </p>
 <h2>Authorization</h2>
-<p>All requests for retrieving and manipulating activity data must carry a valid <a href="#data-types-access">access token</a> in the HTTP <code>Authorization</code> header or, alternatively, in the query string's <code>auth</code> parameter.  (You get the token itself either by retrieving it in the <a href="#admin-accesses">administration</a> or from sharing.)
+<p>All requests for retrieving and manipulating activity data must carry a valid <a href="#data-structure-access">access token</a> in the HTTP <code>Authorization</code> header or, alternatively, in the query string's <code>auth</code> parameter.  (You get the token itself either by retrieving it in the <a href="#admin-accesses">administration</a> or from sharing.)
 
 </p>
 <p>Here's what a proper request looks like:
@@ -79,7 +79,7 @@
 <li><code>400 Bad Request</code>, id <code>INVALID_REQUEST_STRUCTURE</code>: The request's structure is not that expected. This can happen e.g. with invalid JSON syntax, or when using an unexpected multipart structure for uploading file attachments.</li>
 <li><code>400 Bad Request</code>, id <code>INVALID_PARAMETERS_FORMAT</code>: The request's parameters do not follow the expected format.</li>
 <li><code>401 Unauthorized</code>, id <code>INVALID_ACCESS_TOKEN</code>: The data access token is missing or invalid.</li>
-<li><code>403 Forbidden</code>: The given access token does not grant permission for this operation. See <a href="#data-types-access">accesses</a> for more details about accesses and permissions.</li>
+<li><code>403 Forbidden</code>: The given access token does not grant permission for this operation. See <a href="#data-structure-access">accesses</a> for more details about accesses and permissions.</li>
 <li><code>404 Not Found</code>, possible cases:<ul>
 <li>Id <code>UNKNOWN_CHANNEL</code>: The activity channel can't be found.</li>
 <li>Id <code>UNKNOWN_FOLDER</code>: The activity folder can't be found in the specified channel.</li>
@@ -89,7 +89,7 @@
 </li>
 </ul>
 <h2>Channels</h2>
-<p>For retrieving and manipulating <a href="#data-types-channel">channels</a>.
+<p>For retrieving and manipulating <a href="#data-structure-channel">channels</a>.
 
 
 </p>
@@ -105,7 +105,7 @@
 <li><code>state</code> (<code>default</code>, <code>trashed</code> or <code>all</code>): Optional. Indicates what items to return depending on their state. By default, only items that are not in the trash are returned; <code>trashed</code> returns only items in the trash, while <code>all</code> return all items regardless of their state.</li>
 </ul>
 <h4>Successful response: <code>200 OK</code></h4>
-<p>An array of <a href="#data-types-channel">activity channels</a>) containing the accessible channels in the user's account matching the specified state, ordered by name.
+<p>An array of <a href="#data-structure-channel">activity channels</a>) containing the accessible channels in the user's account matching the specified state, ordered by name.
 
 </p>
 <h4>cURL example</h4>
@@ -115,12 +115,12 @@
 
 </p>
 <h4>Body parameters</h4>
-<p>The new channel's data: see <a href="#data-types-channel">activity channel</a>.
+<p>The new channel's data: see <a href="#data-structure-channel">activity channel</a>.
 
 </p>
 <h4>Successful response: <code>201 Created</code></h4>
 <ul>
-<li><code>id</code> (<a href="#data-types-identity">identity</a>): The created channel's id.</li>
+<li><code>id</code> (<a href="#data-structure-identity">identity</a>): The created channel's id.</li>
 </ul>
 <h4>Specific errors</h4>
 <ul>
@@ -134,7 +134,7 @@
 
 </p>
 <h4>Body parameters</h4>
-<p>New values for the channel's fields: see <a href="#data-types-channel">activity channel</a>. All fields are optional, and only modified values must be included. TODO: example
+<p>New values for the channel's fields: see <a href="#data-structure-channel">activity channel</a>. All fields are optional, and only modified values must be included. TODO: example
 
 </p>
 <h4>Successful response: <code>200 OK</code></h4>
@@ -157,7 +157,7 @@
 <pre class="highlighted"><code class="language-bash">
 </code></pre>
 <h2>Events</h2>
-<p>Methods to retrieve and manipulate <a href="#data-types-event">events</a>.
+<p>Methods to retrieve and manipulate <a href="#data-structure-event">events</a>.
 
 
 </p>
@@ -170,17 +170,17 @@
 </p>
 <h4>Query string parameters</h4>
 <ul>
-<li><code>fromTime</code> (<a href="#data-types-timestamp">timestamp</a>): Optional. TODO. Default is 24 hours before <code>toTime</code>, if set.</li>
-<li><code>toTime</code> (<a href="#data-types-timestamp">timestamp</a>): Optional. TODO. Default is the current time.</li>
-<li><code>onlyFolders</code> (array of <a href="#data-types-identity">identity</a>): Optional. If set, only events assigned to the specified folders and their sub-folders will be returned. To retrieve events that are not assigned to any folder, just include a <code>null</code> value in the array. By default, all accessible events are returned (regardless of their folder assignment).</li>
+<li><code>fromTime</code> (<a href="#data-structure-timestamp">timestamp</a>): Optional. TODO. Default is 24 hours before <code>toTime</code>, if set.</li>
+<li><code>toTime</code> (<a href="#data-structure-timestamp">timestamp</a>): Optional. TODO. Default is the current time.</li>
+<li><code>onlyFolders</code> (array of <a href="#data-structure-identity">identity</a>): Optional. If set, only events assigned to the specified folders and their sub-folders will be returned. To retrieve events that are not assigned to any folder, just include a <code>null</code> value in the array. By default, all accessible events are returned (regardless of their folder assignment).</li>
 <li><code>sortAscending</code> (<code>true</code> or <code>false</code>): If <code>true</code>, events will be sorted from oldest to newest. Default: false (sort descending).</li>
 <li><code>skip</code> (number): Optional. The number of items to skip in the results.</li>
 <li><code>limit</code> (number): Optional. The number of items to return in the results. A default value of 20 items is used if no other range limiting parameter is specified (<code>fromTime</code>, <code>toTime</code>).</li>
 <li><code>state</code> (<code>default</code>, <code>trashed</code> or <code>all</code>): Optional. Indicates what items to return depending on their state. By default, only items that are not in the trash are returned; <code>trashed</code> returns only items in the trash, while <code>all</code> return all items regardless of their state.</li>
-<li><code>modifiedSince</code> (<a href="#data-types-timestamp">timestamp</a>): Optional. If specified, only events modified since that time will be returned.</li>
+<li><code>modifiedSince</code> (<a href="#data-structure-timestamp">timestamp</a>): Optional. If specified, only events modified since that time will be returned.</li>
 </ul>
 <h4>Successful response: <code>200 OK</code></h4>
-<p>An array of <a href="#data-types-event">activity events</a> containing the accessible events ordered by time (see <code>sortAscending</code> above).
+<p>An array of <a href="#data-structure-event">activity events</a> containing the accessible events ordered by time (see <code>sortAscending</code> above).
 
 </p>
 <h4>Specific errors</h4>
@@ -203,13 +203,13 @@
 
 </p>
 <h4>Body parameters</h4>
-<p>The new event's data: see <a href="#data-types-event">activity event</a>.
+<p>The new event's data: see <a href="#data-structure-event">activity event</a>.
 
 </p>
 <h4>Successful response: <code>201 Created</code></h4>
 <ul>
-<li><code>id</code> (<a href="#data-types-identity">identity</a>): The new event's id.</li>
-<li><code>stoppedId</code> (<a href="#data-types-identity">identity</a>): If set, indicates the id of the previously running period event that was stopped as a consequence of inserting the new event.</li>
+<li><code>id</code> (<a href="#data-structure-identity">identity</a>): The new event's id.</li>
+<li><code>stoppedId</code> (<a href="#data-structure-identity">identity</a>): If set, indicates the id of the previously running period event that was stopped as a consequence of inserting the new event.</li>
 </ul>
 <h4>Specific errors</h4>
 <ul>
@@ -242,7 +242,7 @@
 </p>
 <h4>Successful response: <code>200 OK</code></h4>
 <ul>
-<li><code>stoppedId</code> (<a href="#data-types-identity">identity</a>): The id of the previously running period event that was stopped, or null if no running event was found.</li>
+<li><code>stoppedId</code> (<a href="#data-structure-identity">identity</a>): The id of the previously running period event that was stopped, or null if no running event was found.</li>
 </ul>
 <h4>cURL example</h4>
 <pre class="highlighted"><code class="language-bash">
@@ -256,7 +256,7 @@
 
 </p>
 <h4>Successful response: <code>200 OK</code></h4>
-<p>An array of <a href="#data-types-event">activity events</a> containing the running period events.
+<p>An array of <a href="#data-structure-event">activity events</a> containing the running period events.
 
 </p>
 <h4>cURL example</h4>
@@ -270,12 +270,12 @@
 
 </p>
 <h4>Body parameters</h4>
-<p>New values for the event's fields: see <a href="#data-types-event">activity event</a>. All fields are optional, and only modified values must be included. TODO: example
+<p>New values for the event's fields: see <a href="#data-structure-event">activity event</a>. All fields are optional, and only modified values must be included. TODO: example
 
 </p>
 <h4>Successful response: <code>200 OK</code></h4>
 <ul>
-<li><code>stoppedId</code> (<a href="#data-types-identity">identity</a>): If set, indicates the id of the previously running period event that was stopped as a consequence of modifying the event.</li>
+<li><code>stoppedId</code> (<a href="#data-structure-identity">identity</a>): If set, indicates the id of the previously running period event that was stopped as a consequence of modifying the event.</li>
 </ul>
 <h4>Specific errors</h4>
 <ul>
@@ -337,11 +337,11 @@ Batch upload events that were recorded by the client while offline. If the clien
 </p>
 <h4>Body parameters</h4>
 <ul>
-<li><code>events</code> (array of <a href="#data-types-event">activity events</a>): The client-recorded events. The <code>clientId</code> must be set for each event. Each event's time must be set in server time.</li>
+<li><code>events</code> (array of <a href="#data-structure-event">activity events</a>): The client-recorded events. The <code>clientId</code> must be set for each event. Each event's time must be set in server time.</li>
 </ul>
 <h4>Successful response: <code>200 OK</code></h4>
 <ul>
-<li><code>addedEvents</code> (array of <a href="#data-types-event">activity events</a>: The successfully added events, with their server-assigned ids and <code>clientId</code> for reference.</li>
+<li><code>addedEvents</code> (array of <a href="#data-structure-event">activity events</a>: The successfully added events, with their server-assigned ids and <code>clientId</code> for reference.</li>
 </ul>
 <h4>Specific errors</h4>
 <ul>
@@ -353,7 +353,7 @@ Batch upload events that were recorded by the client while offline. If the clien
 <pre class="highlighted"><code class="language-bash">
 </code></pre>
 <h2>Folders</h2>
-<p>Methods to retrieve and manipulate <a href="#data-types-folder">folders</a>.
+<p>Methods to retrieve and manipulate <a href="#data-structure-folder">folders</a>.
 
 
 </p>
@@ -366,13 +366,13 @@ Batch upload events that were recorded by the client while offline. If the clien
 </p>
 <h4>Query string parameters</h4>
 <ul>
-<li><code>parentId</code> (<a href="#data-types-identity">identity</a>): Optional. The id of the parent folder to use as root for the request. Default: <code>null</code> (returns all accessible folders from the root level).</li>
+<li><code>parentId</code> (<a href="#data-structure-identity">identity</a>): Optional. The id of the parent folder to use as root for the request. Default: <code>null</code> (returns all accessible folders from the root level).</li>
 <li><code>includeHidden</code> (<code>true</code> or <code>false</code>): Optional. When <code>true</code>, folders that are currently hidden will be included in the result. Default: <code>false</code>.</li>
 <li><code>state</code> (<code>default</code>, <code>trashed</code> or <code>all</code>): Optional. Indicates what items to return depending on their state. By default, only items that are not in the trash are returned; <code>trashed</code> returns only items in the trash, while <code>all</code> return all items regardless of their state.</li>
-<li><code>timeCountBase</code> (<a href="#data-types-timestamp">timestamp</a>): Optional. If specified, the returned folders will include the summed duration of all their period events, starting from this timestamp (see <code>timeCount</code> in <a href="#data-types-folder">activity folder</a>); otherwise no time count values will be returned.</li>
+<li><code>timeCountBase</code> (<a href="#data-structure-timestamp">timestamp</a>): Optional. If specified, the returned folders will include the summed duration of all their period events, starting from this timestamp (see <code>timeCount</code> in <a href="#data-structure-folder">activity folder</a>); otherwise no time count values will be returned.</li>
 </ul>
 <h4>Successful response: <code>200 OK</code></h4>
-<p>An array of <a href="#data-types-folder">activity folders</a> containing the tree of the accessible folders, sorted by name.
+<p>An array of <a href="#data-structure-folder">activity folders</a> containing the tree of the accessible folders, sorted by name.
 
 </p>
 <h4>Specific errors</h4>
@@ -394,12 +394,12 @@ Batch upload events that were recorded by the client while offline. If the clien
 
 </p>
 <h4>Body parameters</h4>
-<p>The new folder's data: see <a href="#data-types-folder">activity folder</a>.
+<p>The new folder's data: see <a href="#data-structure-folder">activity folder</a>.
 
 </p>
 <h4>Successful response: <code>201 Created</code></h4>
 <ul>
-<li><code>id</code> (<a href="#data-types-identity">identity</a>): The created folder's id.</li>
+<li><code>id</code> (<a href="#data-structure-identity">identity</a>): The created folder's id.</li>
 </ul>
 <h4>Specific errors</h4>
 <ul>
@@ -417,7 +417,7 @@ Batch upload events that were recorded by the client while offline. If the clien
 
 </p>
 <h4>Body parameters</h4>
-<p>New values for the folder's fields: see <a href="#data-types-folder">activity folder</a>. All fields are optional, and only modified values must be included.
+<p>New values for the folder's fields: see <a href="#data-structure-folder">activity folder</a>. All fields are optional, and only modified values must be included.
 
 </p>
 <p>TODO: example
@@ -465,7 +465,7 @@ Batch upload events that were recorded by the client while offline. If the clien
 
 </p>
 <h4>Successful response: <code>200 OK</code></h4>
-<p>An array of <a href="#data-types-access">accesses</a> containing all manageable shared accesses in the user's account, ordered by name.
+<p>An array of <a href="#data-structure-access">accesses</a> containing all manageable shared accesses in the user's account, ordered by name.
 
 </p>
 <h4>cURL example</h4>
@@ -475,12 +475,12 @@ Batch upload events that were recorded by the client while offline. If the clien
 
 </p>
 <h4>Body parameters</h4>
-<p>The new access's data: see <a href="#data-types-access">access</a>.
+<p>The new access's data: see <a href="#data-structure-access">access</a>.
 
 </p>
 <h4>Successful response: <code>201 Created</code></h4>
 <ul>
-<li><code>token</code> (<a href="#data-types-identity">identity</a>): The created access's token.</li>
+<li><code>token</code> (<a href="#data-structure-identity">identity</a>): The created access's token.</li>
 </ul>
 <h4>Specific errors</h4>
 <ul>
@@ -494,7 +494,7 @@ Batch upload events that were recorded by the client while offline. If the clien
 
 </p>
 <h4>Body parameters</h4>
-<p>New values for the access's fields: see <a href="#data-types-access">access</a>. All fields are optional, and only modified values must be included. TODO: example
+<p>New values for the access's fields: see <a href="#data-structure-access">access</a>. All fields are optional, and only modified values must be included. TODO: example
 
 </p>
 <h4>Successful response: <code>200 OK</code></h4>
@@ -607,7 +607,7 @@ Requires session token, old password, new password.
 </p>
 <h4>Successful response: <code>200 OK</code></h4>
 <ul>
-<li><code>id</code> (<a href="#data-types-identity">identity</a>): Your app's dedicated personal <a href="#data-types-access">access</a> token.</li>
+<li><code>id</code> (<a href="#data-structure-identity">identity</a>): Your app's dedicated personal <a href="#data-structure-access">access</a> token.</li>
 </ul>
 <h4>cURL example</h4>
 <pre class="highlighted"><code class="language-bash">curl -i -H <span class="string">"Authorization: {session-id}"</span> -X POST https://{username}.pryv.io/admin/get-app-token</code></pre>
@@ -616,7 +616,7 @@ Requires session token, old password, new password.
 
 </p>
 <h4>Successful response: <code>200 OK</code></h4>
-<p>An array of <a href="#data-types-access">accesses</a> containing all manageable accesses in the user's account, ordered by name.
+<p>An array of <a href="#data-structure-access">accesses</a> containing all manageable accesses in the user's account, ordered by name.
 
 </p>
 <h4>cURL example</h4>
@@ -626,12 +626,12 @@ Requires session token, old password, new password.
 
 </p>
 <h4>Body parameters</h4>
-<p>The new access's data: see <a href="#data-types-access">access</a>.
+<p>The new access's data: see <a href="#data-structure-access">access</a>.
 
 </p>
 <h4>Successful response: <code>201 Created</code></h4>
 <ul>
-<li><code>token</code> (<a href="#data-types-identity">identity</a>): The created access's token.</li>
+<li><code>token</code> (<a href="#data-structure-identity">identity</a>): The created access's token.</li>
 </ul>
 <h4>Specific errors</h4>
 <ul>
@@ -645,7 +645,7 @@ Requires session token, old password, new password.
 
 </p>
 <h4>Body parameters</h4>
-<p>New values for the access's fields: see <a href="#data-types-access">access</a>. All fields are optional, and only modified values must be included. TODO: example
+<p>New values for the access's fields: see <a href="#data-structure-access">access</a>. All fields are optional, and only modified values must be included. TODO: example
 
 </p>
 <h4>Successful response: <code>200 OK</code></h4>
@@ -670,7 +670,7 @@ Requires session token, old password, new password.
 
 </p>
 <h4>Successful response: <code>200 OK</code></h4>
-<p>An array of <a href="#data-types-bookmark">bookmarks</a> containing all sharing bookmarks in the user's account, ordered by name.
+<p>An array of <a href="#data-structure-bookmark">bookmarks</a> containing all sharing bookmarks in the user's account, ordered by name.
 
 </p>
 <h4>cURL example</h4>
@@ -681,12 +681,12 @@ Requires session token, old password, new password.
 
 </p>
 <h4>Body parameters</h4>
-<p>The new bookmark's data: see <a href="#data-types-bookmark">bookmark</a>.
+<p>The new bookmark's data: see <a href="#data-structure-bookmark">bookmark</a>.
 
 </p>
 <h4>Successful response: <code>201 Created</code></h4>
 <ul>
-<li><code>id</code> (<a href="#data-types-identity">identity</a>): The created bookmark's id.</li>
+<li><code>id</code> (<a href="#data-structure-identity">identity</a>): The created bookmark's id.</li>
 </ul>
 <h4>cURL example</h4>
 <pre class="highlighted"><code class="language-bash">
@@ -696,7 +696,7 @@ Requires session token, old password, new password.
 
 </p>
 <h4>Body parameters</h4>
-<p>New values for the bookmark's fields: see <a href="#data-types-bookmark">bookmark</a>. All fields are optional, and only modified values must be included. TODO: example
+<p>New values for the bookmark's fields: see <a href="#data-structure-bookmark">bookmark</a>. All fields are optional, and only modified values must be included. TODO: example
 
 </p>
 <h4>Successful response: <code>200 OK</code></h4>
@@ -754,12 +754,12 @@ socket.on(<span class="string">'eventsChanged'</span>, <span class="keyword">fun
   <span class="comment">// scope.channelId contains the related channel id</span>
   <span class="comment">// ... (retrieve latest changes and update)</span>
 });</code></pre>
-</section><section id="data-types"><h1>Data types</h1>
-<p>TODO: introductory text.
+</section><section id="data-structure"><h1>Data structure</h1>
+<p>This section describes the structure of the different types of objects and values exchanged in the API.
 
 
 </p>
-<h2><a id="data-types-access"></a>Access</h2>
+<h2><a id="data-structure-access"></a>Access</h2>
 <p>An access defines a set of permissions on a user's activity data (channels, folders and events). (See <a href="overview.html#sharing">how sharing works</a>.)
 
 </p>
@@ -771,10 +771,10 @@ socket.on(<span class="string">'eventsChanged'</span>, <span class="keyword">fun
 <li><code>name</code> (string): Unique. The name identifying the access for the user. It can be the client application's name for automatically generated personal accesses, or any user-defined value for manually created accesses.</li>
 <li><code>type</code> (<code>"personal"</code>, <code>"app"</code> or <code>"shared"</code>): Optional. The type – or usage – of the access. Default: <code>"shared"</code>.</li>
 <li><code>permissions</code>: an array of channel permission objects as described below. Ignored for personal accesses. Shared accesses are only granted access to activity data objects listed in here.<ul>
-<li><code>channelId</code> (<a href="#data-types-identity">identity</a>): The accessible channel's id.</li>
+<li><code>channelId</code> (<a href="#data-structure-identity">identity</a>): The accessible channel's id.</li>
 <li><code>level</code> (<code>"read"</code>, <code>"contribute"</code> or <code>"manage"</code>): The level of access to the channel. With <code>"contribute"</code>, the access's token holder(s) can see and record events in the channel; with <code>"manage"</code>, the access's token holder(s) can in addition modify the channel itself. This is overridden if specific folder permissions are defined (see below).</li>
 <li><code>folderPermissions</code>: Optional. An array of folder permission objects to define specific per-folder permissions. If defined, only the folders listed here will be accessible.<ul>
-<li><code>folderId</code> (<a href="#data-types-identity">identity</a>): The accessible folder's id. If the folder has child folders, they will be accessible too. A  value of <code>null</code> can be used to set permissions for events that have no folder assigned.</li>
+<li><code>folderId</code> (<a href="#data-structure-identity">identity</a>): The accessible folder's id. If the folder has child folders, they will be accessible too. A  value of <code>null</code> can be used to set permissions for events that have no folder assigned.</li>
 <li><code>level</code> (<code>"read"</code>, <code>"contribute"</code> or <code>"manage"</code>): The level of access to the folder. With <code>"contribute"</code>, the access's token holder(s) can see and record events for the folder (and its child folders, if any); with <code>"manage"</code>, the access's token holder(s) can in addition create, modify and delete child folders.</li>
 </ul>
 </li>
@@ -788,7 +788,7 @@ socket.on(<span class="string">'eventsChanged'</span>, <span class="keyword">fun
 
 
 </p>
-<h2><a id="data-types-bookmark"></a>Bookmark</h2>
+<h2><a id="data-structure-bookmark"></a>Bookmark</h2>
 <p>Sharing bookmarks allow the user to keep track of accesses shared with her by other users.
 
 </p>
@@ -796,33 +796,33 @@ socket.on(<span class="string">'eventsChanged'</span>, <span class="keyword">fun
 
 </p>
 <ul>
-<li><code>id</code> (<a href="#data-types-identity">identity</a>): Unique, read-only. The server-assigned identifier for the bookmark.</li>
+<li><code>id</code> (<a href="#data-structure-identity">identity</a>): Unique, read-only. The server-assigned identifier for the bookmark.</li>
 <li><code>name</code> (string): Unique. A name identifying the bookmark for the user.</li>
 <li><code>url</code> (string): The url pointing to the shared access's owning user's server. Not modifiable after creation.</li>
-<li><code>accessToken</code> <a href="#data-types-identity">identity</a>: The token of the shared access itself. Not modifiable after creation.</li>
+<li><code>accessToken</code> <a href="#data-structure-identity">identity</a>: The token of the shared access itself. Not modifiable after creation.</li>
 </ul>
 <p>TODO: example
 
 
 </p>
-<h2><a id="data-types-channel"></a>Channel</h2>
+<h2><a id="data-structure-channel"></a>Channel</h2>
 <p>Each activity channel represents a "stream" or "type" of activity to track, acting as a storage bucket for related events.
 Fields:
 
 </p>
 <ul>
-<li><code>id</code> (<a href="#data-types-identity">identity</a>): Unique, read-only (except at creation). The identifier for the channel. Automatically generated if not set when creating the channel.</li>
+<li><code>id</code> (<a href="#data-structure-identity">identity</a>): Unique, read-only (except at creation). The identifier for the channel. Automatically generated if not set when creating the channel.</li>
 <li><code>name</code> (string): Unique. The name identifying the channel for users.</li>
 <li><code>strictMode</code> (boolean): Optional. If <code>true</code>, the system will ensure that timed events in this channel never overlap; if <code>false</code>, overlapping will be allowed. <strong>This will be implemented later: currently all channels are considered "strict".</strong></li>
-<li><code>clientData</code> (<a href="#data-types-additional-data">item additional data</a>): Optional. Additional client data for the channel.</li>
-<li><code>timeCount</code> (<a href="#data-types-timestamp">timestamp</a>): Read-only. Only optionally returned when querying channels, indicating the total time tracked in that channel since a given reference date and time. <strong>This will be implemented later.</strong></li>
+<li><code>clientData</code> (<a href="#data-structure-additional-data">item additional data</a>): Optional. Additional client data for the channel.</li>
+<li><code>timeCount</code> (<a href="#data-structure-timestamp">timestamp</a>): Read-only. Only optionally returned when querying channels, indicating the total time tracked in that channel since a given reference date and time. <strong>This will be implemented later.</strong></li>
 <li><code>trashed</code> (boolean): Optional. <code>true</code> if the channel is in the trash.</li>
 </ul>
 <p>TODO: example
 
 
 </p>
-<h2><a id="data-types-event"></a>Event</h2>
+<h2><a id="data-structure-event"></a>Event</h2>
 <p>Activity events can be period events, which are associated with a period of time, or mark events, which are just associated with a single point in time:
 
 </p>
@@ -837,11 +837,11 @@ Fields:
 
 </p>
 <ul>
-<li><code>id</code> (<a href="#data-types-identity">identity</a>): Unique, read-only. The server-assigned identifier for the event.</li>
-<li><code>time</code> (<a href="#data-types-timestamp">timestamp</a>): The event's time. For period events, this is the time the event started.</li>
+<li><code>id</code> (<a href="#data-structure-identity">identity</a>): Unique, read-only. The server-assigned identifier for the event.</li>
+<li><code>time</code> (<a href="#data-structure-timestamp">timestamp</a>): The event's time. For period events, this is the time the event started.</li>
 <li><code>clientId</code> (string): A client-assigned identifier for the event when created offline, for temporary reference. Only used in batch event creation requests. [TODO: currently not implemented; linked to batch creation request.]</li>
-<li><code>folderId</code>(<a href="#data-types-identity">identity</a>): Optional. Indicates the particular folder the event is associated with, if any.</li>
-<li><code>duration</code> (<a href="#data-types-timestamp">timestamp</a> difference): Optional. If present, indicates that the event is a period event. Running period events have a duration set to <code>null</code>. (We use a dedicated field for duration - instead of using the <code>value</code> field - as we need specific processing of event durations, intervals and overlapping.)</li>
+<li><code>folderId</code>(<a href="#data-structure-identity">identity</a>): Optional. Indicates the particular folder the event is associated with, if any.</li>
+<li><code>duration</code> (<a href="#data-structure-timestamp">timestamp</a> difference): Optional. If present, indicates that the event is a period event. Running period events have a duration set to <code>null</code>. (We use a dedicated field for duration - instead of using the <code>value</code> field - as we need specific processing of event durations, intervals and overlapping.)</li>
 <li><code>value</code> (object): Optional. The value associated with the event, if any. This may be a mathematical value (e.g. mass, money, length, position, etc.), or a link to a page, a picture or an attached file. To facilitate interoperability, event values are expected to have the following structure:<ul>
 <li><code>type</code> (TODO: value type): The value's type in the form <code>{type}:{unit}</code>, for example <code>mass:kg</code>. [TODO: link to the value types directory when ready.]</li>
 <li><code>value</code> (boolean, number, string or <code>null</code>): The actual value in the specified type.</li>
@@ -854,9 +854,9 @@ Fields:
 <li><code>size</code> (number): The size of the file, in bytes.</li>
 </ul>
 </li>
-<li><code>clientData</code> (<a href="#data-types-additional-data">additional item data</a>):  Optional. Additional client data for the event.</li>
+<li><code>clientData</code> (<a href="#data-structure-additional-data">additional item data</a>):  Optional. Additional client data for the event.</li>
 <li><code>trashed</code> (boolean): Optional. <code>true</code> if the event is in the trash.</li>
-<li><code>modified</code> (<a href="#data-types-timestamp">timestamp</a>): Read-only. The time the event was last modified.</li>
+<li><code>modified</code> (<a href="#data-structure-timestamp">timestamp</a>): Read-only. The time the event was last modified.</li>
 </ul>
 <h3>Example</h3>
 <p>TODO: review after tags are implemented.
@@ -874,7 +874,7 @@ Fields:
     <span class="string">"value"</span>: { <span class="string">"type"</span>: <span class="string">"position:WGS84"</span>, <span class="string">"value"</span>: <span class="string">"40.714728, -73.998672, 12"</span> },
     <span class="string">"modified"</span> : <span class="number">1350373077.359</span> }
 ]</code></pre>
-<h2><a id="data-types-folder"></a>Folder</h2>
+<h2><a id="data-structure-folder"></a>Folder</h2>
 <p>Activity folders are the possible states or categories you track the channel's activity events into (folders are always specific to an activity channel). Every period event belongs to one folder, while mark events can be recorded "off-folder" as well. Activity folders follow a hierarchical tree structure: every folder can contain "child" folders (sub-folders).
 
 </p>
@@ -882,12 +882,12 @@ Fields:
 
 </p>
 <ul>
-<li><code>id</code> (<a href="#data-types-identity">identity</a>): Unique, read-only (except at creation). The identifier for the folder. Automatically generated if not set when creating the folder.</li>
+<li><code>id</code> (<a href="#data-structure-identity">identity</a>): Unique, read-only (except at creation). The identifier for the folder. Automatically generated if not set when creating the folder.</li>
 <li><code>name</code> (string): A name identifying the folder for users. The name must be unique among the folder's siblings in the folders tree structure.</li>
-<li><code>parentId</code> (<a href="#data-types-identity">identity</a>): Optional. The identifier of the folder's parent, if any. A value of <code>null</code> indicates that the folder has no parent (i.e. root folder).</li>
+<li><code>parentId</code> (<a href="#data-structure-identity">identity</a>): Optional. The identifier of the folder's parent, if any. A value of <code>null</code> indicates that the folder has no parent (i.e. root folder).</li>
 <li><code>hidden</code> (<code>true</code> or <code>false</code>): Optional. Whether the folder is currently in use or visible. Default: <code>true</code>.</li>
-<li><code>clientData</code> (<a href="#data-types-additional-data">item additional data</a>):  Optional. Additional client data for the folder.</li>
-<li><code>timeCount</code> (<a href="#data-types-timestamp">timestamp</a>): Read-only. Only optionally returned when querying folders, indicating the total time spent in that folder, including sub-folders, since a given reference date and time. <strong>This will be implemented later.</strong></li>
+<li><code>clientData</code> (<a href="#data-structure-additional-data">item additional data</a>):  Optional. Additional client data for the folder.</li>
+<li><code>timeCount</code> (<a href="#data-structure-timestamp">timestamp</a>): Read-only. Only optionally returned when querying folders, indicating the total time spent in that folder, including sub-folders, since a given reference date and time. <strong>This will be implemented later.</strong></li>
 <li><code>children</code> (array of folders): Read-only. The folder's sub-folders, if any. This field cannot be set in requests creating a new folders: folders are created individually by design.</li>
 <li><code>trashed</code> (boolean): Optional. <code>true</code> if the folder is in the trash.</li>
 </ul>
@@ -915,7 +915,7 @@ Fields:
     ]
   }
 ];</code></pre>
-<h2><a id="data-types-additional-data"></a>Item additional data</h2>
+<h2><a id="data-structure-additional-data"></a>Item additional data</h2>
 <p>A JSON object offering free storage for clients to support extra functionality. TODO: details (no media files, limited size...) and example
 
 </p>
@@ -928,7 +928,7 @@ Fields:
 <li><code>imageIcon</code> (! file size)</li>
 <li>...</li>
 </ul>
-<h2><a id="data-types-error"></a>Error</h2>
+<h2><a id="data-structure-error"></a>Error</h2>
 <p>Fields:
 
 </p>
@@ -938,7 +938,7 @@ Fields:
 <li><code>subErrors</code> (array of errors): Optional. Lists the detailed causes of the main error, if any.</li>
 </ul>
 <h2>Simple types</h2>
-<h3><a id="data-types-identity"></a>Item identity</h3>
+<h3><a id="data-structure-identity"></a>Item identity</h3>
 <p>TODO: decide depending on the choosen database. The best would be to keep human readable identifier (see slugify). Validation rule in that case: <code>/^[a-zA-Z0-9._-]{1,100}$/</code> (alphanum between 3 and 100 chars).
 
 </p>
@@ -946,7 +946,7 @@ Fields:
 <li>The identity of every activity channel must be unique within its owning user's data</li>
 <li>The identity of every activity folder or event must be unique within its containing channel</li>
 </ul>
-<h3><a id="data-types-timestamp"></a>Timestamp</h3>
+<h3><a id="data-structure-timestamp"></a>Timestamp</h3>
 <p>A positive floating-point number representing a number of seconds since any reference date and time, <strong>independently from the time zone</strong>. Because date and time synchronization between server time and client time is done by the client simply comparing the current server timestamp with its own, the reference date and time does not matter.
 
 </p>
@@ -958,7 +958,7 @@ Fields:
 <li>PHP (5+): <code>microtime(true)</code></li>
 <li>TODO: more examples</li>
 </ul>
-<h3><a id="data-types-language-code"></a>Two-letter ISO language code</h3>
+<h3><a id="data-structure-language-code"></a>Two-letter ISO language code</h3>
 <p>A two-letter string specifying a language following the ISO 639-1 standard (see <a href="http://en.wikipedia.org/wiki/ISO_639-1">the related Wikipedia definition</a>).</p>
 </section><section id="public-channels"><h1>Public channels</h1>
 <p><em>TODO: this should be a separate page. Wait till the final dev site structure is defined.</em>
@@ -993,15 +993,15 @@ Fields:
 </p>
 <ul>
 <li><code>API-Version</code>: The version of the public channel API in the form <code>{major}.{minor}.{revision}</code>. (TODO: indicate documented version somewhere.)</li>
-<li><code>Server-Time</code>: The current server time as a <a href="#data-types-timestamp">timestamp</a>, which must of course be consistent with the times of events in the channel.</li>
+<li><code>Server-Time</code>: The current server time as a <a href="#data-structure-timestamp">timestamp</a>, which must of course be consistent with the times of events in the channel.</li>
 </ul>
 <h3>Data</h3>
-<p>The JSON data exchanged is the same as in the Pryv API: see <a href="#data-types-event">events</a>, <a href="#data-types-folder">folders</a> and <a href="#data-types-error">errors</a> there.
+<p>The JSON data exchanged is the same as in the Pryv API: see <a href="#data-structure-event">events</a>, <a href="#data-structure-folder">folders</a> and <a href="#data-structure-error">errors</a> there.
 
 
 </p>
 <h2>Events</h2>
-<p>At a minimum, public channels publish <a href="#data-types-event">events</a>.
+<p>At a minimum, public channels publish <a href="#data-structure-event">events</a>.
 
 
 </p>
@@ -1011,16 +1011,16 @@ Fields:
 </p>
 <h4>Query string parameters</h4>
 <ul>
-<li><code>fromTime</code> (<a href="#data-types-timestamp">timestamp</a>): Optional. TODO. Default is 24 hours before <code>toTime</code>, if set.</li>
-<li><code>toTime</code> (<a href="#data-types-timestamp">timestamp</a>): Optional. TODO. Default is the current time.</li>
-<li><code>onlyFolders</code> (array of <a href="#data-types-identity">identity</a>): Optional. If set, only events assigned to the specified folders and their sub-folders will be returned. To retrieve events that are not assigned to any folder, just include a <code>null</code> value in the array. By default, all accessible events are returned (regardless of their folder assignment).</li>
+<li><code>fromTime</code> (<a href="#data-structure-timestamp">timestamp</a>): Optional. TODO. Default is 24 hours before <code>toTime</code>, if set.</li>
+<li><code>toTime</code> (<a href="#data-structure-timestamp">timestamp</a>): Optional. TODO. Default is the current time.</li>
+<li><code>onlyFolders</code> (array of <a href="#data-structure-identity">identity</a>): Optional. If set, only events assigned to the specified folders and their sub-folders will be returned. To retrieve events that are not assigned to any folder, just include a <code>null</code> value in the array. By default, all accessible events are returned (regardless of their folder assignment).</li>
 <li><code>sortAscending</code> (<code>true</code> or <code>false</code>): If <code>true</code>, events will be sorted from oldest to newest. Default: false (sort descending).</li>
 <li><code>skip</code> (number): Optional. The number of items to skip in the results.</li>
 <li><code>limit</code> (number): Optional. The number of items to return in the results. A default value of 20 items is used if no other range limiting parameter is specified (<code>fromTime</code>, <code>toTime</code>).</li>
-<li><code>modifiedSince</code> (<a href="#data-types-timestamp">timestamp</a>): Optional. If specified, only events modified since that time will be returned.</li>
+<li><code>modifiedSince</code> (<a href="#data-structure-timestamp">timestamp</a>): Optional. If specified, only events modified since that time will be returned.</li>
 </ul>
 <h4>Successful response: <code>200 OK</code></h4>
-<p>An array of <a href="#data-types-event">activity events</a> containing the accessible events ordered by time (see <code>sortAscending</code> above).
+<p>An array of <a href="#data-structure-event">activity events</a> containing the accessible events ordered by time (see <code>sortAscending</code> above).
 
 </p>
 <h4>Errors</h4>
@@ -1038,7 +1038,7 @@ Fields:
 <li><code>404 Not Found</code>, id <code>UNKNOWN_ATTACHMENT</code>: The attached file can't be found for the specified event.</li>
 </ul>
 <h2>Folders</h2>
-<p><a href="#data-types-folder">Folders</a> provide an organization structure for channels that need it. Implementing folders in public channels is by no means mandatory; public channels with no need for folders just return a <code>404 Not Found</code> response for the method below.
+<p><a href="#data-structure-folder">Folders</a> provide an organization structure for channels that need it. Implementing folders in public channels is by no means mandatory; public channels with no need for folders just return a <code>404 Not Found</code> response for the method below.
 
 
 </p>
@@ -1048,10 +1048,10 @@ Fields:
 </p>
 <h4>Query string parameters</h4>
 <ul>
-<li><code>parentId</code> (<a href="#data-types-identity">identity</a>): Optional. The id of the parent folder to use as root for the request. Default: <code>null</code> (returns all folders from the root level).</li>
+<li><code>parentId</code> (<a href="#data-structure-identity">identity</a>): Optional. The id of the parent folder to use as root for the request. Default: <code>null</code> (returns all folders from the root level).</li>
 </ul>
 <h4>Successful response: <code>200 OK</code></h4>
-<p>An array of <a href="#data-types-folder">activity folders</a> containing the tree of the folders, sorted by name.
+<p>An array of <a href="#data-structure-folder">activity folders</a> containing the tree of the folders, sorted by name.
 
 </p>
 <h4>Errors</h4>
