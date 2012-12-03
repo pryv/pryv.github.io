@@ -160,18 +160,23 @@ Fields:
   }
 ];</code></pre>
 <h2><a id="data-structure-additional-data"></a>Item additional data</h2>
-<p>A JSON object offering free storage for clients to support extra functionality. TODO: details (no media files, limited size...) and example
+<p>An object (key-value map) for client apps to store additional data about the containing item (channel, event, etc.), such as a color, a reference to an associated icon, or other app-specific metadata.
 
 </p>
-<p>TODO: "commonly used data directory" to help data reuse:
+<p>When the containing item is updated, additional data fields can be added, updated and removed as follows (fields you don't specify in the update are left untouched):
 
 </p>
 <ul>
-<li><code>color</code></li>
-<li><code>url</code></li>
-<li><code>imageIcon</code> (! file size)</li>
-<li>...</li>
+<li>To add or update a field, just set its value; for example: <code>{ "clientData": { "keyToAddOrUpdate": "value"}}</code></li>
+<li>To delete a field, set its value to <code>null</code>; for example: <code>{ "clientData": { "keyToDelete": null}}</code></li>
 </ul>
+<p>The convention is that each app names the keys it uses with an <code>"{app-id}_"</code> prefix. For example, an app named "Riki" would store its data in fields such as <code>"riki_key": "(some value)"</code>.
+
+</p>
+<p>TODO: "commonly used client data directory" to help data reuse.
+
+
+</p>
 <h2><a id="data-structure-error"></a>Error</h2>
 <p>Fields:
 
