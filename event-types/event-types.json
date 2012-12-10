@@ -1,0 +1,375 @@
+{
+  "version": {
+    "version": 20121210.01
+  },
+  "classes": {
+    "activity": {
+      "description": "To record the time spent doing something (tasks, sports, etc.).",
+      "default": {
+        "type": "null"
+      },
+      "formats": {
+        "pryv": {
+          "description": "Pryv activity event. No value here, as the value is actually defined by the event's time and duration fields as well as its classification (folder, tags)."
+        }
+      }
+    },
+    "audio": {
+      "description": "To record audio (conversations, voice messages, etc.).",
+      "formats": {
+        "attached": {
+          "description": "TODO"
+        },
+        "url": {
+          "description": "A reference to an audio file online."
+        }
+      }
+    },
+    "call": {
+      "description": "To record references to phone calls (landline, mobile, Skype, etc.).",
+      "formats": {
+        "skype": {
+          "description": "TODO"
+        }
+      }
+    },
+    "contact": {
+      "description": "To record events related to people (meeting someone special, business encounters, etc.).",
+      "formats": {
+        "facebook": {
+          "description": "TODO"
+        },
+        "vcard": {
+          "description": "TODO"
+        }
+      }
+    },
+    "count": {
+      "description": "To record the counting of objects (eggs, apples, etc.).",
+      "default": {
+        "type": "number"
+      },
+      "formats": {
+        "generic": {
+          "description": "For general items that demand no particular handling."
+        }
+      }
+    },
+    "length": {
+      "description": "To record length measurements. Format = unit.",
+      "default": {
+        "type": "number"
+      },
+      "formats": {
+        "cm": {
+          "description": "Centimeters."
+        },
+        "m": {
+          "description": "Meters."
+        },
+        "km": {
+          "description": "Kilometers."
+        }
+      }
+    },
+    "money": {
+      "description": "To record sums of money (expenses, loans, stock values, etc.). Format = currency.",
+      "default": {
+        "type": "number"
+      },
+      "formats": {
+        "aed": {},
+        "ang": {},
+        "ars": {},
+        "aud": {},
+        "bgn": {},
+        "bhd": {},
+        "bnd": {},
+        "bob": {},
+        "brl": {},
+        "bwp": {},
+        "cad": {},
+        "chf": {},
+        "clp": {},
+        "cny": {},
+        "cop": {},
+        "crc": {},
+        "czk": {},
+        "dkk": {},
+        "dop": {},
+        "dzd": {},
+        "eek": {},
+        "egp": {},
+        "eur": {},
+        "fjd": {},
+        "gbp": {},
+        "hkd": {},
+        "hnl": {},
+        "hrk": {},
+        "huf": {},
+        "idr": {},
+        "ils": {},
+        "inr": {},
+        "jmd": {},
+        "jod": {},
+        "jpy": {},
+        "kes": {},
+        "krw": {},
+        "kwd": {},
+        "kyd": {},
+        "kzt": {},
+        "lbp": {},
+        "lkr": {},
+        "ltl": {},
+        "lvl": {},
+        "mad": {},
+        "mdl": {},
+        "mkd": {},
+        "mur": {},
+        "mxn": {},
+        "myr": {},
+        "nad": {},
+        "ngn": {},
+        "nio": {},
+        "nok": {},
+        "npr": {},
+        "nzd": {},
+        "omr": {},
+        "pen": {},
+        "pgk": {},
+        "php": {},
+        "pkr": {},
+        "pln": {},
+        "pyg": {},
+        "qar": {},
+        "ron": {},
+        "rsd": {},
+        "rub": {},
+        "sar": {},
+        "scr": {},
+        "sek": {},
+        "sgd": {},
+        "skk": {},
+        "sll": {},
+        "svc": {},
+        "thb": {},
+        "tnd": {},
+        "try": {},
+        "ttd": {},
+        "twd": {},
+        "tzs": {},
+        "uah": {},
+        "ugx": {},
+        "usd": {},
+        "uyu": {},
+        "uzs": {},
+        "vnd": {},
+        "yer": {},
+        "zar": {},
+        "zmk": {}
+      }
+    },
+    "mass": {
+      "description": "To record mass measurements (kid weight, tons of gold digged today, etc.). Format = unit.",
+      "default": {
+        "type": "number"
+      },
+      "formats": {
+        "kg": {
+          "description": "Kilograms."
+        }
+      }
+    },
+    "music": {
+      "description": "To record references to music (from Soundcloud, Shazam tags, etc.).",
+      "formats": {
+        "id3": {
+          "description": "TODO"
+        },
+        "itunes": {
+          "description": "TODO"
+        },
+        "soundcloud": {
+          "description": "TODO"
+        }
+      }
+    },
+    "note": {
+      "description": "To record different kinds of text-based notes, from simple text to more complex formatted content like social network posts.",
+      "default": {
+        "type": "string"
+      },
+      "formats": {
+        "facebook": {
+          "description": "A Facebook post. ",
+          "comments": "Facebook post can be copied RAW as a value. \nmap: \n   fbPost.message -> pryvEvent.description\n   fbPost.created_time -> pryvEvent.time\n TODO: what to do with videos & pictures?",
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string",
+              "required": "true"
+            },
+            "from": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "required": "true"
+                },
+                "id": {
+                  "type": "string",
+                  "required": "true"
+                }
+              }
+            },
+            "to": {
+              "type": "object",
+              "properties": {
+                "data": {
+                  "type": "array",
+                  "items":{
+                    "type": "object",
+                    "properties": {
+                      "name": "string",
+                      "id": "string"
+                    }
+                  }
+                }
+              }
+            },
+            "message": {
+              "type": "string"
+            },
+            "picture": {
+              "type": "string"
+            },
+            "link": {
+              "type": "string"
+            },
+            "caption": {
+              "type": "string"
+            },
+            "description": {
+              "type": "string"
+            },
+            "source": {
+              "type": "string"
+            },
+            "icon": {
+              "type": "string"
+            },
+            "type": {
+              "type": "string"
+            }
+          }
+        },
+        "html": {
+          "description": "An HTML-formatted note.",
+          "maxLength": "4194304"
+        },
+        "txt": {
+          "description": "A plain-text note.",
+          "maxLength": "4194304"
+        }
+      }
+    },
+    "picture": {
+      "description": "To record any kind of image (photos, designs, screenshots, etc.)",
+      "formats": {
+        "attached": {
+          "description": "The picture(s) are the file(s) attached to the event. TODO: confirm."
+        },
+        "url": {
+          "description": "A reference to a picture file online."
+        }
+      }
+    },
+    "position": {
+      "description": "To record a geographical position.",
+      "formats": {
+        "wgs84": {
+          "description": "The latest revision of the Word Geodetic System.",
+          "type": "object",
+          "properties": {
+            "resolution": {
+              "type": "number",
+              "required": "false"
+            },
+            "location": {
+              "type": "object",
+              "properties": {
+                "lat": {
+                  "type": "number",
+                  "required": "true"
+                },
+                "lng": {
+                  "type": "number",
+                  "required": "true"
+                }
+              },
+              "required": "true"
+            },
+            "elevation": {
+              "type": "number",
+              "required": "false"
+            }
+          }
+        }
+      }
+    },
+    "temperature": {
+      "description": "To record temperature measurements. Format = unit.",
+      "default": {
+        "type": "number"
+      },
+      "formats": {
+        "c": {
+          "description": "Celsius."
+        },
+        "f": {
+          "description": "Fahrenheit."
+        }
+      }
+    },
+    "url": {
+      "description": "To record references to online resources. Format = protocol.",
+      "default": {
+        "type": "string"
+      },
+      "formats": {
+        "http": {
+          "description": "An HTTP or HTTPS resource.",
+          "pattern": "^(https?)://.+$"
+        }
+      }
+    },
+    "video": {
+      "description": "To record video (home snippets, Vimeo or YouTube links, etc.).",
+      "formats": {
+        "attached": {
+          "description": "TODO"
+        },
+        "url": {
+          "description": "A reference to an video file online."
+        },
+        "youtube": {
+          "description": "TODO"
+        }
+      }
+    },
+    "volume": {
+      "description": "To record volume measurements. Format = unit.",
+      "default": {
+        "type": "number"
+      },
+      "formats": {
+        "l": {
+          "description": "Liters."
+        },
+        "m3": {
+          "description": "Cubic meters."
+        }
+      }
+    }
+  }
+}
