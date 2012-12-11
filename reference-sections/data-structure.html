@@ -11,7 +11,7 @@
 
 </p>
 <ul>
-<li><code>token</code> (string): Unique, read-only (except at creation). The token identifying the access. Automatically generated if not set when creating the access.</li>
+<li><code>token</code> (string): Unique, read-only (except at creation). The token identifying the access. Automatically generated if not set when creating the access; URL-encoded if necessary.</li>
 <li><code>name</code> (string): Unique. The name identifying the access for the user. It can be the client application's name for automatically generated personal accesses, or any user-defined value for manually created accesses.</li>
 <li><code>type</code> (<code>"personal"</code>, <code>"app"</code> or <code>"shared"</code>): Optional. The type — or usage — of the access. Default: <code>"shared"</code>.</li>
 <li><code>permissions</code>: an array of channel permission objects as described below. Ignored for personal accesses. Shared accesses are only granted access to activity data objects listed in here.<ul>
@@ -55,7 +55,7 @@ Fields:
 
 </p>
 <ul>
-<li><code>id</code> (<a href="#data-structure-identity">identity</a>): Unique, read-only (except at creation). The identifier for the channel. Automatically generated if not set when creating the channel.</li>
+<li><code>id</code> (<a href="#data-structure-identity">identity</a>): Unique, read-only (except at creation). The identifier for the channel. Automatically generated if not set when creating the channel; URL-encoded if necessary.</li>
 <li><code>name</code> (string): Unique. The name identifying the channel for users.</li>
 <li><code>strictMode</code> (boolean): Optional. If <code>true</code>, the system will ensure that timed events in this channel never overlap; if <code>false</code>, overlapping will be allowed. <strong>This will be implemented later: currently all channels are considered "strict".</strong></li>
 <li><code>clientData</code> (<a href="#data-structure-additional-data">item additional data</a>): Optional. Additional client data for the channel.</li>
@@ -108,15 +108,19 @@ Fields:
 
 </p>
 <pre class="highlighted"><code class="language-javascript">[
-  { <span class="string">"time"</span> : <span class="number">1350365877.359</span>, <span class="string">"description"</span> : <span class="string">"Some pics"</span>, <span class="string">"id"</span> : <span class="string">"event_0"</span>, <span class="string">"folderId"</span> : <span class="literal">null</span>,
+  { <span class="string">"time"</span>: <span class="number">1350365877.359</span>, <span class="string">"description"</span> : <span class="string">"Some pics"</span>, <span class="string">"id"</span> : <span class="string">"event_0"</span>, <span class="string">"folderId"</span> : <span class="literal">null</span>,
+    <span class="string">"type"</span>: { <span class="string">"class"</span>: <span class="string">"picture"</span>, <span class="string">"format"</span>: <span class="string">"attached"</span> },
     <span class="string">"attachments"</span> : {
-      <span class="string">"Gina"</span> : { <span class="string">"fileName"</span> : <span class="string">"gina.jpeg"</span>, <span class="string">"type"</span> : <span class="string">"image/jpeg"</span>, <span class="string">"size"</span> : <span class="number">1236701</span> },
-      <span class="string">"Enzo"</span> : { <span class="string">"fileName"</span> : <span class="string">"enzo.jpeg"</span>, <span class="string">"type"</span> : <span class="string">"image/jpeg"</span>, <span class="string">"size"</span> : <span class="number">1127465</span> }},
+      <span class="string">"Gina"</span>: { <span class="string">"fileName"</span>: <span class="string">"gina.jpeg"</span>, <span class="string">"type"</span>: <span class="string">"image/jpeg"</span>, <span class="string">"size"</span>: <span class="number">1236701</span> },
+      <span class="string">"Enzo"</span>: { <span class="string">"fileName"</span>: <span class="string">"enzo.jpeg"</span>, <span class="string">"type"</span>: <span class="string">"image/jpeg"</span>, <span class="string">"size"</span>: <span class="number">1127465</span> }},
       <span class="string">"modified"</span> : <span class="number">1350463077.359</span> },
   { <span class="string">"time"</span> : <span class="number">1350369477.359</span>, <span class="string">"duration"</span> : <span class="number">7140</span>, <span class="string">"description"</span>: <span class="string">"A period of work"</span>,
-    <span class="string">"id"</span> : <span class="string">"event_1"</span>, <span class="string">"folderId"</span> : <span class="string">"free-veggies"</span>, <span class="string">"modified"</span> : <span class="number">1350369477.359</span> },
+    <span class="string">"id"</span> : <span class="string">"event_1"</span>, <span class="string">"folderId"</span> : <span class="string">"free-veggies"</span>,
+    <span class="string">"type"</span>: { <span class="string">"class"</span>: <span class="string">"activity"</span>, <span class="string">"format"</span>: <span class="string">"pryv"</span> },
+    <span class="string">"modified"</span> : <span class="number">1350369477.359</span> },
   { <span class="string">"time"</span> : <span class="number">1350373077.359</span>, <span class="string">"description"</span> : <span class="string">"A position"</span>, <span class="string">"id"</span> : <span class="string">"event_2"</span>, <span class="string">"folderId"</span> : <span class="literal">null</span>,
-    <span class="string">"value"</span>: { <span class="string">"type"</span>: <span class="string">"position:WGS84"</span>, <span class="string">"value"</span>: <span class="string">"40.714728, -73.998672, 12"</span> },
+    <span class="string">"type"</span>: { <span class="string">"class"</span>: <span class="string">"position"</span>, <span class="string">"format"</span>: <span class="string">"wgs84"</span> },
+    <span class="string">"value"</span>: { <span class="string">"location"</span>: { <span class="string">"lat"</span>: <span class="number">40.714728</span>, <span class="string">"lng"</span>: -<span class="number">73.998672</span>, <span class="number">12</span> } },
     <span class="string">"modified"</span> : <span class="number">1350373077.359</span> }
 ]</code></pre>
 <h2><a id="data-structure-folder"></a>Folder</h2>
@@ -127,7 +131,7 @@ Fields:
 
 </p>
 <ul>
-<li><code>id</code> (<a href="#data-structure-identity">identity</a>): Unique, read-only (except at creation). The identifier for the folder. Automatically generated if not set when creating the folder.</li>
+<li><code>id</code> (<a href="#data-structure-identity">identity</a>): Unique, read-only (except at creation). The identifier for the folder. Automatically generated if not set when creating the folder; URL-encoded if necessary.</li>
 <li><code>channelId</code> (<a href="#data-structure-identity">identity</a>): Read-only. The id of the belonging channel.</li>
 <li><code>name</code> (string): A name identifying the folder for users. The name must be unique among the folder's siblings in the folders tree structure.</li>
 <li><code>parentId</code> (<a href="#data-structure-identity">identity</a>): Optional. The identifier of the folder's parent, if any. A value of <code>null</code> indicates that the folder has no parent (i.e. root folder).</li>
