@@ -618,16 +618,6 @@ Requires session token, old password, new password.
 
 
 </p>
-<h3>POST <code>/admin/get-app-token</code></h3>
-<p>Gets the token of the personal access your app must use when accessing the user's data on her behalf. The access is created if it is the first time your app (identified by its id when logging in) requests it.
-
-</p>
-<h4>Successful response: <code>200 OK</code></h4>
-<ul>
-<li><code>id</code> (<a href="#data-structure-identity">identity</a>): Your app's dedicated personal <a href="#data-structure-access">access</a> token.</li>
-</ul>
-<h4>cURL example</h4>
-<pre class="highlighted"><code class="language-bash">curl -i -H <span class="string">"Authorization: {session-id}"</span> -X POST https://{username}.pryv.io/admin/get-app-token</code></pre>
 <h3>GET <code>/admin/accesses</code></h3>
 <p>Gets all manageable accesses, which are the shared accesses. (Your app's own access token is retrieved with <code>POST /admin/get-app-token</code>.)
 
@@ -643,7 +633,7 @@ Requires session token, old password, new password.
 
 </p>
 <h4>Body parameters</h4>
-<p>The new access's data: see <a href="#data-structure-access">access</a>.
+<p>The new access's data: see <a href="#data-structure-access">access</a>. Additionally, if a <code>defaultName</code> property is set on the new access' channel / folder permission objects, the corresponding channels / folders will be created with that name.
 
 </p>
 <h4>Successful response: <code>201 Created</code></h4>
@@ -680,6 +670,32 @@ Requires session token, old password, new password.
 
 </p>
 <h4>Successful response: <code>200 OK</code></h4>
+<h4>cURL example</h4>
+<pre class="highlighted"><code class="language-bash">
+</code></pre>
+<h3>POST <code>/admin/accesses/check-app</code></h3>
+<p>For the app authorization process. Checks if the app requesting authorization already has access with the same permissions, and returns details of the requested permissions' channels and folders (for display) if not.
+
+</p>
+<h4>Body parameters</h4>
+<ul>
+<li><code>requestingAppId</code> (string): The id of the app requesting authorization.</li>
+<li><code>requestedPermissions</code>: An array of channel permission request objects, which are identical to channel permission objects of <a href="#data-structure-access">accesses</a> with the difference that each channel / folder permission object must have a <code>defaultName</code> property specifying the name the channel / folder should be created with later (in POST <code>/admin/accesses</code>) if missing.</li>
+</ul>
+<h4>Successful response: <code>200 OK</code></h4>
+<p>If no matching access already exists:
+
+</p>
+<ul>
+<li><code>checkedPermissions</code>: A updated copy of the <code>requestedPermissions</code> array passed in the request, with the <code>defaultName</code> property replaced by <code>name</code> for each existing channel / folder (set to the actual name of the item). (For missing channels / folders the <code>defaultName</code> property is left untouched.)</li>
+<li><code>mismatchingAccessToken</code> (<a href="#data-structure-identity">identity</a>): Set if an access already exists for the requesting app, but with different permissions than those requested.</li>
+</ul>
+<p>If a matching access already exists:
+
+</p>
+<ul>
+<li><code>matchingAccessToken</code> (<a href="#data-structure-identity">identity</a>): The requesting app's existing <a href="#data-structure-access">access</a> token.</li>
+</ul>
 <h4>cURL example</h4>
 <pre class="highlighted"><code class="language-bash">
 </code></pre>
