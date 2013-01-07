@@ -282,24 +282,30 @@
 <pre class="highlighted"><code class="language-bash">
 </code></pre>
 <h3>POST <code>/{channel-id}/events/batch</code></h3>
-<p>TODO: this is currently unimplemented and may stay that way.
-Batch upload events that were recorded by the client while offline. If the client-recorded events overlap events on the server, the request will be rejected (see errors below); it is the client's responsibility to retrieve updated server data and adjust its own before uploading.
+<p>Batch upload events that were recorded by the client while offline. The submitted events are added in-order, with results returned individually for each (see response below).
 
 </p>
 <h4>Body parameters</h4>
-<ul>
-<li><code>events</code> (array of <a href="#data-structure-event">activity events</a>): The client-recorded events. The <code>clientId</code> must be set for each event. Each event's time must be set in server time.</li>
-</ul>
+<p>An array of client-recorded <a href="#data-structure-event">activity events</a>. Each event must have a unique <code>clientId</code> defined, and its time must be set in server time.
+
+</p>
 <h4>Successful response: <code>200 OK</code></h4>
+<p>An object with one property per event submitted holding the result for that event. Each property's name is the submitted event's client id, and its value contains:
+
+</p>
 <ul>
-<li><code>addedEvents</code> (array of <a href="#data-structure-event">activity events</a>: The successfully added events, with their server-assigned ids and <code>clientId</code> for reference.</li>
+<li>If the event was successful created, an object with the <code>id</code> of the event, and possibly the <code>stoppedId</code> of the running period event that was stopped as a result. (For details, see POST <code>/{channel-id}/events</code>.)</li>
+<li>If there was an error creating the event: an object with an <code>error</code> property holding the encountered <a href="#data-structure-error">error</a>.</li>
 </ul>
-<h4>Specific errors</h4>
-<ul>
-<li><code>400 Bad Request</code>, id <code>INVALID_TIME</code>: TODO</li>
-<li><code>400 Bad Request</code>, id <code>UNKNOWN_FOLDER</code>: TODO</li>
-<li><code>400 Bad Request</code>, id <code>PERIODS_OVERLAP</code>: TODO (list of unspecified overlapped event ids)</li>
-</ul>
+<p>Example:
+</p>
+<pre class="highlighted"><code class="language-json">{
+    "<span class="attribute">client_id_1</span>": <span class="value">{"<span class="attribute">id</span>": <span class="value"><span class="string">"TTMyhYEZriJ"</span></span>}</span>,
+    "<span class="attribute">client_id_2</span>": <span class="value">{"<span class="attribute">error</span>": <span class="value">{
+        "<span class="attribute">id</span>": <span class="value"><span class="string">"UNKNOWN_FOLDER"</span></span>,
+        "<span class="attribute">message</span>": <span class="value"><span class="string">"Folder 'bad-folder-id' is unknown."</span>
+    </span>}</span>}
+</span>}</code></pre>
 <h4>cURL example</h4>
 <pre class="highlighted"><code class="language-bash">
 </code></pre>

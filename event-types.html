@@ -116,7 +116,18 @@ your proposal.
 map: 
    fbPost.message -&gt; pryvEvent.description
    fbPost.created_time -&gt; pryvEvent.time
- TODO: what to do with videos &amp; pictures?</div></td></tr></tr><tr><td rowspan="1"><code>html</code></td><td>An HTML-formatted note.</td><td>4194304</td><td>string</td></tr><tr><td rowspan="1"><code>txt</code></td><td>A plain-text note.</td><td>4194304</td><td>string</td></tr></tbody></table><h2><code>picture</code> class</h2><div class="description">To record any kind of image (photos, designs, screenshots, etc.)</div><table class="table"><thead><tr><th>format</th><th>description</th></tr></thead><tbody><tr><td rowspan="1"><code>attached</code></td><td>The picture(s) are the file(s) attached to the event. TODO: confirm.</td></tr><tr><td rowspan="1"><code>url</code></td><td>A reference to a picture file online.</td></tr></tbody></table><h2><code>position</code> class</h2><div class="description">To record a geographical position.</div><table class="table"><thead><tr><th>format</th><th>description</th><th>type</th></tr></thead><tbody><tr><td rowspan="2"><code>wgs84</code></td><td>The latest revision of the World Geodetic System (used by GPS).</td><td>object</td><tr><td colspan="2"><strong>properties</strong><pre>{
+ TODO: what to do with videos &amp; pictures?</div></td></tr></tr><tr><td rowspan="1"><code>html</code></td><td>An HTML-formatted note.</td><td>4194304</td><td>string</td></tr><tr><td rowspan="1"><code>txt</code></td><td>A plain-text note.</td><td>4194304</td><td>string</td></tr><tr><td rowspan="2"><code>webclip</code></td><td>An HTML-formatted note associated to its source URL.</td><td></td><td>object</td><tr><td colspan="4"><strong>properties</strong><pre>{
+  &quot;url&quot;: {
+    &quot;type&quot;: &quot;string&quot;,
+    &quot;required&quot;: &quot;true&quot;,
+    &quot;pattern&quot;: &quot;^(https?)://.+$&quot;
+  },
+  &quot;content&quot;: {
+    &quot;description&quot;: &quot;An HTML-formatted string.&quot;,
+    &quot;type&quot;: &quot;string&quot;,
+    &quot;maxLength&quot;: &quot;4194304&quot;
+  }
+}</pre></td></tr></tr></tbody></table><h2><code>picture</code> class</h2><div class="description">To record any kind of image (photos, designs, screenshots, etc.)</div><table class="table"><thead><tr><th>format</th><th>description</th></tr></thead><tbody><tr><td rowspan="1"><code>attached</code></td><td>The picture(s) are the file(s) attached to the event. TODO: confirm.</td></tr><tr><td rowspan="1"><code>url</code></td><td>A reference to a picture file online.</td></tr></tbody></table><h2><code>position</code> class</h2><div class="description">To record a geographical position.</div><table class="table"><thead><tr><th>format</th><th>description</th><th>type</th></tr></thead><tbody><tr><td rowspan="2"><code>wgs84</code></td><td>The latest revision of the World Geodetic System (used by GPS).</td><td>object</td><tr><td colspan="2"><strong>properties</strong><pre>{
   &quot;resolution&quot;: {
     &quot;type&quot;: &quot;number&quot;,
     &quot;required&quot;: &quot;false&quot;
