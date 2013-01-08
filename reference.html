@@ -222,12 +222,13 @@ _gaq.push(['_trackPageview']);
 <h4>Successful response: <code>201 Created</code></h4>
 <ul>
 <li><code>id</code> (<a href="#data-structure-identity">identity</a>): The new event's id.</li>
-<li><code>stoppedId</code> (<a href="#data-structure-identity">identity</a>): If set, indicates the id of the previously running period event that was stopped as a consequence of inserting the new event.</li>
+<li><code>stoppedId</code> (<a href="#data-structure-identity">identity</a>): Only in channels with <code>enforceNoEventsOverlap</code>. If set, indicates the id of the previously running period event that was stopped as a consequence of inserting the new event.</li>
 </ul>
 <h4>Specific errors</h4>
 <ul>
 <li><code>400 Bad Request</code>, id <code>UNKNOWN_FOLDER</code>: The specified folder cannot be found.</li>
 <li><code>400 Bad Request</code>, id <code>INVALID_OPERATION</code>: The channel or specified folder is in the trash, and we prevent the recording of new events into trashed channels / folders.</li>
+<li><code>400 Bad request</code>, id <code>PERIODS_OVERLAP</code>: Only in channels with <code>enforceNoEventsOverlap</code>: the new event overlaps existing period events. The error's <code>data</code> contains the list of overlapped event ids.</li>
 </ul>
 <h4>cURL example</h4>
 <pre class="highlighted"><code class="language-bash">curl -i -H <span class="string">"Content-Type: application/json"</span> -X POST -d <span class="string">'{"folderId":"{folder-id}"}'</span> https://{username}.pryv.io/{channel-id}/events?auth={access-token}</code></pre>
@@ -235,28 +236,41 @@ _gaq.push(['_trackPageview']);
 <p><em>Socket.IO command id: <code>{channel-id}.events.start</code></em>
 
 </p>
-<p>Starts a new period event, stopping the previously running period event if any. See POST <code>/{channel-id}/events</code> for details. TODO: detail
+<p>Starts a new period event. In channels with <code>enforceNoEventsOverlap</code>, also stops the previously running period event if any. See POST <code>/{channel-id}/events</code> for details. TODO: detail
+
+</p>
+<h4>Body parameters</h4>
+<p>See POST <code>{channel-id}/events</code>.
 
 </p>
 <h4>Successful response: <code>201 Created</code></h4>
 <h4>Specific errors</h4>
-<ul>
-<li><code>400 Bad Request</code>, id <code>MISSING_FOLDER</code>: The mandatory folder is missing.</li>
-<li><code>400 Bad Request</code>, id <code>INVALID_OPERATION</code>: A period event cannot start if another period event already exists at a later time.</li>
-<li><code>400 Bad request</code>, id <code>PERIODS_OVERLAP</code>: TODO (data: array of overlapped ids)</li>
-</ul>
+<p>See POST <code>/{channel-id}/events</code>.
+
+</p>
 <h4>cURL example</h4>
 <pre class="highlighted"><code class="language-bash">curl -i -H <span class="string">"Content-Type: application/json"</span> -X POST -d <span class="string">'{"folderId":"{folder-id}"}'</span> https://{username}.pryv.io/{channel-id}/events/start?auth={access-token}</code></pre>
 <h3>POST <code>/{channel-id}/events/stop</code></h3>
 <p><em>Socket.IO command id: <code>{channel-id}.events.stop</code></em>
 
 </p>
-<p>Stops the previously running period event. See POST <code>/{channel-id}/events</code> for details. TODO: detail
+<p>Stops a previously running period event. In channels with <code>enforceNoEventsOverlap</code>, which guarantee that only one event is running at any given time, that event is automatically determined; for regular channels, the event to stop must be specified.
 
 </p>
+<h4>Body parameters</h4>
+<ul>
+<li><code>id</code> (<a href="#data-structure-identity">identity</a>): The id of the event to stop. Optional in channels with <code>enforceNoEventsOverlap</code>.</li>
+<li><code>time</code> (<a href="#data-structure-timestamp">timestamp</a>): Optional. The stop time. Default: now.</li>
+</ul>
 <h4>Successful response: <code>200 OK</code></h4>
 <ul>
 <li><code>stoppedId</code> (<a href="#data-structure-identity">identity</a>): The id of the previously running period event that was stopped, or null if no running event was found.</li>
+</ul>
+<h4>Specific errors</h4>
+<ul>
+<li><code>400 Bad Request</code>, id <code>UNKNOWN_EVENT</code>: The specified event cannot be found.</li>
+<li><code>400 Bad Request</code>, id <code>INVALID_OPERATION</code>: The specified event is not a running period event.</li>
+<li><code>400 Bad Request</code>, id <code>MISSING_PARAMETER</code>: No event was specified and the channel does not <code>enforceNoEventsOverlap</code> (so that there can be more than one running event).</li>
 </ul>
 <h4>cURL example</h4>
 <pre class="highlighted"><code class="language-bash">
@@ -859,7 +873,7 @@ Fields:
 <ul>
 <li><code>id</code> (<a href="#data-structure-identity">identity</a>): Unique, read-only (except at creation). The identifier for the channel. Automatically generated if not set when creating the channel; URL-encoded if necessary.</li>
 <li><code>name</code> (string): Unique. The name identifying the channel for users.</li>
-<li><code>strictMode</code> (boolean): Optional. If <code>true</code>, the system will ensure that timed events in this channel never overlap; if <code>false</code>, overlapping will be allowed. <strong>This will be implemented later: currently all channels are considered "strict".</strong></li>
+<li><code>enforceNoEventsOverlap</code> (boolean): Optional. If specified and <code>true</code>, the system will ensure that period events in this channel never overlap.</li>
 <li><code>clientData</code> (<a href="#data-structure-additional-data">item additional data</a>): Optional. Additional client data for the channel.</li>
 <li><code>timeCount</code> (<a href="#data-structure-timestamp">timestamp</a>): Read-only. Only optionally returned when querying channels, indicating the total time tracked in that channel since a given reference date and time. <strong>This will be implemented later.</strong></li>
 <li><code>trashed</code> (boolean): Optional. <code>true</code> if the channel is in the trash.</li>
