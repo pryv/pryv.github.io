@@ -36,11 +36,11 @@ _gaq.push(['_trackPageview']);
 <p>The API uses JSON for serializing data. Here's what an event can look like:
 </p>
 <pre class="highlighted"><code class="language-json">{
-  "id": "5051941d04b8ffd00500000d",
-  "time": 1347864935.964,
-  "folderId": "5058370ade44feaa03000015",
-  "type": { "class": "position", "format": "wgs84" },
-  "value": { "location": { "lat": 40.714728, "lng": -73.998672, 12 } },
+  "<span class="attribute">id</span>": <span class="value"><span class="string">"5051941d04b8ffd00500000d"</span></span>,
+  "<span class="attribute">time</span>": <span class="value"><span class="number">1347864935.964</span></span>,
+  "<span class="attribute">folderId</span>": <span class="value"><span class="string">"5058370ade44feaa03000015"</span></span>,
+  "<span class="attribute">type</span>": <span class="value">{ "<span class="attribute">class</span>": <span class="value"><span class="string">"position"</span></span>, "<span class="attribute">format</span>": <span class="value"><span class="string">"wgs84"</span> </span>}</span>,
+  "<span class="attribute">value</span>": <span class="value">{ "<span class="attribute">location</span>": <span class="value">{ "<span class="attribute">lat</span>": <span class="value"><span class="number">40.714728</span></span>, "<span class="attribute">lng</span>": <span class="value">-<span class="number">73.998672</span> </span>} </span>}</span>,
 }</code></pre>
 <h2>Common HTTP headers</h2>
 <p>The following headers are included in every response:
@@ -650,7 +650,7 @@ Requires session token, old password, new password.
 <h4>Specific errors</h4>
 <ul>
 <li><code>400 Bad Request</code>, id <code>ITEM_ID_ALREADY_EXISTS</code>: An access already exists with the same token.</li>
-<li><code>400 Bad Request</code>, id <code>ITEM_NAME_ALREADY_EXISTS</code>: An access already exists with the same name.</li>
+<li><code>400 Bad Request</code>, id <code>ITEM_NAME_ALREADY_EXISTS</code>: An access already exists with the same name and type.</li>
 <li><code>400 Bad Request</code>, id <code>INVALID_ITEM_ID</code>: Occurs if trying to set the token to an invalid value (e.g. a reserved word like <code>"null"</code>).</li>
 </ul>
 <h4>cURL example</h4>
@@ -667,7 +667,7 @@ Requires session token, old password, new password.
 <h4>Successful response: <code>200 OK</code></h4>
 <h4>Specific errors</h4>
 <ul>
-<li><code>400 Bad Request</code>, id <code>ITEM_NAME_ALREADY_EXISTS</code>: An access already exists with the same name.</li>
+<li><code>400 Bad Request</code>, id <code>ITEM_NAME_ALREADY_EXISTS</code>: An access already exists with the same name and type.</li>
 </ul>
 <h4>cURL example</h4>
 <pre class="highlighted"><code class="language-bash">
@@ -814,7 +814,7 @@ socket.on(<span class="string">'eventsChanged'</span>, <span class="keyword">fun
 </p>
 <ul>
 <li><code>token</code> (string): Unique, read-only (except at creation). The token identifying the access. Automatically generated if not set when creating the access; URL-encoded if necessary.</li>
-<li><code>name</code> (string): Unique. The name identifying the access for the user. It can be the client application's name for automatically generated personal accesses, or any user-defined value for manually created accesses.</li>
+<li><code>name</code> (string): Unique <em>per type</em>. The name identifying the access for the user. It can be the client application's name for automatically generated personal accesses, or any user-defined value for manually created accesses.</li>
 <li><code>type</code> (<code>"personal"</code>, <code>"app"</code> or <code>"shared"</code>): Optional. The type — or usage — of the access. Default: <code>"shared"</code>.</li>
 <li><code>permissions</code>: an array of channel permission objects as described below. Ignored for personal accesses. Shared accesses are only granted access to activity data objects listed in here.<ul>
 <li><code>channelId</code> (<a href="#data-structure-identity">identity</a>): The accessible channel's id.</li>
