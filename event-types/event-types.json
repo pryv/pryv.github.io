@@ -1,6 +1,6 @@
 {
   "version": {
-    "version": 20130104.01
+    "version": 20130109.01
   },
   "classes": {
     "activity": {
@@ -29,7 +29,10 @@
       "description": "To record references to phone calls (landline, mobile, Skype, etc.).",
       "formats": {
         "skype": {
-          "description": "TODO"
+          "description": "TODO (skype id)"
+        },
+        "telephone": {
+          "description": "TODO (number)"
         }
       }
     },
@@ -55,6 +58,17 @@
         }
       }
     },
+    "file": {
+      "description": "TODO",
+      "formats": {
+        "attached": {
+          "description": "TODO"
+        },
+        "url": {
+          "description": "TODO"
+        }
+      }
+    },
     "length": {
       "description": "To record length measurements. Format = unit.",
       "default": {
@@ -73,7 +87,7 @@
       }
     },
     "money": {
-      "description": "To record sums of money (expenses, loans, stock values, etc.). Format = currency.",
+      "description": "To record sums of money (expenses, loans, stock values, etc.). Format = currency. Based on ISO 4217.",
       "default": {
         "type": "number"
       },
@@ -328,6 +342,25 @@
             "elevation": {
               "type": "number",
               "required": false
+            }
+          }
+        }
+      }
+    },
+    "ratio": {
+      "description": "To record proportional values (e.g. 1/3, 21.5/100).",
+      "formats": {
+        "generic": {
+          "description": "Generic ratio.",
+          "type": "object",
+          "properties": {
+            "value": {
+              "type": "number",
+              "required": true
+            },
+            "relativeTo": {
+              "type": "number",
+              "required": true
             }
           }
         }
