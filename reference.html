@@ -84,7 +84,7 @@ _gaq.push(['_trackPageview']);
 </p>
 <ul>
 <li><code>400 Bad Request</code>, id <code>INVALID_REQUEST_STRUCTURE</code>: The request's structure is not that expected. This can happen e.g. with invalid JSON syntax, or when using an unexpected multipart structure for uploading file attachments.</li>
-<li><code>400 Bad Request</code>, id <code>INVALID_PARAMETERS_FORMAT</code>: The request's parameters do not follow the expected format.</li>
+<li><code>400 Bad Request</code>, id <code>INVALID_PARAMETERS_FORMAT</code>: The request's parameters do not follow the expected format. The error's <code>data</code> contains an array of validation errors.</li>
 <li><code>401 Unauthorized</code>, id <code>INVALID_ACCESS_TOKEN</code>: The data access token is missing or invalid.</li>
 <li><code>403 Forbidden</code>: The given access token does not grant permission for this operation. See <a href="#data-structure-access">accesses</a> for more details about accesses and permissions.</li>
 <li><code>404 Not Found</code>, possible cases:<ul>
@@ -198,7 +198,7 @@ _gaq.push(['_trackPageview']);
 </p>
 <h4>Specific errors</h4>
 <ul>
-<li><code>400 Bad Request</code>, id <code>UNKNOWN_FOLDER</code>: TODO may happen if one of the specified folders doesn't exist</li>
+<li><code>400 Bad Request</code>, id <code>UNKNOWN_FOLDER</code>: one (or more) of the specified folders does not exist. The unknown folders' ids are listed as an array in the error's <code>data.unknownIds</code>.</li>
 </ul>
 <h4>cURL example</h4>
 <pre class="highlighted"><code class="language-bash">curl -i https://{username}.pryv.io/{channel-id}/events?auth={access-token}</code></pre>
@@ -227,8 +227,8 @@ _gaq.push(['_trackPageview']);
 <h4>Specific errors</h4>
 <ul>
 <li><code>400 Bad Request</code>, id <code>UNKNOWN_FOLDER</code>: The specified folder cannot be found.</li>
-<li><code>400 Bad Request</code>, id <code>INVALID_OPERATION</code>: The channel or specified folder is in the trash, and we prevent the recording of new events into trashed channels / folders.</li>
-<li><code>400 Bad request</code>, id <code>PERIODS_OVERLAP</code>: Only in channels with <code>enforceNoEventsOverlap</code>: the new event overlaps existing period events. The error's <code>data</code> contains the list of overlapped event ids.</li>
+<li><code>400 Bad Request</code>, id <code>INVALID_OPERATION</code>: The channel or specified folder is in the trash, and we prevent the recording of new events into trashed channels / folders. The error's <code>data.trashed</code> property indicates either <code>"channel"</code> or <code>"folder"</code>.</li>
+<li><code>400 Bad request</code>, id <code>PERIODS_OVERLAP</code>: Only in channels with <code>enforceNoEventsOverlap</code>: the new event overlaps existing period events. The overlapped events' ids are listed as an array in the error's <code>data.overlappedIds</code>.</li>
 </ul>
 <h4>cURL example</h4>
 <pre class="highlighted"><code class="language-bash">curl -i -H <span class="string">"Content-Type: application/json"</span> -X POST -d <span class="string">'{"folderId":"{folder-id}"}'</span> https://{username}.pryv.io/{channel-id}/events?auth={access-token}</code></pre>
@@ -307,8 +307,8 @@ _gaq.push(['_trackPageview']);
 </ul>
 <h4>Specific errors</h4>
 <ul>
-<li><code>400 Bad Request</code>, id <code>INVALID_OPERATION</code>: Returned for period events, if attempting to set the event's duration to <code>undefined</code> (i.e. still running) while one or more other period events were recorded after it.</li>
-<li><code>400 Bad Request</code>, id <code>PERIODS_OVERLAP</code>: Returned for period events, if attempting to change the event's duration to a value that causes an overlap with one or more subsequent period event(s). TODO format (list of unspecified overlapped event ids, or "too many" if more than 10)</li>
+<li><code>400 Bad Request</code>, id <code>INVALID_OPERATION</code>: Returned for period events, if attempting to set the event's duration to <code>undefined</code> (i.e. still running) while one or more other period events were recorded after it. The error's <code>data.conflictingPeriodId</code> provides the id of the closest conflicting event.</li>
+<li><code>400 Bad Request</code>, id <code>PERIODS_OVERLAP</code>: Returned for period events, if attempting to change the event's duration to a value that causes an overlap with one or more subsequent period event(s). The overlapped events' ids are listed as an array in the error's <code>data.overlappedIds</code>.</li>
 </ul>
 <h4>cURL example</h4>
 <pre class="highlighted"><code class="language-bash">
@@ -570,7 +570,7 @@ _gaq.push(['_trackPageview']);
 
 </p>
 <ul>
-<li><code>400 Bad Request</code>, id <code>INVALID_PARAMETERS_FORMAT</code>: The request's parameters do not follow the expected format.</li>
+<li><code>400 Bad Request</code>, id <code>INVALID_PARAMETERS_FORMAT</code>: The request's parameters do not follow the expected format. The error's <code>data</code> contains an array of validation errors.</li>
 <li><code>401 Unauthorized</code>, id <code>INVALID_CREDENTIALS</code>: User credentials are missing or invalid.</li>
 <li><code>404 Not Found</code>, possible cases:<ul>
 <li>Id <code>UNKNOWN_ACCESS</code>: The data access can't be found.</li>
