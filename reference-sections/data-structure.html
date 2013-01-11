@@ -92,6 +92,7 @@ Fields:
 </li>
 <li><code>value</code> (any type): Optional. The value associated with the event, if any. Depending on the <code>type</code>, this may be a mathematical value (e.g. mass, money, length, position, etc.), a link to a page, location coordinates, etc.</li>
 <li><code>folderId</code>(<a href="#data-structure-identity">identity</a>): Optional but always present in read items. Indicates the particular folder the event is associated with; <code>null</code> if no folder is assigned.</li>
+<li><code>tags</code> (array of strings): Optional but always present in read items. The tags associated with the event.</li>
 <li><code>description</code> (string): Optional. User description or comment for the event.</li>
 <li><code>attachments</code>: Optional and read-only. An object describing the files attached to the event. Each of its properties corresponds to one file and has the following structure:<ul>
 <li><code>fileName</code> (string): The file's name. The attached file's URL is obtained by appending this file name to the event's resource URL.</li>
@@ -104,11 +105,9 @@ Fields:
 <li><code>modified</code> (<a href="#data-structure-timestamp">timestamp</a>): Read-only. The time the event was last modified.</li>
 </ul>
 <h3>Example</h3>
-<p>TODO: review after tags are implemented.
-
-</p>
 <pre class="highlighted"><code class="language-javascript">[
   { <span class="string">"time"</span>: <span class="number">1350365877.359</span>, <span class="string">"description"</span> : <span class="string">"Some pics"</span>, <span class="string">"id"</span> : <span class="string">"event_0"</span>, <span class="string">"folderId"</span> : <span class="literal">null</span>,
+    <span class="string">"tags"</span>: [<span class="string">"foraging"</span>, <span class="string">"funny"</span>],
     <span class="string">"type"</span>: { <span class="string">"class"</span>: <span class="string">"picture"</span>, <span class="string">"format"</span>: <span class="string">"attached"</span> },
     <span class="string">"attachments"</span> : {
       <span class="string">"Gina"</span>: { <span class="string">"fileName"</span>: <span class="string">"gina.jpeg"</span>, <span class="string">"type"</span>: <span class="string">"image/jpeg"</span>, <span class="string">"size"</span>: <span class="number">1236701</span> },
@@ -116,9 +115,11 @@ Fields:
       <span class="string">"modified"</span> : <span class="number">1350463077.359</span> },
   { <span class="string">"time"</span> : <span class="number">1350369477.359</span>, <span class="string">"duration"</span> : <span class="number">7140</span>, <span class="string">"description"</span>: <span class="string">"A period of work"</span>,
     <span class="string">"id"</span> : <span class="string">"event_1"</span>, <span class="string">"folderId"</span> : <span class="string">"free-veggies"</span>,
+    <span class="string">"tags"</span>: [<span class="string">"proposal"</span>],
     <span class="string">"type"</span>: { <span class="string">"class"</span>: <span class="string">"activity"</span>, <span class="string">"format"</span>: <span class="string">"pryv"</span> },
     <span class="string">"modified"</span> : <span class="number">1350369477.359</span> },
   { <span class="string">"time"</span> : <span class="number">1350373077.359</span>, <span class="string">"description"</span> : <span class="string">"A position"</span>, <span class="string">"id"</span> : <span class="string">"event_2"</span>, <span class="string">"folderId"</span> : <span class="literal">null</span>,
+    <span class="string">"tags"</span>: [],
     <span class="string">"type"</span>: { <span class="string">"class"</span>: <span class="string">"position"</span>, <span class="string">"format"</span>: <span class="string">"wgs84"</span> },
     <span class="string">"value"</span>: { <span class="string">"location"</span>: { <span class="string">"lat"</span>: <span class="number">40.714728</span>, <span class="string">"lng"</span>: -<span class="number">73.998672</span>, <span class="number">12</span> } },
     <span class="string">"modified"</span> : <span class="number">1350373077.359</span> }
