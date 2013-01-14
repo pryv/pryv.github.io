@@ -162,8 +162,9 @@ Requires session token, old password, new password.
 
 </p>
 <ul>
-<li><code>checkedPermissions</code>: A updated copy of the <code>requestedPermissions</code> array passed in the request, with the <code>defaultName</code> property replaced by <code>name</code> for each existing channel / folder (set to the actual name of the item). (For missing channels / folders the <code>defaultName</code> property is left untouched.)</li>
+<li><code>checkedPermissions</code>: A updated copy of the <code>requestedPermissions</code> array passed in the request, with the <code>defaultName</code> property replaced by <code>name</code> for each existing channel / folder (set to the actual name of the item). (For missing channels / folders the <code>defaultName</code> property is left untouched.) If channels / folders already exist with the same name but a different <code>id</code>, an <code>existingId</code> property is added to help with fixing the requested permissions (in such cases the response also has an <code>error</code> property to signal the issue; see below).</li>
 <li><code>mismatchingAccessToken</code> (<a href="#data-structure-identity">identity</a>): Set if an access already exists for the requesting app, but with different permissions than those requested.</li>
+<li><code>error</code> (<a href="#data-structure-error">error</a>): If there is a duplicate issue with some channels / folders requested for creation (see <code>checkedPermissions</code>), this is set to an <code>ITEM_NAME_ALREADY_EXISTS</code> error.</li>
 </ul>
 <p>If a matching access already exists:
 
