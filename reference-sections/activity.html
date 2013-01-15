@@ -24,7 +24,6 @@
 <li><code>400 Bad Request</code>, id <code>invalid-request-structure</code>: The request's structure is not that expected. This can happen e.g. with invalid JSON syntax, or when using an unexpected multipart structure for uploading file attachments.</li>
 <li><code>400 Bad Request</code>, id <code>invalid-parameters-format</code>: The request's parameters do not follow the expected format. The error's <code>data</code> contains an array of validation errors.</li>
 <li><code>401 Unauthorized</code>, id <code>invalid-access-token</code>: The data access token is missing or invalid.</li>
-<li><code>402 Payment Required</code>, id <code>user-intervention-required</code>: The user's account can no longer accept new data, according to its chosen plan and status. The user must log into Pryv to fix her account.</li>
 <li><code>403 Forbidden</code>: The given access token does not grant permission for this operation. See <a href="#data-structure-access">accesses</a> for more details about accesses and permissions.</li>
 <li><code>404 Not Found</code>, possible cases:<ul>
 <li>Id <code>unknown-channel</code>: The activity channel can't be found.</li>
@@ -33,6 +32,13 @@
 <li>Id <code>unknown-attachment</code>: The attached file can't be found for the specified event.</li>
 </ul>
 </li>
+</ul>
+<p>And a couple of others, related to the status of the user's account:
+
+</p>
+<ul>
+<li><code>301 Moved</code>, id <code>user-account-relocated</code>: The user has relocated her account to another Pryv server. Both the <code>Location</code> header and the error's <code>data</code> contain the equivalent URL pointing to the physical server now hosting the user's account. Note that this error can only occur between the moment the account is relocated and the moment your DNS is updated with the new server. So we're stretching the HTTP convention a little, in that the returned URL should not be used permanently (only until <code>{username}.pryv.io</code> points to the correct server again). You can decide whether you keep it for the duration of the session (if you have such a thing), for N hours, etc. (TODO: review and detail more if needed)</li>
+<li><code>402 Payment Required</code>, id <code>user-intervention-required</code>: We cannot serve the request at the moment, because the user's account has exceeded the limits of its plan. The user must log into Pryv to fix her account.</li>
 </ul>
 <h2>Channels</h2>
 <p>For retrieving and manipulating <a href="#data-structure-channel">channels</a>.
