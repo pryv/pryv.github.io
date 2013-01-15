@@ -24,11 +24,11 @@
 
 </p>
 <ul>
-<li><code>400 Bad Request</code>, id <code>INVALID_PARAMETERS_FORMAT</code>: The request's parameters do not follow the expected format. The error's <code>data</code> contains an array of validation errors.</li>
-<li><code>401 Unauthorized</code>, id <code>INVALID_CREDENTIALS</code>: User credentials are missing or invalid.</li>
+<li><code>400 Bad Request</code>, id <code>invalid-parameters-format</code>: The request's parameters do not follow the expected format. The error's <code>data</code> contains an array of validation errors.</li>
+<li><code>401 Unauthorized</code>, id <code>invalid-credentials</code>: User credentials are missing or invalid.</li>
 <li><code>404 Not Found</code>, possible cases:<ul>
-<li>Id <code>UNKNOWN_ACCESS</code>: The data access can't be found.</li>
-<li>Id <code>UNKNOWN_CHANNEL</code>: The activity channel can't be found.</li>
+<li>Id <code>unknown-access</code>: The data access can't be found.</li>
+<li>Id <code>unknown-bookmark</code>: The access bookmark can't be found.</li>
 </ul>
 </li>
 </ul>
@@ -117,9 +117,9 @@ Requires session token, old password, new password.
 </ul>
 <h4>Specific errors</h4>
 <ul>
-<li><code>400 Bad Request</code>, id <code>ITEM_ID_ALREADY_EXISTS</code>: An access already exists with the same token.</li>
-<li><code>400 Bad Request</code>, id <code>ITEM_NAME_ALREADY_EXISTS</code>: An access already exists with the same name and type.</li>
-<li><code>400 Bad Request</code>, id <code>INVALID_ITEM_ID</code>: Occurs if trying to set the token to an invalid value (e.g. a reserved word like <code>"null"</code>).</li>
+<li><code>400 Bad Request</code>, id <code>item-id-already-exists</code>: An access already exists with the same token.</li>
+<li><code>400 Bad Request</code>, id <code>item-name-already-exists</code>: An access already exists with the same name and type.</li>
+<li><code>400 Bad Request</code>, id <code>invalid-item-id</code>: Occurs if trying to set the token to an invalid value (e.g. a reserved word like <code>"null"</code>).</li>
 </ul>
 <h4>cURL example</h4>
 <pre class="highlighted"><code class="language-bash">
@@ -135,7 +135,7 @@ Requires session token, old password, new password.
 <h4>Successful response: <code>200 OK</code></h4>
 <h4>Specific errors</h4>
 <ul>
-<li><code>400 Bad Request</code>, id <code>ITEM_NAME_ALREADY_EXISTS</code>: An access already exists with the same name and type.</li>
+<li><code>400 Bad Request</code>, id <code>item-name-already-exists</code>: An access already exists with the same name and type.</li>
 </ul>
 <h4>cURL example</h4>
 <pre class="highlighted"><code class="language-bash">
@@ -164,7 +164,7 @@ Requires session token, old password, new password.
 <ul>
 <li><code>checkedPermissions</code>: A updated copy of the <code>requestedPermissions</code> array passed in the request, with the <code>defaultName</code> property replaced by <code>name</code> for each existing channel / folder (set to the actual name of the item). (For missing channels / folders the <code>defaultName</code> property is left untouched.) If channels / folders already exist with the same name but a different <code>id</code>, an <code>existingId</code> property is added to help with fixing the requested permissions (in such cases the response also has an <code>error</code> property to signal the issue; see below).</li>
 <li><code>mismatchingAccessToken</code> (<a href="#data-structure-identity">identity</a>): Set if an access already exists for the requesting app, but with different permissions than those requested.</li>
-<li><code>error</code> (<a href="#data-structure-error">error</a>): If there is a duplicate issue with some channels / folders requested for creation (see <code>checkedPermissions</code>), this is set to an <code>ITEM_NAME_ALREADY_EXISTS</code> error.</li>
+<li><code>error</code> (<a href="#data-structure-error">error</a>): If there is a duplicate issue with some channels / folders requested for creation (see <code>checkedPermissions</code>), this is set to an <code>item-name-already-exists</code> error.</li>
 </ul>
 <p>If a matching access already exists:
 
