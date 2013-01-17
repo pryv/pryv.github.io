@@ -18,25 +18,25 @@ _gaq.push(['_trackPageview']);
 </p>
 <ul>
 <li>Most apps will want to interact with <a href="reference.html#activity">Pryv activity data</a>. Recording and managing of activity data (events and their organization into folders and tags) is protected by <a href="reference.html#data-structure-access">accesses</a> to allow easy <a href="#sharing">sharing</a>.</li>
-<li>Some apps may need to access <a href="reference.html#admin">user account administration</a>, which includes the management of data sharing (via accesses) and activity channels (in addition to the user account itself). Administration is protected by personal authentication and expiring sessions.</li>
+<li>Some apps may need to access <a href="reference.html#admin">user account administration</a>, which includes the management of data sharing (via accesses) and activity channels (in addition to the user account itself). Administration is protected by personal authentication and expiring sessions, and is reserved for trusted apps.</li>
 </ul>
 <p>[TODO: add simple schema here]
 
 </p>
 <h2><a id="activity-data"></a>What&#39;s activity data?</h2>
-<p>Activity data is, at the core, just <strong>events</strong>: pieces of data attached to moments in time. Events can be thoughts, audio notes, photos, geographical coordinates etc. To allow Pryv apps to play nicely together and help users organize those events, however, there are a few additional things you need to know about:
+<p>Activity data is, at the core, just <strong>events</strong>: pieces of data attached to moments in time. Events can be thoughts, audio notes, photos, geographical coordinates, etc. (see the <a href="event-types.html">event types directory</a>). To allow Pryv apps to play nicely together and help users organize those events, however, there are a few additional things you need to know about:
 
 </p>
 <ul>
-<li>Each event belongs to a <strong>channel</strong>. A channel is a stream of events users usually want to see and manage together. For example, a user&#39;s thoughts, diary and social activities (Facebook, Twitter,... ) will be recorded in the same channel. There are a few standard channels there for your app to use (TODO: link to upcoming section listing standard channels &amp; folders), but if you manage rather specific stuff you&#39;ll probably want your app to create and use its own channel. Most apps will just deal with a single channel.</li>
+<li>Each event belongs to a <strong>channel</strong>. A channel is a stream of events users usually want to see and manage together. For example, a user&#39;s thoughts, diary and social activities (Facebook, Twitter,... ) will be recorded in the same channel. There are a few standard channels there for your app to use (see <a href="standard-structure.html">standard structure</a>), but if you manage rather specific stuff you&#39;ll probably want your app to create and use its own channel. Most apps will just deal with a single channel.</li>
 <li>Within a channel, events can be classified and organized using folders, tags, or both:<ul>
 <li><strong>Folders</strong> offer a hierarchical structure for classifying and filtering events. They are exclusive (one event can only be classified into a single folder), and can contain sub-folders (child folders). Depending on your app, you may actively use folders and let the user manage them (as for a time tracking app to classify time spent on particular projects), just use a single folder (as for a social media plugin: a Facebook plugin may store all its events into a &quot;Facebook&quot; folder), or just not care about folders at all (if your app uses its own channel and tags are all you need, for example).</li>
-<li><strong>Tags</strong> offer a flat, many-to-many organization for labeling and filtering events. One event can be tagged with multiple tags. TODO: detail when UX is better defined. For example, personal notes could be tagged as <em>essentials</em> or <em>important</em>, or professional activities could be tagged as <em>prospection</em>, <em>meeting</em>, <em>development</em> or <em>support</em>.</li>
+<li><strong>Tags</strong> offer typical flat, many-to-many organization for labeling and filtering events. One event can be tagged with multiple tags. For example, personal notes could be tagged as <em>fun</em> or <em>important</em>, or professional activities could be tagged as <em>prospection</em>, <em>meeting</em>, <em>development</em> or <em>support</em>.</li>
 </ul>
 </li>
 </ul>
 <p>Note that as an open system, to provide true interoperability, Pryv does not set or enforce &quot;ownership&quot; of data per app. Provided the necessary permissions, data stored by a given app can be accessed and manipulated by any other app.
-See the standard channels, folders and tags (TODO: link) we encourage you to use when appropriate if you want your app to integrate nicely within the user&#39;s Pryv experience.
+See the <a href="standard-structure.html">standard channels, folders and tags</a> we encourage you to use when appropriate if you want your app to integrate nicely within the user&#39;s Pryv experience.
 
 </p>
 <h2><a id="sharing"></a>Accesses and sharing</h2>
@@ -49,7 +49,7 @@ See the standard channels, folders and tags (TODO: link) we encourage you to use
 <ul>
 <li><strong>Shared</strong> accesses can be freely defined for letting other users view and possibly contribute to their activity data. They only grant access to a specific set of the user&#39;s data (see details below).</li>
 <li><strong>App</strong> accesses are assigned to most apps to access the user&#39;s data on her behalf. They also only grant access to a specific set of data, determined by the app&#39;s needs.</li>
-<li><strong>Personal</strong> accesses are reserved to trusted apps. They grant full access to the user&#39;s data.</li>
+<li><strong>Personal</strong> accesses are used by trusted apps only. They grant full access to the user&#39;s data.</li>
 </ul>
 <p>Note that only trusted apps can view and manage app and personal accesses. To register your app as trusted, please <a href="mailto:developers@pryv.com">get in touch with us</a>.
 
@@ -67,7 +67,7 @@ See the standard channels, folders and tags (TODO: link) we encourage you to use
 <p>For the present time, accesses are not personal. Access tokens act exactly like digital keys: if you have the token and the name of the user with the access it identifies, you can access the data.
 
 </p>
-<p>For more details see:
+<p>For more details see the API reference:
 
 </p>
 <ul>
