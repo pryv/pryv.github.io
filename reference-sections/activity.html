@@ -41,7 +41,7 @@
 <li><code>402 Payment Required</code>, id <code>user-intervention-required</code>: We cannot serve the request at the moment, because the user's account has exceeded the limits of its plan. The user must log into Pryv to fix her account.</li>
 </ul>
 <h2>Channels</h2>
-<p>For retrieving and manipulating <a href="#data-structure-channel">channels</a>.
+<p>Methods for retrieving and manipulating <a href="#data-structure-channel">channels</a>.
 
 
 </p>
@@ -67,9 +67,9 @@
 
 </p>
 <h4>Body parameters</h4>
-<p>The new channel's data: see <a href="#data-structure-channel">activity channel</a>.
-
+<p>The new channel's data: see <a href="#data-structure-channel">activity channel</a>. This can be as simple as:
 </p>
+<pre class="highlighted"><code class="language-json">{ "<span class="attribute">name</span>": <span class="value"><span class="string">"Undercover Activities"</span> </span>}</code></pre>
 <h4>Successful response: <code>201 Created</code></h4>
 <ul>
 <li><code>id</code> (<a href="#data-structure-identity">identity</a>): The created channel's id.</li>
@@ -88,9 +88,9 @@
 
 </p>
 <h4>Body parameters</h4>
-<p>New values for the channel's fields: see <a href="#data-structure-channel">activity channel</a>. All fields are optional, and only modified values must be included. TODO: example
-
+<p>New values for the channel's fields: see <a href="#data-structure-channel">activity channel</a>. All fields are optional, and only modified values must be included. For example:
 </p>
+<pre class="highlighted"><code class="language-json">{ "<span class="attribute">clientData</span>": <span class="value">{ "<span class="attribute">new-or-updated-client-specific-metadata</span>": <span class="value"><span class="number">42</span> </span>} </span>}</code></pre>
 <h4>Successful response: <code>200 OK</code></h4>
 <h4>Specific errors</h4>
 <ul>
@@ -128,8 +128,8 @@
 </p>
 <h4>Query string parameters</h4>
 <ul>
-<li><code>fromTime</code> (<a href="#data-structure-timestamp">timestamp</a>): Optional. TODO. Default is 24 hours before <code>toTime</code> if the latter is set; otherwise it is not taken into account.</li>
-<li><code>toTime</code> (<a href="#data-structure-timestamp">timestamp</a>): Optional. TODO. Default is the current time.</li>
+<li><code>fromTime</code> (<a href="#data-structure-timestamp">timestamp</a>): Optional. The start time of the timeframe you want to retrieve events for. Default is 24 hours before <code>toTime</code> if the latter is set; otherwise it is not taken into account.</li>
+<li><code>toTime</code> (<a href="#data-structure-timestamp">timestamp</a>): Optional. The end time of the timeframe you want to retrieve events for. Default is the current time. Note: events are considered to be within a given timeframe based on their <code>time</code> only (<code>duration</code> is not considered).</li>
 <li><code>onlyFolders</code> (array of <a href="#data-structure-identity">identity</a>): Optional. If set, only events assigned to the specified folders and their sub-folders will be returned. To retrieve events that are not assigned to any folder, just include a <code>null</code> value in the array. By default, all accessible events are returned (regardless of their folder assignment).</li>
 <li><code>tags</code> (array of strings): Optional. If set, only events assigned to all of the listed tags will be returned.</li>
 <li><code>sortAscending</code> (<code>true</code> or <code>false</code>): If <code>true</code>, events will be sorted from oldest to newest. Default: false (sort descending).</li>
