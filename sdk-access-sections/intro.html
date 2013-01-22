@@ -1,0 +1,46 @@
+<html><head></head><body><h1>Access SDKs</h1>
+<p>Get an access token.
+
+</p>
+<h2><a id="intro-initial-requirements"></a>Initial requirements</h2>
+<h3>1- Get an appID</h3>
+<p>An appID is a unique string, used to map a set of permissions.  
+
+
+</p>
+<p>Ask the dev team: <a href="mailto:developers@pryv.com">developers@pryv.com</a> for your AppID.
+
+</p>
+<h3>2- Define the access permissions you need</h3>
+<p>As a reference look at <a href="reference.html#data-structure-access">Access Data Structure documentation</a>.
+
+</p>
+<p><strong>Exemple</strong>: a contribute access on the diary channel
+
+</p>
+<pre class="highlighted"><code class="json">[{"<span class="attribute">channelId</span>" : <span class="value"><span class="string">"diary"</span></span>,
+  "<span class="attribute">defaultName</span>" : <span class="value"><span class="string">"Journal"</span></span>,
+  "<span class="attribute">level</span>" : <span class="value"><span class="string">"contribute"</span></span>}]</code></pre>
+<p><strong>Exemple</strong>: a manage access to the <strong>notes</strong> and <strong>mood</strong> folder of the diary channel.
+
+
+</p>
+<pre class="highlighted"><code class="json">[{"<span class="attribute">channelId</span>" : <span class="value"><span class="string">"diary"</span></span>,
+  "<span class="attribute">defaultName</span>" : <span class="value"><span class="string">"Journal"</span></span>,
+  "<span class="attribute">level</span>" : <span class="value"><span class="string">"read"</span></span>,
+   "<span class="attribute">folderPermissions</span>" : <span class="value">[
+    {
+      "<span class="attribute">folderId</span>" : <span class="value"><span class="string">"notes"</span></span>,
+      "<span class="attribute">level</span>" : <span class="value"><span class="string">"manage"</span></span>,
+      "<span class="attribute">defaultName</span>" : <span class="value"><span class="string">"Notes"</span>
+    </span>},
+    {
+      "<span class="attribute">folderId</span>" : <span class="value"><span class="string">"mood"</span></span>,
+      "<span class="attribute">level</span>" : <span class="value"><span class="string">"manage"</span></span>,
+      "<span class="attribute">defaultName</span>" : <span class="value"><span class="string">"Mood"</span>
+    </span>}
+  ]
+ </span>}]</code></pre>
+<p><strong>Special Note: defaultName</strong><br /><em>defaultName</em> is optional and should be adapated in the language of the user.
+It will be used only if the channel of folder does not exists and is created in the request process.</p>
+</body></html>

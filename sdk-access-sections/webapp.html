@@ -1,0 +1,94 @@
+<html><head></head><body><h1>Web App (javascript)</h1>
+<p>First of all, be sure you have completed <a href="#intro-initial-requirements">Initial Requirements</a> steps
+
+</p>
+<p>As an exemple look at <a href="https://sw.rec.la:2443/v0/access/demo.html"></a><a href="https://sw.rec.la:2443/access/v0/demo.html">https://sw.rec.la:2443/access/v0/demo.html</a> Source code.
+
+</p>
+<h2>Choices</h2>
+<h3>1- Popup or returnURL ??</h3>
+<p>TODO
+
+</p>
+<h3>2- PrYv or custom signin Button</h3>
+<p>TODO
+
+</p>
+<h3>3- Custom handling of the signin process</h3>
+<p>TODO
+
+</p>
+<h2>pryvAccess.setup(settings)</h2>
+<p>To use the sdk you need <em>pryv-access-sdk.js</em><br />For staging developpement you should use: <code>https://sw.rec.la:2443/access/v0/pryv-access-sdk.js</code><br />And add in your <code>&lt;head&gt;&lt;/head&gt;</code>  
+
+</p>
+<p>For production use the pryv.io version 
+
+</p>
+<pre class="highlighted"><code class="xml"><span class="tag">&lt;<span class="title">script</span> <span class="attribute">type</span>=<span class="value">"text/javascript"</span> <span class="attribute">src</span>=<span class="value">"https://sw.pryv.io/access/v0/pryv-access-sdk.js"</span>&gt;</span><span class="javascript"></span><span class="tag">&lt;/<span class="title">script</span>&gt;</span></code></pre>
+<p>or to optimze page loading cloudfront cached version:
+
+</p>
+<pre class="highlighted"><code class="xml"><span class="tag">&lt;<span class="title">script</span> <span class="attribute">type</span>=<span class="value">"text/javascript"</span> <span class="attribute">src</span>=<span class="value">"//dlw0lofo79is5.cloudfront.net/sdk-access-webapp/v0/pryv-access-sdk.js"</span>&gt;</span><span class="javascript"></span><span class="tag">&lt;/<span class="title">script</span>&gt;</span></code></pre>
+<p>Then you can create you <strong>settings</strong> object with the following parameters: 
+
+</p>
+<ul>
+<li><code>requestingAppId</code> (string): Unique. Given by PrYv identifier for this app. It will be the key for the requested set of permission after user agreement.</li>
+<li><code>languageCode</code>(2 characters ISO 639-1 Code): Optional. If known the current language used by the user. This will influence the signin and register interface language.</li>
+<li><code>requestedPermissions</code> (object): The requested set of permissions to access user's channels &amp; folders.</li>
+<li><code>returnURL</code> (string): Optional. If you don't want (or can't have) the popup signin-process and prefer set a returnURL. This URL will be called at the en of the SIGNIN process. This provides a better user experience on mobile devices.</li>
+<li><code>spanButtonID</code> (string) Optional. The id of a <code>&lt;span /&gt;</code> element in the DOM of your web page. </li>
+<li><code>callbacks</code> (functionS): called on each step of the sign-in process. Most of them are optional if you decided to rely on PrYv signin Button. All are optional excepted "accepted".<ul>
+<li><code>initialization</code> (function()): When the initialization process is started. You may display a "loading" animation or for the user.</li>
+<li><code>needSignin</code> (function(popupUrl,pollUrl,pollRateMs)): Optional. Triggered when the user need to be redirected to PrYv Signin or register from. <ul>
+<li>param <code>popupUrl</code> (string): The URL to open in it's own window and to present to the user.</li>
+<li>param <code>pollUrl</code> (string): The URL to poll regularly in the background to grab the result of the sigin process.</li>
+<li>param <code>pollRateMs</code> (int): The minimum interval in milliseconds between to polling.</li>
+</ul>
+</li>
+<li><code>accepted</code> (function(username,appToken)): <strong>Mandatory</strong>. Called when the signin process succeed and the permissions requested a granted.</li>
+<li><code>refused</code> (function(reason)): called when the user refuse to grant the requested permissions.<ul>
+<li>param <code>reason</code>(string): Technical information on how the user refused (not to be displayed).</li>
+</ul>
+</li>
+<li><code>error</code> (function(pryvError)): called when an error interupting the signup process occured.<ul>
+<li>param <code>pryvError</code> (object): <code>{id: .., message: .., detail: ..}</code> </li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h2>exemples</h2>
+<h3>minimalistic</h3>
+<p>This app requests a contribute access to the <em>diary</em> channel. 
+It relies on PrYv button and on a popup for signin. 
+
+
+</p>
+<pre class="highlighted"><code class="xml"><span class="tag">&lt;<span class="title">html</span>&gt;</span>
+<span class="tag">&lt;<span class="title">head</span>&gt;</span>
+<span class="tag">&lt;<span class="title">script</span> <span class="attribute">type</span>=<span class="value">"text/javascript"</span> <span class="attribute">src</span>=<span class="value">"//dlw0lofo79is5.cloudfront.net/sdk-access-webapp/v0/pryv-access-sdk.js"</span>&gt;</span><span class="javascript"></span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
+<span class="tag">&lt;/<span class="title">head</span>&gt;</span>
+<span class="tag">&lt;<span class="title">body</span>&gt;</span>
+    <span class="tag">&lt;<span class="title">script</span>&gt;</span><span class="javascript">
+
+    <span class="function"><span class="keyword">function</span> <span class="title">callMeWithCredentials</span><span class="params">(username, appToken)</span> {</span>
+        alert(<span class="string">"SUCCESS! username:"</span> + username + <span class="string">" appToken:"</span> + appToken);
+    }
+
+    <span class="keyword">var</span> requestedPermissions = [{<span class="string">"channelId"</span> : <span class="string">"diary"</span>,
+                                     <span class="string">"level"</span> : <span class="string">"contribute"</span>}];
+
+    pryvAccess.setup({
+        requestingAppId : <span class="string">'Minimalistic Exemple For SDK Access'</span>,
+        requestedPermissions : requestedPermissions,
+        spanButtonID : <span class="string">'pryvButton'</span>,
+        callbacks : callMeWithCredentials
+    });
+
+    </span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
+    <span class="tag">&lt;<span class="title">center</span>&gt;</span><span class="tag">&lt;<span class="title">span</span> <span class="attribute">id</span>=<span class="value">'pryvButton'</span>&gt;</span><span class="tag">&lt;/<span class="title">span</span>&gt;</span><span class="tag">&lt;/<span class="title">center</span>&gt;</span>
+<span class="tag">&lt;/<span class="title">body</span>&gt;</span>
+<span class="tag">&lt;/<span class="title">html</span>&gt;</span></code></pre>
+</body></html>
