@@ -56,14 +56,92 @@ It will be used only if the channel of folder does not exists and is created in 
 <p>First of all, be sure you have completed <a href="#intro-initial-requirements">Initial Requirements</a> steps
 
 </p>
-<p>As an exemple look at <a href="https://sw.rec.la:2443/v0/access/demo.html"></a><a href="https://sw.rec.la:2443/access/v0/demo.html">https://sw.rec.la:2443/access/v0/demo.html</a> Source code.
+<p>As an exemple look at <a href="https://sw.rec.la:2443/access/demo.html"></a><a href="https://sw.rec.la:2443/access/demo.html">https://sw.rec.la:2443/access/demo.html</a> Source code.
 
 </p>
 <h2>Choices</h2>
-<h3>1- Popup or returnURL ??</h3>
-<p>TODO
+<p><em>Note!!:</em> Prefered method for a better user experience is <code>auto</code>
 
 </p>
+<h3><a name="returnURL"></a> 1-  Popup or returnURL ??</h3>
+<p>During the authentication process, we need to open a PrYv access web page in a separate window. This is onde in order to secure personal user's information.<br />This window can be opened in:
+
+</p>
+<ul>
+<li>A popup, leaving the actual window open behind. This should be more comfortable on desktop browsers.</li>
+<li>In place of the actual window, the user goes thru the process and come back to the URL you set at the end of the process.</li>
+</ul>
+<h4>* Popup</h4>
+<p>If you want the authorization process to take place in a popup just set the <code>returnURL</code> settings to <code>false</code>.
+
+</p>
+<h4>* Self or Auto</h4>
+<p>If you want the authorization process to take place in the same windows, returning to this same exact url you can use <code>self[extra_params]&lt;trailer&gt;</code> or <code>auto[extra_params]&lt;trailer&gt;</code>.  
+
+</p>
+<p>When the user returns to this same page, the pryv-access-sdk will parse <code>prYv</code> parameters.
+
+</p>
+<ul>
+<li>command  <ul>
+<li><strong>self</strong>: Use the current page as returnURL value</li>
+<li><strong>auto</strong>: (prefered method) Use a returnURL when a mobile or tablet browser is detected and a popupOtherwise  </li>
+</ul>
+</li>
+<li>parameters<ul>
+<li><strong>&lt;trailer&gt;</strong>: one of <code>?</code>, a <code>#</code> or a <code>&amp;</code></li>
+<li><strong>[extra_parms]</strong>: Use this space (uri_encoded) as a custom payload for the returning user. </li>
+</ul>
+</li>
+</ul>
+<p>EXEMPLES
+
+</p>
+<ul>
+<li><p>with <code>https://mysite.com/page.php</code> as source URL.</p>
+<ul>
+<li><strong>self#</strong> -&gt; <code>https://mysite.com/page.php#prYvkey=JDJKhadja&amp;prYvstatus=...</code></li>
+<li><strong>self?</strong> -&gt; <code>https://mysite.com/page.php?prYvkey=JDJKhadja&amp;prYvstatus=...</code></li>
+<li><strong>self?mycustom=A&amp;</strong> -&gt; <code>https://mysite.com/page.php?mycustom=A&amp;prYvkey=JDJKh...</code></li>
+<li><strong>auto?mobile=1&amp;</strong> (if mobile) -&gt; <code>https://mysite.com/page.php?mobile=1&amp;prYvkey=JD...</code></li>
+</ul>
+</li>
+<li><p>with <code>https://mysite.com/page.php?mycustom=1</code> as source URL.</p>
+<ul>
+<li><strong>self&amp;</strong> -&gt; <code>https://mysite.com/page.php?mycustom=1&amp;prYvk...</code></li>
+</ul>
+</li>
+</ul>
+<p>Make your own tests from the page:
+<a href="https://sw.rec.la:2443/access/test.html"></a><a href="https://sw.rec.la:2443/access/test.html">https://sw.rec.la:2443/access/test.html</a>
+
+</p>
+<h4>* Custom</h4>
+<p>Set the return URL to your own page such as 
+
+</p>
+<pre class="highlighted"><code class="avrasm"><span class="label">https:</span>//www<span class="preprocessor">.mysite</span><span class="preprocessor">.com</span>/end-of-pryvAccess-process<span class="preprocessor">.php</span>?</code></pre>
+<p><strong>Attention!!</strong> The url submitted <em>must</em> end with a <code>?</code>, a <code>#</code> or a <code>&amp;</code><br />Returned status will be appended to this URL.
+
+</p>
+<p><strong>Exemples:</strong>
+
+</p>
+<p>ACCEPTED
+
+</p>
+<pre class="highlighted"><code class="avrasm">    https://www<span class="preprocessor">.mysite</span><span class="preprocessor">.com</span>/end-of-pryvAccess-process<span class="preprocessor">.php</span>?
+prYvkey=GSbdasjgdv&amp;prYvstatus=ACCEPTED&amp;prYvusername=yacinthe&amp;prYvtoken=VVhjDJDDG</code></pre>
+<p>REFUSED
+
+</p>
+<pre class="highlighted"><code class="avrasm">    https://www<span class="preprocessor">.mysite</span><span class="preprocessor">.com</span>/end-of-pryvAccess-process<span class="preprocessor">.php</span>?
+prYvkey=GSbdasjgdv&amp;prYvstatus=REFUSED&amp;prYvmessage=refused+by+user</code></pre>
+<p>ERROR
+
+</p>
+<pre class="highlighted"><code class="r">    https://www.mysite.com/end-of-pryvAccess-process.php?
+prYvkey=GSbdasjgdv&amp;prYvstatus=ERROR&amp;prYvid=INTERNAL_ERROR&amp;prYvmessage=<span class="keyword">...</span></code></pre>
 <h3>2- PrYv or custom signin Button</h3>
 <p>TODO
 
@@ -91,7 +169,7 @@ It will be used only if the channel of folder does not exists and is created in 
 <li><code>requestingAppId</code> (string): Unique. Given by PrYv identifier for this app. It will be the key for the requested set of permission after user agreement.</li>
 <li><code>languageCode</code>(2 characters ISO 639-1 Code): Optional. If known the current language used by the user. This will influence the signin and register interface language.</li>
 <li><code>requestedPermissions</code> (object): The requested set of permissions to access user's channels &amp; folders.</li>
-<li><code>returnURL</code> (string): Optional. If you don't want (or can't have) the popup signin-process and prefer set a returnURL. This URL will be called at the en of the SIGNIN process. This provides a better user experience on mobile devices.</li>
+<li><code>returnURL</code> (url or 'auto<extra>'): Optional. If you don't want (or can't have) the popup signin-process and prefer set a returnURL. This URL will be called at the en of the SIGNIN process.This provides a better user experience on mobile devices: see <a href="#returnURL">Popup or returnURL</a></extra></li>
 <li><code>spanButtonID</code> (string) Optional. The id of a <code>&lt;span /&gt;</code> element in the DOM of your web page. </li>
 <li><code>callbacks</code> (functionS): called on each step of the sign-in process. Most of them are optional if you decided to rely on PrYv signin Button. All are optional excepted "accepted".<ul>
 <li><code>initialization</code> (function()): When the initialization process is started. You may display a "loading" animation or for the user.</li>
@@ -137,6 +215,7 @@ It relies on PrYv button and on a popup for signin.
     pryvAccess.setup({
         requestingAppId : <span class="string">'Minimalistic Exemple For SDK Access'</span>,
         requestedPermissions : requestedPermissions,
+        returnURL: <span class="string">'auto#'</span>,
         spanButtonID : <span class="string">'pryvButton'</span>,
         callbacks : callMeWithCredentials
     });
