@@ -7,37 +7,36 @@ _gaq.push(['_trackPageview']);
   ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
   var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
 })();
-</script><div id="main"><header id="pageHeader"><a href="index.html">Home</a></header><div id="sections"><section id="Introduction"><h1>Access SDKs</h1>
+</script><div id="main"><header id="pageHeader"><a href="index.html">Home</a></header><div id="sections"><section id="intro"><h1>App access</h1>
 <p>Get an access token.
 
 </p>
 <h2><a id="intro-initial-requirements"></a>Initial requirements</h2>
-<h3>1- Get an appID</h3>
-<p>An appID is a unique string, used to map a set of permissions.  
-
-
-</p>
-<p>Ask the dev team: <a href="mailto:developers@pryv.com">developers@pryv.com</a> for your AppID.
+<h3>1. Get a Pryv app id for your app</h3>
+<p>A Pryv app id is a string uniquely identifying your app. For the moment, just <a href="mailto:developers@pryv.com">ask us</a> to obtain your app id.
 
 </p>
-<h3>2- Define the access permissions you need</h3>
-<p>As a reference look at <a href="reference.html#data-structure-access">Access Data Structure documentation</a>.
+<h3>2. Define the access permissions you need</h3>
+<p>See the examples below, as well as the <code>permissions</code> property in the <a href="reference.html#data-structure-access">access data structure reference</a>.
 
 </p>
-<p><strong>Exemple</strong>: a contribute access on the diary channel
+<h4>Example app permissions</h4>
+<p>A "contribute" access on the "diary" channel:
 
 </p>
-<pre class="highlighted"><code class="json">[{"<span class="attribute">channelId</span>" : <span class="value"><span class="string">"diary"</span></span>,
+<pre class="highlighted"><code class="language-json">[{
+  "<span class="attribute">channelId</span>" : <span class="value"><span class="string">"diary"</span></span>,
   "<span class="attribute">defaultName</span>" : <span class="value"><span class="string">"Journal"</span></span>,
-  "<span class="attribute">level</span>" : <span class="value"><span class="string">"contribute"</span></span>}]</code></pre>
-<p><strong>Exemple</strong>: a manage access to the <strong>notes</strong> and <strong>mood</strong> folder of the diary channel.
-
+  "<span class="attribute">level</span>" : <span class="value"><span class="string">"contribute"</span>
+</span>}]</code></pre>
+<p>A "manage" access to the "notes" and "mood" folders of the "diary" channel:
 
 </p>
-<pre class="highlighted"><code class="json">[{"<span class="attribute">channelId</span>" : <span class="value"><span class="string">"diary"</span></span>,
+<pre class="highlighted"><code class="language-json">[{
+  "<span class="attribute">channelId</span>" : <span class="value"><span class="string">"diary"</span></span>,
   "<span class="attribute">defaultName</span>" : <span class="value"><span class="string">"Journal"</span></span>,
   "<span class="attribute">level</span>" : <span class="value"><span class="string">"read"</span></span>,
-   "<span class="attribute">folderPermissions</span>" : <span class="value">[
+  "<span class="attribute">folderPermissions</span>" : <span class="value">[
     {
       "<span class="attribute">folderId</span>" : <span class="value"><span class="string">"notes"</span></span>,
       "<span class="attribute">level</span>" : <span class="value"><span class="string">"manage"</span></span>,
@@ -49,22 +48,32 @@ _gaq.push(['_trackPageview']);
       "<span class="attribute">defaultName</span>" : <span class="value"><span class="string">"Mood"</span>
     </span>}
   ]
- </span>}]</code></pre>
-<p><strong>Special Note: defaultName</strong><br /><em>defaultName</em> is optional and should be adapated in the language of the user.
-It will be used only if the channel of folder does not exists and is created in the request process.</p>
-</section><section id="webapp"><h1>Web App (javascript)</h1>
-<p>First of all, be sure you have completed <a href="#intro-initial-requirements">Initial Requirements</a> steps
+</span>}]</code></pre>
+<p><strong>About the <code>defaultName</code> property</strong>: <code>defaultName</code> is the name you'd like the channel or folder to be created with if it does not exist, and should be in the language of the user. The property is mandatory.</p>
+</section><section id="web-app"><h1>Web app (Javascript)</h1>
+<p>(Please make sure you got the <a href="#intro-initial-requirements">initial requirements</a> ready.)
 
 </p>
-<p>As an exemple look at <a href="https://sw.rec.la:2443/access/demo.html"></a><a href="https://sw.rec.la:2443/access/demo.html">https://sw.rec.la:2443/access/demo.html</a> Source code.
+<p>Obtaining an access token for your web app is done by using our web app access SDK:
 
 </p>
+<ul>
+<li>Staging version (recommended at the moment):<pre class="highlighted"><code class="language-html xml"><span class="tag">&lt;<span class="title">script</span> <span class="attribute">type</span>=<span class="value">"text/javascript"</span> <span class="attribute">src</span>=<span class="value">"https://sw.rec.la:2443/access/v0/pryv-access-sdk.js"</span>&gt;</span><span class="javascript"></span><span class="tag">&lt;/<span class="title">script</span>&gt;</span></code></pre>
+</li>
+<li>Production version:<pre class="highlighted"><code class="language-html xml"><span class="tag">&lt;<span class="title">script</span> <span class="attribute">type</span>=<span class="value">"text/javascript"</span> <span class="attribute">src</span>=<span class="value">"https://sw.pryv.io/access/v0/pryv-access-sdk.js"</span>&gt;</span><span class="javascript"></span><span class="tag">&lt;/<span class="title">script</span>&gt;</span></code></pre>
+or the optimized CloudFront cache:<pre class="highlighted"><code class="language-html xml"><span class="tag">&lt;<span class="title">script</span> <span class="attribute">type</span>=<span class="value">"text/javascript"</span> <span class="attribute">src</span>=<span class="value">"//dlw0lofo79is5.cloudfront.net/sdk-access-webapp/v0/pryv-access-sdk.js"</span>&gt;</span><span class="javascript"></span><span class="tag">&lt;/<span class="title">script</span>&gt;</span></code></pre>
+</li>
+</ul>
 <h2>Choices</h2>
+<p><strong>TODO: review this section entirely</strong>
+
+</p>
 <p><em>Note!!:</em> Prefered method for a better user experience is <code>auto</code>
 
 </p>
 <h3><a name="returnURL"></a> 1-  Popup or returnURL ??</h3>
-<p>During the authentication process, we need to open a PrYv access web page in a separate window. This is onde in order to secure personal user's information.<br />This window can be opened in:
+<p>During the authentication process, we need to open a PrYv access web page in a separate window. This is onde in order to secure personal user's information.
+This window can be opened in:
 
 </p>
 <ul>
@@ -76,21 +85,21 @@ It will be used only if the channel of folder does not exists and is created in 
 
 </p>
 <h4>* Self or Auto</h4>
-<p>If you want the authorization process to take place in the same windows, returning to this same exact url you can use <code>self[extra_params]&lt;trailer&gt;</code> or <code>auto[extra_params]&lt;trailer&gt;</code>.  
+<p>If you want the authorization process to take place in the same windows, returning to this same exact url you can use <code>self[extra_params]&lt;trailer&gt;</code> or <code>auto[extra_params]&lt;trailer&gt;</code>.
 
 </p>
 <p>When the user returns to this same page, the pryv-access-sdk will parse <code>prYv</code> parameters.
 
 </p>
 <ul>
-<li>command  <ul>
+<li>command<ul>
 <li><strong>self</strong>: Use the current page as returnURL value</li>
-<li><strong>auto</strong>: (prefered method) Use a returnURL when a mobile or tablet browser is detected and a popupOtherwise  </li>
+<li><strong>auto</strong>: (prefered method) Use a returnURL when a mobile or tablet browser is detected and a popupOtherwise</li>
 </ul>
 </li>
 <li>parameters<ul>
 <li><strong>&lt;trailer&gt;</strong>: one of <code>?</code>, a <code>#</code> or a <code>&amp;</code></li>
-<li><strong>[extra_parms]</strong>: Use this space (uri_encoded) as a custom payload for the returning user. </li>
+<li><strong>[extra_parms]</strong>: Use this space (uri_encoded) as a custom payload for the returning user.</li>
 </ul>
 </li>
 </ul>
@@ -117,11 +126,12 @@ It will be used only if the channel of folder does not exists and is created in 
 
 </p>
 <h4>* Custom</h4>
-<p>Set the return URL to your own page such as 
+<p>Set the return URL to your own page such as
 
 </p>
 <pre class="highlighted"><code class="avrasm"><span class="label">https:</span>//www<span class="preprocessor">.mysite</span><span class="preprocessor">.com</span>/end-of-pryvAccess-process<span class="preprocessor">.php</span>?</code></pre>
-<p><strong>Attention!!</strong> The url submitted <em>must</em> end with a <code>?</code>, a <code>#</code> or a <code>&amp;</code><br />Returned status will be appended to this URL.
+<p><strong>Attention!!</strong> The url submitted <em>must</em> end with a <code>?</code>, a <code>#</code> or a <code>&amp;</code>
+Returned status will be appended to this URL.
 
 </p>
 <p><strong>Exemples:</strong>
@@ -151,10 +161,12 @@ prYvkey=GSbdasjgdv&amp;prYvstatus=ERROR&amp;prYvid=INTERNAL_ERROR&amp;prYvmessag
 
 </p>
 <h2>pryvAccess.setup(settings)</h2>
-<p>To use the sdk you need <em>pryv-access-sdk.js</em><br />For staging developpement you should use: <code>https://sw.rec.la:2443/access/v0/pryv-access-sdk.js</code><br />And add in your <code>&lt;head&gt;&lt;/head&gt;</code>  
+<p>To use the sdk you need <em>pryv-access-sdk.js</em>
+For staging developpement you should use: <code>https://sw.rec.la:2443/access/v0/pryv-access-sdk.js</code>
+And add in your <code>&lt;head&gt;&lt;/head&gt;</code>
 
 </p>
-<p>For production use the pryv.io version 
+<p>For production use the pryv.io version
 
 </p>
 <pre class="highlighted"><code class="xml"><span class="tag">&lt;<span class="title">script</span> <span class="attribute">type</span>=<span class="value">"text/javascript"</span> <span class="attribute">src</span>=<span class="value">"https://sw.pryv.io/access/v0/pryv-access-sdk.js"</span>&gt;</span><span class="javascript"></span><span class="tag">&lt;/<span class="title">script</span>&gt;</span></code></pre>
@@ -162,7 +174,7 @@ prYvkey=GSbdasjgdv&amp;prYvstatus=ERROR&amp;prYvid=INTERNAL_ERROR&amp;prYvmessag
 
 </p>
 <pre class="highlighted"><code class="xml"><span class="tag">&lt;<span class="title">script</span> <span class="attribute">type</span>=<span class="value">"text/javascript"</span> <span class="attribute">src</span>=<span class="value">"//dlw0lofo79is5.cloudfront.net/sdk-access-webapp/v0/pryv-access-sdk.js"</span>&gt;</span><span class="javascript"></span><span class="tag">&lt;/<span class="title">script</span>&gt;</span></code></pre>
-<p>Then you can create you <strong>settings</strong> object with the following parameters: 
+<p>Then you can create you <strong>settings</strong> object with the following parameters:
 
 </p>
 <ul>
@@ -170,10 +182,10 @@ prYvkey=GSbdasjgdv&amp;prYvstatus=ERROR&amp;prYvid=INTERNAL_ERROR&amp;prYvmessag
 <li><code>languageCode</code>(2 characters ISO 639-1 Code): Optional. If known the current language used by the user. This will influence the signin and register interface language.</li>
 <li><code>requestedPermissions</code> (object): The requested set of permissions to access user's channels &amp; folders.</li>
 <li><code>returnURL</code> (url or 'auto<extra>'): Optional. If you don't want (or can't have) the popup signin-process and prefer set a returnURL. This URL will be called at the en of the SIGNIN process.This provides a better user experience on mobile devices: see <a href="#returnURL">Popup or returnURL</a></extra></li>
-<li><code>spanButtonID</code> (string) Optional. The id of a <code>&lt;span /&gt;</code> element in the DOM of your web page. </li>
+<li><code>spanButtonID</code> (string) Optional. The id of a <code>&lt;span /&gt;</code> element in the DOM of your web page.</li>
 <li><code>callbacks</code> (functionS): called on each step of the sign-in process. Most of them are optional if you decided to rely on PrYv signin Button. All are optional excepted "accepted".<ul>
 <li><code>initialization</code> (function()): When the initialization process is started. You may display a "loading" animation or for the user.</li>
-<li><code>needSignin</code> (function(popupUrl,pollUrl,pollRateMs)): Optional. Triggered when the user need to be redirected to PrYv Signin or register from. <ul>
+<li><code>needSignin</code> (function(popupUrl,pollUrl,pollRateMs)): Optional. Triggered when the user need to be redirected to PrYv Signin or register from.<ul>
 <li>param <code>popupUrl</code> (string): The URL to open in it's own window and to present to the user.</li>
 <li>param <code>pollUrl</code> (string): The URL to poll regularly in the background to grab the result of the sigin process.</li>
 <li>param <code>pollRateMs</code> (int): The minimum interval in milliseconds between to polling.</li>
@@ -185,25 +197,28 @@ prYvkey=GSbdasjgdv&amp;prYvstatus=ERROR&amp;prYvid=INTERNAL_ERROR&amp;prYvmessag
 </ul>
 </li>
 <li><code>error</code> (function(pryvError)): called when an error interupting the signup process occured.<ul>
-<li>param <code>pryvError</code> (object): <code>{id: .., message: .., detail: ..}</code> </li>
+<li>param <code>pryvError</code> (object): <code>{id: .., message: .., detail: ..}</code></li>
 </ul>
 </li>
 </ul>
 </li>
 </ul>
-<h2>exemples</h2>
-<h3>minimalistic</h3>
-<p>This app requests a contribute access to the <em>diary</em> channel. 
-It relies on PrYv button and on a popup for signin. 
-
+<h2>Examples</h2>
+<h3>Minimalistic</h3>
+<p>This app requests a "contribute" access to the "diary" channel, using the PrYv button and a popup for sign-in.
 
 </p>
-<pre class="highlighted"><code class="xml"><span class="tag">&lt;<span class="title">html</span>&gt;</span>
+<p><strong>TODO: review this code</strong>
+
+</p>
+<pre class="highlighted"><code class="language-html xml"><span class="doctype">&lt;!DOCTYPE html&gt;</span>
+<span class="tag">&lt;<span class="title">html</span>&gt;</span>
 <span class="tag">&lt;<span class="title">head</span>&gt;</span>
+<span class="tag">&lt;<span class="title">title</span>&gt;</span>Minimalistic example<span class="tag">&lt;/<span class="title">title</span>&gt;</span>
 <span class="tag">&lt;<span class="title">script</span> <span class="attribute">type</span>=<span class="value">"text/javascript"</span> <span class="attribute">src</span>=<span class="value">"//dlw0lofo79is5.cloudfront.net/sdk-access-webapp/v0/pryv-access-sdk.js"</span>&gt;</span><span class="javascript"></span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
 <span class="tag">&lt;/<span class="title">head</span>&gt;</span>
 <span class="tag">&lt;<span class="title">body</span>&gt;</span>
-    <span class="tag">&lt;<span class="title">script</span>&gt;</span><span class="javascript">
+    <span class="tag">&lt;<span class="title">script</span> <span class="attribute">type</span>=<span class="value">"text/javascript"</span>&gt;</span><span class="javascript">
 
     <span class="function"><span class="keyword">function</span> <span class="title">callMeWithCredentials</span><span class="params">(username, appToken)</span> {</span>
         alert(<span class="string">"SUCCESS! username:"</span> + username + <span class="string">" appToken:"</span> + appToken);
@@ -221,9 +236,11 @@ It relies on PrYv button and on a popup for signin.
     });
 
     </span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
-    <span class="tag">&lt;<span class="title">center</span>&gt;</span><span class="tag">&lt;<span class="title">span</span> <span class="attribute">id</span>=<span class="value">'pryvButton'</span>&gt;</span><span class="tag">&lt;/<span class="title">span</span>&gt;</span><span class="tag">&lt;/<span class="title">center</span>&gt;</span>
+    <span class="tag">&lt;<span class="title">span</span> <span class="attribute">id</span>=<span class="value">'pryvButton'</span>&gt;</span><span class="tag">&lt;/<span class="title">span</span>&gt;</span>
 <span class="tag">&lt;/<span class="title">body</span>&gt;</span>
 <span class="tag">&lt;/<span class="title">html</span>&gt;</span></code></pre>
+<h3>Full</h3>
+<p>For a more fleshed-out example look at the source code of <a href="https://sw.rec.la:2443/access/demo.html"></a><a href="https://sw.rec.la:2443/access/demo.html">https://sw.rec.la:2443/access/demo.html</a>.</p>
 </section></div></div><div id="toc"></div><script>jQuery(document).ready(function($) {
   $('#toc').toc({
     'selectors': 'h1,h2',
