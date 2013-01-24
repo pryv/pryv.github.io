@@ -51,29 +51,106 @@ _gaq.push(['_trackPageview']);
 </span>}]</code></pre>
 <p><strong>About the <code>defaultName</code> property</strong>: <code>defaultName</code> is the name you'd like the channel or folder to be created with if it does not exist, and should be in the language of the user. The property is mandatory.</p>
 </section><section id="web-app"><h1>Web app (Javascript)</h1>
-<p>(Please make sure you got the <a href="#intro-initial-requirements">initial requirements</a> ready.)
+<p>Obtaining an access token for your web app.
+
 
 </p>
-<p>Obtaining an access token for your web app is done by using our web app access SDK:
-
-</p>
+<h2>What you need</h2>
 <ul>
+<li>make sure you got the <a href="#intro-initial-requirements">initial requirements</a> ready.</li>
+<li>include the following script in your page:<ul>
 <li>Staging version (recommended at the moment):<pre class="highlighted"><code class="language-html xml"><span class="tag">&lt;<span class="title">script</span> <span class="attribute">type</span>=<span class="value">"text/javascript"</span> <span class="attribute">src</span>=<span class="value">"https://sw.rec.la:2443/access/v0/pryv-access-sdk.js"</span>&gt;</span><span class="javascript"></span><span class="tag">&lt;/<span class="title">script</span>&gt;</span></code></pre>
 </li>
 <li>Production version:<pre class="highlighted"><code class="language-html xml"><span class="tag">&lt;<span class="title">script</span> <span class="attribute">type</span>=<span class="value">"text/javascript"</span> <span class="attribute">src</span>=<span class="value">"https://sw.pryv.io/access/v0/pryv-access-sdk.js"</span>&gt;</span><span class="javascript"></span><span class="tag">&lt;/<span class="title">script</span>&gt;</span></code></pre>
-or the optimized CloudFront cache:<pre class="highlighted"><code class="language-html xml"><span class="tag">&lt;<span class="title">script</span> <span class="attribute">type</span>=<span class="value">"text/javascript"</span> <span class="attribute">src</span>=<span class="value">"//dlw0lofo79is5.cloudfront.net/sdk-access-webapp/v0/pryv-access-sdk.js"</span>&gt;</span><span class="javascript"></span><span class="tag">&lt;/<span class="title">script</span>&gt;</span></code></pre>
+</li>
+<li>or the optimized CloudFront cache:<pre class="highlighted"><code class="language-html xml"><span class="tag">&lt;<span class="title">script</span> <span class="attribute">type</span>=<span class="value">"text/javascript"</span> <span class="attribute">src</span>=<span class="value">"//dlw0lofo79is5.cloudfront.net/sdk-access-webapp/v0/pryv-access-sdk.js"</span>&gt;</span><span class="javascript"></span><span class="tag">&lt;/<span class="title">script</span>&gt;</span></code></pre>
 </li>
 </ul>
-<h2>Choices</h2>
-<p><strong>TODO: review this section entirely</strong>
+</li>
+<li>construct a <code>settings</code> JSON object</li>
+<li>call <code>pryvAccess.setup(settings)</code></li>
+</ul>
+<p>For a more fleshed-out example look at the source code of <a href="https://sw.rec.la:2443/access/demo.html"></a><a href="https://sw.rec.la:2443/access/demo.html">https://sw.rec.la:2443/access/demo.html</a>.
 
 </p>
-<p><em>Note!!:</em> Prefered method for a better user experience is <code>auto</code>
+<p><a name="webapp.test"></a>Or make your own tests from the page:
+<a href="https://sw.rec.la:2443/access/test.html"></a><a href="https://sw.rec.la:2443/access/test.html">https://sw.rec.la:2443/access/test.html</a>
+
 
 </p>
-<h3><a name="returnURL"></a> 1-  Popup or returnURL ??</h3>
-<p>During the authentication process, we need to open a PrYv access web page in a separate window. This is onde in order to secure personal user's information.
-This window can be opened in:
+<h3>Exemple: Minimalistic</h3>
+<p>This app requests a "contribute" access to the "diary" channel, using the PrYv button and a popup for sign-in.
+
+</p>
+<p><strong>TODO: review this code</strong>
+
+</p>
+<pre class="highlighted"><code class="xml">```html
+<span class="doctype">&lt;!DOCTYPE html&gt;</span>
+<span class="tag">&lt;<span class="title">html</span>&gt;</span>
+<span class="tag">&lt;<span class="title">head</span>&gt;</span>
+<span class="tag">&lt;<span class="title">title</span>&gt;</span>Minimalistic example<span class="tag">&lt;/<span class="title">title</span>&gt;</span>
+<span class="tag">&lt;<span class="title">script</span> <span class="attribute">type</span>=<span class="value">"text/javascript"</span> <span class="attribute">src</span>=<span class="value">"//dlw0lofo79is5.cloudfront.net/sdk-access-webapp/v0/pryv-access-sdk.js"</span>&gt;</span><span class="javascript"></span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
+<span class="tag">&lt;/<span class="title">head</span>&gt;</span>
+<span class="tag">&lt;<span class="title">body</span>&gt;</span>
+    <span class="tag">&lt;<span class="title">script</span> <span class="attribute">type</span>=<span class="value">"text/javascript"</span>&gt;</span><span class="javascript">
+
+    <span class="function"><span class="keyword">function</span> <span class="title">callMeWithCredentials</span><span class="params">(username, appToken, languageCode)</span> {</span>
+        alert(<span class="string">"SUCCESS! username:"</span> + username + <span class="string">" appToken:"</span> + 
+                appToken + <span class="string">" language:"</span> + languageCode);
+    }
+
+    <span class="keyword">var</span> requestedPermissions = [{<span class="string">"channelId"</span> : <span class="string">"diary"</span>,
+                                     <span class="string">"level"</span> : <span class="string">"contribute"</span>}];
+
+    pryvAccess.setup({
+        requestingAppId : <span class="string">'Minimalistic Exemple For SDK Access'</span>,
+        requestedPermissions : requestedPermissions,
+        returnURL: <span class="string">'auto#'</span>,
+        spanButtonID : <span class="string">'pryvButton'</span>,
+        callbacks : callMeWithCredentials
+    });
+
+    </span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
+    <span class="tag">&lt;<span class="title">span</span> <span class="attribute">id</span>=<span class="value">'pryvButton'</span>&gt;</span><span class="tag">&lt;/<span class="title">span</span>&gt;</span>
+<span class="tag">&lt;/<span class="title">body</span>&gt;</span>
+<span class="tag">&lt;/<span class="title">html</span>&gt;</span>
+```</code></pre>
+<h2>pryvAccess.setup(settings)</h2>
+<p>The <strong>settings</strong> object supports the following parameters:
+
+</p>
+<ul>
+<li><code>requestingAppId</code> (string): Unique. Given by PrYv identifier for this app. It will be the key for the requested set of permission after user agreement.</li>
+<li><code>languageCode</code>(2 characters ISO 639-1 Code): Optional. If known the current language used by the user. This will influence the signin and register interface language.</li>
+<li><code>requestedPermissions</code> (object): The requested set of permissions to access user's channels &amp; folders.</li>
+<li><code>returnURL</code> (url or 'auto<extra>'): Optional. If you don't want (or can't have) the popup signin-process and prefer set a returnURL. This URL will be called at the en of the SIGNIN process.This provides a better user experience on mobile devices. Details: <a href="#webapp.returnURL">settings.returnURL</a></extra></li>
+<li><code>spanButtonID</code> (string) Optional. The id of a <code>&lt;span /&gt;</code> element in the DOM of your web page. Details: <a href="#webapp.spanButtonID">settings.spanButtonID</a></li>
+<li><code>callbacks</code> (functionS): called on each step of the sign-in process. Most of them are optional if you decided to rely on PrYv signin Button. All are optional excepted "accepted". Details: <a href="#webapp.callbacks">settings.callbacks</a><ul>
+<li><code>initialization</code> (function()): When the initialization process is started. You may display a "loading" animation or for the user.</li>
+<li><code>needSignin</code> (function(popupUrl,pollUrl,pollRateMs)): Optional. Triggered when the user need to be redirected to PrYv Signin or register from.<ul>
+<li>param <code>popupUrl</code> (string): The URL to open in it's own window and to present to the user.</li>
+<li>param <code>pollUrl</code> (string): The URL to poll regularly in the background to grab the result of the sigin process.</li>
+<li>param <code>pollRateMs</code> (int): The minimum interval in milliseconds between to polling.</li>
+</ul>
+</li>
+<li><code>accepted</code> (function(username,appToken)): <strong>Mandatory</strong>. Called when the signin process succeed and the permissions requested a granted.</li>
+<li><code>refused</code> (function(reason)): called when the user refuse to grant the requested permissions.<ul>
+<li>param <code>reason</code>(string): Technical information on how the user refused (not to be displayed).</li>
+</ul>
+</li>
+<li><code>error</code> (function(pryvError)): called when an error interupting the signup process occured.<ul>
+<li>param <code>pryvError</code> (object): <code>{id: .., message: .., detail: ..}</code></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h3><a name="webapp.returnURL"></a> settings.returnURL : Popup or URL Callback</h3>
+<p>During the authentication process, we need to open a PrYv access web page in a separate window. This is in order to secure personal user's information.  
+
+</p>
+<p>This window can be opened in:
 
 </p>
 <ul>
@@ -121,8 +198,7 @@ This window can be opened in:
 </ul>
 </li>
 </ul>
-<p>Make your own tests from the page:
-<a href="https://sw.rec.la:2443/access/test.html"></a><a href="https://sw.rec.la:2443/access/test.html">https://sw.rec.la:2443/access/test.html</a>
+<p>Make your own tests from the <a href="webapp.test">test page</a>.
 
 </p>
 <h4>* Custom</h4>
@@ -134,9 +210,7 @@ This window can be opened in:
 Returned status will be appended to this URL.
 
 </p>
-<p><strong>Exemples:</strong>
-
-</p>
+<h4>Exemples of return URL</h4>
 <p>ACCEPTED
 
 </p>
@@ -152,95 +226,18 @@ prYvkey=GSbdasjgdv&amp;prYvstatus=REFUSED&amp;prYvmessage=refused+by+user</code>
 </p>
 <pre class="highlighted"><code class="r">    https://www.mysite.com/end-of-pryvAccess-process.php?
 prYvkey=GSbdasjgdv&amp;prYvstatus=ERROR&amp;prYvid=INTERNAL_ERROR&amp;prYvmessage=<span class="keyword">...</span></code></pre>
-<h3>2- PrYv or custom signin Button</h3>
+<h3><a name="webapp.spanButtonID"></a> settings.spanButtonID : Rely on PrYv standard Button</h3>
 <p>TODO
 
 </p>
-<h3>3- Custom handling of the signin process</h3>
+<h3><a name="webapp.callbacks"></a> settings.callbacks Custom handling of the signin process</h3>
 <p>TODO
 
-</p>
-<h2>pryvAccess.setup(settings)</h2>
-<p>To use the sdk you need <em>pryv-access-sdk.js</em>
-For staging developpement you should use: <code>https://sw.rec.la:2443/access/v0/pryv-access-sdk.js</code>
-And add in your <code>&lt;head&gt;&lt;/head&gt;</code>
+
 
 </p>
-<p>For production use the pryv.io version
-
-</p>
-<pre class="highlighted"><code class="xml"><span class="tag">&lt;<span class="title">script</span> <span class="attribute">type</span>=<span class="value">"text/javascript"</span> <span class="attribute">src</span>=<span class="value">"https://sw.pryv.io/access/v0/pryv-access-sdk.js"</span>&gt;</span><span class="javascript"></span><span class="tag">&lt;/<span class="title">script</span>&gt;</span></code></pre>
-<p>or to optimze page loading cloudfront cached version:
-
-</p>
-<pre class="highlighted"><code class="xml"><span class="tag">&lt;<span class="title">script</span> <span class="attribute">type</span>=<span class="value">"text/javascript"</span> <span class="attribute">src</span>=<span class="value">"//dlw0lofo79is5.cloudfront.net/sdk-access-webapp/v0/pryv-access-sdk.js"</span>&gt;</span><span class="javascript"></span><span class="tag">&lt;/<span class="title">script</span>&gt;</span></code></pre>
-<p>Then you can create you <strong>settings</strong> object with the following parameters:
-
-</p>
-<ul>
-<li><code>requestingAppId</code> (string): Unique. Given by PrYv identifier for this app. It will be the key for the requested set of permission after user agreement.</li>
-<li><code>languageCode</code>(2 characters ISO 639-1 Code): Optional. If known the current language used by the user. This will influence the signin and register interface language.</li>
-<li><code>requestedPermissions</code> (object): The requested set of permissions to access user's channels &amp; folders.</li>
-<li><code>returnURL</code> (url or 'auto<extra>'): Optional. If you don't want (or can't have) the popup signin-process and prefer set a returnURL. This URL will be called at the en of the SIGNIN process.This provides a better user experience on mobile devices: see <a href="#returnURL">Popup or returnURL</a></extra></li>
-<li><code>spanButtonID</code> (string) Optional. The id of a <code>&lt;span /&gt;</code> element in the DOM of your web page.</li>
-<li><code>callbacks</code> (functionS): called on each step of the sign-in process. Most of them are optional if you decided to rely on PrYv signin Button. All are optional excepted "accepted".<ul>
-<li><code>initialization</code> (function()): When the initialization process is started. You may display a "loading" animation or for the user.</li>
-<li><code>needSignin</code> (function(popupUrl,pollUrl,pollRateMs)): Optional. Triggered when the user need to be redirected to PrYv Signin or register from.<ul>
-<li>param <code>popupUrl</code> (string): The URL to open in it's own window and to present to the user.</li>
-<li>param <code>pollUrl</code> (string): The URL to poll regularly in the background to grab the result of the sigin process.</li>
-<li>param <code>pollRateMs</code> (int): The minimum interval in milliseconds between to polling.</li>
-</ul>
-</li>
-<li><code>accepted</code> (function(username,appToken)): <strong>Mandatory</strong>. Called when the signin process succeed and the permissions requested a granted.</li>
-<li><code>refused</code> (function(reason)): called when the user refuse to grant the requested permissions.<ul>
-<li>param <code>reason</code>(string): Technical information on how the user refused (not to be displayed).</li>
-</ul>
-</li>
-<li><code>error</code> (function(pryvError)): called when an error interupting the signup process occured.<ul>
-<li>param <code>pryvError</code> (object): <code>{id: .., message: .., detail: ..}</code></li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
-<h2>Examples</h2>
-<h3>Minimalistic</h3>
-<p>This app requests a "contribute" access to the "diary" channel, using the PrYv button and a popup for sign-in.
-
-</p>
-<p><strong>TODO: review this code</strong>
-
-</p>
-<pre class="highlighted"><code class="language-html xml"><span class="doctype">&lt;!DOCTYPE html&gt;</span>
-<span class="tag">&lt;<span class="title">html</span>&gt;</span>
-<span class="tag">&lt;<span class="title">head</span>&gt;</span>
-<span class="tag">&lt;<span class="title">title</span>&gt;</span>Minimalistic example<span class="tag">&lt;/<span class="title">title</span>&gt;</span>
-<span class="tag">&lt;<span class="title">script</span> <span class="attribute">type</span>=<span class="value">"text/javascript"</span> <span class="attribute">src</span>=<span class="value">"//dlw0lofo79is5.cloudfront.net/sdk-access-webapp/v0/pryv-access-sdk.js"</span>&gt;</span><span class="javascript"></span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
-<span class="tag">&lt;/<span class="title">head</span>&gt;</span>
-<span class="tag">&lt;<span class="title">body</span>&gt;</span>
-    <span class="tag">&lt;<span class="title">script</span> <span class="attribute">type</span>=<span class="value">"text/javascript"</span>&gt;</span><span class="javascript">
-
-    <span class="function"><span class="keyword">function</span> <span class="title">callMeWithCredentials</span><span class="params">(username, appToken)</span> {</span>
-        alert(<span class="string">"SUCCESS! username:"</span> + username + <span class="string">" appToken:"</span> + appToken);
-    }
-
-    <span class="keyword">var</span> requestedPermissions = [{<span class="string">"channelId"</span> : <span class="string">"diary"</span>,
-                                     <span class="string">"level"</span> : <span class="string">"contribute"</span>}];
-
-    pryvAccess.setup({
-        requestingAppId : <span class="string">'Minimalistic Exemple For SDK Access'</span>,
-        requestedPermissions : requestedPermissions,
-        returnURL: <span class="string">'auto#'</span>,
-        spanButtonID : <span class="string">'pryvButton'</span>,
-        callbacks : callMeWithCredentials
-    });
-
-    </span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
-    <span class="tag">&lt;<span class="title">span</span> <span class="attribute">id</span>=<span class="value">'pryvButton'</span>&gt;</span><span class="tag">&lt;/<span class="title">span</span>&gt;</span>
-<span class="tag">&lt;/<span class="title">body</span>&gt;</span>
-<span class="tag">&lt;/<span class="title">html</span>&gt;</span></code></pre>
+<h2>Other Examples</h2>
 <h3>Full</h3>
-<p>For a more fleshed-out example look at the source code of <a href="https://sw.rec.la:2443/access/demo.html"></a><a href="https://sw.rec.la:2443/access/demo.html">https://sw.rec.la:2443/access/demo.html</a>.</p>
 </section></div></div><div id="toc"></div><script>jQuery(document).ready(function($) {
   $('#toc').toc({
     'selectors': 'h1,h2',
