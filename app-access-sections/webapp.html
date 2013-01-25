@@ -82,7 +82,7 @@
 <li>param <code>pollRateMs</code> (int): The minimum interval in milliseconds between to polling.</li>
 </ul>
 </li>
-<li><code>accepted</code> (function(username,appToken)): <strong>Mandatory</strong>. Called when the signin process succeed and the permissions requested a granted.</li>
+<li><code>accepted</code> (function(username,appToken,languageCode)): <strong>Mandatory</strong>. Called when the signin process succeed and the permissions requested a granted. It's also triggered after a logout action with <code>(false,false,false)</code> as parameters.</li>
 <li><code>refused</code> (function(reason)): called when the user refuse to grant the requested permissions.<ul>
 <li>param <code>reason</code>(string): Technical information on how the user refused (not to be displayed).</li>
 </ul>
@@ -188,6 +188,9 @@ prYvkey=GSbdasjgdv&amp;prYvstatus=ERROR&amp;prYvid=INTERNAL_ERROR&amp;prYvmessag
 </p>
 <h2>pryvAccess.logout()</h2>
 <p>Once setup is done, and user logged in. Erase current credential and restart setup with the same settings.
+
+</p>
+<p><strong>logout()</strong> will trigger a <code>settings.callbacks.success(false,false,false);</code>
 
 </p>
 <h2>pryvAccess.retry()</h2>

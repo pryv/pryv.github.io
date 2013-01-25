@@ -134,7 +134,7 @@ _gaq.push(['_trackPageview']);
 <li>param <code>pollRateMs</code> (int): The minimum interval in milliseconds between to polling.</li>
 </ul>
 </li>
-<li><code>accepted</code> (function(username,appToken)): <strong>Mandatory</strong>. Called when the signin process succeed and the permissions requested a granted.</li>
+<li><code>accepted</code> (function(username,appToken,languageCode)): <strong>Mandatory</strong>. Called when the signin process succeed and the permissions requested a granted. It's also triggered after a logout action with <code>(false,false,false)</code> as parameters.</li>
 <li><code>refused</code> (function(reason)): called when the user refuse to grant the requested permissions.<ul>
 <li>param <code>reason</code>(string): Technical information on how the user refused (not to be displayed).</li>
 </ul>
@@ -242,12 +242,22 @@ prYvkey=GSbdasjgdv&amp;prYvstatus=ERROR&amp;prYvid=INTERNAL_ERROR&amp;prYvmessag
 <p>Once setup is done, and user logged in. Erase current credential and restart setup with the same settings.
 
 </p>
+<p><strong>logout()</strong> will trigger a <code>settings.callbacks.success(false,false,false);</code>
+
+</p>
 <h2>pryvAccess.retry()</h2>
 <p>If a user refused to grant access, restart the setup process with the same settings. 
 
 </p>
 <h2>Other Examples</h2>
 <h3>Full</h3>
+</section><section id="custom"><h1>Custom</h1>
+<p>Implementing the authorization process and obtaining an access token all by yourself.
+
+
+</p>
+<h2>Sequence diagram</h2>
+<p><img src="app-access-custom-sequence.png" alt="Sequence Diagram" /></p>
 </section></div></div><div id="toc"></div><script>jQuery(document).ready(function($) {
   $('#toc').toc({
     'selectors': 'h1,h2',
