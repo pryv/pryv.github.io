@@ -35,7 +35,7 @@
 </ul>
 <h2><a id="admin-session"></a>Session management</h2>
 <h3>POST <code>/admin/login</code></h3>
-<p>Opens a new admin session, authenticating with the provided credentials. TODO: possible support for OAuth/OpenID/BrowserID (for now, only local credentials are supported).
+<p>Opens a new admin session, authenticating with the provided credentials. (See also POST <code>/admin/login/persona</code>.)
 
 </p>
 <h4>Body parameters</h4>
@@ -51,6 +51,27 @@
 </ul>
 <h4>cURL example</h4>
 <pre class="highlighted"><code class="language-bash">curl -i -H <span class="string">"Content-Type: application/json"</span> -X POST -d <span class="string">'{"username":"{username}","password":"{password}","appId":"{appId}"}'</span> https://{username}.pryv.io/admin/login</code></pre>
+<h3>POST <code>/admin/login/persona</code></h3>
+<p>Opens a new admin session, authenticating with the provided <a href="https://developer.mozilla.org/en-US/docs/Persona">Mozilla Persona</a> email and assertion.
+
+</p>
+<h4>Body parameters</h4>
+<ul>
+<li><code>email</code> (string): The user's email.</li>
+<li><code>assertion</code> (string): The Persona identity assertion (generated client-side) to be verified.</li>
+<li><code>appId</code> (string): A URL-friendly name uniquely identifying your app.</li>
+</ul>
+<p>TODO: refactor the following as it duplicates the content for POST <code>/admin/login</code>.
+
+</p>
+<h4>Successful response: <code>200 OK</code></h4>
+<ul>
+<li><code>sessionID</code> (string): The newly created session's ID, to include in each subsequent request's <code>Authorization</code> header.</li>
+<li><code>preferredLanguage</code> (<a href="#data-structure-language-code">language code</a>): The user's preferred language.</li>
+</ul>
+<h4>cURL example</h4>
+<pre class="highlighted"><code class="language-bash">
+</code></pre>
 <h3>POST <code>/admin/logout</code></h3>
 <p>Terminates the admin session.
 
