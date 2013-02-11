@@ -490,4 +490,58 @@
 <h4>cURL example</h4>
 <pre class="highlighted"><code class="language-bash">
 </code></pre>
+<h2><a id="activity-profile-app"></a>App profile</h2>
+<p>The app profile is a simple key-value store available for your app to keep user settings. It is exposed as a plain object with free structure. The adding/updating/deleting of settings is designed in the expectation that each setting is a key at the profile object's root, but you can structure your profile differently if you wish.
+
+</p>
+<p>The app profile can only be used if authentified with an app access token.
+
+
+</p>
+<h3>GET <code>/profile/app</code></h3>
+<p>Gets your app profile settings.
+
+</p>
+<h4>Successful response: <code>200 OK</code></h4>
+<p>An object containing your app's current profile settings. The method always returns an object (which will be empty if your app never defined any setting).
+
+</p>
+<h4>cURL example</h4>
+<pre class="highlighted"><code class="language-bash">
+</code></pre>
+<h3>PUT <code>/profile/app</code></h3>
+<p>Adds, updates or delete settings.
+
+</p>
+<ul>
+<li>To add or update a setting, just set its value; for example: <code>{"keyToAddOrUpdate": "value"}</code></li>
+<li>To delete a field, set its value to <code>null</code>; for example: <code>{"keyToDelete": null}</code></li>
+</ul>
+<p>Settings you don't specify in the update are left untouched.
+
+</p>
+<h4>Body parameters</h4>
+<p>An object with the desired changes to the settings (see above).
+
+</p>
+<h4>Successful response: <code>200 OK</code></h4>
+<h4>cURL example</h4>
+<pre class="highlighted"><code class="language-bash">
+</code></pre>
+<h2><a id="activity-profile-public"></a>Public profile</h2>
+<p>The public profile is a simple read-only object exposing publicly shared user information (e.g. avatar image) for use in your app.
+
+
+</p>
+<h3>GET <code>/profile/public</code></h3>
+<p>Gets the user's public profile info.
+
+</p>
+<h4>Successful response: <code>200 OK</code></h4>
+<p>An object containing the user's current public profile information.
+
+</p>
+<h4>cURL example</h4>
+<pre class="highlighted"><code class="language-bash">
+</code></pre>
 </body></html>

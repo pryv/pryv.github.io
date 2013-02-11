@@ -1,6 +1,6 @@
 {
   "version": {
-    "version": 20130109.01
+    "version": 20130208.01
   },
   "classes": {
     "activity": {
@@ -59,13 +59,34 @@
       }
     },
     "file": {
-      "description": "TODO",
+      "description": "To record a file, or a group of files. A fallback type for data with no specific handling in Pryv.",
       "formats": {
         "attached": {
-          "description": "TODO"
+          "description": "TODO",
+          "type": "null"
+        },
+        "attached-multiple":{
+          "description": "TODO",
+          "type": "null",
+          "example":{
+            "attachments": {
+              "relative/path/to/file1.ext": {
+                "fileName": "relative_path_to_file1.ext",
+                "type": "mime-type",
+                "size": 5123
+              },
+              "relative/path/to/file2.ext": {
+                "fileName": "relative_path_to_file2.ext",
+                "type": "mime-type",
+                "size": 5123
+              }
+            },
+            "...": "..."
+          }
         },
         "url": {
-          "description": "TODO"
+          "description": "TODO",
+          "type": "string"
         }
       }
     },
@@ -215,8 +236,7 @@
       },
       "formats": {
         "facebook": {
-          "description": "A Facebook post. ",
-          "comments": "Facebook post can be copied RAW as a value. \nmap: \n   fbPost.message -> pryvEvent.description\n   fbPost.created_time -> pryvEvent.time\n TODO: what to do with videos & pictures?",
+          "description": "A Facebook post. TODO: add example (Facebook post can be copied RAW as a value. \nmap: \n   fbPost.message -> pryvEvent.description\n   fbPost.created_time -> pryvEvent.time\n TBD: what to do with videos & pictures?)",
           "type": "object",
           "properties": {
             "id": {

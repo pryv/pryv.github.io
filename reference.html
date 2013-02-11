@@ -555,6 +555,60 @@ _gaq.push(['_trackPageview']);
 <h4>cURL example</h4>
 <pre class="highlighted"><code class="language-bash">
 </code></pre>
+<h2><a id="activity-profile-app"></a>App profile</h2>
+<p>The app profile is a simple key-value store available for your app to keep user settings. It is exposed as a plain object with free structure. The adding/updating/deleting of settings is designed in the expectation that each setting is a key at the profile object's root, but you can structure your profile differently if you wish.
+
+</p>
+<p>The app profile can only be used if authentified with an app access token.
+
+
+</p>
+<h3>GET <code>/profile/app</code></h3>
+<p>Gets your app profile settings.
+
+</p>
+<h4>Successful response: <code>200 OK</code></h4>
+<p>An object containing your app's current profile settings. The method always returns an object (which will be empty if your app never defined any setting).
+
+</p>
+<h4>cURL example</h4>
+<pre class="highlighted"><code class="language-bash">
+</code></pre>
+<h3>PUT <code>/profile/app</code></h3>
+<p>Adds, updates or delete settings.
+
+</p>
+<ul>
+<li>To add or update a setting, just set its value; for example: <code>{"keyToAddOrUpdate": "value"}</code></li>
+<li>To delete a field, set its value to <code>null</code>; for example: <code>{"keyToDelete": null}</code></li>
+</ul>
+<p>Settings you don't specify in the update are left untouched.
+
+</p>
+<h4>Body parameters</h4>
+<p>An object with the desired changes to the settings (see above).
+
+</p>
+<h4>Successful response: <code>200 OK</code></h4>
+<h4>cURL example</h4>
+<pre class="highlighted"><code class="language-bash">
+</code></pre>
+<h2><a id="activity-profile-public"></a>Public profile</h2>
+<p>The public profile is a simple read-only object exposing publicly shared user information (e.g. avatar image) for use in your app.
+
+
+</p>
+<h3>GET <code>/profile/public</code></h3>
+<p>Gets the user's public profile info.
+
+</p>
+<h4>Successful response: <code>200 OK</code></h4>
+<p>An object containing the user's current public profile information.
+
+</p>
+<h4>cURL example</h4>
+<pre class="highlighted"><code class="language-bash">
+</code></pre>
 </section><section id="admin"><h1>Administration methods</h1>
 <p><strong>Administration is only allowed for trusted apps</strong>; to register your app as trusted, please <a href="mailto:developers@pryv.com">get in touch with us</a>. If you're only interested in obtaining access tokens for your app, see the <a href="app-access.html">app access documentation</a> instead.
 
@@ -743,7 +797,7 @@ Requires session token, old password, new password.
 
 </p>
 <ul>
-<li><code>checkedPermissions</code>: A updated copy of the <code>requestedPermissions</code> array passed in the request, with the <code>defaultName</code> property replaced by <code>name</code> for each existing channel / folder (set to the actual name of the item). (For missing channels / folders the <code>defaultName</code> property is left untouched.) If channels / folders already exist with the same name but a different <code>id</code>, an <code>existingId</code> property is added to help with fixing the requested permissions (in such cases the response also has an <code>error</code> property to signal the issue; see below).</li>
+<li><code>checkedPermissions</code>: A updated copy of the <code>requestedPermissions</code> array passed in the request, with the <code>defaultName</code> property replaced by <code>name</code> for each existing channel / folder (set to the actual name of the item). (For missing channels / folders the <code>defaultName</code> property is left untouched.) If channels / folders already exist with the same name but a different <code>id</code>, <code>defaultName</code> is updated with a valid alternative proposal (in such cases the response also has an <code>error</code> property to signal the issue; see below).</li>
 <li><code>mismatchingAccessToken</code> (<a href="#data-structure-identity">identity</a>): Set if an access already exists for the requesting app, but with different permissions than those requested.</li>
 <li><code>error</code> (<a href="#data-structure-error">error</a>): If there is a duplicate issue with some channels / folders requested for creation (see <code>checkedPermissions</code>), this is set to an <code>item-name-already-exists</code> error.</li>
 </ul>
@@ -807,6 +861,14 @@ Requires session token, old password, new password.
 <h4>cURL example</h4>
 <pre class="highlighted"><code class="language-bash">
 </code></pre>
+<h2><a id="admin-profile-sets"></a>Profile sets</h2>
+<p>TODO: for usage see <a href="#activity-profile-app">activity app profile</a>.
+
+</p>
+<h3>GET <code>/profile/public</code>: TODO</h3>
+<h3>PUT <code>/profile/public</code>: TODO</h3>
+<h3>GET <code>/profile/private</code>: TODO</h3>
+<h3>PUT <code>/profile/private</code>: TODO</h3>
 </section><section id="socketio"><h1>Socket.IO support</h1>
 <p>The activity service supports real-time interaction with <a href="http://socket.io">Socket.IO</a>, both by accepting equivalent messages for most API methods and by emitting data change notification messages. (Code examples below are in Javascript.)
 
@@ -868,7 +930,7 @@ socket.on(<span class="string">'eventsChanged'</span>, <span class="keyword">fun
 <li><code>name</code> (string): Unique <em>per type and device name (if defined)</em>. The name identifying the access for the user. (Note that for personal and app access, the name is used as a technical identifier and not shown as-is to the user.)</li>
 <li><code>deviceName</code> (string): Optional. Unique <em>per type and name (if defined)</em>. For app accesses only. The name of the client device running the app, if applicable.</li>
 <li><code>permissions</code>: an array of channel permission objects as described below. Ignored for personal accesses. Shared accesses are only granted access to activity data objects listed in here.<ul>
-<li><code>channelId</code> (<a href="#data-structure-identity">identity</a>): The accessible channel's id.</li>
+<li><code>channelId</code> (<a href="#data-structure-identity">identity</a>): The accessible channel's id, or <code>"*"</code> for "all channels".</li>
 <li><code>level</code> (<code>"read"</code>, <code>"contribute"</code> or <code>"manage"</code>): The level of access to the channel. With <code>"contribute"</code>, the access's token holder(s) can see and record events in the channel; with <code>"manage"</code>, the access's token holder(s) can in addition modify the channel itself. This is overridden if specific folder permissions are defined (see below).</li>
 <li><code>folderPermissions</code>: Optional. An array of folder permission objects to define specific per-folder permissions. If defined, only the folders listed here will be accessible.<ul>
 <li><code>folderId</code> (<a href="#data-structure-identity">identity</a>): The accessible folder's id. If the folder has child folders, they will be accessible too. A  value of <code>null</code> can be used to set permissions for events that have no folder assigned.</li>
@@ -931,6 +993,10 @@ Fields:
 
 </p>
 <p>Fields:
+
+</p>
+<p>TODO clarify 'read-only', mark optional in a clear way so reader can quickly test out event creation without being intimidated at the number of fields they have to figure out, confirm all optional fields identified. ('id' being non-optional feels a bit strange.)
+SGO: "read-only" = server-assigned, never set or modified by client. "optional": field may not be present (<code>id</code> is always present as soon as an item is saved; because it is read-only it must not be set at creation though). I agree stuff like data structure should be reformatted for quick visual parsing at the end (e.g. using tables, or at least coloured labels for stuff like "optional"), but we've consciously chosen low-formatting, quick-to-edit bullet lists for the moment.
 
 </p>
 <ul>
@@ -1078,11 +1144,11 @@ Fields:
 </p>
 <h2>Overview</h2>
 <h3>Public channels?</h3>
-<p>Public channels are channels of general interest (like news or weather) that can be integrated into users' Pryv view to add context to their own events (or just browsed independantly as-is). Unlike Pryv users' data and because they are public and read-only, public channels don't have to run on Pryv servers – anyone is free to create and run a public channel for users to enrich their Pryv experience. The public channels directory within Pryv lists all the channels that were registered to us and validated, but users are free to add channels from any URL.
+<p>Public channels are channels of general interest (like news or weather) that can be integrated into users' Pryv view to add context to their own events (or just browsed independantly as-is). Unlike Pryv users' data and because they are public and read-only, public channels don't have to run on Pryv servers – anyone is free to create and self-host a public channel for users to enrich their Pryv experience. The public channels directory within Pryv lists all the channels that were registered to us and validated, but users are free to add channels from any URL.
 
 </p>
-<p>TODO: add link(s) to example public channel implementation(s), and possibly a simple tutorial.
-
+<p>TODO: link(s) to example public channel implementation(s)
+TODO: and possibly a simple tutorial.
 
 </p>
 <h3><strong>*.pryv.io</strong> URLs</h3>
@@ -1093,6 +1159,8 @@ Fields:
 <h3>Authorization and encryption</h3>
 <p>As you can expect, there is no authorization mechanism for accessing public channels. There's no need either to encrypt public channels with TLS (HTTPS), but we don't enforce any restriction there.
 
+</p>
+<p>TODO: clarify - are we talking about Pryv-served public channels here, or about the security aspects of (any) public channels? SGO: we are saying that there is no auth for public channels whatsoever. BTW there is no distinction between "Pryv-served" channels and others. Hosts of public channels can register for a *.pryv.io URL, but this doesn't mean they're hosted by us (it's just a DNS mapping). BTW about TLS I'm actually not sure we shouldn't enforce it, because we'll have an issue directly serving HTTP content from our HTTPS app. But then we can't require everyone interested to acquire a certificate, so we may have to host a proxy... but anyway this is too much thinking already. We've specified public channels as something we must support in the future, it won't be there in the very next months, so please don't spend special time on this section.
 
 </p>
 <h3>HTTP headers</h3>

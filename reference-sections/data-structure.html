@@ -16,7 +16,7 @@
 <li><code>name</code> (string): Unique <em>per type and device name (if defined)</em>. The name identifying the access for the user. (Note that for personal and app access, the name is used as a technical identifier and not shown as-is to the user.)</li>
 <li><code>deviceName</code> (string): Optional. Unique <em>per type and name (if defined)</em>. For app accesses only. The name of the client device running the app, if applicable.</li>
 <li><code>permissions</code>: an array of channel permission objects as described below. Ignored for personal accesses. Shared accesses are only granted access to activity data objects listed in here.<ul>
-<li><code>channelId</code> (<a href="#data-structure-identity">identity</a>): The accessible channel's id.</li>
+<li><code>channelId</code> (<a href="#data-structure-identity">identity</a>): The accessible channel's id, or <code>"*"</code> for "all channels".</li>
 <li><code>level</code> (<code>"read"</code>, <code>"contribute"</code> or <code>"manage"</code>): The level of access to the channel. With <code>"contribute"</code>, the access's token holder(s) can see and record events in the channel; with <code>"manage"</code>, the access's token holder(s) can in addition modify the channel itself. This is overridden if specific folder permissions are defined (see below).</li>
 <li><code>folderPermissions</code>: Optional. An array of folder permission objects to define specific per-folder permissions. If defined, only the folders listed here will be accessible.<ul>
 <li><code>folderId</code> (<a href="#data-structure-identity">identity</a>): The accessible folder's id. If the folder has child folders, they will be accessible too. A  value of <code>null</code> can be used to set permissions for events that have no folder assigned.</li>
@@ -79,6 +79,10 @@ Fields:
 
 </p>
 <p>Fields:
+
+</p>
+<p>TODO clarify 'read-only', mark optional in a clear way so reader can quickly test out event creation without being intimidated at the number of fields they have to figure out, confirm all optional fields identified. ('id' being non-optional feels a bit strange.)
+SGO: "read-only" = server-assigned, never set or modified by client. "optional": field may not be present (<code>id</code> is always present as soon as an item is saved; because it is read-only it must not be set at creation though). I agree stuff like data structure should be reformatted for quick visual parsing at the end (e.g. using tables, or at least coloured labels for stuff like "optional"), but we've consciously chosen low-formatting, quick-to-edit bullet lists for the moment.
 
 </p>
 <ul>
