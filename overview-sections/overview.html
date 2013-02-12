@@ -1,21 +1,39 @@
 <h1>Pryv API for developers</h1>
-<p>The API is the HTTP programming interface to Pryv, which allows you to integrate Pryv activity data (and possibly user account management) into your web or native app.
+<p>Pryv provides a RESTful HTTP API, allowing your web or native app to create or read Pryv activity data, or to provide user account management features.
 
 
 </p>
-<h2>Why?</h2>
+<h2>Integration objectives</h2>
 <p>There are two different uses for the API:
 
 </p>
 <ul>
-<li>Most apps will want to interact with <a href="reference.html#activity">Pryv activity data</a>. Recording and managing of activity data (events and their organization into folders and tags) is protected by <a href="reference.html#data-structure-access">accesses</a> to allow easy <a href="#sharing">sharing</a>.</li>
-<li>Some apps may need to access <a href="reference.html#admin">user account administration</a>, which includes the management of data sharing (via accesses) and activity channels (in addition to the user account itself). Administration is protected by personal authentication and expiring sessions, and is reserved for trusted apps.</li>
+<li><p>Access activity data: Most apps will want to interact with <a href="reference.html#activity">Pryv activity data</a>. Recording and managing of activity data (events and their organization into folders and tags) is protected by <a href="reference.html#data-structure-access">accesses</a> to allow easy <a href="#sharing">sharing</a>.</p>
+</li>
+<li><p>Administration: Some apps may need to use the administration API to provide <a href="reference.html#admin">user account administration</a>. Administration is protected by personal authentication and expiring sessions, and is reserved for trusted apps. </p>
+<p>  Examples of user account administrations are:</p>
+<ul>
+<li>management of the user account</li>
+<li>management of data sharing (via accesses) and activity channels</li>
 </ul>
+</li>
+</ul>
+<p>[TODO extract administration API to separate docset]
+
+</p>
 <p>[TODO: add simple schema here]
 
 </p>
-<h2><a id="activity-data"></a>What&#39;s activity data?</h2>
-<p>Activity data is, at the core, just <strong>events</strong>: pieces of data attached to moments in time. Events can be thoughts, audio notes, photos, geographical coordinates, etc. (see the <a href="event-types.html">event types directory</a>). To allow Pryv apps to play nicely together and help users organize those events, however, there are a few additional things you need to know about:
+<h2><a id="activity-data"></a>Activity data</h2>
+<h3>Definition</h3>
+<p>Activity data are timestamped pieces of typed data, or <strong>events</strong>. Some example events are: thoughts, audio notes, photos, geographical coordinates, etc. (see the <a href="event-types.html#directory">event type directory</a>). 
+
+</p>
+<h3>Detailed information</h3>
+<p>TODO reduce verbosity
+
+</p>
+<p>To allow Pryv apps to play nicely together and help users organize those events, there are a few additional things you need to know about:
 
 </p>
 <ul>
@@ -30,28 +48,32 @@
 See the <a href="standard-structure.html">standard channels, folders and tags</a> we encourage you to use when appropriate if you want your app to integrate nicely within the user&#39;s Pryv experience.
 
 </p>
-<h2><a id="sharing"></a>Accesses and sharing</h2>
+<h2><a id="sharing"></a>Access / sharing</h2>
 <p>[TODO: schema?]
 
 </p>
-<p>Apps access a user&#39;s activity data by presenting the API with an <strong>access token</strong>, that identifies a specific <strong>access</strong> to the data. An access can be <em>shared</em>, associated to an <em>app</em> or <em>personal</em>.
+<h3>Overview</h3>
+<p>Apps access a user&#39;s activity data by presenting the API with an <strong>access token</strong>, meaning a specific instance of <strong>access</strong> to the data has been granted. An access can be <em>shared</em>, associated to an <em>app</em> or <em>personal</em>.
 
 </p>
+<h3>Types of access</h3>
 <ul>
-<li><strong>Shared</strong> accesses can be freely defined for letting other users view and possibly contribute to their activity data. They only grant access to a specific set of the user&#39;s data (see details below).</li>
-<li><strong>App</strong> accesses are assigned to most apps to access the user&#39;s data on her behalf. They also only grant access to a specific set of data, determined by the app&#39;s needs.</li>
-<li><strong>Personal</strong> accesses are used by trusted apps only. They grant full access to the user&#39;s data.</li>
-</ul>
-<p>Note that only trusted apps can view and manage app and personal accesses. To register your app as trusted, please <a href="mailto:developers@pryv.com">get in touch with us</a>.
-
-</p>
-<p>A <strong>shared access</strong> grants permissions to one or more of the user&#39;s channel(s), and further permissions within those channels, like on folder(s), tag(s) and/or a limited time frame, can be defined to filter events. Accesses allow sharing in a variety of ways, such as:
-
-</p>
+<li><p><strong>Shared</strong> accesses can be freely defined for letting other users view and possibly contribute to their activity data. They only grant access to a specific set of the user&#39;s data (see details below).</p>
+<p>  A <strong>shared access</strong> grants permissions to one or more of the user&#39;s channel(s), and further permissions within those channels, like on folder(s), tag(s) and/or a limited time frame, can be defined to filter events. Accesses allow sharing in a variety of ways, such as:</p>
 <ul>
 <li>in-app: the user chooses to share some events with another Pryv user, which is notified and can select to view (and possibly contribute to) the shared data and/or integrate it with her own (add it to her sharing bookmarks).</li>
 <li>URL copy-paste: the user choose to share data with another person (possibly not a Pryv user), and copies the full URL containing the access token into an e-mail or chat message. The other person can open the URL and access the web app to view (and possibly contribute to) the shared data.</li>
 </ul>
+</li>
+<li><p><strong>App</strong> accesses are assigned to most apps to access the user&#39;s data on her behalf. They also only grant access to a specific set of data, determined by the app&#39;s needs.</p>
+</li>
+<li><p><strong>Personal</strong> accesses are used by trusted apps only. They grant full access to the user&#39;s data.</p>
+</li>
+</ul>
+<p>Note that only trusted apps can view and manage app and personal accesses. To register your app as trusted, please <a href="mailto:developers@pryv.com">get in touch with us</a>.
+
+</p>
+<h3>Other details</h3>
 <p>Users can store access tokens shared by other users by adding them to their <strong>sharing bookmarks</strong>.
 
 </p>

@@ -1,23 +1,15 @@
 <html><head></head><body><h1>Basics</h1>
-<h2>What's the URL?</h2>
-<p><code>https://{username}.pryv.io</code> (where <code>{username}</code> is the name of the user whose data you want to access)
-
-</p>
-<p>Because Pryv potentially stores each user's data in a different location according to the user's choice, the API's base URL is unique for each user.
-
-
-</p>
-<h2>Calling API methods</h2>
+<h2>API style</h2>
 <p>Most of the API follows REST principles, meaning each item has its own unique resource URL and can be read or modified via HTTP verbs:
 
 </p>
 <ul>
 <li>GET to read the item(s)</li>
-<li>POST to create a new item</li>
-<li>PUT to modify the item</li>
+<li>POST to create a new item, with a JSON message in the request body</li>
+<li>PUT to modify the item, with a JSON message in the request body</li>
 <li>DELETE to delete the item (note that logical deletion, or trashing, is supported for items like events, folders and channels)</li>
 </ul>
-<p>Here's an example API request:
+<p>Example API request:
 </p>
 <pre class="highlighted"><code class="language-http"><span class="request">GET <span class="string">/{channel-id}/events</span> HTTP/1.1</span>
 <span class="attribute">Host</span>: <span class="string">{user-name}.pryv.io</span>
@@ -26,8 +18,19 @@
 
 
 </p>
+<h2>Base URL</h2>
+<p><code>https://{username}.pryv.io</code> (where <code>{username}</code> is the name of the user whose data you want to access)
+
+</p>
+<p>Because Pryv potentially stores each user's data in a different location according to the user's choice, the API's base URL is unique for each user.
+
+
+</p>
 <h2>Data format</h2>
-<p>The API uses JSON for serializing data. Here's what an event can look like:
+<p>The API exchanges data with the client in JSON. 
+
+</p>
+<p>Example event:
 </p>
 <pre class="highlighted"><code class="language-json">{
   "<span class="attribute">id</span>": <span class="value"><span class="string">"5051941d04b8ffd00500000d"</span></span>,
@@ -43,6 +46,7 @@
 <ul>
 <li><code>API-Version</code>: The version of the API in the form <code>{major}.{minor}.{revision}</code>.</li>
 <li><code>Server-Time</code>: The current server time as a <a href="#data-structure-timestamp">timestamp</a>. Keeping reference of the server time is an absolute necessity to properly read and write event times.</li>
+<li><code>Authorization</code>: The access token representing your app.</li>
 </ul>
 <h2>Errors</h2>
 <p>When an error occurs, the API returns a 4xx or 5xx status code, with the response body usually containing an <a href="#data-structure-error">error</a> object detailing the cause.

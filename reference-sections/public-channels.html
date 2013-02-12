@@ -7,12 +7,12 @@
 
 </p>
 <h2>Overview</h2>
-<h3>Public channels?</h3>
-<p>Public channels are channels of general interest (like news or weather) that can be integrated into users&#39; Pryv view to add context to their own events (or just browsed independantly as-is). Unlike Pryv users&#39; data and because they are public and read-only, public channels don&#39;t have to run on Pryv servers – anyone is free to create and run a public channel for users to enrich their Pryv experience. The public channels directory within Pryv lists all the channels that were registered to us and validated, but users are free to add channels from any URL.
+<h3>Definition</h3>
+<p>Public channels are channels of general interest (like news or weather) that can be integrated into users&#39; Pryv view to add context to their own events (or just browsed independantly as-is). Unlike Pryv users&#39; data and because they are public and read-only, public channels don&#39;t have to run on Pryv servers – anyone is free to create and self-host a public channel for users to enrich their Pryv experience. The public channels directory within Pryv lists all the channels that were registered to us and validated, but users are free to add channels from any URL.
 
 </p>
-<p>TODO: add link(s) to example public channel implementation(s), and possibly a simple tutorial.
-
+<p>TODO: link(s) to example public channel implementation(s)
+TODO: and possibly a simple tutorial.
 
 </p>
 <h3><strong>*.pryv.io</strong> URLs</h3>
@@ -23,6 +23,8 @@
 <h3>Authorization and encryption</h3>
 <p>As you can expect, there is no authorization mechanism for accessing public channels. There&#39;s no need either to encrypt public channels with TLS (HTTPS), but we don&#39;t enforce any restriction there.
 
+</p>
+<p>TODO: clarify - are we talking about Pryv-served public channels here, or about the security aspects of (any) public channels? SGO: we are saying that there is no auth for public channels whatsoever. BTW there is no distinction between &quot;Pryv-served&quot; channels and others. Hosts of public channels can register for a *.pryv.io URL, but this doesn&#39;t mean they&#39;re hosted by us (it&#39;s just a DNS mapping). BTW about TLS I&#39;m actually not sure we shouldn&#39;t enforce it, because we&#39;ll have an issue directly serving HTTP content from our HTTPS app. But then we can&#39;t require everyone interested to acquire a certificate, so we may have to host a proxy... but anyway this is too much thinking already. We&#39;ve specified public channels as something we must support in the future, it won&#39;t be there in the very next months, so please don&#39;t spend special time on this section.
 
 </p>
 <h3>HTTP headers</h3>
@@ -58,7 +60,7 @@
 <li><code>modifiedSince</code> (<a href="#data-structure-timestamp">timestamp</a>): Optional. If specified, only events modified since that time will be returned.</li>
 </ul>
 <h4>Successful response: <code>200 OK</code></h4>
-<p>An array of <a href="#data-structure-event">activity events</a> containing the accessible events ordered by time (see <code>sortAscending</code> above).
+<p>An array of <a href="#data-structure-event">events</a> containing the accessible events ordered by time (see <code>sortAscending</code> above).
 
 </p>
 <h4>Errors</h4>

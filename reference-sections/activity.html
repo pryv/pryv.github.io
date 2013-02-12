@@ -3,7 +3,8 @@
 
 
 </p>
-<h2>Authorization</h2>
+<h2>Preliminary information</h2>
+<h3>Authorization</h3>
 <p>All requests for retrieving and manipulating activity data must carry a valid <a href="#data-structure-access">access token</a> in the HTTP <code>Authorization</code> header or, alternatively, in the query string's <code>auth</code> parameter.  (You get the token by using one of the <a href="app-access.html">access SDKs</a>, by retrieving it in the <a href="#admin-accesses">administration</a> or from sharing.)
 
 </p>
@@ -16,7 +17,7 @@
 </p>
 <pre class="highlighted"><code class="language-http"><span class="request">GET <span class="string">/{channel-id}/events?auth={access-token}</span> HTTP/1.1</span>
 <span class="attribute">Host</span>: <span class="string">yacinthe.pryv.io</span></code></pre>
-<h2>Common errors</h2>
+<h3>Common errors</h3>
 <p>Here are errors commonly returned for requests:
 
 </p>
@@ -139,7 +140,7 @@
 <li><code>modifiedSince</code> (<a href="#data-structure-timestamp">timestamp</a>): Optional. If specified, only events modified since that time will be returned.</li>
 </ul>
 <h4>Successful response: <code>200 OK</code></h4>
-<p>An array of <a href="#data-structure-event">activity events</a> containing the accessible events ordered by time (see <code>sortAscending</code> above).
+<p>An array of <a href="#data-structure-event">events</a> containing the accessible events ordered by time (see <code>sortAscending</code> above).
 
 </p>
 <h4>Specific errors</h4>
@@ -162,7 +163,7 @@
 
 </p>
 <h4>Body parameters</h4>
-<p>The new event's data: see <a href="#data-structure-event">activity event</a>.
+<p>The new event's data: see <a href="#data-structure-event">Event</a>.
 
 </p>
 <h4>Successful response: <code>201 Created</code></h4>
@@ -230,7 +231,7 @@
 
 </p>
 <h4>Successful response: <code>200 OK</code></h4>
-<p>An array of <a href="#data-structure-event">activity events</a> containing the running period events.
+<p>An array of <a href="#data-structure-event">events</a> containing the running period events.
 
 </p>
 <h4>cURL example</h4>
@@ -240,11 +241,11 @@
 <p><em>Socket.IO command id: <code>{channel-id}.events.update</code></em>
 
 </p>
-<p>Modifies the activity event's attributes.
+<p>Modifies the event's attributes.
 
 </p>
 <h4>Body parameters</h4>
-<p>New values for the event's fields: see <a href="#data-structure-event">activity event</a>. All fields are optional, and only modified values must be included. TODO: example
+<p>New values for the event's fields: see <a href="#data-structure-event">event</a>. All fields are optional, and only modified values must be included. TODO: example
 
 </p>
 <h4>Successful response: <code>200 OK</code></h4>
@@ -309,7 +310,7 @@
 
 </p>
 <h4>Body parameters</h4>
-<p>An array of client-recorded <a href="#data-structure-event">activity events</a>. In addition to the regular properties, each event must have a unique <code>tempRefId</code> defined (as it's temporary it must only be unique within the request). Also, make sure that the events' <code>time</code> is set in server time (as for single event requests).
+<p>An array of client-recorded <a href="#data-structure-event">events</a>. In addition to the regular properties, each event must have a unique <code>tempRefId</code> defined (as it's temporary it must only be unique within the request). Also, make sure that the events' <code>time</code> is set in server time (as for single event requests).
 
 </p>
 <h4>Successful response: <code>200 OK</code></h4>
@@ -487,6 +488,60 @@
 
 </p>
 <h4>Successful response: <code>200 OK</code></h4>
+<h4>cURL example</h4>
+<pre class="highlighted"><code class="language-bash">
+</code></pre>
+<h2><a id="activity-profile-app"></a>App profile</h2>
+<p>The app profile is a simple key-value store available for your app to keep user settings. It is exposed as a plain object with free structure. The adding/updating/deleting of settings is designed in the expectation that each setting is a key at the profile object's root, but you can structure your profile differently if you wish.
+
+</p>
+<p>The app profile can only be used if authentified with an app access token.
+
+
+</p>
+<h3>GET <code>/profile/app</code></h3>
+<p>Gets your app profile settings.
+
+</p>
+<h4>Successful response: <code>200 OK</code></h4>
+<p>An object containing your app's current profile settings. The method always returns an object (which will be empty if your app never defined any setting).
+
+</p>
+<h4>cURL example</h4>
+<pre class="highlighted"><code class="language-bash">
+</code></pre>
+<h3>PUT <code>/profile/app</code></h3>
+<p>Adds, updates or delete settings.
+
+</p>
+<ul>
+<li>To add or update a setting, just set its value; for example: <code>{"keyToAddOrUpdate": "value"}</code></li>
+<li>To delete a field, set its value to <code>null</code>; for example: <code>{"keyToDelete": null}</code></li>
+</ul>
+<p>Settings you don't specify in the update are left untouched.
+
+</p>
+<h4>Body parameters</h4>
+<p>An object with the desired changes to the settings (see above).
+
+</p>
+<h4>Successful response: <code>200 OK</code></h4>
+<h4>cURL example</h4>
+<pre class="highlighted"><code class="language-bash">
+</code></pre>
+<h2><a id="activity-profile-public"></a>Public profile</h2>
+<p>The public profile is a simple read-only object exposing publicly shared user information (e.g. avatar image) for use in your app.
+
+
+</p>
+<h3>GET <code>/profile/public</code></h3>
+<p>Gets the user's public profile info.
+
+</p>
+<h4>Successful response: <code>200 OK</code></h4>
+<p>An object containing the user's current public profile information.
+
+</p>
 <h4>cURL example</h4>
 <pre class="highlighted"><code class="language-bash">
 </code></pre>

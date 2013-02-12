@@ -35,7 +35,7 @@
 </ul>
 <h2><a id="admin-session"></a>Session management</h2>
 <h3>POST <code>/admin/login</code></h3>
-<p>Opens a new admin session, authenticating with the provided credentials. TODO: possible support for OAuth/OpenID/BrowserID (for now, only local credentials are supported).
+<p>Opens a new admin session, authenticating with the provided credentials. (See also POST <code>/admin/login/persona</code>.)
 
 </p>
 <h4>Body parameters</h4>
@@ -51,6 +51,27 @@
 </ul>
 <h4>cURL example</h4>
 <pre class="highlighted"><code class="language-bash">curl -i -H <span class="string">"Content-Type: application/json"</span> -X POST -d <span class="string">'{"username":"{username}","password":"{password}","appId":"{appId}"}'</span> https://{username}.pryv.io/admin/login</code></pre>
+<h3>POST <code>/admin/login/persona</code></h3>
+<p>Opens a new admin session, authenticating with the provided <a href="https://developer.mozilla.org/en-US/docs/Persona">Mozilla Persona</a> email and assertion.
+
+</p>
+<h4>Body parameters</h4>
+<ul>
+<li><code>email</code> (string): The user's email.</li>
+<li><code>assertion</code> (string): The Persona identity assertion (generated client-side) to be verified.</li>
+<li><code>appId</code> (string): A URL-friendly name uniquely identifying your app.</li>
+</ul>
+<p>TODO: refactor the following as it duplicates the content for POST <code>/admin/login</code>.
+
+</p>
+<h4>Successful response: <code>200 OK</code></h4>
+<ul>
+<li><code>sessionID</code> (string): The newly created session's ID, to include in each subsequent request's <code>Authorization</code> header.</li>
+<li><code>preferredLanguage</code> (<a href="#data-structure-language-code">language code</a>): The user's preferred language.</li>
+</ul>
+<h4>cURL example</h4>
+<pre class="highlighted"><code class="language-bash">
+</code></pre>
 <h3>POST <code>/admin/logout</code></h3>
 <p>Terminates the admin session.
 
@@ -165,7 +186,7 @@ Requires session token, old password, new password.
 
 </p>
 <ul>
-<li><code>checkedPermissions</code>: A updated copy of the <code>requestedPermissions</code> array passed in the request, with the <code>defaultName</code> property replaced by <code>name</code> for each existing channel / folder (set to the actual name of the item). (For missing channels / folders the <code>defaultName</code> property is left untouched.) If channels / folders already exist with the same name but a different <code>id</code>, an <code>existingId</code> property is added to help with fixing the requested permissions (in such cases the response also has an <code>error</code> property to signal the issue; see below).</li>
+<li><code>checkedPermissions</code>: A updated copy of the <code>requestedPermissions</code> array passed in the request, with the <code>defaultName</code> property replaced by <code>name</code> for each existing channel / folder (set to the actual name of the item). (For missing channels / folders the <code>defaultName</code> property is left untouched.) If channels / folders already exist with the same name but a different <code>id</code>, <code>defaultName</code> is updated with a valid alternative proposal (in such cases the response also has an <code>error</code> property to signal the issue; see below).</li>
 <li><code>mismatchingAccessToken</code> (<a href="#data-structure-identity">identity</a>): Set if an access already exists for the requesting app, but with different permissions than those requested.</li>
 <li><code>error</code> (<a href="#data-structure-error">error</a>): If there is a duplicate issue with some channels / folders requested for creation (see <code>checkedPermissions</code>), this is set to an <code>item-name-already-exists</code> error.</li>
 </ul>
@@ -229,4 +250,12 @@ Requires session token, old password, new password.
 <h4>cURL example</h4>
 <pre class="highlighted"><code class="language-bash">
 </code></pre>
+<h2><a id="admin-profile-sets"></a>Profile sets</h2>
+<p>TODO: for usage see <a href="#activity-profile-app">activity app profile</a>.
+
+</p>
+<h3>GET <code>/profile/public</code>: TODO</h3>
+<h3>PUT <code>/profile/public</code>: TODO</h3>
+<h3>GET <code>/profile/private</code>: TODO</h3>
+<h3>PUT <code>/profile/private</code>: TODO</h3>
 </body></html>

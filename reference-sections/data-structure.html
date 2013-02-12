@@ -2,6 +2,7 @@
 <p>This section describes the structure of the different types of objects and values exchanged in the API.
 
 
+
 </p>
 <h2><a id="data-structure-access"></a>Access</h2>
 <p>An access defines a set of permissions on a user's activity data (channels, folders and events). (See <a href="overview.html#sharing">how sharing works</a>.)
@@ -16,7 +17,7 @@
 <li><code>name</code> (string): Unique <em>per type and device name (if defined)</em>. The name identifying the access for the user. (Note that for personal and app access, the name is used as a technical identifier and not shown as-is to the user.)</li>
 <li><code>deviceName</code> (string): Optional. Unique <em>per type and name (if defined)</em>. For app accesses only. The name of the client device running the app, if applicable.</li>
 <li><code>permissions</code>: an array of channel permission objects as described below. Ignored for personal accesses. Shared accesses are only granted access to activity data objects listed in here.<ul>
-<li><code>channelId</code> (<a href="#data-structure-identity">identity</a>): The accessible channel's id.</li>
+<li><code>channelId</code> (<a href="#data-structure-identity">identity</a>): The accessible channel's id, or <code>"*"</code> for "all channels".</li>
 <li><code>level</code> (<code>"read"</code>, <code>"contribute"</code> or <code>"manage"</code>): The level of access to the channel. With <code>"contribute"</code>, the access's token holder(s) can see and record events in the channel; with <code>"manage"</code>, the access's token holder(s) can in addition modify the channel itself. This is overridden if specific folder permissions are defined (see below).</li>
 <li><code>folderPermissions</code>: Optional. An array of folder permission objects to define specific per-folder permissions. If defined, only the folders listed here will be accessible.<ul>
 <li><code>folderId</code> (<a href="#data-structure-identity">identity</a>): The accessible folder's id. If the folder has child folders, they will be accessible too. A  value of <code>null</code> can be used to set permissions for events that have no folder assigned.</li>
@@ -68,7 +69,7 @@ Fields:
 
 </p>
 <h2><a id="data-structure-event"></a>Event</h2>
-<p>Activity events can be period events, which are associated with a period of time, or mark events, which are just associated with a single point in time:
+<p>events can be period events, which are associated with a period of time, or mark events, which are just associated with a single point in time:
 
 </p>
 <ul>
@@ -81,12 +82,16 @@ Fields:
 <p>Fields:
 
 </p>
+<p>TODO clarify 'read-only', mark optional in a clear way so reader can quickly test out event creation without being intimidated at the number of fields they have to figure out, confirm all optional fields identified. ('id' being non-optional feels a bit strange.)
+SGO: "read-only" = server-assigned, never set or modified by client. "optional": field may not be present (<code>id</code> is always present as soon as an item is saved; because it is read-only it must not be set at creation though). I agree stuff like data structure should be reformatted for quick visual parsing at the end (e.g. using tables, or at least coloured labels for stuff like "optional"), but we've consciously chosen low-formatting, quick-to-edit bullet lists for the moment.
+
+</p>
 <ul>
 <li><code>id</code> (<a href="#data-structure-identity">identity</a>): Unique, read-only. The server-assigned identifier for the event.</li>
 <li><code>channelId</code> (<a href="#data-structure-identity">identity</a>): Read-only. The id of the belonging channel.</li>
 <li><code>time</code> (<a href="#data-structure-timestamp">timestamp</a>): The event's time. For period events, this is the time the event started.</li>
 <li><code>duration</code> (<a href="#data-structure-timestamp">timestamp</a> difference): Optional. If present, indicates that the event is a period event. Running period events have a duration set to <code>null</code>. (We use a dedicated field for duration — instead of using the <code>value</code> field — as we do specific processing of event durations, intervals and overlapping.)</li>
-<li><code>type</code> (object): The type of the event. See the <a href="event-types.html">event types directory</a> for a list of standard types.<ul>
+<li><code>type</code> (object): The type of the event. See the <a href="event-types.html#directory">event type directory</a> for a list of standard types.<ul>
 <li><code>class</code> (string): The type's class. Events in the same class are considered comparable and convertible.</li>
 <li><code>format</code> (string): The type's format. Depending on the class, it may indicate a measurement unit, a currency, a string format, an object structure, etc. Together with <code>class</code>, it indicates how to handle the event's <code>value</code>, if any.</li>
 </ul>
@@ -126,7 +131,7 @@ Fields:
     <span class="string">"modified"</span> : <span class="number">1350373077.359</span> }
 ]</code></pre>
 <h2><a id="data-structure-folder"></a>Folder</h2>
-<p>Activity folders are the possible states or categories you track the channel's activity events into (folders are always specific to an activity channel). Every period event belongs to one folder, while mark events can be recorded "off-folder" as well. Activity folders follow a hierarchical tree structure: every folder can contain "child" folders (sub-folders).
+<p>Activity folders are the possible states or categories you track the channel's events into (folders are always specific to an activity channel). Every period event belongs to one folder, while mark events can be recorded "off-folder" as well. Activity folders follow a hierarchical tree structure: every folder can contain "child" folders (sub-folders).
 
 </p>
 <p>Fields:
@@ -167,6 +172,54 @@ Fields:
     ]
   }
 ];</code></pre>
+<h2><a id="data-structure-access"></a>Access</h2>
+<p>An access defines a set of permissions on a user's activity data (channels, folders and events). (See <a href="overview.html#sharing">how sharing works</a>.)
+
+</p>
+<p>Fields:
+
+</p>
+<ul>
+<li><code>token</code> (string): Unique, read-only (except at creation). The token identifying the access. Automatically generated if not set when creating the access; URL-encoded if necessary.</li>
+<li><code>type</code> (<code>"personal"</code>, <code>"app"</code> or <code>"shared"</code>): Optional. The type — or usage — of the access. Default: <code>"shared"</code>.</li>
+<li><code>name</code> (string): Unique <em>per type and device name (if defined)</em>. The name identifying the access for the user. (Note that for personal and app access, the name is used as a technical identifier and not shown as-is to the user.)</li>
+<li><code>deviceName</code> (string): Optional. Unique <em>per type and name (if defined)</em>. For app accesses only. The name of the client device running the app, if applicable.</li>
+<li><code>permissions</code>: an array of channel permission objects as described below. Ignored for personal accesses. Shared accesses are only granted access to activity data objects listed in here.<ul>
+<li><code>channelId</code> (<a href="#data-structure-identity">identity</a>): The accessible channel's id.</li>
+<li><code>level</code> (<code>"read"</code>, <code>"contribute"</code> or <code>"manage"</code>): The level of access to the channel. With <code>"contribute"</code>, the access's token holder(s) can see and record events in the channel; with <code>"manage"</code>, the access's token holder(s) can in addition modify the channel itself. This is overridden if specific folder permissions are defined (see below).</li>
+<li><code>folderPermissions</code>: Optional. An array of folder permission objects to define specific per-folder permissions. If defined, only the folders listed here will be accessible.<ul>
+<li><code>folderId</code> (<a href="#data-structure-identity">identity</a>): The accessible folder's id. If the folder has child folders, they will be accessible too. A  value of <code>null</code> can be used to set permissions for events that have no folder assigned.</li>
+<li><code>level</code> (<code>"read"</code>, <code>"contribute"</code> or <code>"manage"</code>): The level of access to the folder. With <code>"contribute"</code>, the access's token holder(s) can see and record events for the folder (and its child folders, if any); with <code>"manage"</code>, the access's token holder(s) can in addition create, modify and delete child folders.</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>A note about permissions: if the access defines conflicting permission levels (e.g. a folder set to "manage" but a child folder within it set to "contribute"), only the highest level is considered.
+
+</p>
+<p>TODO: example
+
+
+</p>
+<h2><a id="data-structure-bookmark"></a>Bookmark</h2>
+<p>Sharing bookmarks allow the user to keep track of accesses shared with her by other users.
+
+</p>
+<p>Fields:
+
+</p>
+<ul>
+<li><code>id</code> (<a href="#data-structure-identity">identity</a>): Unique, read-only. The server-assigned identifier for the bookmark.</li>
+<li><code>name</code> (string): Unique. A name identifying the bookmark for the user.</li>
+<li><code>url</code> (string): The url pointing to the shared access's owning user's server. Not modifiable after creation.</li>
+<li><code>accessToken</code> <a href="#data-structure-identity">identity</a>: The token of the shared access itself. Not modifiable after creation.</li>
+</ul>
+<p>TODO: example
+
+
+
+</p>
 <h2><a id="data-structure-additional-data"></a>Item additional data</h2>
 <p>An object (key-value map) for client apps to store additional data about the containing item (channel, event, etc.), such as a color, a reference to an associated icon, or other app-specific metadata.
 
