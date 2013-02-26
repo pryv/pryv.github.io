@@ -1,6 +1,6 @@
 {
   "version": {
-    "version": 20130208.01
+    "version": 20130226.01
   },
   "classes": {
     "activity": {
@@ -215,26 +215,36 @@
         }
       }
     },
-    "music": {
-      "description": "To record references to music (from Soundcloud, Shazam tags, etc.).",
-      "formats": {
-        "id3": {
-          "description": "TODO"
-        },
-        "itunes": {
-          "description": "TODO"
-        },
-        "soundcloud": {
-          "description": "TODO"
-        }
-      }
-    },
-    "note": {
-      "description": "To record different kinds of text-based notes, from simple text to more complex formatted content like social network posts.",
+    "message": {
+      "description": "To record messages, such as e-mails or posts on social networks.",
       "default": {
         "type": "string"
       },
       "formats": {
+        "email": {
+          "description": "An e-mail message. TODO: review and complete",
+          "type": "object",
+          "properties": {
+            "from": {
+              "type": "string"
+            },
+            "to": {
+              "type": "string"
+            },
+            "cc": {
+              "type": "string"
+            },
+            "bcc": {
+              "type": "string"
+            },
+            "subject": {
+              "type": "string"
+            },
+            "body": {
+              "type": "string"
+            }
+          }
+        },
         "facebook": {
           "description": "A Facebook post. TODO: add example (Facebook post can be copied RAW as a value. \nmap: \n   fbPost.message -> pryvEvent.description\n   fbPost.created_time -> pryvEvent.time\n TBD: what to do with videos & pictures?)",
           "type": "object",
@@ -297,6 +307,37 @@
             }
           }
         },
+        "twitter": {
+          "description": "A Twitter post. TODO: detail",
+          "type": "object",
+          "properties": {
+            "TODO": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "music": {
+      "description": "To record references to music (from Soundcloud, Shazam tags, etc.).",
+      "formats": {
+        "id3": {
+          "description": "TODO"
+        },
+        "itunes": {
+          "description": "TODO"
+        },
+        "soundcloud": {
+          "description": "TODO"
+        }
+      }
+    },
+    "note": {
+      "description": "To record different kinds of text-based notes, from simple text to more complex formatted content like social network posts.",
+      "default": {
+        "type": "string"
+      },
+      "formats": {
         "html": {
           "description": "An HTML-formatted note.",
           "maxLength": "4194304"
