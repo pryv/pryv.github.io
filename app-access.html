@@ -62,18 +62,18 @@ _gaq.push(['_trackPageview']);
 <ul>
 <li>make sure you got the <a href="#intro-initial-requirements">initial requirements</a> ready.</li>
 <li>include the following script in your page:<ul>
-<li>Staging version (recommended at the moment):<pre class="highlighted"><code class="language-html xml"><span class="tag">&lt;<span class="title">script</span> <span class="attribute">type</span>=<span class="value">"text/javascript"</span> <span class="attribute">src</span>=<span class="value">"https://sw.rec.la:2443/access/v0/pryv-access-sdk.js"</span>&gt;</span><span class="javascript"></span><span class="tag">&lt;/<span class="title">script</span>&gt;</span></code></pre>
+<li>Staging version (recommended at the moment):  <pre class="highlighted"><code class="language-html xml"><span class="tag">&lt;<span class="title">script</span> <span class="attribute">type</span>=<span class="value">"text/javascript"</span> <span class="attribute">src</span>=<span class="value">"https://sw.rec.la:2443/access/v1/pryv-sdk.js"</span>&gt;</span><span class="javascript"></span><span class="tag">&lt;/<span class="title">script</span>&gt;</span></code></pre>
 </li>
-<li>Production version:<pre class="highlighted"><code class="language-html xml"><span class="tag">&lt;<span class="title">script</span> <span class="attribute">type</span>=<span class="value">"text/javascript"</span> <span class="attribute">src</span>=<span class="value">"https://sw.pryv.io/access/v0/pryv-access-sdk.js"</span>&gt;</span><span class="javascript"></span><span class="tag">&lt;/<span class="title">script</span>&gt;</span></code></pre>
+<li>Production version:<pre class="highlighted"><code class="language-html xml"><span class="tag">&lt;<span class="title">script</span> <span class="attribute">type</span>=<span class="value">"text/javascript"</span> <span class="attribute">src</span>=<span class="value">"https://sw.pryv.io/access/v1/pryv-sdk.js"</span>&gt;</span><span class="javascript"></span><span class="tag">&lt;/<span class="title">script</span>&gt;</span></code></pre>
 </li>
-<li>or the optimized CloudFront cache:<pre class="highlighted"><code class="language-html xml"><span class="tag">&lt;<span class="title">script</span> <span class="attribute">type</span>=<span class="value">"text/javascript"</span> <span class="attribute">src</span>=<span class="value">"//dlw0lofo79is5.cloudfront.net/sdk-access-webapp/v0/pryv-access-sdk.js"</span>&gt;</span><span class="javascript"></span><span class="tag">&lt;/<span class="title">script</span>&gt;</span></code></pre>
+<li>or the optimized CloudFront cache:<pre class="highlighted"><code class="language-html xml"><span class="tag">&lt;<span class="title">script</span> <span class="attribute">type</span>=<span class="value">"text/javascript"</span> <span class="attribute">src</span>=<span class="value">"//dlw0lofo79is5.cloudfront.net/sdk-access-webapp/v1/pryv-sdk.js"</span>&gt;</span><span class="javascript"></span><span class="tag">&lt;/<span class="title">script</span>&gt;</span></code></pre>
 </li>
 </ul>
 </li>
 <li>construct a <code>settings</code> JSON object</li>
-<li>call <code>pryvAccess.setup(settings)</code></li>
+<li>call <code>Pryv.Access.setup(settings)</code></li>
 </ul>
-<p>For a more fleshed-out example look at the source code of <a href="https://sw.rec.la:2443/access/demo.html"></a><a href="https://sw.rec.la:2443/access/demo.html">https://sw.rec.la:2443/access/demo.html</a>.
+<p>For a more fleshed-out example look at the source code of <a href="https://sw.rec.la:2443/access/demo.html"></a><a href="https://sw.rec.la/access/demo.html">https://sw.rec.la/access/demo.html</a>.
 
 </p>
 <p><a name="webapp.test"></a>Or make your own tests from the page:
@@ -93,7 +93,7 @@ _gaq.push(['_trackPageview']);
 <span class="tag">&lt;<span class="title">html</span>&gt;</span>
 <span class="tag">&lt;<span class="title">head</span>&gt;</span>
 <span class="tag">&lt;<span class="title">title</span>&gt;</span>Minimalistic example<span class="tag">&lt;/<span class="title">title</span>&gt;</span>
-<span class="tag">&lt;<span class="title">script</span> <span class="attribute">type</span>=<span class="value">"text/javascript"</span> <span class="attribute">src</span>=<span class="value">"//dlw0lofo79is5.cloudfront.net/sdk-access-webapp/v0/pryv-access-sdk.js"</span>&gt;</span><span class="javascript"></span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
+<span class="tag">&lt;<span class="title">script</span> <span class="attribute">type</span>=<span class="value">"text/javascript"</span> <span class="attribute">src</span>=<span class="value">"//dlw0lofo79is5.cloudfront.net/sdk-access-webapp/v1/pryv-sdk-sdk.js"</span>&gt;</span><span class="javascript"></span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
 <span class="tag">&lt;/<span class="title">head</span>&gt;</span>
 <span class="tag">&lt;<span class="title">body</span>&gt;</span>
     <span class="tag">&lt;<span class="title">script</span> <span class="attribute">type</span>=<span class="value">"text/javascript"</span>&gt;</span><span class="javascript">
@@ -106,7 +106,7 @@ _gaq.push(['_trackPageview']);
     <span class="keyword">var</span> requestedPermissions = [{<span class="string">"channelId"</span> : <span class="string">"diary"</span>,
                                      <span class="string">"level"</span> : <span class="string">"contribute"</span>}];
 
-    pryvAccess.setup({
+    Pryv.Access.setup({
         requestingAppId : <span class="string">'Minimalistic Exemple For SDK Access'</span>,
         requestedPermissions : requestedPermissions,
         returnURL: <span class="string">'auto#'</span>,
@@ -119,7 +119,7 @@ _gaq.push(['_trackPageview']);
 <span class="tag">&lt;/<span class="title">body</span>&gt;</span>
 <span class="tag">&lt;/<span class="title">html</span>&gt;</span>
 ```</code></pre>
-<h2>pryvAccess.setup(settings)</h2>
+<h2>Pryv.Access.setup(settings)</h2>
 <p>The <strong>settings</strong> object supports the following parameters:
 
 </p>
@@ -208,7 +208,7 @@ _gaq.push(['_trackPageview']);
 <p>Set the return URL to your own page such as
 
 </p>
-<pre class="highlighted"><code class="avrasm"><span class="label">https:</span>//www<span class="preprocessor">.mysite</span><span class="preprocessor">.com</span>/end-of-pryvAccess-process<span class="preprocessor">.php</span>?</code></pre>
+<pre class="highlighted"><code class="avrasm"><span class="label">https:</span>//www<span class="preprocessor">.mysite</span><span class="preprocessor">.com</span>/end-of-Pryv<span class="preprocessor">.Access</span>-process<span class="preprocessor">.php</span>?</code></pre>
 <p><strong>Attention!!</strong> The url submitted <em>must</em> end with a <code>?</code>, a <code>#</code> or a <code>&amp;</code>
 Returned status will be appended to this URL.
 
@@ -217,17 +217,17 @@ Returned status will be appended to this URL.
 <p>ACCEPTED
 
 </p>
-<pre class="highlighted"><code class="avrasm">    https://www<span class="preprocessor">.mysite</span><span class="preprocessor">.com</span>/end-of-pryvAccess-process<span class="preprocessor">.php</span>?
+<pre class="highlighted"><code class="avrasm">    https://www<span class="preprocessor">.mysite</span><span class="preprocessor">.com</span>/end-of-Pryv<span class="preprocessor">.Access</span>-process<span class="preprocessor">.php</span>?
 prYvkey=GSbdasjgdv&amp;prYvstatus=ACCEPTED&amp;prYvusername=yacinthe&amp;prYvtoken=VVhjDJDDG</code></pre>
 <p>REFUSED
 
 </p>
-<pre class="highlighted"><code class="avrasm">    https://www<span class="preprocessor">.mysite</span><span class="preprocessor">.com</span>/end-of-pryvAccess-process<span class="preprocessor">.php</span>?
+<pre class="highlighted"><code class="avrasm">    https://www<span class="preprocessor">.mysite</span><span class="preprocessor">.com</span>/end-of-Pryv<span class="preprocessor">.Access</span>-process<span class="preprocessor">.php</span>?
 prYvkey=GSbdasjgdv&amp;prYvstatus=REFUSED&amp;prYvmessage=refused+by+user</code></pre>
 <p>ERROR
 
 </p>
-<pre class="highlighted"><code class="r">    https://www.mysite.com/end-of-pryvAccess-process.php?
+<pre class="highlighted"><code class="r">    https://www.mysite.com/end-of-Pryv.Access-process.php?
 prYvkey=GSbdasjgdv&amp;prYvstatus=ERROR&amp;prYvid=INTERNAL_ERROR&amp;prYvmessage=<span class="keyword">...</span></code></pre>
 <h3><a name="webapp.spanButtonID"></a> settings.spanButtonID : Rely on PrYv standard Button</h3>
 <p>TODO
@@ -237,18 +237,18 @@ prYvkey=GSbdasjgdv&amp;prYvstatus=ERROR&amp;prYvid=INTERNAL_ERROR&amp;prYvmessag
 <p>TODO
 
 </p>
-<h2>pryvAccess.popupLogin()</h2>
+<h2>Pryv.Access.popupLogin()</h2>
 <p>Once setup is done, you can trigger the populLogin window from your own button.<br />Note: Trigger it from a user-click event.
 
 </p>
-<h2>pryvAccess.logout()</h2>
+<h2>Pryv.Access.logout()</h2>
 <p>Once setup is done, and user logged in. Erase current credential and restart setup with the same settings.
 
 </p>
 <p><strong>logout()</strong> will trigger a <code>settings.callbacks.success(false,false,false);</code>
 
 </p>
-<h2>pryvAccess.retry()</h2>
+<h2>Pryv.Access.retry()</h2>
 <p>If a user refused to grant access, restart the setup process with the same settings. 
 
 </p>
