@@ -26,45 +26,44 @@
 
 
 </p>
-<h3>Exemple: Minimalistic</h3>
+<h3>Example: Minimalistic</h3>
 <p>This app requests a "contribute" access to the "diary" channel, using the PrYv button and a popup for sign-in.
 
 </p>
 <p><strong>TODO: review this code</strong>
 
 </p>
-<pre class="highlighted"><code class="xml">```html
-<span class="doctype">&lt;!DOCTYPE html&gt;</span>
-<span class="tag">&lt;<span class="title">html</span>&gt;</span>
-<span class="tag">&lt;<span class="title">head</span>&gt;</span>
-<span class="tag">&lt;<span class="title">title</span>&gt;</span>Minimalistic example<span class="tag">&lt;/<span class="title">title</span>&gt;</span>
-<span class="tag">&lt;<span class="title">script</span> <span class="attribute">type</span>=<span class="value">"text/javascript"</span> <span class="attribute">src</span>=<span class="value">"//dlw0lofo79is5.cloudfront.net/sdk-access-webapp/v1/pryv-sdk-sdk.js"</span>&gt;</span><span class="javascript"></span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
-<span class="tag">&lt;/<span class="title">head</span>&gt;</span>
-<span class="tag">&lt;<span class="title">body</span>&gt;</span>
-    <span class="tag">&lt;<span class="title">script</span> <span class="attribute">type</span>=<span class="value">"text/javascript"</span>&gt;</span><span class="javascript">
+<pre class="highlighted"><code class="language-html xml">
+    <span class="doctype">&lt;!DOCTYPE html&gt;</span>
+    <span class="tag">&lt;<span class="title">html</span>&gt;</span>
+    <span class="tag">&lt;<span class="title">head</span>&gt;</span>
+    <span class="tag">&lt;<span class="title">title</span>&gt;</span>Minimalistic example<span class="tag">&lt;/<span class="title">title</span>&gt;</span>
+    <span class="tag">&lt;<span class="title">script</span> <span class="attribute">type</span>=<span class="value">"text/javascript"</span> <span class="attribute">src</span>=<span class="value">"//dlw0lofo79is5.cloudfront.net/sdk-access-webapp/v1/pryv-sdk-sdk.js"</span>&gt;</span><span class="javascript"></span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
+    <span class="tag">&lt;/<span class="title">head</span>&gt;</span>
+    <span class="tag">&lt;<span class="title">body</span>&gt;</span>
+        <span class="tag">&lt;<span class="title">script</span> <span class="attribute">type</span>=<span class="value">"text/javascript"</span>&gt;</span><span class="javascript">
 
-    <span class="function"><span class="keyword">function</span> <span class="title">callMeWithCredentials</span><span class="params">(username, appToken, languageCode)</span> {</span>
-        alert(<span class="string">"SUCCESS! username:"</span> + username + <span class="string">" appToken:"</span> + 
-                appToken + <span class="string">" language:"</span> + languageCode);
-    }
+        <span class="function"><span class="keyword">function</span> <span class="title">callMeWithCredentials</span><span class="params">(username, appToken, languageCode)</span> {</span>
+            alert(<span class="string">"SUCCESS! username:"</span> + username + <span class="string">" appToken:"</span> + 
+                    appToken + <span class="string">" language:"</span> + languageCode);
+        }
 
-    <span class="keyword">var</span> requestedPermissions = [{<span class="string">"channelId"</span> : <span class="string">"diary"</span>,
-                                <span class="string">"defaultName"</span> : <span class="string">"Diary"</span>, <span class="comment">// this name is localized</span>
-                                     <span class="string">"level"</span> : <span class="string">"contribute"</span>}];
+        <span class="keyword">var</span> requestedPermissions = [{<span class="string">"channelId"</span> : <span class="string">"diary"</span>,
+                                    <span class="string">"defaultName"</span> : <span class="string">"Diary"</span>, <span class="comment">// this name is localized</span>
+                                         <span class="string">"level"</span> : <span class="string">"contribute"</span>}];
 
-    Pryv.Access.setup({
-        requestingAppId : <span class="string">'Minimalistic Exemple For SDK Access'</span>,
-        requestedPermissions : requestedPermissions,
-        returnURL: <span class="string">'auto#'</span>,
-        spanButtonID : <span class="string">'pryvButton'</span>,
-        callbacks : callMeWithCredentials
-    });
+        Pryv.Access.setup({
+            requestingAppId : <span class="string">'pryv-mini-example'</span>,
+            requestedPermissions : requestedPermissions,
+            returnURL: <span class="string">'auto#'</span>,
+            spanButtonID : <span class="string">'pryvButton'</span>,
+            callbacks : callMeWithCredentials
+        });
 
-    </span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
-    <span class="tag">&lt;<span class="title">span</span> <span class="attribute">id</span>=<span class="value">'pryvButton'</span>&gt;</span><span class="tag">&lt;/<span class="title">span</span>&gt;</span>
-<span class="tag">&lt;/<span class="title">body</span>&gt;</span>
-<span class="tag">&lt;/<span class="title">html</span>&gt;</span>
-```</code></pre>
+        </span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
+        <span class="tag">&lt;<span class="title">span</span> <span class="attribute">id</span>=<span class="value">'pryvButton'</span>&gt;</span><span class="tag">&lt;/<span class="title">span</span>&gt;</span>
+    <span class="tag">&lt;/<span class="title">body</span>&gt;</span>
+    <span class="tag">&lt;/<span class="title">html</span>&gt;</span></code></pre>
 <h2>Pryv.Access.setup(settings)</h2>
 <p>The <strong>settings</strong> object supports the following parameters:
 
@@ -129,7 +128,7 @@
 </ul>
 </li>
 </ul>
-<p>EXEMPLES
+<p>EXAMPLES
 
 </p>
 <ul>
@@ -159,7 +158,7 @@
 Returned status will be appended to this URL.
 
 </p>
-<h4>Exemples of return URL</h4>
+<h4>Examples of return URL</h4>
 <p>ACCEPTED
 
 </p>
