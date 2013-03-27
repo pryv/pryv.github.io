@@ -36,7 +36,7 @@ _gaq.push(['_trackPageview']);
 
 </p>
 <h2>Data format</h2>
-<p>The API exchanges data with the client in JSON. 
+<p>The API exchanges data with the client in JSON.
 
 </p>
 <p>Example event:
@@ -48,6 +48,19 @@ _gaq.push(['_trackPageview']);
   "<span class="attribute">type</span>": <span class="value">{ "<span class="attribute">class</span>": <span class="value"><span class="string">"position"</span></span>, "<span class="attribute">format</span>": <span class="value"><span class="string">"wgs84"</span> </span>}</span>,
   "<span class="attribute">value</span>": <span class="value">{ "<span class="attribute">location</span>": <span class="value">{ "<span class="attribute">lat</span>": <span class="value"><span class="number">40.714728</span></span>, "<span class="attribute">lng</span>": <span class="value">-<span class="number">73.998672</span> </span>} </span>}</span>,
 }</code></pre>
+<h2>Alternative request method</h2>
+<p>Because we can't fathom out the crazy rationale behind <a href="https://developer.mozilla.org/en-US/docs/HTTP/Access_control_CORS">HTTP access control (CORS) rules</a>, we offer web apps an alternative way to place POST, PUT and DELETE requests in the API by using <code>application/x-www-form-urlencoded</code> POST requests with the following fields (all optional):
+
+</p>
+<ul>
+<li><code>_method</code>: The HTTP override method to use (usually <code>PUT</code> or <code>DELETE</code>; <code>POST</code> is used if not set).</li>
+<li><code>_auth</code>: The <code>Authorization</code> header value (alternative to sending the header itself).</li>
+<li><code>_json</code>: Considered as the JSON request body if set (overriding all other body content, if any).</li>
+</ul>
+<p>This is intended for web apps only; if your app isn't running in browsers you should use regular requests.
+
+
+</p>
 <h2>Common HTTP headers</h2>
 <p>The following headers are included in every response:
 
@@ -55,7 +68,6 @@ _gaq.push(['_trackPageview']);
 <ul>
 <li><code>API-Version</code>: The version of the API in the form <code>{major}.{minor}.{revision}</code>.</li>
 <li><code>Server-Time</code>: The current server time as a <a href="#data-structure-timestamp">timestamp</a>. Keeping reference of the server time is an absolute necessity to properly read and write event times.</li>
-<li><code>Authorization</code>: The access token representing your app.</li>
 </ul>
 <h2>Errors</h2>
 <p>When an error occurs, the API returns a 4xx or 5xx status code, with the response body usually containing an <a href="#data-structure-error">error</a> object detailing the cause.
