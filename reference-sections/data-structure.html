@@ -15,7 +15,7 @@ Fields:
 
 </p>
 <ul>
-<li><code>id</code> (<a href="#data-structure-identity">identity</a>): Unique, read-only (except at creation). The identifier for the channel. Automatically generated if not set when creating the channel; URL-encoded if necessary.</li>
+<li><code>id</code> (<a href="#data-structure-identity">identity</a>): Unique, read-only (except at creation). The identifier for the channel. Automatically generated if not set when creating the channel; <strong>slugified if necessary</strong>.</li>
 <li><code>name</code> (string): Unique. The name identifying the channel for users.</li>
 <li><code>enforceNoEventsOverlap</code> (boolean): Optional. If specified and <code>true</code>, the system will ensure that period events in this channel never overlap.</li>
 <li><code>clientData</code> (<a href="#data-structure-additional-data">item additional data</a>): Optional. Additional client data for the channel.</li>
@@ -92,7 +92,7 @@ Fields:
 
 </p>
 <ul>
-<li><code>id</code> (<a href="#data-structure-identity">identity</a>): Unique, read-only (except at creation). The identifier for the folder. Automatically generated if not set when creating the folder; URL-encoded if necessary.</li>
+<li><code>id</code> (<a href="#data-structure-identity">identity</a>): Unique, read-only (except at creation). The identifier for the folder. Automatically generated if not set when creating the folder; <strong>slugified if necessary</strong>.</li>
 <li><code>channelId</code> (<a href="#data-structure-identity">identity</a>): Read-only. The id of the belonging channel.</li>
 <li><code>name</code> (string): A name identifying the folder for users. The name must be unique among the folder's siblings in the folders tree structure.</li>
 <li><code>parentId</code> (<a href="#data-structure-identity">identity</a>): Optional. The identifier of the folder's parent, if any. A value of <code>null</code> indicates that the folder has no parent (i.e. root folder).</li>
@@ -134,7 +134,7 @@ Fields:
 
 </p>
 <ul>
-<li><code>token</code> (string): Unique, read-only (except at creation). The token identifying the access. Automatically generated if not set when creating the access; URL-encoded if necessary.</li>
+<li><code>token</code> (string): Unique, read-only (except at creation). The token identifying the access. Automatically generated if not set when creating the access; <strong>slugified if necessary</strong>.</li>
 <li><code>type</code> (<code>"personal"</code>, <code>"app"</code> or <code>"shared"</code>): Optional. The type — or usage — of the access. Default: <code>"shared"</code>.</li>
 <li><code>name</code> (string): Unique <em>per type and device name (if defined)</em>. The name identifying the access for the user. (Note that for personal and app access, the name is used as a technical identifier and not shown as-is to the user.)</li>
 <li><code>deviceName</code> (string): Optional. Unique <em>per type and name (if defined)</em>. For app accesses only. The name of the client device running the app, if applicable.</li>
