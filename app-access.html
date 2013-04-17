@@ -93,7 +93,7 @@ _gaq.push(['_trackPageview']);
     <span class="tag">&lt;<span class="title">html</span>&gt;</span>
     <span class="tag">&lt;<span class="title">head</span>&gt;</span>
     <span class="tag">&lt;<span class="title">title</span>&gt;</span>Minimalistic example<span class="tag">&lt;/<span class="title">title</span>&gt;</span>
-    <span class="tag">&lt;<span class="title">script</span> <span class="attribute">type</span>=<span class="value">"text/javascript"</span> <span class="attribute">src</span>=<span class="value">"//dlw0lofo79is5.cloudfront.net/sdk-access-webapp/v1/pryv-sdk-sdk.js"</span>&gt;</span><span class="javascript"></span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
+    <span class="tag">&lt;<span class="title">script</span> <span class="attribute">type</span>=<span class="value">"text/javascript"</span> <span class="attribute">src</span>=<span class="value">"//dlw0lofo79is5.cloudfront.net/sdk-access-webapp/v1/pryv-sdk.js"</span>&gt;</span><span class="javascript"></span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
     <span class="tag">&lt;/<span class="title">head</span>&gt;</span>
     <span class="tag">&lt;<span class="title">body</span>&gt;</span>
         <span class="tag">&lt;<span class="title">script</span> <span class="attribute">type</span>=<span class="value">"text/javascript"</span>&gt;</span><span class="javascript">
@@ -112,7 +112,20 @@ _gaq.push(['_trackPageview']);
             requestedPermissions : requestedPermissions,
             returnURL: <span class="string">'auto#'</span>,
             spanButtonID : <span class="string">'pryvButton'</span>,
-            callbacks : callMeWithCredentials
+            callbacks : {
+              initialization : <span class="keyword">function</span>() { },
+              needSignin : <span class="keyword">function</span>(popupUrl, pollUrl, pollRateMs) { },
+              accepted : <span class="keyword">function</span>(username, appToken, languageCode) {
+                console.log(<span class="string">"** SUCCESS! username:"</span> + username + 
+                            <span class="string">" appToken:"</span> + appToken + 
+                            <span class="string">" lang:"</span> + languageCode);
+              },
+              refused: <span class="keyword">function</span>(reason) {
+                 console.log(<span class="string">"** REFUSED! "</span> + reason);
+              },
+              error: <span class="keyword">function</span>(code, message) {
+                console.log(<span class="string">"** ERROR! "</span> + code + <span class="string">" "</span> + message);
+           }
         });
 
         </span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
