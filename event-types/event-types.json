@@ -1,5 +1,5 @@
 {
-  "version": 20130408.01,
+  "version": 20130506.01,
   "classes": {
     "activity": {
       "description": "To record the time spent doing something (tasks, sports, etc.).",
@@ -58,6 +58,35 @@
         }
       }
     },
+    "encrypted": {
+      "description": "For client-side-encrypted events. The decrypted <code>payload</code> is expected to be a JSON object with the regular <code>type</code> and <code>value</code> properties (e.g. <code>{ \"type\": { \"class\": \"..\", \"format\": \"..\" }, \"value\": \"..\" }</code>). If the event has attached files, they are expected to be similarly encrypted.",
+      "default" : {
+        "type": "object",
+        "properties" : {
+          "payload" : {
+            "description": "The encrypted data.",
+            "type": "string",
+            "required": true
+          },
+          "keyRef" : {
+            "description": "A reference (e.g. id, name in keychain) to the key to use for decryption." ,
+            "type": "string"
+          },
+          "hint": {
+            "description": "Alternative to <code>keyRef</code>. A textual hint about which key to use for decryption.",
+            "type": "string"
+          }
+        }
+      },
+      "formats": {
+        "aes-text-base64" : {
+          "description": "AES encrypted payload, with a <em>text</em> key and a <em>Base64</em> payload."
+        },
+        "aes-hexa-base64" : {
+          "description": "AES encrypted payload, with an <em>hexadecimal</em> key and a <em>Base64</em> payload."
+        }
+      }
+    },
     "file": {
       "description": "To record a file, or a group of files. A fallback type for data with no specific handling in Pryv.",
       "formats": {
@@ -104,6 +133,120 @@
         },
         "km": {
           "description": "Kilometers."
+        }
+      }
+    },
+    "mass": {
+      "description": "To record mass measurements (kid weight, tons of gold digged today, etc.). Format = unit.",
+      "default": {
+        "type": "number"
+      },
+      "formats": {
+        "kg": {
+          "description": "Kilograms."
+        }
+      }
+    },
+    "message": {
+      "description": "To record messages, such as e-mails or posts on social networks.",
+      "default": {
+        "type": "string"
+      },
+      "formats": {
+        "email": {
+          "description": "An e-mail message. TODO: review and complete",
+          "type": "object",
+          "properties": {
+            "from": {
+              "type": "string"
+            },
+            "to": {
+              "type": "string"
+            },
+            "cc": {
+              "type": "string"
+            },
+            "bcc": {
+              "type": "string"
+            },
+            "subject": {
+              "type": "string"
+            },
+            "body": {
+              "type": "string"
+            }
+          }
+        },
+        "facebook": {
+          "description": "A Facebook post. See <a href=\"https://developers.facebook.com/docs/reference/api/post/\">Facebook's API doc</a> for reference. TODO: add example (Facebook post can be copied RAW as a value. \nmap: \n   fbPost.message -> pryvEvent.description\n   fbPost.created_time -> pryvEvent.time\n TBD: what to do with videos & pictures?)",
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string",
+              "required": true
+            },
+            "from": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "required": true
+                },
+                "id": {
+                  "type": "string",
+                  "required": true
+                }
+              }
+            },
+            "to": {
+              "type": "object",
+              "properties": {
+                "data": {
+                  "type": "array",
+                  "items":{
+                    "type": "object",
+                    "properties": {
+                      "name": "string",
+                      "id": "string"
+                    }
+                  }
+                }
+              }
+            },
+            "message": {
+              "type": "string"
+            },
+            "picture": {
+              "type": "string"
+            },
+            "link": {
+              "type": "string"
+            },
+            "caption": {
+              "type": "string"
+            },
+            "description": {
+              "type": "string"
+            },
+            "source": {
+              "type": "string"
+            },
+            "icon": {
+              "type": "string"
+            },
+            "type": {
+              "type": "string"
+            }
+          }
+        },
+        "twitter": {
+          "description": "A Twitter post. TODO: detail",
+          "type": "object",
+          "properties": {
+            "TODO": {
+              "type": "string"
+            }
+          }
         }
       }
     },
@@ -202,120 +345,6 @@
         "yer": {},
         "zar": {},
         "zmk": {}
-      }
-    },
-    "mass": {
-      "description": "To record mass measurements (kid weight, tons of gold digged today, etc.). Format = unit.",
-      "default": {
-        "type": "number"
-      },
-      "formats": {
-        "kg": {
-          "description": "Kilograms."
-        }
-      }
-    },
-    "message": {
-      "description": "To record messages, such as e-mails or posts on social networks.",
-      "default": {
-        "type": "string"
-      },
-      "formats": {
-        "email": {
-          "description": "An e-mail message. TODO: review and complete",
-          "type": "object",
-          "properties": {
-            "from": {
-              "type": "string"
-            },
-            "to": {
-              "type": "string"
-            },
-            "cc": {
-              "type": "string"
-            },
-            "bcc": {
-              "type": "string"
-            },
-            "subject": {
-              "type": "string"
-            },
-            "body": {
-              "type": "string"
-            }
-          }
-        },
-        "facebook": {
-          "description": "A Facebook post. See for reference: https://developers.facebook.com/docs/reference/api/post/. TODO: add example (Facebook post can be copied RAW as a value. \nmap: \n   fbPost.message -> pryvEvent.description\n   fbPost.created_time -> pryvEvent.time\n TBD: what to do with videos & pictures?)",
-          "type": "object",
-          "properties": {
-            "id": {
-              "type": "string",
-              "required": true
-            },
-            "from": {
-              "type": "object",
-              "properties": {
-                "name": {
-                  "type": "string",
-                  "required": true
-                },
-                "id": {
-                  "type": "string",
-                  "required": true
-                }
-              }
-            },
-            "to": {
-              "type": "object",
-              "properties": {
-                "data": {
-                  "type": "array",
-                  "items":{
-                    "type": "object",
-                    "properties": {
-                      "name": "string",
-                      "id": "string"
-                    }
-                  }
-                }
-              }
-            },
-            "message": {
-              "type": "string"
-            },
-            "picture": {
-              "type": "string"
-            },
-            "link": {
-              "type": "string"
-            },
-            "caption": {
-              "type": "string"
-            },
-            "description": {
-              "type": "string"
-            },
-            "source": {
-              "type": "string"
-            },
-            "icon": {
-              "type": "string"
-            },
-            "type": {
-              "type": "string"
-            }
-          }
-        },
-        "twitter": {
-          "description": "A Twitter post. TODO: detail",
-          "type": "object",
-          "properties": {
-            "TODO": {
-              "type": "string"
-            }
-          }
-        }
       }
     },
     "music": {
