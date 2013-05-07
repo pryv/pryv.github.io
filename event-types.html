@@ -14,7 +14,7 @@ and <a href="mailto:developers@pryv.com">get in touch with us</a> to complete th
 directory if you don&#39;t find what you need.
 
 </p>
-<h2>Description</h2>
+<h2>Event type?</h2>
 <p>Each event has a <code>type</code> property that indicates how to handle its <code>value</code> (if any).
 The type itself is a combination of a <strong>class</strong> and a <strong>format</strong> (see also the <a href="reference.html#data-structure-event">event
 data structure in the API reference</a>):
@@ -58,9 +58,9 @@ processing. We use it in our API for validating event values (for standard types
 
 </p>
 <h2>Submitting new types to the directory</h2>
-<p>We can&#39;t pretend to cover every useful case; if you&#39;d like the directory to include
-other types, please just <a href="mailto:developers@pryv.com">send us an e-mail</a> with
-your proposal.
+<p>This directory is constantly evolving to match the needs of Pryv apps; if you&#39;d like it
+to include other types, please just <a href="mailto:developers@pryv.com">send us your
+proposal</a>.
 </p>
 </section><section id="directory"><h1>Event type directory</h1><h2><code>activity</code> class</h2><div class="description">To record the time spent doing something (tasks, sports, etc.).</div><table class="table"><thead><tr><th>format</th><th>description</th><th>type</th></tr></thead><tbody><tr><td rowspan="1"><code>pryv</code></td><td>Pryv activity event. No value here, as the value is actually defined by the event's time and duration fields as well as its classification (folder, tags).</td><td>null</td></tr></tbody></table><h2><code>audio</code> class</h2><div class="description">To record audio (conversations, voice messages, etc.).</div><table class="table"><thead><tr><th>format</th><th>description</th><th>type</th></tr></thead><tbody><tr><td rowspan="1"><code>attached</code></td><td>TODO</td><td>null</td></tr><tr><td rowspan="1"><code>url</code></td><td>A reference to an audio file online.</td><td>string</td></tr></tbody></table><h2><code>call</code> class</h2><div class="description">To record references to phone calls (landline, mobile, Skype, etc.).</div><table class="table"><thead><tr><th>format</th><th>description</th></tr></thead><tbody><tr><td rowspan="1"><code>skype</code></td><td>TODO (skype id)</td></tr><tr><td rowspan="1"><code>telephone</code></td><td>TODO (number)</td></tr></tbody></table><h2><code>contact</code> class</h2><div class="description">To record events related to people (meeting someone special, business encounters, etc.).</div><table class="table"><thead><tr><th>format</th><th>description</th></tr></thead><tbody><tr><td rowspan="1"><code>facebook</code></td><td>TODO</td></tr><tr><td rowspan="1"><code>vcard</code></td><td>TODO</td></tr></tbody></table><h2><code>count</code> class</h2><div class="description">To record the counting of objects (eggs, apples, etc.).</div><table class="table"><thead><tr><th>format</th><th>description</th><th>type</th></tr></thead><tbody><tr><td rowspan="1"><code>generic</code></td><td>For general items that demand no particular handling.</td><td>number</td></tr></tbody></table><h2><code>encrypted</code> class</h2><div class="description">For client-side-encrypted events. The decrypted <code>payload</code> is expected to be a JSON object with the regular <code>type</code> and <code>value</code> properties (e.g. <code>{ "type": { "class": "..", "format": ".." }, "value": ".." }</code>). If the event has attached files, they are expected to be similarly encrypted.</div><table class="table"><thead><tr><th>format</th><th>description</th><th>type</th></tr></thead><tbody><tr><td rowspan="2"><code>aes-text-base64</code></td><td>AES encrypted payload, with a <em>text</em> key and a <em>Base64</em> payload.</td><td>object</td><tr><td colspan="2"><strong>properties</strong><ul><li><code>payload</code>: <ul><li><strong>description</strong>: The encrypted data.</li><li><strong>type</strong>: string</li><li><strong>required</strong>: true</li></ul></li><li><code>keyRef</code>: <ul><li><strong>description</strong>: A reference (e.g. id, name in keychain) to the key to use for decryption.</li><li><strong>type</strong>: string</li></ul></li><li><code>hint</code>: <ul><li><strong>description</strong>: Alternative to <code>keyRef</code>. A textual hint about which key to use for decryption.</li><li><strong>type</strong>: string</li></ul></li></ul></td></tr></tr><tr><td rowspan="2"><code>aes-hexa-base64</code></td><td>AES encrypted payload, with an <em>hexadecimal</em> key and a <em>Base64</em> payload.</td><td>object</td><tr><td colspan="2"><strong>properties</strong><ul><li><code>payload</code>: <ul><li><strong>description</strong>: The encrypted data.</li><li><strong>type</strong>: string</li><li><strong>required</strong>: true</li></ul></li><li><code>keyRef</code>: <ul><li><strong>description</strong>: A reference (e.g. id, name in keychain) to the key to use for decryption.</li><li><strong>type</strong>: string</li></ul></li><li><code>hint</code>: <ul><li><strong>description</strong>: Alternative to <code>keyRef</code>. A textual hint about which key to use for decryption.</li><li><strong>type</strong>: string</li></ul></li></ul></td></tr></tr></tbody></table><h2><code>file</code> class</h2><div class="description">To record a file, or a group of files. A fallback type for data with no specific handling in Pryv.</div><table class="table"><thead><tr><th>format</th><th>description</th><th>type</th></tr></thead><tbody><tr><td rowspan="1"><code>attached</code></td><td>TODO</td><td>null</td></tr><tr><td rowspan="2"><code>attached-multiple</code></td><td>TODO</td><td>null</td><tr><td colspan="2"><strong>example</strong><pre class="example">{
   &quot;attachments&quot;: {
@@ -90,10 +90,16 @@ map:
     'highlightOnScroll': true,
     'highlightOffset': 100,
     'anchorName': function(i, heading, prefix) {
-      return prefix+i;
+      var $heading = $(heading),
+          sectionId = $heading.parents('section').attr('id');
+      return sectionId + ($heading.is('h1') ? '' : '-' + slugify($heading.text()));
     },
     'headerText': function(i, heading, $heading) {
       return $heading.text();
     }
   });
+  
+  function slugify(text) {
+    return text.toLowerCase().replace(/[^\w ]+/g,'').replace(/ +/g,'-').replace('-class', '');
+  }
 });</script></body></html>

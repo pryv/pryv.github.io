@@ -7,7 +7,7 @@ _gaq.push(['_trackPageview']);
   ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
   var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
 })();
-</script></head><body><div id="main"><header id="pageHeader"><a href="index.html">Home</a></header><div class="version">API version: <strong>0.4.17</strong></div><div id="sections"><section id="basics"><h1>Basics</h1>
+</script></head><body><div id="main"><header id="pageHeader"><a href="index.html">Home</a></header><div class="version">API version: <strong>0.4.20</strong></div><div id="sections"><section id="basics"><h1>Basics</h1>
 <h2>API style</h2>
 <p>Most of the API follows REST principles, meaning each item has its own unique resource URL and can be read or modified via HTTP verbs:
 
@@ -1008,10 +1008,16 @@ TODO: and possibly a simple tutorial.
     'highlightOnScroll': true,
     'highlightOffset': 100,
     'anchorName': function(i, heading, prefix) {
-      return prefix+i;
+      var $heading = $(heading),
+          sectionId = $heading.parents('section').attr('id');
+      return sectionId + ($heading.is('h1') ? '' : '-' + slugify($heading.text()));
     },
     'headerText': function(i, heading, $heading) {
       return $heading.text();
     }
   });
+  
+  function slugify(text) {
+    return text.toLowerCase().replace(/[^\w ]+/g,'').replace(/ +/g,'-');
+  }
 });</script></body></html>

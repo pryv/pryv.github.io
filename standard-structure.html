@@ -125,10 +125,17 @@ default name (EN): "Parties"<br>Ideal to keep pictures of your crazy parties. TO
     'highlightOnScroll': true,
     'highlightOffset': 100,
     'anchorName': function(i, heading, prefix) {
-      return prefix+i;
+      var $heading = $(heading),
+          sectionId = $heading.parents('section').attr('id');
+      if (! sectionId) { console.log('arrggh'); debugger; }
+      return sectionId + ($heading.is('h1') ? '' : '-' + slugify($heading.text()));
     },
     'headerText': function(i, heading, $heading) {
       return $heading.text();
     }
   });
+  
+  function slugify(text) {
+    return text.toLowerCase().replace(/[^\w ]+/g,'').replace(/ +/g,'-');
+  }
 });</script></body></html>

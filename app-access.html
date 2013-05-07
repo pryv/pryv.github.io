@@ -295,10 +295,16 @@ Use our staging servers: <a href="https://access.rec.la/access">https://access.r
     'highlightOnScroll': true,
     'highlightOffset': 100,
     'anchorName': function(i, heading, prefix) {
-      return prefix+i;
+      var $heading = $(heading),
+          sectionId = $heading.parents('section').attr('id');
+      return sectionId + ($heading.is('h1') ? '' : '-' + slugify($heading.text()));
     },
     'headerText': function(i, heading, $heading) {
       return $heading.text();
     }
   });
+  
+  function slugify(text) {
+    return text.toLowerCase().replace(/[^\w ]+/g,'').replace(/ +/g,'-');
+  }
 });</script></body></html>
