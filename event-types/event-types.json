@@ -3,12 +3,10 @@
   "classes": {
     "activity": {
       "description": "To record the time spent doing something (tasks, sports, etc.).",
-      "default": {
-        "type": "null"
-      },
       "formats": {
         "pryv": {
-          "description": "Pryv activity event. No value here, as the value is actually defined by the event's time and duration fields as well as its classification (folder, tags)."
+          "description": "Pryv activity event. No value here, as the value is actually defined by the event's time and duration fields as well as its classification (folder, tags).",
+          "type": "null"
         }
       }
     },
@@ -49,41 +47,34 @@
     },
     "count": {
       "description": "To record the counting of objects (eggs, apples, etc.).",
-      "default": {
-        "type": "number"
-      },
       "formats": {
         "generic": {
-          "description": "For general items that demand no particular handling."
+          "description": "For general items that demand no particular handling.",
+          "type": "number"
         }
       }
     },
     "encrypted": {
       "description": "For client-side-encrypted events. The decrypted <code>payload</code> is expected to be a JSON object with the regular <code>type</code> and <code>value</code> properties (e.g. <code>{ \"type\": { \"class\": \"..\", \"format\": \"..\" }, \"value\": \"..\" }</code>). If the event has attached files, they are expected to be similarly encrypted.",
-      "default" : {
-        "type": "object",
-        "properties" : {
-          "payload" : {
-            "description": "The encrypted data.",
-            "type": "string",
-            "required": true
-          },
-          "keyRef" : {
-            "description": "A reference (e.g. id, name in keychain) to the key to use for decryption." ,
-            "type": "string"
-          },
-          "hint": {
-            "description": "Alternative to <code>keyRef</code>. A textual hint about which key to use for decryption.",
-            "type": "string"
-          }
-        }
-      },
       "formats": {
         "aes-text-base64" : {
-          "description": "AES encrypted payload, with a <em>text</em> key and a <em>Base64</em> payload."
-        },
-        "aes-hexa-base64" : {
-          "description": "AES encrypted payload, with an <em>hexadecimal</em> key and a <em>Base64</em> payload."
+          "description": "AES encrypted payload, with a <em>text</em> key and a <em>Base64</em> payload.",
+          "type": "object",
+          "properties" : {
+            "payload" : {
+              "description": "The encrypted data.",
+              "type": "string",
+              "required": true
+            },
+            "keyRef" : {
+              "description": "A reference (e.g. id, name in keychain) to the key to use for decryption." ,
+              "type": "string"
+            },
+            "hint": {
+              "description": "Alternative to <code>keyRef</code>. A textual hint about which key to use for decryption.",
+              "type": "string"
+            }
+          }
         }
       }
     },
@@ -121,37 +112,32 @@
     },
     "length": {
       "description": "To record length measurements. Format = unit.",
-      "default": {
-        "type": "number"
-      },
       "formats": {
         "cm": {
-          "description": "Centimeters."
+          "description": "Centimeters.",
+          "type": "number"
         },
         "m": {
-          "description": "Meters."
+          "description": "Meters.",
+          "type": "number"
         },
         "km": {
-          "description": "Kilometers."
+          "description": "Kilometers.",
+          "type": "number"
         }
       }
     },
     "mass": {
       "description": "To record mass measurements (kid weight, tons of gold digged today, etc.). Format = unit.",
-      "default": {
-        "type": "number"
-      },
       "formats": {
         "kg": {
-          "description": "Kilograms."
+          "description": "Kilograms.",
+          "type": "number"
         }
       }
     },
     "message": {
       "description": "To record messages, such as e-mails or posts on social networks.",
-      "default": {
-        "type": "string"
-      },
       "formats": {
         "email": {
           "description": "An e-mail message. TODO: review and complete",
@@ -252,99 +238,96 @@
     },
     "money": {
       "description": "To record sums of money (expenses, loans, stock values, etc.). Format = currency. Based on ISO 4217.",
-      "default": {
-        "type": "number"
-      },
       "formats": {
-        "aed": {},
-        "ang": {},
-        "ars": {},
-        "aud": {},
-        "bgn": {},
-        "bhd": {},
-        "bnd": {},
-        "bob": {},
-        "brl": {},
-        "bwp": {},
-        "cad": {},
-        "chf": {},
-        "clp": {},
-        "cny": {},
-        "cop": {},
-        "crc": {},
-        "czk": {},
-        "dkk": {},
-        "dop": {},
-        "dzd": {},
-        "eek": {},
-        "egp": {},
-        "eur": {},
-        "fjd": {},
-        "gbp": {},
-        "hkd": {},
-        "hnl": {},
-        "hrk": {},
-        "huf": {},
-        "idr": {},
-        "ils": {},
-        "inr": {},
-        "jmd": {},
-        "jod": {},
-        "jpy": {},
-        "kes": {},
-        "krw": {},
-        "kwd": {},
-        "kyd": {},
-        "kzt": {},
-        "lbp": {},
-        "lkr": {},
-        "ltl": {},
-        "lvl": {},
-        "mad": {},
-        "mdl": {},
-        "mkd": {},
-        "mur": {},
-        "mxn": {},
-        "myr": {},
-        "nad": {},
-        "ngn": {},
-        "nio": {},
-        "nok": {},
-        "npr": {},
-        "nzd": {},
-        "omr": {},
-        "pen": {},
-        "pgk": {},
-        "php": {},
-        "pkr": {},
-        "pln": {},
-        "pyg": {},
-        "qar": {},
-        "ron": {},
-        "rsd": {},
-        "rub": {},
-        "sar": {},
-        "scr": {},
-        "sek": {},
-        "sgd": {},
-        "skk": {},
-        "sll": {},
-        "svc": {},
-        "thb": {},
-        "tnd": {},
-        "try": {},
-        "ttd": {},
-        "twd": {},
-        "tzs": {},
-        "uah": {},
-        "ugx": {},
-        "usd": {},
-        "uyu": {},
-        "uzs": {},
-        "vnd": {},
-        "yer": {},
-        "zar": {},
-        "zmk": {}
+        "aed": {"type": "number"},
+        "ang": {"type": "number"},
+        "ars": {"type": "number"},
+        "aud": {"type": "number"},
+        "bgn": {"type": "number"},
+        "bhd": {"type": "number"},
+        "bnd": {"type": "number"},
+        "bob": {"type": "number"},
+        "brl": {"type": "number"},
+        "bwp": {"type": "number"},
+        "cad": {"type": "number"},
+        "chf": {"type": "number"},
+        "clp": {"type": "number"},
+        "cny": {"type": "number"},
+        "cop": {"type": "number"},
+        "crc": {"type": "number"},
+        "czk": {"type": "number"},
+        "dkk": {"type": "number"},
+        "dop": {"type": "number"},
+        "dzd": {"type": "number"},
+        "eek": {"type": "number"},
+        "egp": {"type": "number"},
+        "eur": {"type": "number"},
+        "fjd": {"type": "number"},
+        "gbp": {"type": "number"},
+        "hkd": {"type": "number"},
+        "hnl": {"type": "number"},
+        "hrk": {"type": "number"},
+        "huf": {"type": "number"},
+        "idr": {"type": "number"},
+        "ils": {"type": "number"},
+        "inr": {"type": "number"},
+        "jmd": {"type": "number"},
+        "jod": {"type": "number"},
+        "jpy": {"type": "number"},
+        "kes": {"type": "number"},
+        "krw": {"type": "number"},
+        "kwd": {"type": "number"},
+        "kyd": {"type": "number"},
+        "kzt": {"type": "number"},
+        "lbp": {"type": "number"},
+        "lkr": {"type": "number"},
+        "ltl": {"type": "number"},
+        "lvl": {"type": "number"},
+        "mad": {"type": "number"},
+        "mdl": {"type": "number"},
+        "mkd": {"type": "number"},
+        "mur": {"type": "number"},
+        "mxn": {"type": "number"},
+        "myr": {"type": "number"},
+        "nad": {"type": "number"},
+        "ngn": {"type": "number"},
+        "nio": {"type": "number"},
+        "nok": {"type": "number"},
+        "npr": {"type": "number"},
+        "nzd": {"type": "number"},
+        "omr": {"type": "number"},
+        "pen": {"type": "number"},
+        "pgk": {"type": "number"},
+        "php": {"type": "number"},
+        "pkr": {"type": "number"},
+        "pln": {"type": "number"},
+        "pyg": {"type": "number"},
+        "qar": {"type": "number"},
+        "ron": {"type": "number"},
+        "rsd": {"type": "number"},
+        "rub": {"type": "number"},
+        "sar": {"type": "number"},
+        "scr": {"type": "number"},
+        "sek": {"type": "number"},
+        "sgd": {"type": "number"},
+        "skk": {"type": "number"},
+        "sll": {"type": "number"},
+        "svc": {"type": "number"},
+        "thb": {"type": "number"},
+        "tnd": {"type": "number"},
+        "try": {"type": "number"},
+        "ttd": {"type": "number"},
+        "twd": {"type": "number"},
+        "tzs": {"type": "number"},
+        "uah": {"type": "number"},
+        "ugx": {"type": "number"},
+        "usd": {"type": "number"},
+        "uyu": {"type": "number"},
+        "uzs": {"type": "number"},
+        "vnd": {"type": "number"},
+        "yer": {"type": "number"},
+        "zar": {"type": "number"},
+        "zmk": {"type": "number"}
       }
     },
     "music": {
@@ -363,16 +346,15 @@
     },
     "note": {
       "description": "To record different kinds of text-based notes, from simple text to more complex formatted content like social network posts.",
-      "default": {
-        "type": "string"
-      },
       "formats": {
         "html": {
           "description": "An HTML-formatted note.",
+          "type": "string",
           "maxLength": "4194304"
         },
         "txt": {
           "description": "A plain-text note.",
+          "type": "string",
           "maxLength": "4194304"
         },
         "webclip": {
@@ -473,26 +455,23 @@
     },
     "temperature": {
       "description": "To record temperature measurements. Format = unit.",
-      "default": {
-        "type": "number"
-      },
       "formats": {
         "c": {
-          "description": "Celsius."
+          "description": "Celsius.",
+          "type": "number"
         },
         "f": {
-          "description": "Fahrenheit."
+          "description": "Fahrenheit.",
+          "type": "number"
         }
       }
     },
     "url": {
-      "description": "To record references to online resources. Format = protocol.",
-      "default": {
-        "type": "string"
-      },
+      "description": "To record references to online resources. Format ~= protocol.",
       "formats": {
         "http": {
           "description": "An HTTP or HTTPS resource.",
+          "type": "string",
           "pattern": "^(https?)://.+$"
         }
       }
@@ -513,15 +492,14 @@
     },
     "volume": {
       "description": "To record volume measurements. Format = unit.",
-      "default": {
-        "type": "number"
-      },
       "formats": {
         "l": {
-          "description": "Liters."
+          "description": "Liters.",
+          "type": "number"
         },
         "m3": {
-          "description": "Cubic meters."
+          "description": "Cubic meters.",
+          "type": "number"
         }
       }
     }
