@@ -1,5 +1,5 @@
 {
-  "version": 20130506.01,
+  "version": 20130521.01,
   "classes": {
     "activity": {
       "description": "To record the time spent doing something (tasks, sports, etc.).",
@@ -15,11 +15,13 @@
       "formats": {
         "attached": {
           "description": "TODO",
-          "type": "null"
+          "type": "null",
+          "attachmentRequired": true
         },
         "url": {
           "description": "A reference to an audio file online.",
-          "type": "string"
+          "type": "string",
+          "pattern": "^(https?)://.+$"
         }
       }
     },
@@ -83,11 +85,13 @@
       "formats": {
         "attached": {
           "description": "TODO",
-          "type": "null"
+          "type": "null",
+          "attachmentRequired": true
         },
         "attached-multiple":{
           "description": "TODO",
           "type": "null",
+          "attachmentRequired": true,
           "example":{
             "attachments": {
               "relative/path/to/file1.ext": {
@@ -106,7 +110,8 @@
         },
         "url": {
           "description": "TODO",
-          "type": "string"
+          "type": "string",
+          "pattern": "^(https?)://.+$"
         }
       }
     },
@@ -330,6 +335,14 @@
         "zmk": {"type": "number"}
       }
     },
+    "mood": {
+      "description": "To record personal mood.",
+      "formats": {
+        "emoticon": {
+          "description": "TODO; it's just an example."
+        }
+      }
+    },
     "music": {
       "description": "To record references to music (from Soundcloud, Shazam tags, etc.).",
       "formats": {
@@ -380,11 +393,13 @@
       "formats": {
         "attached": {
           "description": "The picture is the image file attached to the event (no explicit value defined). TODO: list accepted formats.",
-          "type": "null"
+          "type": "null",
+          "attachmentRequired": true
         },
         "url": {
           "description": "A reference to a picture file online.",
-          "type": "string"
+          "type": "string",
+          "pattern": "^(https?)://.+$"
         }
       }
     },
@@ -480,13 +495,22 @@
       "description": "To record video (home snippets, Vimeo or YouTube links, etc.).",
       "formats": {
         "attached": {
-          "description": "TODO"
+          "description": "The video is the file attached to the event (no explicit value defined). TODO: list accepted formats.",
+          "type": "null",
+          "attachmentRequired": true
         },
         "url": {
-          "description": "A reference to an video file online."
+          "description": "A reference to an video file online.",
+          "type": "string",
+          "pattern": "^(https?)://.+$"
+        },
+        "vimeo": {
+          "description": "A Vimeo video ID.",
+          "type": "string"
         },
         "youtube": {
-          "description": "TODO"
+          "description": "A YouTube video ID.",
+          "type": "string"
         }
       }
     },
