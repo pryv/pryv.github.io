@@ -7,101 +7,20 @@ _gaq.push(['_trackPageview']);
   ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
   var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
 })();
-</script></head><body><div id="main"><header id="pageHeader"><a href="index.html">Home</a></header><div class="version">API version: <strong>0.4.20</strong></div><div id="sections"><section id="basics"><h1>Basics</h1>
-<h2>API style</h2>
-<p>Most of the API follows REST principles, meaning each item has its own unique resource URL and can be read or modified via HTTP verbs:
-
-</p>
-<ul>
-<li>GET to read the item(s)</li>
-<li>POST to create a new item, with a JSON message in the request body</li>
-<li>PUT to modify the item, with a JSON message in the request body</li>
-<li>DELETE to delete the item (note that logical deletion, or trashing, is supported for items like events, folders and channels)</li>
-</ul>
-<p>Example API request:
-</p>
-<pre class="highlighted"><code class="language-http"><span class="request">GET <span class="string">/{channel-id}/events</span> HTTP/1.1</span>
-<span class="attribute">Host</span>: <span class="string">{user-name}.pryv.io</span>
-<span class="attribute">Authorization</span>: <span class="string">{access-token}</span></code></pre>
-<p>Note that the API also supports Socket.IO, for both calling API methods and receiving live notifications of changes to activity data. See <a href="#socketio">the dedicated section</a>.
-
-
-</p>
-<h2>Base URL</h2>
-<p><code>https://{username}.pryv.io</code> (where <code>{username}</code> is the name of the user whose data you want to access)
-
-</p>
-<p>Because Pryv potentially stores each user's data in a different location according to the user's choice, the API's base URL is unique for each user.
-
-
-</p>
-<h2>Data format</h2>
-<p>The API exchanges data with the client in JSON.
-
-</p>
-<p>Example event:
-</p>
-<pre class="highlighted"><code class="language-json">{
-  "<span class="attribute">id</span>": <span class="value"><span class="string">"5051941d04b8ffd00500000d"</span></span>,
-  "<span class="attribute">time</span>": <span class="value"><span class="number">1347864935.964</span></span>,
-  "<span class="attribute">folderId</span>": <span class="value"><span class="string">"5058370ade44feaa03000015"</span></span>,
-  "<span class="attribute">type</span>": <span class="value">{ "<span class="attribute">class</span>": <span class="value"><span class="string">"position"</span></span>, "<span class="attribute">format</span>": <span class="value"><span class="string">"wgs84"</span> </span>}</span>,
-  "<span class="attribute">value</span>": <span class="value">{ "<span class="attribute">location</span>": <span class="value">{ "<span class="attribute">lat</span>": <span class="value"><span class="number">40.714728</span></span>, "<span class="attribute">lng</span>": <span class="value">-<span class="number">73.998672</span> </span>} </span>}</span>,
-}</code></pre>
-<h2>Alternative request method</h2>
-<p>Because we can't fathom out the crazy rationale behind <a href="https://developer.mozilla.org/en-US/docs/HTTP/Access_control_CORS">HTTP access control (CORS) rules</a>, we offer web apps an alternative way to place POST, PUT and DELETE requests in the API by using <code>application/x-www-form-urlencoded</code> POST requests with the following fields (all optional):
-
-</p>
-<ul>
-<li><code>_method</code>: The HTTP override method to use (usually <code>PUT</code> or <code>DELETE</code>; <code>POST</code> is used if not set).</li>
-<li><code>_auth</code>: The <code>Authorization</code> header value (alternative to sending the header itself).</li>
-<li><code>_json</code>: Considered as the JSON request body if set (overriding all other body content, if any).</li>
-</ul>
-<p>This is intended for web apps only; if your app isn't running in browsers you should use regular requests.
-
-
-</p>
-<h2>Common HTTP headers</h2>
-<p>The following headers are included in every response:
-
-</p>
-<ul>
-<li><code>API-Version</code>: The version of the API in the form <code>{major}.{minor}.{revision}</code>.</li>
-<li><code>Server-Time</code>: The current server time as a <a href="#data-structure-timestamp">timestamp</a>. Keeping reference of the server time is an absolute necessity to properly read and write event times.</li>
-</ul>
-<h2>Errors</h2>
-<p>When an error occurs, the API returns a 4xx or 5xx status code, with the response body usually containing an <a href="#data-structure-error">error</a> object detailing the cause.
-
-</p>
-<p>Here's an example "401 Unauthorized" error response:
-</p>
-<pre class="highlighted"><code class="language-json">{
-  "<span class="attribute">id</span>": <span class="value"><span class="string">"invalid-access-token"</span></span>,
-  "<span class="attribute">message</span>": <span class="value"><span class="string">"Cannot find access with token 'bad-token'."</span>
-</span>}</code></pre>
-</section><section id="activity"><h1>API methods</h1>
-<p>TODO: introductory text
-
-
-</p>
+</script></head><body><div id="main"><header id="pageHeader"><a href="index.html">Home</a></header><div class="version">API version: <strong>0.4.20</strong></div><div id="sections"><section id="activity"><h1>API methods</h1>
+<p>TODO: introductory text</p>
 <h2>Preliminary information</h2>
 <h3>Authorization</h3>
-<p>All requests for retrieving and manipulating activity data must carry a valid <a href="#data-structure-access">access token</a> in the HTTP <code>Authorization</code> header or, alternatively, in the query string's <code>auth</code> parameter.  (You get the token by using one of the <a href="app-access.html">access SDKs</a> or from sharing.)
-
-</p>
-<p>Here's what a proper request looks like:
-</p>
+<p>All requests for retrieving and manipulating activity data must carry a valid <a href="#data-structure-access">access token</a> in the HTTP <code>Authorization</code> header or, alternatively, in the query string's <code>auth</code> parameter.  (You get the token by using one of the <a href="app-access.html">access SDKs</a> or from sharing.)</p>
+<p>Here's what a proper request looks like:</p>
 <pre class="highlighted"><code class="language-http"><span class="request">GET <span class="string">/{channel-id}/events</span> HTTP/1.1</span>
 <span class="attribute">Host</span>: <span class="string">yacinthe.pryv.io</span>
 <span class="attribute">Authorization</span>: <span class="string">{access-token}</span></code></pre>
-<p>Or, alternatively, passing the access token in the query string:
-</p>
+<p>Or, alternatively, passing the access token in the query string:</p>
 <pre class="highlighted"><code class="language-http"><span class="request">GET <span class="string">/{channel-id}/events?auth={access-token}</span> HTTP/1.1</span>
 <span class="attribute">Host</span>: <span class="string">yacinthe.pryv.io</span></code></pre>
 <h3>Common errors</h3>
-<p>Here are errors commonly returned for requests:
-
-</p>
+<p>Here are errors commonly returned for requests:</p>
 <ul>
 <li><code>400 Bad Request</code>, id <code>invalid-request-structure</code>: The request's structure is not that expected. This can happen e.g. with invalid JSON syntax, or when using an unexpected multipart structure for uploading file attachments.</li>
 <li><code>400 Bad Request</code>, id <code>invalid-parameters-format</code>: The request's parameters do not follow the expected format. The error's <code>data</code> contains an array of validation errors.</li>
@@ -115,42 +34,28 @@ _gaq.push(['_trackPageview']);
 </ul>
 </li>
 </ul>
-<p>And a couple of others, related to the status of the user's account:
-
-</p>
+<p>And a couple of others, related to the status of the user's account:</p>
 <ul>
 <li><code>301 Moved</code>, id <code>user-account-relocated</code>: The user has relocated her account to another Pryv server. Both the <code>Location</code> header and the error's <code>data</code> contain the equivalent URL pointing to the physical server now hosting the user's account. Note that this error can only occur between the moment the account is relocated and the moment your DNS is updated with the new server. So we're stretching the HTTP convention a little, in that the returned URL should not be used permanently (only until <code>{username}.pryv.io</code> points to the correct server again). You can decide whether you keep it for the duration of the session (if you have such a thing), for N hours, etc. (TODO: review and detail more if needed)</li>
 <li><code>402 Payment Required</code>, id <code>user-intervention-required</code>: We cannot serve the request at the moment, because the user's account has exceeded the limits of its plan. The user must log into Pryv to fix her account.</li>
 </ul>
 <h2>Channels</h2>
-<p>Methods for retrieving and manipulating <a href="#data-structure-channel">channels</a>.
-
-
-</p>
+<p>Methods for retrieving and manipulating <a href="#data-structure-channel">channels</a>.</p>
 <h3>GET <code>/channels</code></h3>
-<p><em>Socket.IO command id: <code>channels.get</code></em>
-
-</p>
-<p>Gets the accessible activity channels (excluding those in the trash).
-
-</p>
+<p><em>Socket.IO command id: <code>channels.get</code></em></p>
+<p>Gets the accessible activity channels (excluding those in the trash).</p>
 <h4>Query string parameters</h4>
 <ul>
 <li><code>state</code> (<code>default</code>, <code>trashed</code> or <code>all</code>): Optional. Indicates what items to return depending on their state. By default, only items that are not in the trash are returned; <code>trashed</code> returns only items in the trash, while <code>all</code> return all items regardless of their state.</li>
 </ul>
 <h4>Successful response: <code>200 OK</code></h4>
-<p>An array of <a href="#data-structure-channel">activity channels</a>) containing the accessible channels in the user's account matching the specified state, ordered by name.
-
-</p>
+<p>An array of <a href="#data-structure-channel">activity channels</a>) containing the accessible channels in the user's account matching the specified state, ordered by name.</p>
 <h4>cURL example</h4>
 <pre class="highlighted"><code class="language-bash">curl -i https://{username}.pryv.io/channels?auth={access-token}</code></pre>
 <h3>POST <code>/channels</code></h3>
-<p>Creates a new activity channel. Only personal accesses allow creating new channels.
-
-</p>
+<p>Creates a new activity channel. Only personal accesses allow creating new channels.</p>
 <h4>Body parameters</h4>
-<p>The new channel's data: see <a href="#data-structure-channel">activity channel</a>. This can be as simple as:
-</p>
+<p>The new channel's data: see <a href="#data-structure-channel">activity channel</a>. This can be as simple as:</p>
 <pre class="highlighted"><code class="language-json">{ "<span class="attribute">name</span>": <span class="value"><span class="string">"Undercover Activities"</span> </span>}</code></pre>
 <h4>Successful response: <code>201 Created</code></h4>
 <ul>
@@ -166,12 +71,9 @@ _gaq.push(['_trackPageview']);
 <pre class="highlighted"><code class="language-bash">
 </code></pre>
 <h3>PUT <code>/channels/{channel-id}</code></h3>
-<p>Modifies the activity channel's attributes.
-
-</p>
+<p>Modifies the activity channel's attributes.</p>
 <h4>Body parameters</h4>
-<p>New values for the channel's fields: see <a href="#data-structure-channel">activity channel</a>. All fields are optional, and only modified values must be included. For example:
-</p>
+<p>New values for the channel's fields: see <a href="#data-structure-channel">activity channel</a>. All fields are optional, and only modified values must be included. For example:</p>
 <pre class="highlighted"><code class="language-json">{ "<span class="attribute">clientData</span>": <span class="value">{ "<span class="attribute">new-or-updated-client-specific-metadata</span>": <span class="value"><span class="number">42</span> </span>} </span>}</code></pre>
 <h4>Successful response: <code>200 OK</code></h4>
 <h4>Specific errors</h4>
@@ -182,32 +84,21 @@ _gaq.push(['_trackPageview']);
 <pre class="highlighted"><code class="language-bash">
 </code></pre>
 <h3>DELETE <code>/channels/{channel-id}</code></h3>
-<p>Trashes or deletes the given channel, depending on its current state:
-
-</p>
+<p>Trashes or deletes the given channel, depending on its current state:</p>
 <ul>
 <li>If the channel is not already in the trash, it will be moved to the trash (i.e. flagged as <code>trashed</code>)</li>
 <li>If the channel is already in the trash, it will be irreversibly deleted with all the folders and events it contains.</li>
 </ul>
-<p>Only personal accesses allow deleting channels.
-
-</p>
+<p>Only personal accesses allow deleting channels.</p>
 <h4>Successful response: <code>200 OK</code></h4>
 <h4>cURL example</h4>
 <pre class="highlighted"><code class="language-bash">
 </code></pre>
 <h2>Events</h2>
-<p>Methods to retrieve and manipulate <a href="#data-structure-event">events</a>.
-
-
-</p>
+<p>Methods to retrieve and manipulate <a href="#data-structure-event">events</a>.</p>
 <h3>GET <code>/{channel-id}/events</code></h3>
-<p><em>Socket.IO command id: <code>{channel-id}.events.get</code></em>
-
-</p>
-<p>Queries accessible events.
-
-</p>
+<p><em>Socket.IO command id: <code>{channel-id}.events.get</code></em></p>
+<p>Queries accessible events.</p>
 <h4>Query string parameters</h4>
 <ul>
 <li><code>fromTime</code> (<a href="#data-structure-timestamp">timestamp</a>): Optional. The start time of the timeframe you want to retrieve events for. Default is 24 hours before <code>toTime</code> if the latter is set; otherwise it is not taken into account.</li>
@@ -221,9 +112,7 @@ _gaq.push(['_trackPageview']);
 <li><code>modifiedSince</code> (<a href="#data-structure-timestamp">timestamp</a>): Optional. If specified, only events modified since that time will be returned.</li>
 </ul>
 <h4>Successful response: <code>200 OK</code></h4>
-<p>An array of <a href="#data-structure-event">events</a> containing the accessible events ordered by time (see <code>sortAscending</code> above).
-
-</p>
+<p>An array of <a href="#data-structure-event">events</a> containing the accessible events ordered by time (see <code>sortAscending</code> above).</p>
 <h4>Specific errors</h4>
 <ul>
 <li><code>400 Bad Request</code>, id <code>unknown-folder</code>: one (or more) of the specified folders does not exist. The unknown folders' ids are listed as an array in the error's <code>data.unknownIds</code>.</li>
@@ -231,22 +120,12 @@ _gaq.push(['_trackPageview']);
 <h4>cURL example</h4>
 <pre class="highlighted"><code class="language-bash">curl -i https://{username}.pryv.io/{channel-id}/events?auth={access-token}</code></pre>
 <h3>POST <code>/{channel-id}/events</code></h3>
-<p><em>Socket.IO command id: <code>{channel-id}.events.create</code></em>
-
-</p>
-<p>Records a new event. Events recorded this way must be completed events, i.e. either period events with a known duration or mark events. To start a running period event, post a <code>events/start</code> request.
-
-</p>
-<p>In addition to the usual JSON, this request accepts standard multipart/form-data content to support the creation of event with attached files in a single request. When sending a multipart request, one content part must hold the JSON for the new event and all other content parts must be the attached files.
-
-</p>
-<p>TODO: example
-
-</p>
+<p><em>Socket.IO command id: <code>{channel-id}.events.create</code></em></p>
+<p>Records a new event. Events recorded this way must be completed events, i.e. either period events with a known duration or mark events. To start a running period event, post a <code>events/start</code> request.</p>
+<p>In addition to the usual JSON, this request accepts standard multipart/form-data content to support the creation of event with attached files in a single request. When sending a multipart request, one content part must hold the JSON for the new event and all other content parts must be the attached files.</p>
+<p>TODO: example</p>
 <h4>Body parameters</h4>
-<p>The new event's data: see <a href="#data-structure-event">Event</a>.
-
-</p>
+<p>The new event's data: see <a href="#data-structure-event">Event</a>.</p>
 <h4>Successful response: <code>201 Created</code></h4>
 <ul>
 <li><code>id</code> (<a href="#data-structure-identity">identity</a>): The new event's id.</li>
@@ -261,30 +140,18 @@ _gaq.push(['_trackPageview']);
 <h4>cURL example</h4>
 <pre class="highlighted"><code class="language-bash">curl -i -H <span class="string">"Content-Type: application/json"</span> -X POST -d <span class="string">'{"folderId":"{folder-id}"}'</span> https://{username}.pryv.io/{channel-id}/events?auth={access-token}</code></pre>
 <h3>POST <code>/{channel-id}/events/start</code></h3>
-<p><em>Socket.IO command id: <code>{channel-id}.events.start</code></em>
-
-</p>
-<p>Starts a new period event. In channels with <code>enforceNoEventsOverlap</code>, also stops the previously running period event if any. See POST <code>/{channel-id}/events</code> for details. TODO: detail
-
-</p>
+<p><em>Socket.IO command id: <code>{channel-id}.events.start</code></em></p>
+<p>Starts a new period event. In channels with <code>enforceNoEventsOverlap</code>, also stops the previously running period event if any. See POST <code>/{channel-id}/events</code> for details. TODO: detail</p>
 <h4>Body parameters</h4>
-<p>See POST <code>{channel-id}/events</code>.
-
-</p>
+<p>See POST <code>{channel-id}/events</code>.</p>
 <h4>Successful response: <code>201 Created</code></h4>
 <h4>Specific errors</h4>
-<p>See POST <code>/{channel-id}/events</code>.
-
-</p>
+<p>See POST <code>/{channel-id}/events</code>.</p>
 <h4>cURL example</h4>
 <pre class="highlighted"><code class="language-bash">curl -i -H <span class="string">"Content-Type: application/json"</span> -X POST -d <span class="string">'{"folderId":"{folder-id}"}'</span> https://{username}.pryv.io/{channel-id}/events/start?auth={access-token}</code></pre>
 <h3>POST <code>/{channel-id}/events/stop</code></h3>
-<p><em>Socket.IO command id: <code>{channel-id}.events.stop</code></em>
-
-</p>
-<p>Stops a previously running period event. In channels with <code>enforceNoEventsOverlap</code>, which guarantee that only one event is running at any given time, that event is automatically determined; for regular channels, the event to stop must be specified.
-
-</p>
+<p><em>Socket.IO command id: <code>{channel-id}.events.stop</code></em></p>
+<p>Stops a previously running period event. In channels with <code>enforceNoEventsOverlap</code>, which guarantee that only one event is running at any given time, that event is automatically determined; for regular channels, the event to stop must be specified.</p>
 <h4>Body parameters</h4>
 <ul>
 <li><code>id</code> (<a href="#data-structure-identity">identity</a>): The id of the event to stop. Optional in channels with <code>enforceNoEventsOverlap</code>.</li>
@@ -304,30 +171,18 @@ _gaq.push(['_trackPageview']);
 <pre class="highlighted"><code class="language-bash">
 </code></pre>
 <h3>GET <code>/{channel-id}/events/running</code></h3>
-<p><em>Socket.IO command id: <code>{channel-id}.events.getRunning</code></em>
-
-</p>
-<p>Gets the currently running period events.
-
-</p>
+<p><em>Socket.IO command id: <code>{channel-id}.events.getRunning</code></em></p>
+<p>Gets the currently running period events.</p>
 <h4>Successful response: <code>200 OK</code></h4>
-<p>An array of <a href="#data-structure-event">events</a> containing the running period events.
-
-</p>
+<p>An array of <a href="#data-structure-event">events</a> containing the running period events.</p>
 <h4>cURL example</h4>
 <pre class="highlighted"><code class="language-bash">
 </code></pre>
 <h3>PUT <code>/{channel-id}/events/{event-id}</code></h3>
-<p><em>Socket.IO command id: <code>{channel-id}.events.update</code></em>
-
-</p>
-<p>Modifies the event's attributes.
-
-</p>
+<p><em>Socket.IO command id: <code>{channel-id}.events.update</code></em></p>
+<p>Modifies the event's attributes.</p>
 <h4>Body parameters</h4>
-<p>New values for the event's fields: see <a href="#data-structure-event">event</a>. All fields are optional, and only modified values must be included. TODO: example
-
-</p>
+<p>New values for the event's fields: see <a href="#data-structure-event">event</a>. All fields are optional, and only modified values must be included. TODO: example</p>
 <h4>Successful response: <code>200 OK</code></h4>
 <ul>
 <li><code>stoppedId</code> (<a href="#data-structure-identity">identity</a>): If set, indicates the id of the previously running period event that was stopped as a consequence of modifying the event.</li>
@@ -341,26 +196,16 @@ _gaq.push(['_trackPageview']);
 <pre class="highlighted"><code class="language-bash">
 </code></pre>
 <h3>POST <code>/{channel-id}/events/{event-id}</code></h3>
-<p>Adds one or more file attachments to the event. This request expects standard multipart/form-data content, with all content parts being the attached files.
-
-</p>
-<p>TODO: example
-
-</p>
+<p>Adds one or more file attachments to the event. This request expects standard multipart/form-data content, with all content parts being the attached files.</p>
+<p>TODO: example</p>
 <h4>Successful response: <code>200 OK</code></h4>
 <h4>cURL example</h4>
 <pre class="highlighted"><code class="language-bash">curl -i -F <span class="string">'event={"type":{"class":"picture","format":"attached"}}'</span>  -F <span class="string">'file=@-'</span> https://<span class="variable">$USERNAME</span>.rec.la/<span class="variable">$CHANNEL</span>/events?auth=<span class="variable">$TOKEN</span> &lt; <span class="variable">$FILENAME</span></code></pre>
-<p>This next one will send the correct filename
-
-</p>
+<p>This next one will send the correct filename</p>
 <pre class="highlighted"><code class="language-bash">curl -i -F <span class="string">'event={"type":{"class":"picture","format":"attached"}}'</span>  -F <span class="string">"file=@<span class="variable">$FILENAME</span>"</span> https://<span class="variable">$USERNAME</span>.rec.la/<span class="variable">$CHANNEL</span>/events?auth=<span class="variable">$TOKEN</span></code></pre>
 <h3>DELETE <code>/{channel-id}/events/{event-id}</code></h3>
-<p><em>Socket.IO command id: <code>{channel-id}.events.del</code></em>
-
-</p>
-<p>Trashes or deletes the specified event, depending on its current state:
-
-</p>
+<p><em>Socket.IO command id: <code>{channel-id}.events.del</code></em></p>
+<p>Trashes or deletes the specified event, depending on its current state:</p>
 <ul>
 <li>If the event is not already in the trash, it will be moved to the trash (i.e. flagged as <code>trashed</code>)</li>
 <li>If the event is already in the trash, it will be irreversibly deleted (including all its attached files, if any).</li>
@@ -370,42 +215,29 @@ _gaq.push(['_trackPageview']);
 <pre class="highlighted"><code class="language-bash">
 </code></pre>
 <h3>GET <code>/{channel-id}/events/{event-id}/{file name}</code></h3>
-<p>Gets the attached file.
-
-</p>
+<p>Gets the attached file.</p>
 <h4>Successful response: <code>200 OK</code></h4>
 <h4>cURL example</h4>
 <pre class="highlighted"><code class="language-bash">
 </code></pre>
 <h3>DELETE <code>/{channel-id}/events/{event-id}/{file name}</code></h3>
-<p><em>Socket.IO command id: <code>{channel-id}.events.deleteAttachedFile</code></em>
-
-</p>
-<p>Irreversibly deletes the attached file.
-
-</p>
+<p><em>Socket.IO command id: <code>{channel-id}.events.deleteAttachedFile</code></em></p>
+<p>Irreversibly deletes the attached file.</p>
 <h4>Successful response: <code>200 OK</code></h4>
 <h4>cURL example</h4>
 <pre class="highlighted"><code class="language-bash">
 </code></pre>
 <h3>POST <code>/{channel-id}/events/batch</code></h3>
-<p>Batch upload events that were recorded by the client while offline. The submitted events are added in-order, with results returned individually for each (see response below).
-
-</p>
+<p>Batch upload events that were recorded by the client while offline. The submitted events are added in-order, with results returned individually for each (see response below).</p>
 <h4>Body parameters</h4>
-<p>An array of client-recorded <a href="#data-structure-event">events</a>. In addition to the regular properties, each event must have a unique <code>tempRefId</code> defined (as it's temporary it must only be unique within the request). Also, make sure that the events' <code>time</code> is set in server time (as for single event requests).
-
-</p>
+<p>An array of client-recorded <a href="#data-structure-event">events</a>. In addition to the regular properties, each event must have a unique <code>tempRefId</code> defined (as it's temporary it must only be unique within the request). Also, make sure that the events' <code>time</code> is set in server time (as for single event requests).</p>
 <h4>Successful response: <code>200 OK</code></h4>
-<p>An object with one property per event submitted holding the result for that event. Each property's name is the submitted event's client id, and its value contains:
-
-</p>
+<p>An object with one property per event submitted holding the result for that event. Each property's name is the submitted event's client id, and its value contains:</p>
 <ul>
 <li>If the event was successful created, an object with the <code>id</code> of the event, and possibly the <code>stoppedId</code> of the running period event that was stopped as a result. (For details, see POST <code>/{channel-id}/events</code>.)</li>
 <li>If there was an error creating the event: an object with an <code>error</code> property holding the encountered <a href="#data-structure-error">error</a>.</li>
 </ul>
-<p>Example:
-</p>
+<p>Example:</p>
 <pre class="highlighted"><code class="language-json">{
     "<span class="attribute">temp_ref_id_1</span>": <span class="value">{"<span class="attribute">id</span>": <span class="value"><span class="string">"TTMyhYEZriJ"</span></span>}</span>,
     "<span class="attribute">temp_ref_id_2</span>": <span class="value">{"<span class="attribute">error</span>": <span class="value">{
@@ -417,17 +249,10 @@ _gaq.push(['_trackPageview']);
 <pre class="highlighted"><code class="language-bash">
 </code></pre>
 <h2>Folders</h2>
-<p>Methods to retrieve and manipulate <a href="#data-structure-folder">folders</a>.
-
-
-</p>
+<p>Methods to retrieve and manipulate <a href="#data-structure-folder">folders</a>.</p>
 <h3>GET <code>/{channel-id}/folders</code></h3>
-<p><em>Socket.IO command id: <code>{channel-id}.folders.get</code></em>
-
-</p>
-<p>Gets the accessible folders, either from the root level or only descending from a specified parent folder.
-
-</p>
+<p><em>Socket.IO command id: <code>{channel-id}.folders.get</code></em></p>
+<p>Gets the accessible folders, either from the root level or only descending from a specified parent folder.</p>
 <h4>Query string parameters</h4>
 <ul>
 <li><code>parentId</code> (<a href="#data-structure-identity">identity</a>): Optional. The id of the parent folder to use as root for the request. Default: <code>null</code> (returns all accessible folders from the root level).</li>
@@ -436,31 +261,20 @@ _gaq.push(['_trackPageview']);
 <li><code>timeCountBase</code> (<a href="#data-structure-timestamp">timestamp</a>): Optional. If specified, the returned folders will include the summed duration of all their period events, starting from this timestamp (see <code>timeCount</code> in <a href="#data-structure-folder">activity folder</a>); otherwise no time count values will be returned.</li>
 </ul>
 <h4>Successful response: <code>200 OK</code></h4>
-<p>An array of <a href="#data-structure-folder">activity folders</a> containing the tree of the accessible folders, sorted by name.
-
-</p>
+<p>An array of <a href="#data-structure-folder">activity folders</a> containing the tree of the accessible folders, sorted by name.</p>
 <h4>Specific errors</h4>
 <ul>
 <li><code>400 Bad Request</code>, id <code>unknown-folder</code>: The specified parent folder can't be found.</li>
 </ul>
-<p>TODO: example (with and without time accounting)
-
-
-</p>
+<p>TODO: example (with and without time accounting)</p>
 <h4>cURL example</h4>
 <pre class="highlighted"><code class="language-bash">
 </code></pre>
 <h3>POST <code>/{channel-id}/folders</code></h3>
-<p><em>Socket.IO command id: <code>{channel-id}.folders.create</code></em>
-
-</p>
-<p>Creates a new folder at the root level or as a child folder to the specified folder.
-
-</p>
+<p><em>Socket.IO command id: <code>{channel-id}.folders.create</code></em></p>
+<p>Creates a new folder at the root level or as a child folder to the specified folder.</p>
 <h4>Body parameters</h4>
-<p>The new folder's data: see <a href="#data-structure-folder">activity folder</a>.
-
-</p>
+<p>The new folder's data: see <a href="#data-structure-folder">activity folder</a>.</p>
 <h4>Successful response: <code>201 Created</code></h4>
 <ul>
 <li><code>id</code> (<a href="#data-structure-identity">identity</a>): The created folder's id.</li>
@@ -475,19 +289,11 @@ _gaq.push(['_trackPageview']);
 <pre class="highlighted"><code class="language-bash">
 </code></pre>
 <h3>PUT <code>/{channel-id}/folders/{folder-id}</code></h3>
-<p><em>Socket.IO command id: <code>{channel-id}.folders.update</code></em>
-
-</p>
-<p>Modifies the activity folder's attributes.
-
-</p>
+<p><em>Socket.IO command id: <code>{channel-id}.folders.update</code></em></p>
+<p>Modifies the activity folder's attributes.</p>
 <h4>Body parameters</h4>
-<p>New values for the folder's fields: see <a href="#data-structure-folder">activity folder</a>. All fields are optional, and only modified values must be included.
-
-</p>
-<p>TODO: example
-
-</p>
+<p>New values for the folder's fields: see <a href="#data-structure-folder">activity folder</a>. All fields are optional, and only modified values must be included.</p>
+<p>TODO: example</p>
 <h4>Successful response: <code>200 OK</code></h4>
 <h4>Specific errors</h4>
 <ul>
@@ -498,12 +304,8 @@ _gaq.push(['_trackPageview']);
 <pre class="highlighted"><code class="language-bash">
 </code></pre>
 <h3>DELETE <code>/{channel-id}/folders/{folder-id}</code></h3>
-<p><em>Socket.IO command id: <code>{channel-id}.folders.del</code></em>
-
-</p>
-<p>Trashes or deletes the specified folder, depending on its current state:
-
-</p>
+<p><em>Socket.IO command id: <code>{channel-id}.folders.del</code></em></p>
+<p>Trashes or deletes the specified folder, depending on its current state:</p>
 <ul>
 <li>If the folder is not already in the trash, it will be moved to the trash (i.e. flagged as <code>trashed</code>)</li>
 <li>If the folder is already in the trash, it will be irreversibly deleted with its possible descendants. If events exist that refer to the deleted item(s), you must indicate how to handle them with the parameter <code>mergeEventsWithParent</code>..</li>
@@ -521,28 +323,17 @@ _gaq.push(['_trackPageview']);
 <pre class="highlighted"><code class="language-bash">
 </code></pre>
 <h2><a id="activity-accesses"></a>Accesses</h2>
-<p>While full access management is reserved for trusted apps, any app can retrieve and manage shared accesses depending on its own permissions. All methods here only deal with shared accesses whose permissions are a subset of that linked to the token used for the requests. (You'll get a <code>403 Forbidden</code> error if trying to touch other types of accesses, or shared accesses with greater permissions.)
-
-
-</p>
+<p>While full access management is reserved for trusted apps, any app can retrieve and manage shared accesses depending on its own permissions. All methods here only deal with shared accesses whose permissions are a subset of that linked to the token used for the requests. (You'll get a <code>403 Forbidden</code> error if trying to touch other types of accesses, or shared accesses with greater permissions.)</p>
 <h3>GET <code>/accesses</code></h3>
-<p>Gets all manageable shared accesses.
-
-</p>
+<p>Gets all manageable shared accesses.</p>
 <h4>Successful response: <code>200 OK</code></h4>
-<p>An array of <a href="#data-structure-access">accesses</a> containing all manageable shared accesses in the user's account, ordered by name.
-
-</p>
+<p>An array of <a href="#data-structure-access">accesses</a> containing all manageable shared accesses in the user's account, ordered by name.</p>
 <h4>cURL example</h4>
 <pre class="highlighted"><code class="language-bash">curl -i -H <span class="string">"Authorization: {access-token}"</span> https://{username}.pryv.io/accesses</code></pre>
 <h3>POST <code>/accesses</code></h3>
-<p>Creates a new shared access. You can only create accesses whose permissions are a subset of those linked to your own access token.
-
-</p>
+<p>Creates a new shared access. You can only create accesses whose permissions are a subset of those linked to your own access token.</p>
 <h4>Body parameters</h4>
-<p>The new access's data: see <a href="#data-structure-access">access</a>.
-
-</p>
+<p>The new access's data: see <a href="#data-structure-access">access</a>.</p>
 <h4>Successful response: <code>201 Created</code></h4>
 <ul>
 <li><code>token</code> (<a href="#data-structure-identity">identity</a>): The created access's token.</li>
@@ -555,138 +346,109 @@ _gaq.push(['_trackPageview']);
 <pre class="highlighted"><code class="language-bash">
 </code></pre>
 <h3>PUT <code>/accesses/{token}</code></h3>
-<p>Modifies the specified shared access. You can only modify accesses whose permissions are a subset of those linked to your own access token.
-
-</p>
+<p>Modifies the specified shared access. You can only modify accesses whose permissions are a subset of those linked to your own access token.</p>
 <h4>Body parameters</h4>
-<p>New values for the access's fields: see <a href="#data-structure-access">access</a>. All fields are optional, and only modified values must be included. TODO: example
-
-</p>
+<p>New values for the access's fields: see <a href="#data-structure-access">access</a>. All fields are optional, and only modified values must be included. TODO: example</p>
 <h4>Successful response: <code>200 OK</code></h4>
 <h4>cURL example</h4>
 <pre class="highlighted"><code class="language-bash">
 </code></pre>
 <h3>DELETE <code>/accesses/{token}</code></h3>
-<p>Deletes the specified shared access. You can only delete accesses whose permissions are a subset of those linked to your own access token.
-
-</p>
+<p>Deletes the specified shared access. You can only delete accesses whose permissions are a subset of those linked to your own access token.</p>
 <h4>Successful response: <code>200 OK</code></h4>
 <h4>cURL example</h4>
 <pre class="highlighted"><code class="language-bash">
 </code></pre>
 <h2><a id="activity-profile-app"></a>App profile</h2>
-<p>The app profile is a simple key-value store available for your app to keep user settings. It is exposed as a plain object with free structure. The adding/updating/deleting of settings is designed in the expectation that each setting is a key at the profile object's root, but you can structure your profile differently if you wish.
-
-</p>
-<p>The app profile can only be used if authentified with an app access token.
-
-
-</p>
+<p>The app profile is a simple key-value store available for your app to keep user settings. It is exposed as a plain object with free structure. The adding/updating/deleting of settings is designed in the expectation that each setting is a key at the profile object's root, but you can structure your profile differently if you wish.</p>
+<p>The app profile can only be used if authentified with an app access token.</p>
 <h3>GET <code>/profile/app</code></h3>
-<p>Gets your app profile settings.
-
-</p>
+<p>Gets your app profile settings.</p>
 <h4>Successful response: <code>200 OK</code></h4>
-<p>An object containing your app's current profile settings. The method always returns an object (which will be empty if your app never defined any setting).
-
-</p>
+<p>An object containing your app's current profile settings. The method always returns an object (which will be empty if your app never defined any setting).</p>
 <h4>cURL example</h4>
 <pre class="highlighted"><code class="language-bash">
 </code></pre>
 <h3>PUT <code>/profile/app</code></h3>
-<p>Adds, updates or delete settings.
-
-</p>
+<p>Adds, updates or delete settings.</p>
 <ul>
 <li>To add or update a setting, just set its value; for example: <code>{"keyToAddOrUpdate": "value"}</code></li>
 <li>To delete a field, set its value to <code>null</code>; for example: <code>{"keyToDelete": null}</code></li>
 </ul>
-<p>Settings you don't specify in the update are left untouched.
-
-</p>
+<p>Settings you don't specify in the update are left untouched.</p>
 <h4>Body parameters</h4>
-<p>An object with the desired changes to the settings (see above).
-
-</p>
+<p>An object with the desired changes to the settings (see above).</p>
 <h4>Successful response: <code>200 OK</code></h4>
 <h4>cURL example</h4>
 <pre class="highlighted"><code class="language-bash">
 </code></pre>
 <h2><a id="activity-profile-public"></a>Public profile</h2>
-<p>The public profile is a simple read-only object exposing publicly shared user information (e.g. avatar image) for use in your app.
-
-
-</p>
+<p>The public profile is a simple read-only object exposing publicly shared user information (e.g. avatar image) for use in your app.</p>
 <h3>GET <code>/profile/public</code></h3>
-<p>Gets the user's public profile info.
-
-</p>
+<p>Gets the user's public profile info.</p>
 <h4>Successful response: <code>200 OK</code></h4>
-<p>An object containing the user's current public profile information.
-
-</p>
+<p>An object containing the user's current public profile information.</p>
 <h4>cURL example</h4>
 <pre class="highlighted"><code class="language-bash">
 </code></pre>
-</section><section id="socketio"><h1>Socket.IO support</h1>
-<p>The activity service supports real-time interaction with <a href="http://socket.io">Socket.IO</a>, both by accepting equivalent messages for most API methods and by emitting data change notification messages. (Code examples below are in Javascript.)
-
-
-</p>
-<h3>Connecting</h3>
-<p>In order to use Socket.IO, your app must first load the appropriate Socket.IO client library. For a Javascript web app, that's the <code>socket.io.js</code> file served by the activity server at the following URL: <code>https://{username}.pryv.io/socket.io/socket.io.js</code>. (For other languages see the related section on the <a href="https://github.com/learnboost/socket.io/wiki">Socket.IO wiki</a>.)
-
-</p>
-<p>The second step is to initialize the connection. Here's the URL you need to use:
-</p>
-<pre class="highlighted"><code class="ruby">https<span class="symbol">:</span>/<span class="regexp">/{username}.pryv.io:443/</span>{username}<span class="number">?a</span>uth={accessToken}&amp;resource=<span class="regexp">/{username}</span></code></pre>
-<p>For example, in Javascript do:
-</p>
-<pre class="highlighted"><code class="language-javascript"><span class="keyword">var</span> socket = io.connect(<span class="string">"https://mathurin.pryv.io:443/mathurin?auth=TVVro8e8T5&amp;resource=/mathurin"</span>)</code></pre>
-<h3>Calling API methods</h3>
-<p>Every method in the activity service can be called by sending a corresponding Socket.IO <code>command</code> message, providing a data object specifying the command (or method) and possible parameters, and a callback function for the response:
-</p>
-<pre class="highlighted"><code class="language-javascript">socket.emit(<span class="string">'command'</span>, {id: <span class="string">'{id}'</span>, params: {<span class="comment">/*parameters*/</span>}}, <span class="function"><span class="keyword">function</span> <span class="params">(error, data)</span> {</span>
-  <span class="comment">// handle response here</span>
-});</code></pre>
-<p>Command ids are indicated for each API method below and are modeled after the equivalent URL path. For example, here's how you could call <code>GET /{channel-id}/events</code>:
-</p>
-<pre class="highlighted"><code class="language-javascript"><span class="keyword">var</span> cmdData = {
-  id: <span class="string">'{channel-id}.events.get'</span>,
-  params: {
-    sortAscending: <span class="literal">true</span>
-  }
-};
-socket.emit(<span class="string">'command'</span>, cmdData, <span class="function"><span class="keyword">function</span> <span class="params">(error, data)</span> {</span>
-  <span class="comment">// handle response</span>
-});</code></pre>
-<h3>Receiving data change notifications</h3>
-<p>You can be notified of changes to channels, folders and events by subscribing to the corresponding messages <code>channelsChanged</code>, <code>eventsChanged</code> and <code>foldersChanged</code>. For the latter two, the message is passed a parameters object with a <code>channelId</code> property to help you refresh only what's necessary.
-For example:
-</p>
-<pre class="highlighted"><code class="language-javascript">socket.on(<span class="string">'channelsChanged'</span>, <span class="keyword">function</span>() { <span class="comment">// no scope parameter for channels</span>
-  <span class="comment">// ... (retrieve latest changes and update)</span>
-});
-socket.on(<span class="string">'eventsChanged'</span>, <span class="keyword">function</span>(scope) {
-  <span class="comment">// scope.channelId contains the related channel id</span>
-  <span class="comment">// ... (retrieve latest changes and update)</span>
-});</code></pre>
+</section><section id="basics"><h1>Basics</h1>
+<h2>API style</h2>
+<p>Most of the API follows REST principles, meaning each item has its own unique resource URL and can be read or modified via HTTP verbs:</p>
+<ul>
+<li>GET to read the item(s)</li>
+<li>POST to create a new item, with a JSON message in the request body</li>
+<li>PUT to modify the item, with a JSON message in the request body</li>
+<li>DELETE to delete the item (note that logical deletion, or trashing, is supported for items like events, folders and channels)</li>
+</ul>
+<p>Example API request:</p>
+<pre class="highlighted"><code class="language-http"><span class="request">GET <span class="string">/{channel-id}/events</span> HTTP/1.1</span>
+<span class="attribute">Host</span>: <span class="string">{user-name}.pryv.io</span>
+<span class="attribute">Authorization</span>: <span class="string">{access-token}</span></code></pre>
+<p>Note that the API also supports Socket.IO, for both calling API methods and receiving live notifications of changes to activity data. See <a href="#socketio">the dedicated section</a>.</p>
+<h2>Base URL</h2>
+<p><code>https://{username}.pryv.io</code> (where <code>{username}</code> is the name of the user whose data you want to access)</p>
+<p>Because Pryv potentially stores each user's data in a different location according to the user's choice, the API's base URL is unique for each user.</p>
+<h2>Data format</h2>
+<p>The API exchanges data with the client in JSON.</p>
+<p>Example event:</p>
+<pre class="highlighted"><code class="language-json">{
+  "<span class="attribute">id</span>": <span class="value"><span class="string">"5051941d04b8ffd00500000d"</span></span>,
+  "<span class="attribute">time</span>": <span class="value"><span class="number">1347864935.964</span></span>,
+  "<span class="attribute">folderId</span>": <span class="value"><span class="string">"5058370ade44feaa03000015"</span></span>,
+  "<span class="attribute">type</span>": <span class="value">{ "<span class="attribute">class</span>": <span class="value"><span class="string">"position"</span></span>, "<span class="attribute">format</span>": <span class="value"><span class="string">"wgs84"</span> </span>}</span>,
+  "<span class="attribute">value</span>": <span class="value">{ "<span class="attribute">location</span>": <span class="value">{ "<span class="attribute">lat</span>": <span class="value"><span class="number">40.714728</span></span>, "<span class="attribute">lng</span>": <span class="value">-<span class="number">73.998672</span> </span>} </span>}</span>,
+}</code></pre>
+<h2>Alternative request method</h2>
+<p>Because we can't fathom out the crazy rationale behind <a href="https://developer.mozilla.org/en-US/docs/HTTP/Access_control_CORS">HTTP access control (CORS) rules</a>, we offer web apps an alternative way to place POST, PUT and DELETE requests in the API by using <code>application/x-www-form-urlencoded</code> POST requests with the following fields (all optional):</p>
+<ul>
+<li><code>_method</code>: The HTTP override method to use (usually <code>PUT</code> or <code>DELETE</code>; <code>POST</code> is used if not set).</li>
+<li><code>_auth</code>: The <code>Authorization</code> header value (alternative to sending the header itself).</li>
+<li><code>_json</code>: Considered as the JSON request body if set (overriding all other body content, if any).</li>
+</ul>
+<p>This is intended for web apps only; if your app isn't running in browsers you should use regular requests.</p>
+<h2>Common HTTP headers</h2>
+<p>The following headers are included in every response:</p>
+<ul>
+<li><code>API-Version</code>: The version of the API in the form <code>{major}.{minor}.{revision}</code>.</li>
+<li><code>Server-Time</code>: The current server time as a <a href="#data-structure-timestamp">timestamp</a>. Keeping reference of the server time is an absolute necessity to properly read and write event times.</li>
+</ul>
+<h2>Errors</h2>
+<p>When an error occurs, the API returns a 4xx or 5xx status code, with the response body usually containing an <a href="#data-structure-error">error</a> object detailing the cause.</p>
+<p>Here's an example "401 Unauthorized" error response:</p>
+<pre class="highlighted"><code class="language-json">{
+  "<span class="attribute">id</span>": <span class="value"><span class="string">"invalid-access-token"</span></span>,
+  "<span class="attribute">message</span>": <span class="value"><span class="string">"Cannot find access with token 'bad-token'."</span>
+</span>}</code></pre>
 </section><section id="data-structure"><h1>Data structure</h1>
-<p>This section describes the structure of the different types of objects and values exchanged in the API.
-
-</p>
-<p>Notes:
-
-</p>
+<p>This section describes the structure of the different types of objects and values exchanged in the API.</p>
+<p>Notes:</p>
 <ul>
 <li>"Read-only" = server-assigned, never set or modified by clients</li>
 <li>We should and will reformat items structure for quick visual parsing (e.g. using tables, or at least coloured labels for stuff like "optional")—for the moment we've consciously chosen low-formatting, quick-to-edit bullet lists</li>
 </ul>
 <h2><a id="data-structure-channel"></a>Channel</h2>
 <p>Each activity channel represents a "stream" or "type" of activity to track, acting as a storage bucket for related events.
-Fields:
-
-</p>
+Fields:</p>
 <ul>
 <li><code>id</code> (<a href="#data-structure-identity">identity</a>): Unique, read-only (except at creation). The identifier for the channel. Automatically generated if not set when creating the channel; <strong>slugified if necessary</strong>.</li>
 <li><code>name</code> (string): Unique. The name identifying the channel for users.</li>
@@ -695,24 +457,15 @@ Fields:
 <li><code>timeCount</code> (<a href="#data-structure-timestamp">timestamp</a>): Read-only. Only optionally returned when querying channels, indicating the total time tracked in that channel since a given reference date and time. <strong>This will be implemented later.</strong></li>
 <li><code>trashed</code> (boolean): Optional. <code>true</code> if the channel is in the trash.</li>
 </ul>
-<p>TODO: example
-
-
-</p>
+<p>TODO: example</p>
 <h2><a id="data-structure-event"></a>Event</h2>
-<p>Events can be period events, which are associated with a period of time, or mark events, which are just associated with a single point in time:
-
-</p>
+<p>Events can be period events, which are associated with a period of time, or mark events, which are just associated with a single point in time:</p>
 <ul>
 <li>Period events are used to track everything with a duration, like time spent drafting a project proposal, meeting with the customer or staying at a particular location.</li>
 <li>Mark events are used to track everything else, like a note, a log message, a GPS location, a temperature measurement, or a stock market asset value.</li>
 </ul>
-<p>Differentiating them is simple: period events carry a duration, while mark events do not. Like folders, events always belong to an activity channel.
-
-</p>
-<p>Fields:
-
-</p>
+<p>Differentiating them is simple: period events carry a duration, while mark events do not. Like folders, events always belong to an activity channel.</p>
+<p>Fields:</p>
 <ul>
 <li><code>id</code> (<a href="#data-structure-identity">identity</a>): Unique, read-only. The server-assigned identifier for the event.</li>
 <li><code>channelId</code> (<a href="#data-structure-identity">identity</a>): Read-only. The id of the belonging channel.</li>
@@ -758,12 +511,8 @@ Fields:
     <span class="string">"modified"</span> : <span class="number">1350373077.359</span> }
 ]</code></pre>
 <h2><a id="data-structure-folder"></a>Folder</h2>
-<p>Activity folders are the possible states or categories you track the channel's events into (folders are always specific to an activity channel). Every period event belongs to one folder, while mark events can be recorded "off-folder" as well. Activity folders follow a hierarchical tree structure: every folder can contain "child" folders (sub-folders).
-
-</p>
-<p>Fields:
-
-</p>
+<p>Activity folders are the possible states or categories you track the channel's events into (folders are always specific to an activity channel). Every period event belongs to one folder, while mark events can be recorded "off-folder" as well. Activity folders follow a hierarchical tree structure: every folder can contain "child" folders (sub-folders).</p>
+<p>Fields:</p>
 <ul>
 <li><code>id</code> (<a href="#data-structure-identity">identity</a>): Unique, read-only (except at creation). The identifier for the folder. Automatically generated if not set when creating the folder; <strong>slugified if necessary</strong>.</li>
 <li><code>channelId</code> (<a href="#data-structure-identity">identity</a>): Read-only. The id of the belonging channel.</li>
@@ -776,9 +525,7 @@ Fields:
 <li><code>trashed</code> (boolean): Optional. <code>true</code> if the folder is in the trash.</li>
 </ul>
 <h3>Example</h3>
-<p>A folder structure for activities:
-
-</p>
+<p>A folder structure for activities:</p>
 <pre class="highlighted"><code class="language-javascript">[
   { <span class="string">"name"</span>: <span class="string">"Sport"</span>, <span class="string">"id"</span>: <span class="string">"sport"</span>, <span class="string">"parentId"</span>: <span class="literal">null</span>,
     <span class="string">"children"</span>: [
@@ -800,12 +547,8 @@ Fields:
   }
 ];</code></pre>
 <h2><a id="data-structure-access"></a>Access</h2>
-<p>An access defines a set of permissions on a user's activity data (channels, folders and events). (See <a href="overview.html#sharing">how sharing works</a>.)
-
-</p>
-<p>Fields:
-
-</p>
+<p>An access defines a set of permissions on a user's activity data (channels, folders and events). (See <a href="overview.html#sharing">how sharing works</a>.)</p>
+<p>Fields:</p>
 <ul>
 <li><code>token</code> (string): Unique, read-only (except at creation). The token identifying the access. Automatically generated if not set when creating the access; <strong>slugified if necessary</strong>.</li>
 <li><code>type</code> (<code>"personal"</code>, <code>"app"</code> or <code>"shared"</code>): Optional. The type — or usage — of the access. Default: <code>"shared"</code>.</li>
@@ -822,55 +565,31 @@ Fields:
 </ul>
 </li>
 </ul>
-<p>A note about permissions: if the access defines conflicting permission levels (e.g. a folder set to "manage" but a child folder within it set to "contribute"), only the highest level is considered.
-
-</p>
-<p>TODO: example
-
-
-</p>
+<p>A note about permissions: if the access defines conflicting permission levels (e.g. a folder set to "manage" but a child folder within it set to "contribute"), only the highest level is considered.</p>
+<p>TODO: example</p>
 <h2><a id="data-structure-bookmark"></a>Bookmark</h2>
-<p>Sharing bookmarks allow the user to keep track of accesses shared with her by other users.
-
-</p>
-<p>Fields:
-
-</p>
+<p>Sharing bookmarks allow the user to keep track of accesses shared with her by other users.</p>
+<p>Fields:</p>
 <ul>
 <li><code>id</code> (<a href="#data-structure-identity">identity</a>): Unique, read-only. The server-assigned identifier for the bookmark.</li>
 <li><code>name</code> (string): Unique. A name identifying the bookmark for the user.</li>
 <li><code>url</code> (string): The url pointing to the shared access's owning user's server. Not modifiable after creation.</li>
 <li><code>accessToken</code> <a href="#data-structure-identity">identity</a>: The token of the shared access itself. Not modifiable after creation.</li>
 </ul>
-<p>TODO: example
-
-
-
-</p>
+<p>TODO: example</p>
 <h2><a id="data-structure-additional-data"></a>Item additional data</h2>
-<p>An object (key-value map) for client apps to store additional data about the containing item (channel, event, etc.), such as a color, a reference to an associated icon, or other app-specific metadata.
-
-</p>
+<p>An object (key-value map) for client apps to store additional data about the containing item (channel, event, etc.), such as a color, a reference to an associated icon, or other app-specific metadata.</p>
 <h3>Adding, updating and removing client data</h3>
-<p>When the containing item is updated, additional data fields can be added, updated and removed as follows:
-
-</p>
+<p>When the containing item is updated, additional data fields can be added, updated and removed as follows:</p>
 <ul>
 <li>To add or update a field, just set its value; for example: <code>{"clientData": {"keyToAddOrUpdate": "value"}}</code></li>
 <li>To delete a field, set its value to <code>null</code>; for example: <code>{"clientData": {"keyToDelete": null}}</code></li>
 </ul>
-<p>Fields you don't specify in the update are left untouched.
-
-</p>
+<p>Fields you don't specify in the update are left untouched.</p>
 <h3>Naming convention</h3>
-<p>The convention is that each app names the keys it uses with an <code>"{app-id}:"</code> prefix. For example, an app with id "riki" would store its data in fields such as <code>"riki:key": "some value"</code>.
-
-
-</p>
+<p>The convention is that each app names the keys it uses with an <code>"{app-id}:"</code> prefix. For example, an app with id "riki" would store its data in fields such as <code>"riki:key": "some value"</code>.</p>
 <h2><a id="data-structure-error"></a>Error</h2>
-<p>Fields:
-
-</p>
+<p>Fields:</p>
 <ul>
 <li><code>id</code> (string): Identifier for the error; complements the response's HTTP error code.</li>
 <li><code>message</code> (string): A human-readable description of the error.</li>
@@ -878,17 +597,10 @@ Fields:
 </ul>
 <h2>Simple types</h2>
 <h3><a id="data-structure-identity"></a>Item identity</h3>
-<p>A string value uniquely identifying an item of a given type (e.g. channel, event) for a given user. For some types of items ("structural" ones such as channels and folders), it is allowed for the identity to be optionally set by API clients; otherwise the identity is generated by the server as an alphanumeric string.
-
-
-</p>
+<p>A string value uniquely identifying an item of a given type (e.g. channel, event) for a given user. For some types of items ("structural" ones such as channels and folders), it is allowed for the identity to be optionally set by API clients; otherwise the identity is generated by the server as an alphanumeric string.</p>
 <h3><a id="data-structure-timestamp"></a>Timestamp</h3>
-<p>A positive floating-point number representing a number of seconds since any reference date and time, <strong>independently from the time zone</strong>. Because date and time synchronization between server time and client time is done by the client simply comparing the current server timestamp with its own, the reference date and time does not matter.
-
-</p>
-<p>Here are some examples of getting a valid timestamp in various environments:
-
-</p>
+<p>A positive floating-point number representing a number of seconds since any reference date and time, <strong>independently from the time zone</strong>. Because date and time synchronization between server time and client time is done by the client simply comparing the current server timestamp with its own, the reference date and time does not matter.</p>
+<p>Here are some examples of getting a valid timestamp in various environments:</p>
 <ul>
 <li>JavaScript: <code>Date.now() / 1000</code></li>
 <li>PHP (5+): <code>microtime(true)</code></li>
@@ -897,56 +609,30 @@ Fields:
 <h3><a id="data-structure-language-code"></a>Two-letter ISO language code</h3>
 <p>A two-letter string specifying a language following the ISO 639-1 standard (see <a href="http://en.wikipedia.org/wiki/ISO_639-1">the related Wikipedia definition</a>).</p>
 </section><section id="public-channels"><h1>Public channels</h1>
-<p><em>TODO: this should be a separate page. Wait till the final dev site structure is defined.</em>
-
-</p>
-<p>This section describes the public channel API, both for those of you who want to implement it for publishing their own channels and for those who want to integrate public channels into their app. The public channel API itself is a small subset of the Pryv API.
-
-
-</p>
+<p><em>TODO: this should be a separate page. Wait till the final dev site structure is defined.</em></p>
+<p>This section describes the public channel API, both for those of you who want to implement it for publishing their own channels and for those who want to integrate public channels into their app. The public channel API itself is a small subset of the Pryv API.</p>
 <h2>Overview</h2>
 <h3>Definition</h3>
-<p>Public channels are channels of general interest (like news or weather) that can be integrated into users' Pryv view to add context to their own events (or just browsed independantly as-is). Unlike Pryv users' data and because they are public and read-only, public channels don't have to run on Pryv servers – anyone is free to create and self-host a public channel for users to enrich their Pryv experience. The public channels directory within Pryv lists all the channels that were registered to us and validated, but users are free to add channels from any URL.
-
-</p>
+<p>Public channels are channels of general interest (like news or weather) that can be integrated into users' Pryv view to add context to their own events (or just browsed independantly as-is). Unlike Pryv users' data and because they are public and read-only, public channels don't have to run on Pryv servers – anyone is free to create and self-host a public channel for users to enrich their Pryv experience. The public channels directory within Pryv lists all the channels that were registered to us and validated, but users are free to add channels from any URL.</p>
 <p>TODO: link(s) to example public channel implementation(s)
-TODO: and possibly a simple tutorial.
-
-</p>
+TODO: and possibly a simple tutorial.</p>
 <h3><strong>*.pryv.io</strong> URLs</h3>
-<p>Public channels are not limited to <strong>*.pryv.io</strong> URLs; they can be published anywhere. When publishing your own channel, you are free to use any hostname and path you like. If however you'd like to use a <strong>*.pryv.io</strong> URL, just get in touch with us (TODO: add info about how to register for a *.pryv.io name + how to check if a name is available).
-
-
-</p>
+<p>Public channels are not limited to <strong>*.pryv.io</strong> URLs; they can be published anywhere. When publishing your own channel, you are free to use any hostname and path you like. If however you'd like to use a <strong>*.pryv.io</strong> URL, just get in touch with us (TODO: add info about how to register for a *.pryv.io name + how to check if a name is available).</p>
 <h3>Authorization and encryption</h3>
-<p>As you can expect, there is no authorization mechanism for accessing public channels. There's no need either to encrypt public channels with TLS (HTTPS), but we don't enforce any restriction there.
-
-</p>
-<p>TODO: clarify - are we talking about Pryv-served public channels here, or about the security aspects of (any) public channels? SGO: we are saying that there is no auth for public channels whatsoever. BTW there is no distinction between "Pryv-served" channels and others. Hosts of public channels can register for a *.pryv.io URL, but this doesn't mean they're hosted by us (it's just a DNS mapping). BTW about TLS I'm actually not sure we shouldn't enforce it, because we'll have an issue directly serving HTTP content from our HTTPS app. But then we can't require everyone interested to acquire a certificate, so we may have to host a proxy... but anyway this is too much thinking already. We've specified public channels as something we must support in the future, it won't be there in the very next months, so please don't spend special time on this section.
-
-</p>
+<p>As you can expect, there is no authorization mechanism for accessing public channels. There's no need either to encrypt public channels with TLS (HTTPS), but we don't enforce any restriction there.</p>
+<p>TODO: clarify - are we talking about Pryv-served public channels here, or about the security aspects of (any) public channels? SGO: we are saying that there is no auth for public channels whatsoever. BTW there is no distinction between "Pryv-served" channels and others. Hosts of public channels can register for a *.pryv.io URL, but this doesn't mean they're hosted by us (it's just a DNS mapping). BTW about TLS I'm actually not sure we shouldn't enforce it, because we'll have an issue directly serving HTTP content from our HTTPS app. But then we can't require everyone interested to acquire a certificate, so we may have to host a proxy... but anyway this is too much thinking already. We've specified public channels as something we must support in the future, it won't be there in the very next months, so please don't spend special time on this section.</p>
 <h3>HTTP headers</h3>
-<p>The following headers must be included in every response:
-
-</p>
+<p>The following headers must be included in every response:</p>
 <ul>
 <li><code>API-Version</code>: The version of the public channel API in the form <code>{major}.{minor}.{revision}</code>. (TODO: indicate documented version somewhere.)</li>
 <li><code>Server-Time</code>: The current server time as a <a href="#data-structure-timestamp">timestamp</a>, which must of course be consistent with the times of events in the channel.</li>
 </ul>
 <h3>Data</h3>
-<p>The JSON data exchanged is the same as in the Pryv API: see <a href="#data-structure-event">events</a>, <a href="#data-structure-folder">folders</a> and <a href="#data-structure-error">errors</a> there.
-
-
-</p>
+<p>The JSON data exchanged is the same as in the Pryv API: see <a href="#data-structure-event">events</a>, <a href="#data-structure-folder">folders</a> and <a href="#data-structure-error">errors</a> there.</p>
 <h2>Events</h2>
-<p>At a minimum, public channels publish <a href="#data-structure-event">events</a>.
-
-
-</p>
+<p>At a minimum, public channels publish <a href="#data-structure-event">events</a>.</p>
 <h3>GET <code>{channel base path}/events</code></h3>
-<p>Queries the channel's events. This is the only method that must be implemented in every public channel.
-
-</p>
+<p>Queries the channel's events. This is the only method that must be implemented in every public channel.</p>
 <h4>Query string parameters</h4>
 <ul>
 <li><code>fromTime</code> (<a href="#data-structure-timestamp">timestamp</a>): Optional. TODO. Default is 24 hours before <code>toTime</code>, if set.</li>
@@ -958,46 +644,68 @@ TODO: and possibly a simple tutorial.
 <li><code>modifiedSince</code> (<a href="#data-structure-timestamp">timestamp</a>): Optional. If specified, only events modified since that time will be returned.</li>
 </ul>
 <h4>Successful response: <code>200 OK</code></h4>
-<p>An array of <a href="#data-structure-event">events</a> containing the accessible events ordered by time (see <code>sortAscending</code> above).
-
-</p>
+<p>An array of <a href="#data-structure-event">events</a> containing the accessible events ordered by time (see <code>sortAscending</code> above).</p>
 <h4>Errors</h4>
 <ul>
 <li><code>400 Bad Request</code>, id <code>invalid-parameters-format</code>: The request's parameters do not follow the expected format (e.g. missing required parameter, wrong type of data, etc.)</li>
 <li><code>400 Bad Request</code>, id <code>unknown-folder</code>: One (or more) of the specified folders doesn't exist.</li>
 </ul>
 <h3>GET <code>{channel base path}/events/{event-id}/{file-name}</code></h3>
-<p>Gets the attached file. This method does not have to be implemented if the public channel's events never contain attachments; in that case a <code>404 Not Found</code> response is returned.
-
-</p>
+<p>Gets the attached file. This method does not have to be implemented if the public channel's events never contain attachments; in that case a <code>404 Not Found</code> response is returned.</p>
 <h4>Successful response: <code>200 OK</code></h4>
 <h4>Errors</h4>
 <ul>
 <li><code>404 Not Found</code>, id <code>unknown-attachment</code>: The attached file can't be found for the specified event.</li>
 </ul>
 <h2>Folders</h2>
-<p><a href="#data-structure-folder">Folders</a> provide an organization structure for channels that need it. Implementing folders in public channels is by no means mandatory; public channels with no need for folders just return a <code>404 Not Found</code> response for the method below.
-
-
-</p>
+<p><a href="#data-structure-folder">Folders</a> provide an organization structure for channels that need it. Implementing folders in public channels is by no means mandatory; public channels with no need for folders just return a <code>404 Not Found</code> response for the method below.</p>
 <h3>GET <code>{channel base path}/folders</code></h3>
-<p>Gets the channel's folders, either from the root level or only descending from a specified parent folder.
-
-</p>
+<p>Gets the channel's folders, either from the root level or only descending from a specified parent folder.</p>
 <h4>Query string parameters</h4>
 <ul>
 <li><code>parentId</code> (<a href="#data-structure-identity">identity</a>): Optional. The id of the parent folder to use as root for the request. Default: <code>null</code> (returns all folders from the root level).</li>
 </ul>
 <h4>Successful response: <code>200 OK</code></h4>
-<p>An array of <a href="#data-structure-folder">activity folders</a> containing the tree of the folders, sorted by name.
-
-</p>
+<p>An array of <a href="#data-structure-folder">activity folders</a> containing the tree of the folders, sorted by name.</p>
 <h4>Errors</h4>
 <ul>
 <li><code>400 Bad Request</code>, id <code>invalid-parameters-format</code>: The request's parameters do not follow the expected format (e.g. missing required parameter, wrong type of data, etc.)</li>
 <li><code>400 Bad Request</code>, id <code>unknown-folder</code>: The specified parent folder can't be found.</li>
 </ul>
 <p>TODO: example</p>
+</section><section id="socketio"><h1>Socket.IO support</h1>
+<p>The activity service supports real-time interaction with <a href="http://socket.io">Socket.IO</a>, both by accepting equivalent messages for most API methods and by emitting data change notification messages. (Code examples below are in Javascript.)</p>
+<h3>Connecting</h3>
+<p>In order to use Socket.IO, your app must first load the appropriate Socket.IO client library. For a Javascript web app, that's the <code>socket.io.js</code> file served by the activity server at the following URL: <code>https://{username}.pryv.io/socket.io/socket.io.js</code>. (For other languages see the related section on the <a href="https://github.com/learnboost/socket.io/wiki">Socket.IO wiki</a>.)</p>
+<p>The second step is to initialize the connection. Here's the URL you need to use:</p>
+<pre class="highlighted"><code class="ruby">https<span class="symbol">:</span>/<span class="regexp">/{username}.pryv.io:443/</span>{username}<span class="number">?a</span>uth={accessToken}&amp;resource=<span class="regexp">/{username}</span></code></pre>
+<p>For example, in Javascript do:</p>
+<pre class="highlighted"><code class="language-javascript"><span class="keyword">var</span> socket = io.connect(<span class="string">"https://mathurin.pryv.io:443/mathurin?auth=TVVro8e8T5&amp;resource=/mathurin"</span>)</code></pre>
+<h3>Calling API methods</h3>
+<p>Every method in the activity service can be called by sending a corresponding Socket.IO <code>command</code> message, providing a data object specifying the command (or method) and possible parameters, and a callback function for the response:</p>
+<pre class="highlighted"><code class="language-javascript">socket.emit(<span class="string">'command'</span>, {id: <span class="string">'{id}'</span>, params: {<span class="comment">/*parameters*/</span>}}, <span class="function"><span class="keyword">function</span> <span class="params">(error, data)</span> {</span>
+  <span class="comment">// handle response here</span>
+});</code></pre>
+<p>Command ids are indicated for each API method below and are modeled after the equivalent URL path. For example, here's how you could call <code>GET /{channel-id}/events</code>:</p>
+<pre class="highlighted"><code class="language-javascript"><span class="keyword">var</span> cmdData = {
+  id: <span class="string">'{channel-id}.events.get'</span>,
+  params: {
+    sortAscending: <span class="literal">true</span>
+  }
+};
+socket.emit(<span class="string">'command'</span>, cmdData, <span class="function"><span class="keyword">function</span> <span class="params">(error, data)</span> {</span>
+  <span class="comment">// handle response</span>
+});</code></pre>
+<h3>Receiving data change notifications</h3>
+<p>You can be notified of changes to channels, folders and events by subscribing to the corresponding messages <code>channelsChanged</code>, <code>eventsChanged</code> and <code>foldersChanged</code>. For the latter two, the message is passed a parameters object with a <code>channelId</code> property to help you refresh only what's necessary.
+For example:</p>
+<pre class="highlighted"><code class="language-javascript">socket.on(<span class="string">'channelsChanged'</span>, <span class="keyword">function</span>() { <span class="comment">// no scope parameter for channels</span>
+  <span class="comment">// ... (retrieve latest changes and update)</span>
+});
+socket.on(<span class="string">'eventsChanged'</span>, <span class="keyword">function</span>(scope) {
+  <span class="comment">// scope.channelId contains the related channel id</span>
+  <span class="comment">// ... (retrieve latest changes and update)</span>
+});</code></pre>
 </section></div></div><div id="toc"></div><script>jQuery(document).ready(function($) {
   $('#toc').toc({
     'selectors': 'h1,h2',

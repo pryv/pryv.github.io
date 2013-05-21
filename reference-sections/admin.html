@@ -1,29 +1,17 @@
 <html><head></head><body><h1>Administration methods</h1>
-<p><strong>Administration is only allowed for trusted apps</strong>; to register your app as trusted, please <a href="mailto:developers@pryv.com">get in touch with us</a>. If you're only interested in obtaining access tokens for your app, see the <a href="app-access.html">app access documentation</a> instead.
-
-</p>
-<p>Administration methods allow managing the user's <a href="#admin-user">account information</a>, <a href="#admin-channels">activity channels</a> and <a href="#admin-accesses">sharing</a> (via accesses).
-
-
-
-</p>
+<p><strong>Administration is only allowed for trusted apps</strong>; to register your app as trusted, please <a href="mailto:developers@pryv.com">get in touch with us</a>. If you're only interested in obtaining access tokens for your app, see the <a href="app-access.html">app access documentation</a> instead.</p>
+<p>Administration methods allow managing the user's <a href="#admin-user">account information</a>, <a href="#admin-channels">activity channels</a> and <a href="#admin-accesses">sharing</a> (via accesses).</p>
 <h2>Authorization</h2>
-<p>Access to admin methods is managed by sessions. To create a session, you must successfully authenticate with a <code>/admin/login</code> request, which will return the session ID. Each request sent during the duration of the session must then contain the session ID in its <code>Authorization</code> header or, alternatively, in the query string's <code>auth</code> parameter. The session is terminated when <code>/admin/logout</code> is called or when the session times out (TODO: indicate session timeout delay).
-
-</p>
-<p>Here's what an admin request (with a session open) looks like:
-</p>
+<p>Access to admin methods is managed by sessions. To create a session, you must successfully authenticate with a <code>/admin/login</code> request, which will return the session ID. Each request sent during the duration of the session must then contain the session ID in its <code>Authorization</code> header or, alternatively, in the query string's <code>auth</code> parameter. The session is terminated when <code>/admin/logout</code> is called or when the session times out (TODO: indicate session timeout delay).</p>
+<p>Here's what an admin request (with a session open) looks like:</p>
 <pre class="highlighted"><code class="language-http"><span class="request">GET <span class="string">/admin/accesses</span> HTTP/1.1</span>
 <span class="attribute">Host</span>: <span class="string">cassis.pryv.io</span>
 <span class="attribute">Authorization</span>: <span class="string">{session-id}</span></code></pre>
-<p>Or, alternatively, passing the access token in the query string:
-</p>
+<p>Or, alternatively, passing the access token in the query string:</p>
 <pre class="highlighted"><code class="language-http"><span class="request">GET <span class="string">/admin/accesses?auth={session-id}</span> HTTP/1.1</span>
 <span class="attribute">Host</span>: <span class="string">cassis.pryv.io</span></code></pre>
 <h2>Common errors</h2>
-<p>TODO: review and complete
-
-</p>
+<p>TODO: review and complete</p>
 <ul>
 <li><code>400 Bad Request</code>, id <code>invalid-parameters-format</code>: The request's parameters do not follow the expected format. The error's <code>data</code> contains an array of validation errors.</li>
 <li><code>401 Unauthorized</code>, id <code>invalid-credentials</code>: User credentials are missing or invalid.</li>
@@ -35,9 +23,7 @@
 </ul>
 <h2><a id="admin-session"></a>Session management</h2>
 <h3>POST <code>/admin/login</code></h3>
-<p>Opens a new admin session, authenticating with the provided credentials. (See also POST <code>/admin/login/persona</code>.)
-
-</p>
+<p>Opens a new admin session, authenticating with the provided credentials. (See also POST <code>/admin/login/persona</code>.)</p>
 <h4>Body parameters</h4>
 <ul>
 <li><code>username</code> (string)</li>
@@ -52,18 +38,14 @@
 <h4>cURL example</h4>
 <pre class="highlighted"><code class="language-bash">curl -i -H <span class="string">"Content-Type: application/json"</span> -X POST -d <span class="string">'{"username":"{username}","password":"{password}","appId":"{appId}"}'</span> https://{username}.pryv.io/admin/login</code></pre>
 <h3>POST <code>/admin/login/persona</code></h3>
-<p>Opens a new admin session, authenticating with the provided <a href="https://developer.mozilla.org/en-US/docs/Persona">Mozilla Persona</a> email and assertion.
-
-</p>
+<p>Opens a new admin session, authenticating with the provided <a href="https://developer.mozilla.org/en-US/docs/Persona">Mozilla Persona</a> email and assertion.</p>
 <h4>Body parameters</h4>
 <ul>
 <li><code>email</code> (string): The user's email.</li>
 <li><code>assertion</code> (string): The Persona identity assertion (generated client-side) to be verified.</li>
 <li><code>appId</code> (string): A URL-friendly name uniquely identifying your app.</li>
 </ul>
-<p>TODO: refactor the following as it duplicates the content for POST <code>/admin/login</code>.
-
-</p>
+<p>TODO: refactor the following as it duplicates the content for POST <code>/admin/login</code>.</p>
 <h4>Successful response: <code>200 OK</code></h4>
 <ul>
 <li><code>sessionID</code> (string): The newly created session's ID, to include in each subsequent request's <code>Authorization</code> header.</li>
@@ -73,67 +55,44 @@
 <pre class="highlighted"><code class="language-bash">
 </code></pre>
 <h3>POST <code>/admin/logout</code></h3>
-<p>Terminates the admin session.
-
-</p>
+<p>Terminates the admin session.</p>
 <h4>Successful response: <code>200 OK</code></h4>
 <h4>cURL example</h4>
 <pre class="highlighted"><code class="language-bash">curl -i -H <span class="string">"Content-Type: application/json"</span> -H <span class="string">"Authorization: {session-id}"</span> -X POST -d <span class="string">"{}"</span> https://{username}.pryv.io/admin/logout</code></pre>
 <h2><a id="admin-user"></a>User information</h2>
 <h3>GET <code>/admin/user-info</code></h3>
 <p>TODO: get user informations
-Requires session token.
-
-</p>
+Requires session token.</p>
 <h4>Successful response: <code>200 OK</code></h4>
-<p>TODO: email, display name, language, ...
-
-</p>
+<p>TODO: email, display name, language, ...</p>
 <h4>Successful response: <code>200 OK</code></h4>
 <h4>cURL example</h4>
 <pre class="highlighted"><code class="language-bash">curl -i -H <span class="string">"Authorization: {session-id}"</span> https://{username}.pryv.io/admin/user-info</code></pre>
 <h3>PUT <code>/admin/user-info</code></h3>
-<p>TODO: change user information
-
-</p>
+<p>TODO: change user information</p>
 <h4>cURL example</h4>
 <pre class="highlighted"><code class="language-bash">
 </code></pre>
 <h3>POST <code>/admin/change-password</code></h3>
 <p>TODO: change user password
-Requires session token, old password, new password.
-
-</p>
+Requires session token, old password, new password.</p>
 <h4>Specific errors</h4>
-<p>TODO: <code>WRONG_PASSWORD</code>, <code>INVALID_NEW_PASSWORD</code>
-
-</p>
+<p>TODO: <code>WRONG_PASSWORD</code>, <code>INVALID_NEW_PASSWORD</code></p>
 <h4>cURL example</h4>
 <pre class="highlighted"><code class="language-bash">
 </code></pre>
 <h2><a id="admin-accesses"></a>Accesses</h2>
-<p>TODO: introductory text
-
-
-</p>
+<p>TODO: introductory text</p>
 <h3>GET <code>/admin/accesses</code></h3>
-<p>Gets all manageable accesses, which are the shared accesses. (Your app's own access token is retrieved with <code>POST /admin/get-app-token</code>.)
-
-</p>
+<p>Gets all manageable accesses, which are the shared accesses. (Your app's own access token is retrieved with <code>POST /admin/get-app-token</code>.)</p>
 <h4>Successful response: <code>200 OK</code></h4>
-<p>An array of <a href="#data-structure-access">accesses</a> containing all manageable accesses in the user's account, ordered by name.
-
-</p>
+<p>An array of <a href="#data-structure-access">accesses</a> containing all manageable accesses in the user's account, ordered by name.</p>
 <h4>cURL example</h4>
 <pre class="highlighted"><code class="language-bash">curl -i -H <span class="string">"Authorization: {session-id}"</span> https://{username}.pryv.io/admin/accesses</code></pre>
 <h3>POST <code>/admin/accesses</code></h3>
-<p>Creates a new shared access.
-
-</p>
+<p>Creates a new shared access.</p>
 <h4>Body parameters</h4>
-<p>The new access's data: see <a href="#data-structure-access">access</a>. Additionally, if a <code>defaultName</code> property is set on the new access' channel / folder permission objects, the corresponding channels / folders will be created with that name.
-
-</p>
+<p>The new access's data: see <a href="#data-structure-access">access</a>. Additionally, if a <code>defaultName</code> property is set on the new access' channel / folder permission objects, the corresponding channels / folders will be created with that name.</p>
 <h4>Successful response: <code>201 Created</code></h4>
 <ul>
 <li><code>token</code> (<a href="#data-structure-identity">identity</a>): The created access's token.</li>
@@ -148,13 +107,9 @@ Requires session token, old password, new password.
 <pre class="highlighted"><code class="language-bash">
 </code></pre>
 <h3>PUT <code>/admin/accesses/{token}</code></h3>
-<p>Modifies the specified shared access.
-
-</p>
+<p>Modifies the specified shared access.</p>
 <h4>Body parameters</h4>
-<p>New values for the access's fields: see <a href="#data-structure-access">access</a>. All fields are optional, and only modified values must be included. TODO: example
-
-</p>
+<p>New values for the access's fields: see <a href="#data-structure-access">access</a>. All fields are optional, and only modified values must be included. TODO: example</p>
 <h4>Successful response: <code>200 OK</code></h4>
 <h4>Specific errors</h4>
 <ul>
@@ -164,17 +119,13 @@ Requires session token, old password, new password.
 <pre class="highlighted"><code class="language-bash">
 </code></pre>
 <h3>DELETE <code>/admin/accesses/{token}</code></h3>
-<p>Deletes the specified shared access.
-
-</p>
+<p>Deletes the specified shared access.</p>
 <h4>Successful response: <code>200 OK</code></h4>
 <h4>cURL example</h4>
 <pre class="highlighted"><code class="language-bash">
 </code></pre>
 <h3>POST <code>/admin/accesses/check-app</code></h3>
-<p>For the app authorization process. Checks if the app requesting authorization already has access with the same permissions (and on the same device, if applicable), and returns details of the requested permissions' channels and folders (for display) if not.
-
-</p>
+<p>For the app authorization process. Checks if the app requesting authorization already has access with the same permissions (and on the same device, if applicable), and returns details of the requested permissions' channels and folders (for display) if not.</p>
 <h4>Body parameters</h4>
 <ul>
 <li><code>requestingAppId</code> (string): The id of the app requesting authorization.</li>
@@ -182,17 +133,13 @@ Requires session token, old password, new password.
 <li><code>requestedPermissions</code>: An array of channel permission request objects, which are identical to channel permission objects of <a href="#data-structure-access">accesses</a> with the difference that each channel / folder permission object must have a <code>defaultName</code> property specifying the name the channel / folder should be created with later (in POST <code>/admin/accesses</code>) if missing.</li>
 </ul>
 <h4>Successful response: <code>200 OK</code></h4>
-<p>If no matching access already exists:
-
-</p>
+<p>If no matching access already exists:</p>
 <ul>
 <li><code>checkedPermissions</code>: A updated copy of the <code>requestedPermissions</code> array passed in the request, with the <code>defaultName</code> property replaced by <code>name</code> for each existing channel / folder (set to the actual name of the item). (For missing channels / folders the <code>defaultName</code> property is left untouched.) If channels / folders already exist with the same name but a different <code>id</code>, <code>defaultName</code> is updated with a valid alternative proposal (in such cases the response also has an <code>error</code> property to signal the issue; see below).</li>
 <li><code>mismatchingAccessToken</code> (<a href="#data-structure-identity">identity</a>): Set if an access already exists for the requesting app, but with different permissions than those requested.</li>
 <li><code>error</code> (<a href="#data-structure-error">error</a>): If there is a duplicate issue with some channels / folders requested for creation (see <code>checkedPermissions</code>), this is set to an <code>item-name-already-exists</code> error.</li>
 </ul>
-<p>If a matching access already exists:
-
-</p>
+<p>If a matching access already exists:</p>
 <ul>
 <li><code>matchingAccessToken</code> (<a href="#data-structure-identity">identity</a>): The requesting app's existing <a href="#data-structure-access">access</a> token.</li>
 </ul>
@@ -200,29 +147,18 @@ Requires session token, old password, new password.
 <pre class="highlighted"><code class="language-bash">
 </code></pre>
 <h2><a id="admin-bookmarks"></a>Bookmarks</h2>
-<p>TODO: introductory text
-
-
-</p>
+<p>TODO: introductory text</p>
 <h3>GET <code>/admin/bookmarks</code></h3>
-<p>Gets all of the user's sharing bookmarks.
-
-</p>
+<p>Gets all of the user's sharing bookmarks.</p>
 <h4>Successful response: <code>200 OK</code></h4>
-<p>An array of <a href="#data-structure-bookmark">bookmarks</a> containing all sharing bookmarks in the user's account, ordered by name.
-
-</p>
+<p>An array of <a href="#data-structure-bookmark">bookmarks</a> containing all sharing bookmarks in the user's account, ordered by name.</p>
 <h4>cURL example</h4>
 <pre class="highlighted"><code class="language-bash">
 </code></pre>
 <h3>POST <code>/admin/bookmarks</code></h3>
-<p>Creates a new sharing bookmark.
-
-</p>
+<p>Creates a new sharing bookmark.</p>
 <h4>Body parameters</h4>
-<p>The new bookmark's data: see <a href="#data-structure-bookmark">bookmark</a>.
-
-</p>
+<p>The new bookmark's data: see <a href="#data-structure-bookmark">bookmark</a>.</p>
 <h4>Successful response: <code>201 Created</code></h4>
 <ul>
 <li><code>id</code> (<a href="#data-structure-identity">identity</a>): The created bookmark's id.</li>
@@ -231,29 +167,21 @@ Requires session token, old password, new password.
 <pre class="highlighted"><code class="language-bash">
 </code></pre>
 <h3>PUT <code>/admin/bookmarks/{bookmark-id}</code></h3>
-<p>Modifies the specified sharing bookmark.
-
-</p>
+<p>Modifies the specified sharing bookmark.</p>
 <h4>Body parameters</h4>
-<p>New values for the bookmark's fields: see <a href="#data-structure-bookmark">bookmark</a>. All fields are optional, and only modified values must be included. TODO: example
-
-</p>
+<p>New values for the bookmark's fields: see <a href="#data-structure-bookmark">bookmark</a>. All fields are optional, and only modified values must be included. TODO: example</p>
 <h4>Successful response: <code>200 OK</code></h4>
 <h4>cURL example</h4>
 <pre class="highlighted"><code class="language-bash">
 </code></pre>
 <h3>DELETE <code>/admin/bookmarks/{bookmark-id}</code></h3>
-<p>Deletes the specified sharing bookmark.
-
-</p>
+<p>Deletes the specified sharing bookmark.</p>
 <h4>Successful response: <code>200 OK</code></h4>
 <h4>cURL example</h4>
 <pre class="highlighted"><code class="language-bash">
 </code></pre>
 <h2><a id="admin-profile-sets"></a>Profile sets</h2>
-<p>TODO: for usage see <a href="#activity-profile-app">activity app profile</a>.
-
-</p>
+<p>TODO: for usage see <a href="#activity-profile-app">activity app profile</a>.</p>
 <h3>GET <code>/profile/public</code>: TODO</h3>
 <h3>PUT <code>/profile/public</code>: TODO</h3>
 <h3>GET <code>/profile/private</code>: TODO</h3>

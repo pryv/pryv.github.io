@@ -1,54 +1,28 @@
 <h1>Public channels</h1>
-<p><em>TODO: this should be a separate page. Wait till the final dev site structure is defined.</em>
-
-</p>
-<p>This section describes the public channel API, both for those of you who want to implement it for publishing their own channels and for those who want to integrate public channels into their app. The public channel API itself is a small subset of the Pryv API.
-
-
-</p>
+<p><em>TODO: this should be a separate page. Wait till the final dev site structure is defined.</em></p>
+<p>This section describes the public channel API, both for those of you who want to implement it for publishing their own channels and for those who want to integrate public channels into their app. The public channel API itself is a small subset of the Pryv API.</p>
 <h2>Overview</h2>
 <h3>Definition</h3>
-<p>Public channels are channels of general interest (like news or weather) that can be integrated into users&#39; Pryv view to add context to their own events (or just browsed independantly as-is). Unlike Pryv users&#39; data and because they are public and read-only, public channels don&#39;t have to run on Pryv servers – anyone is free to create and self-host a public channel for users to enrich their Pryv experience. The public channels directory within Pryv lists all the channels that were registered to us and validated, but users are free to add channels from any URL.
-
-</p>
+<p>Public channels are channels of general interest (like news or weather) that can be integrated into users&#39; Pryv view to add context to their own events (or just browsed independantly as-is). Unlike Pryv users&#39; data and because they are public and read-only, public channels don&#39;t have to run on Pryv servers – anyone is free to create and self-host a public channel for users to enrich their Pryv experience. The public channels directory within Pryv lists all the channels that were registered to us and validated, but users are free to add channels from any URL.</p>
 <p>TODO: link(s) to example public channel implementation(s)
-TODO: and possibly a simple tutorial.
-
-</p>
+TODO: and possibly a simple tutorial.</p>
 <h3><strong>*.pryv.io</strong> URLs</h3>
-<p>Public channels are not limited to <strong>*.pryv.io</strong> URLs; they can be published anywhere. When publishing your own channel, you are free to use any hostname and path you like. If however you&#39;d like to use a <strong>*.pryv.io</strong> URL, just get in touch with us (TODO: add info about how to register for a *.pryv.io name + how to check if a name is available).
-
-
-</p>
+<p>Public channels are not limited to <strong>*.pryv.io</strong> URLs; they can be published anywhere. When publishing your own channel, you are free to use any hostname and path you like. If however you&#39;d like to use a <strong>*.pryv.io</strong> URL, just get in touch with us (TODO: add info about how to register for a *.pryv.io name + how to check if a name is available).</p>
 <h3>Authorization and encryption</h3>
-<p>As you can expect, there is no authorization mechanism for accessing public channels. There&#39;s no need either to encrypt public channels with TLS (HTTPS), but we don&#39;t enforce any restriction there.
-
-</p>
-<p>TODO: clarify - are we talking about Pryv-served public channels here, or about the security aspects of (any) public channels? SGO: we are saying that there is no auth for public channels whatsoever. BTW there is no distinction between &quot;Pryv-served&quot; channels and others. Hosts of public channels can register for a *.pryv.io URL, but this doesn&#39;t mean they&#39;re hosted by us (it&#39;s just a DNS mapping). BTW about TLS I&#39;m actually not sure we shouldn&#39;t enforce it, because we&#39;ll have an issue directly serving HTTP content from our HTTPS app. But then we can&#39;t require everyone interested to acquire a certificate, so we may have to host a proxy... but anyway this is too much thinking already. We&#39;ve specified public channels as something we must support in the future, it won&#39;t be there in the very next months, so please don&#39;t spend special time on this section.
-
-</p>
+<p>As you can expect, there is no authorization mechanism for accessing public channels. There&#39;s no need either to encrypt public channels with TLS (HTTPS), but we don&#39;t enforce any restriction there.</p>
+<p>TODO: clarify - are we talking about Pryv-served public channels here, or about the security aspects of (any) public channels? SGO: we are saying that there is no auth for public channels whatsoever. BTW there is no distinction between &quot;Pryv-served&quot; channels and others. Hosts of public channels can register for a *.pryv.io URL, but this doesn&#39;t mean they&#39;re hosted by us (it&#39;s just a DNS mapping). BTW about TLS I&#39;m actually not sure we shouldn&#39;t enforce it, because we&#39;ll have an issue directly serving HTTP content from our HTTPS app. But then we can&#39;t require everyone interested to acquire a certificate, so we may have to host a proxy... but anyway this is too much thinking already. We&#39;ve specified public channels as something we must support in the future, it won&#39;t be there in the very next months, so please don&#39;t spend special time on this section.</p>
 <h3>HTTP headers</h3>
-<p>The following headers must be included in every response:
-
-</p>
+<p>The following headers must be included in every response:</p>
 <ul>
 <li><code>API-Version</code>: The version of the public channel API in the form <code>{major}.{minor}.{revision}</code>. (TODO: indicate documented version somewhere.)</li>
 <li><code>Server-Time</code>: The current server time as a <a href="#data-structure-timestamp">timestamp</a>, which must of course be consistent with the times of events in the channel.</li>
 </ul>
 <h3>Data</h3>
-<p>The JSON data exchanged is the same as in the Pryv API: see <a href="#data-structure-event">events</a>, <a href="#data-structure-folder">folders</a> and <a href="#data-structure-error">errors</a> there.
-
-
-</p>
+<p>The JSON data exchanged is the same as in the Pryv API: see <a href="#data-structure-event">events</a>, <a href="#data-structure-folder">folders</a> and <a href="#data-structure-error">errors</a> there.</p>
 <h2>Events</h2>
-<p>At a minimum, public channels publish <a href="#data-structure-event">events</a>.
-
-
-</p>
+<p>At a minimum, public channels publish <a href="#data-structure-event">events</a>.</p>
 <h3>GET <code>{channel base path}/events</code></h3>
-<p>Queries the channel&#39;s events. This is the only method that must be implemented in every public channel.
-
-</p>
+<p>Queries the channel&#39;s events. This is the only method that must be implemented in every public channel.</p>
 <h4>Query string parameters</h4>
 <ul>
 <li><code>fromTime</code> (<a href="#data-structure-timestamp">timestamp</a>): Optional. TODO. Default is 24 hours before <code>toTime</code>, if set.</li>
@@ -60,40 +34,29 @@ TODO: and possibly a simple tutorial.
 <li><code>modifiedSince</code> (<a href="#data-structure-timestamp">timestamp</a>): Optional. If specified, only events modified since that time will be returned.</li>
 </ul>
 <h4>Successful response: <code>200 OK</code></h4>
-<p>An array of <a href="#data-structure-event">events</a> containing the accessible events ordered by time (see <code>sortAscending</code> above).
-
-</p>
+<p>An array of <a href="#data-structure-event">events</a> containing the accessible events ordered by time (see <code>sortAscending</code> above).</p>
 <h4>Errors</h4>
 <ul>
 <li><code>400 Bad Request</code>, id <code>invalid-parameters-format</code>: The request&#39;s parameters do not follow the expected format (e.g. missing required parameter, wrong type of data, etc.)</li>
 <li><code>400 Bad Request</code>, id <code>unknown-folder</code>: One (or more) of the specified folders doesn&#39;t exist.</li>
 </ul>
 <h3>GET <code>{channel base path}/events/{event-id}/{file-name}</code></h3>
-<p>Gets the attached file. This method does not have to be implemented if the public channel&#39;s events never contain attachments; in that case a <code>404 Not Found</code> response is returned.
-
-</p>
+<p>Gets the attached file. This method does not have to be implemented if the public channel&#39;s events never contain attachments; in that case a <code>404 Not Found</code> response is returned.</p>
 <h4>Successful response: <code>200 OK</code></h4>
 <h4>Errors</h4>
 <ul>
 <li><code>404 Not Found</code>, id <code>unknown-attachment</code>: The attached file can&#39;t be found for the specified event.</li>
 </ul>
 <h2>Folders</h2>
-<p><a href="#data-structure-folder">Folders</a> provide an organization structure for channels that need it. Implementing folders in public channels is by no means mandatory; public channels with no need for folders just return a <code>404 Not Found</code> response for the method below.
-
-
-</p>
+<p><a href="#data-structure-folder">Folders</a> provide an organization structure for channels that need it. Implementing folders in public channels is by no means mandatory; public channels with no need for folders just return a <code>404 Not Found</code> response for the method below.</p>
 <h3>GET <code>{channel base path}/folders</code></h3>
-<p>Gets the channel&#39;s folders, either from the root level or only descending from a specified parent folder.
-
-</p>
+<p>Gets the channel&#39;s folders, either from the root level or only descending from a specified parent folder.</p>
 <h4>Query string parameters</h4>
 <ul>
 <li><code>parentId</code> (<a href="#data-structure-identity">identity</a>): Optional. The id of the parent folder to use as root for the request. Default: <code>null</code> (returns all folders from the root level).</li>
 </ul>
 <h4>Successful response: <code>200 OK</code></h4>
-<p>An array of <a href="#data-structure-folder">activity folders</a> containing the tree of the folders, sorted by name.
-
-</p>
+<p>An array of <a href="#data-structure-folder">activity folders</a> containing the tree of the folders, sorted by name.</p>
 <h4>Errors</h4>
 <ul>
 <li><code>400 Bad Request</code>, id <code>invalid-parameters-format</code>: The request&#39;s parameters do not follow the expected format (e.g. missing required parameter, wrong type of data, etc.)</li>

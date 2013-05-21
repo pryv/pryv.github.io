@@ -1,7 +1,5 @@
 <html><head></head><body><h1>Web app (Javascript)</h1>
-<p>Obtaining an access token for your web app.
-
-</p>
+<p>Obtaining an access token for your web app.</p>
 <h2>What you need</h2>
 <ul>
 <li>make sure you got the <a href="#intro-initial-requirements">initial requirements</a> ready.</li>
@@ -17,21 +15,12 @@
 <li>construct a <code>settings</code> JSON object</li>
 <li>call <code>Pryv.Access.setup(settings)</code></li>
 </ul>
-<p>For a more fleshed-out example look at the source code of <a href="https://sw.rec.la:2443/access/demo.html"></a><a href="https://sw.rec.la/access/demo.html">https://sw.rec.la/access/demo.html</a>.
-
-</p>
+<p>For a more fleshed-out example look at the source code of <a href="https://sw.rec.la:2443/access/demo.html"></a><a href="https://sw.rec.la/access/demo.html">https://sw.rec.la/access/demo.html</a>.</p>
 <p><a name="webapp.test"></a>Or make your own tests from the page:
-<a href="https://sw.rec.la:2443/access/test.html"></a><a href="https://sw.rec.la:2443/access/test.html">https://sw.rec.la:2443/access/test.html</a>
-
-
-</p>
+<a href="https://sw.rec.la:2443/access/test.html"></a><a href="https://sw.rec.la:2443/access/test.html">https://sw.rec.la:2443/access/test.html</a></p>
 <h3>Example: Minimalistic</h3>
-<p>This app requests a "contribute" access to the "diary" channel, using the PrYv button and a popup for sign-in.
-
-</p>
-<p><strong>TODO: review this code</strong>
-
-</p>
+<p>This app requests a "contribute" access to the "diary" channel, using the PrYv button and a popup for sign-in.</p>
+<p><strong>TODO: review this code</strong></p>
 <pre class="highlighted"><code class="language-html xml">
     <span class="doctype">&lt;!DOCTYPE html&gt;</span>
     <span class="tag">&lt;<span class="title">html</span>&gt;</span>
@@ -77,9 +66,7 @@
     <span class="tag">&lt;/<span class="title">body</span>&gt;</span>
     <span class="tag">&lt;/<span class="title">html</span>&gt;</span></code></pre>
 <h2>Pryv.Access.setup(settings)</h2>
-<p>The <strong>settings</strong> object supports the following parameters:
-
-</p>
+<p>The <strong>settings</strong> object supports the following parameters:</p>
 <ul>
 <li><code>requestingAppId</code> (string): Unique. Given by PrYv identifier for this app. It will be the key for the requested set of permission after user agreement.</li>
 <li><code>languageCode</code>(2 characters ISO 639-1 Code): Optional. If known the current language used by the user. This will influence the signin and register interface language.</li>
@@ -107,27 +94,17 @@
 </li>
 </ul>
 <h3><a name="webapp.returnURL"></a> settings.returnURL : Popup or URL Callback</h3>
-<p>During the authentication process, we need to open a PrYv access web page in a separate window. This is in order to secure personal user's information.  
-
-</p>
-<p>This window can be opened in:
-
-</p>
+<p>During the authentication process, we need to open a PrYv access web page in a separate window. This is in order to secure personal user's information.  </p>
+<p>This window can be opened in:</p>
 <ul>
 <li>A popup, leaving the actual window open behind. This should be more comfortable on desktop browsers.</li>
 <li>In place of the actual window, the user goes thru the process and come back to the URL you set at the end of the process.</li>
 </ul>
 <h4>* Popup</h4>
-<p>If you want the authorization process to take place in a popup just set the <code>returnURL</code> settings to <code>false</code>.
-
-</p>
+<p>If you want the authorization process to take place in a popup just set the <code>returnURL</code> settings to <code>false</code>.</p>
 <h4>* Self or Auto</h4>
-<p>If you want the authorization process to take place in the same windows, returning to this same exact url you can use <code>self[extra_params]&lt;trailer&gt;</code> or <code>auto[extra_params]&lt;trailer&gt;</code>.
-
-</p>
-<p>When the user returns to this same page, the pryv-access-sdk will parse <code>prYv</code> parameters.
-
-</p>
+<p>If you want the authorization process to take place in the same windows, returning to this same exact url you can use <code>self[extra_params]&lt;trailer&gt;</code> or <code>auto[extra_params]&lt;trailer&gt;</code>.</p>
+<p>When the user returns to this same page, the pryv-access-sdk will parse <code>prYv</code> parameters.</p>
 <ul>
 <li>command<ul>
 <li><strong>self</strong>: Use the current page as returnURL value</li>
@@ -140,9 +117,7 @@
 </ul>
 </li>
 </ul>
-<p>EXAMPLES
-
-</p>
+<p>EXAMPLES</p>
 <ul>
 <li><p>with <code>https://mysite.com/page.php</code> as source URL.</p>
 <ul>
@@ -158,57 +133,33 @@
 </ul>
 </li>
 </ul>
-<p>Make your own tests from the <a href="webapp.test">test page</a>.
-
-</p>
+<p>Make your own tests from the <a href="webapp.test">test page</a>.</p>
 <h4>* Custom</h4>
-<p>Set the return URL to your own page such as
-
-</p>
+<p>Set the return URL to your own page such as</p>
 <pre class="highlighted"><code class="avrasm"><span class="label">https:</span>//www<span class="preprocessor">.mysite</span><span class="preprocessor">.com</span>/end-of-Pryv<span class="preprocessor">.Access</span>-process<span class="preprocessor">.php</span>?</code></pre>
 <p><strong>Attention!!</strong> The url submitted <em>must</em> end with a <code>?</code>, a <code>#</code> or a <code>&amp;</code>
-Returned status will be appended to this URL.
-
-</p>
+Returned status will be appended to this URL.</p>
 <h4>Examples of return URL</h4>
-<p>ACCEPTED
-
-</p>
+<p>ACCEPTED</p>
 <pre class="highlighted"><code class="avrasm">    https://www<span class="preprocessor">.mysite</span><span class="preprocessor">.com</span>/end-of-Pryv<span class="preprocessor">.Access</span>-process<span class="preprocessor">.php</span>?
 prYvkey=GSbdasjgdv&amp;prYvstatus=ACCEPTED&amp;prYvusername=yacinthe&amp;prYvtoken=VVhjDJDDG</code></pre>
-<p>REFUSED
-
-</p>
+<p>REFUSED</p>
 <pre class="highlighted"><code class="avrasm">    https://www<span class="preprocessor">.mysite</span><span class="preprocessor">.com</span>/end-of-Pryv<span class="preprocessor">.Access</span>-process<span class="preprocessor">.php</span>?
 prYvkey=GSbdasjgdv&amp;prYvstatus=REFUSED&amp;prYvmessage=refused+by+user</code></pre>
-<p>ERROR
-
-</p>
+<p>ERROR</p>
 <pre class="highlighted"><code class="r">    https://www.mysite.com/end-of-Pryv.Access-process.php?
 prYvkey=GSbdasjgdv&amp;prYvstatus=ERROR&amp;prYvid=INTERNAL_ERROR&amp;prYvmessage=<span class="keyword">...</span></code></pre>
 <h3><a name="webapp.spanButtonID"></a> settings.spanButtonID : Rely on PrYv standard Button</h3>
-<p>TODO
-
-</p>
+<p>TODO</p>
 <h3><a name="webapp.callbacks"></a> settings.callbacks Custom handling of the signin process</h3>
-<p>TODO
-
-</p>
+<p>TODO</p>
 <h2>Pryv.Access.popupLogin()</h2>
-<p>Once setup is done, you can trigger the populLogin window from your own button.<br />Note: Trigger it from a user-click event.
-
-</p>
+<p>Once setup is done, you can trigger the populLogin window from your own button.<br />Note: Trigger it from a user-click event.</p>
 <h2>Pryv.Access.logout()</h2>
-<p>Once setup is done, and user logged in. Erase current credential and restart setup with the same settings.
-
-</p>
-<p><strong>logout()</strong> will trigger a <code>settings.callbacks.success(false,false,false);</code>
-
-</p>
+<p>Once setup is done, and user logged in. Erase current credential and restart setup with the same settings.</p>
+<p><strong>logout()</strong> will trigger a <code>settings.callbacks.success(false,false,false);</code></p>
 <h2>Pryv.Access.retry()</h2>
-<p>If a user refused to grant access, restart the setup process with the same settings. 
-
-</p>
+<p>If a user refused to grant access, restart the setup process with the same settings. </p>
 <h2>Other Examples</h2>
 <h3>Full</h3>
 </body></html>
