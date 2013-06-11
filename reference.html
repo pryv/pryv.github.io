@@ -7,7 +7,55 @@ _gaq.push(['_trackPageview']);
   ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
   var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
 })();
-</script></head><body><div id="main"><header id="pageHeader"><a href="dev-index.html">Home</a></header><div class="version">API version: <strong>0.4.20</strong></div><div id="sections"><section id="activity"><h1>API methods</h1>
+</script></head><body><div id="main"><header id="pageHeader"><a href="dev-index.html">Home</a></header><div class="version">API version: <strong>0.4.20</strong></div><div id="sections"><section id="basics"><h1>Basics</h1>
+<h2>API style</h2>
+<p>Most of the API follows REST principles, meaning each item has its own unique resource URL and can be read or modified via HTTP verbs:</p>
+<ul>
+<li>GET to read the item(s)</li>
+<li>POST to create a new item, with a JSON message in the request body</li>
+<li>PUT to modify the item, with a JSON message in the request body</li>
+<li>DELETE to delete the item (note that logical deletion, or trashing, is supported for items like events, folders and channels)</li>
+</ul>
+<p>Example API request:</p>
+<pre class="highlighted"><code class="language-http"><span class="request">GET <span class="string">/{channel-id}/events</span> HTTP/1.1</span>
+<span class="attribute">Host</span>: <span class="string">{user-name}.pryv.io</span>
+<span class="attribute">Authorization</span>: <span class="string">{access-token}</span></code></pre>
+<p>Note that the API also supports Socket.IO, for both calling API methods and receiving live notifications of changes to activity data. See <a href="#socketio">the dedicated section</a>.</p>
+<h2>Base URL</h2>
+<p><code>https://{username}.pryv.io</code> (where <code>{username}</code> is the name of the user whose data you want to access)</p>
+<p>Because Pryv potentially stores each user's data in a different location according to the user's choice, the API's base URL is unique for each user.</p>
+<h2>Data format</h2>
+<p>The API exchanges data with the client in JSON.</p>
+<p>Example event:</p>
+<pre class="highlighted"><code class="language-json">{
+  "<span class="attribute">id</span>": <span class="value"><span class="string">"5051941d04b8ffd00500000d"</span></span>,
+  "<span class="attribute">time</span>": <span class="value"><span class="number">1347864935.964</span></span>,
+  "<span class="attribute">folderId</span>": <span class="value"><span class="string">"5058370ade44feaa03000015"</span></span>,
+  "<span class="attribute">type</span>": <span class="value">{ "<span class="attribute">class</span>": <span class="value"><span class="string">"position"</span></span>, "<span class="attribute">format</span>": <span class="value"><span class="string">"wgs84"</span> </span>}</span>,
+  "<span class="attribute">value</span>": <span class="value">{ "<span class="attribute">location</span>": <span class="value">{ "<span class="attribute">lat</span>": <span class="value"><span class="number">40.714728</span></span>, "<span class="attribute">lng</span>": <span class="value">-<span class="number">73.998672</span> </span>} </span>}</span>,
+}</code></pre>
+<h2>Alternative request method</h2>
+<p>Because we can't fathom out the crazy rationale behind <a href="https://developer.mozilla.org/en-US/docs/HTTP/Access_control_CORS">HTTP access control (CORS) rules</a>, we offer web apps an alternative way to place POST, PUT and DELETE requests in the API by using <code>application/x-www-form-urlencoded</code> POST requests with the following fields (all optional):</p>
+<ul>
+<li><code>_method</code>: The HTTP override method to use (usually <code>PUT</code> or <code>DELETE</code>; <code>POST</code> is used if not set).</li>
+<li><code>_auth</code>: The <code>Authorization</code> header value (alternative to sending the header itself).</li>
+<li><code>_json</code>: Considered as the JSON request body if set (overriding all other body content, if any).</li>
+</ul>
+<p>This is intended for web apps only; if your app isn't running in browsers you should use regular requests.</p>
+<h2>Common HTTP headers</h2>
+<p>The following headers are included in every response:</p>
+<ul>
+<li><code>API-Version</code>: The version of the API in the form <code>{major}.{minor}.{revision}</code>.</li>
+<li><code>Server-Time</code>: The current server time as a <a href="#data-structure-timestamp">timestamp</a>. Keeping reference of the server time is an absolute necessity to properly read and write event times.</li>
+</ul>
+<h2>Errors</h2>
+<p>When an error occurs, the API returns a 4xx or 5xx status code, with the response body usually containing an <a href="#data-structure-error">error</a> object detailing the cause.</p>
+<p>Here's an example "401 Unauthorized" error response:</p>
+<pre class="highlighted"><code class="language-json">{
+  "<span class="attribute">id</span>": <span class="value"><span class="string">"invalid-access-token"</span></span>,
+  "<span class="attribute">message</span>": <span class="value"><span class="string">"Cannot find access with token 'bad-token'."</span>
+</span>}</code></pre>
+</section><section id="activity"><h1>API methods</h1>
 <p>TODO: introductory text</p>
 <h2>Preliminary information</h2>
 <h3>Authorization</h3>
@@ -391,54 +439,39 @@ _gaq.push(['_trackPageview']);
 <h4>cURL example</h4>
 <pre class="highlighted"><code class="language-bash">
 </code></pre>
-</section><section id="basics"><h1>Basics</h1>
-<h2>API style</h2>
-<p>Most of the API follows REST principles, meaning each item has its own unique resource URL and can be read or modified via HTTP verbs:</p>
-<ul>
-<li>GET to read the item(s)</li>
-<li>POST to create a new item, with a JSON message in the request body</li>
-<li>PUT to modify the item, with a JSON message in the request body</li>
-<li>DELETE to delete the item (note that logical deletion, or trashing, is supported for items like events, folders and channels)</li>
-</ul>
-<p>Example API request:</p>
-<pre class="highlighted"><code class="language-http"><span class="request">GET <span class="string">/{channel-id}/events</span> HTTP/1.1</span>
-<span class="attribute">Host</span>: <span class="string">{user-name}.pryv.io</span>
-<span class="attribute">Authorization</span>: <span class="string">{access-token}</span></code></pre>
-<p>Note that the API also supports Socket.IO, for both calling API methods and receiving live notifications of changes to activity data. See <a href="#socketio">the dedicated section</a>.</p>
-<h2>Base URL</h2>
-<p><code>https://{username}.pryv.io</code> (where <code>{username}</code> is the name of the user whose data you want to access)</p>
-<p>Because Pryv potentially stores each user's data in a different location according to the user's choice, the API's base URL is unique for each user.</p>
-<h2>Data format</h2>
-<p>The API exchanges data with the client in JSON.</p>
-<p>Example event:</p>
-<pre class="highlighted"><code class="language-json">{
-  "<span class="attribute">id</span>": <span class="value"><span class="string">"5051941d04b8ffd00500000d"</span></span>,
-  "<span class="attribute">time</span>": <span class="value"><span class="number">1347864935.964</span></span>,
-  "<span class="attribute">folderId</span>": <span class="value"><span class="string">"5058370ade44feaa03000015"</span></span>,
-  "<span class="attribute">type</span>": <span class="value">{ "<span class="attribute">class</span>": <span class="value"><span class="string">"position"</span></span>, "<span class="attribute">format</span>": <span class="value"><span class="string">"wgs84"</span> </span>}</span>,
-  "<span class="attribute">value</span>": <span class="value">{ "<span class="attribute">location</span>": <span class="value">{ "<span class="attribute">lat</span>": <span class="value"><span class="number">40.714728</span></span>, "<span class="attribute">lng</span>": <span class="value">-<span class="number">73.998672</span> </span>} </span>}</span>,
-}</code></pre>
-<h2>Alternative request method</h2>
-<p>Because we can't fathom out the crazy rationale behind <a href="https://developer.mozilla.org/en-US/docs/HTTP/Access_control_CORS">HTTP access control (CORS) rules</a>, we offer web apps an alternative way to place POST, PUT and DELETE requests in the API by using <code>application/x-www-form-urlencoded</code> POST requests with the following fields (all optional):</p>
-<ul>
-<li><code>_method</code>: The HTTP override method to use (usually <code>PUT</code> or <code>DELETE</code>; <code>POST</code> is used if not set).</li>
-<li><code>_auth</code>: The <code>Authorization</code> header value (alternative to sending the header itself).</li>
-<li><code>_json</code>: Considered as the JSON request body if set (overriding all other body content, if any).</li>
-</ul>
-<p>This is intended for web apps only; if your app isn't running in browsers you should use regular requests.</p>
-<h2>Common HTTP headers</h2>
-<p>The following headers are included in every response:</p>
-<ul>
-<li><code>API-Version</code>: The version of the API in the form <code>{major}.{minor}.{revision}</code>.</li>
-<li><code>Server-Time</code>: The current server time as a <a href="#data-structure-timestamp">timestamp</a>. Keeping reference of the server time is an absolute necessity to properly read and write event times.</li>
-</ul>
-<h2>Errors</h2>
-<p>When an error occurs, the API returns a 4xx or 5xx status code, with the response body usually containing an <a href="#data-structure-error">error</a> object detailing the cause.</p>
-<p>Here's an example "401 Unauthorized" error response:</p>
-<pre class="highlighted"><code class="language-json">{
-  "<span class="attribute">id</span>": <span class="value"><span class="string">"invalid-access-token"</span></span>,
-  "<span class="attribute">message</span>": <span class="value"><span class="string">"Cannot find access with token 'bad-token'."</span>
-</span>}</code></pre>
+</section><section id="socketio"><h1>Socket.IO support</h1>
+<p>The activity service supports real-time interaction with <a href="http://socket.io">Socket.IO</a>, both by accepting equivalent messages for most API methods and by emitting data change notification messages. (Code examples below are in Javascript.)</p>
+<h3>Connecting</h3>
+<p>In order to use Socket.IO, your app must first load the appropriate Socket.IO client library. For a Javascript web app, that's the <code>socket.io.js</code> file served by the activity server at the following URL: <code>https://{username}.pryv.io/socket.io/socket.io.js</code>. (For other languages see the related section on the <a href="https://github.com/learnboost/socket.io/wiki">Socket.IO wiki</a>.)</p>
+<p>The second step is to initialize the connection. Here's the URL you need to use:</p>
+<pre class="highlighted"><code class="ruby">https<span class="symbol">:</span>/<span class="regexp">/{username}.pryv.io:443/</span>{username}<span class="number">?a</span>uth={accessToken}&amp;resource=<span class="regexp">/{username}</span></code></pre>
+<p>For example, in Javascript do:</p>
+<pre class="highlighted"><code class="language-javascript"><span class="keyword">var</span> socket = io.connect(<span class="string">"https://mathurin.pryv.io:443/mathurin?auth=TVVro8e8T5&amp;resource=/mathurin"</span>)</code></pre>
+<h3>Calling API methods</h3>
+<p>Every method in the activity service can be called by sending a corresponding Socket.IO <code>command</code> message, providing a data object specifying the command (or method) and possible parameters, and a callback function for the response:</p>
+<pre class="highlighted"><code class="language-javascript">socket.emit(<span class="string">'command'</span>, {id: <span class="string">'{id}'</span>, params: {<span class="comment">/*parameters*/</span>}}, <span class="function"><span class="keyword">function</span> <span class="params">(error, data)</span> {</span>
+  <span class="comment">// handle response here</span>
+});</code></pre>
+<p>Command ids are indicated for each API method below and are modeled after the equivalent URL path. For example, here's how you could call <code>GET /{channel-id}/events</code>:</p>
+<pre class="highlighted"><code class="language-javascript"><span class="keyword">var</span> cmdData = {
+  id: <span class="string">'{channel-id}.events.get'</span>,
+  params: {
+    sortAscending: <span class="literal">true</span>
+  }
+};
+socket.emit(<span class="string">'command'</span>, cmdData, <span class="function"><span class="keyword">function</span> <span class="params">(error, data)</span> {</span>
+  <span class="comment">// handle response</span>
+});</code></pre>
+<h3>Receiving data change notifications</h3>
+<p>You can be notified of changes to channels, folders and events by subscribing to the corresponding messages <code>channelsChanged</code>, <code>eventsChanged</code> and <code>foldersChanged</code>. For the latter two, the message is passed a parameters object with a <code>channelId</code> property to help you refresh only what's necessary.
+For example:</p>
+<pre class="highlighted"><code class="language-javascript">socket.on(<span class="string">'channelsChanged'</span>, <span class="keyword">function</span>() { <span class="comment">// no scope parameter for channels</span>
+  <span class="comment">// ... (retrieve latest changes and update)</span>
+});
+socket.on(<span class="string">'eventsChanged'</span>, <span class="keyword">function</span>(scope) {
+  <span class="comment">// scope.channelId contains the related channel id</span>
+  <span class="comment">// ... (retrieve latest changes and update)</span>
+});</code></pre>
 </section><section id="data-structure"><h1>Data structure</h1>
 <p>This section describes the structure of the different types of objects and values exchanged in the API.</p>
 <p>Notes:</p>
@@ -673,39 +706,6 @@ TODO: and possibly a simple tutorial.</p>
 <li><code>400 Bad Request</code>, id <code>unknown-folder</code>: The specified parent folder can't be found.</li>
 </ul>
 <p>TODO: example</p>
-</section><section id="socketio"><h1>Socket.IO support</h1>
-<p>The activity service supports real-time interaction with <a href="http://socket.io">Socket.IO</a>, both by accepting equivalent messages for most API methods and by emitting data change notification messages. (Code examples below are in Javascript.)</p>
-<h3>Connecting</h3>
-<p>In order to use Socket.IO, your app must first load the appropriate Socket.IO client library. For a Javascript web app, that's the <code>socket.io.js</code> file served by the activity server at the following URL: <code>https://{username}.pryv.io/socket.io/socket.io.js</code>. (For other languages see the related section on the <a href="https://github.com/learnboost/socket.io/wiki">Socket.IO wiki</a>.)</p>
-<p>The second step is to initialize the connection. Here's the URL you need to use:</p>
-<pre class="highlighted"><code class="ruby">https<span class="symbol">:</span>/<span class="regexp">/{username}.pryv.io:443/</span>{username}<span class="number">?a</span>uth={accessToken}&amp;resource=<span class="regexp">/{username}</span></code></pre>
-<p>For example, in Javascript do:</p>
-<pre class="highlighted"><code class="language-javascript"><span class="keyword">var</span> socket = io.connect(<span class="string">"https://mathurin.pryv.io:443/mathurin?auth=TVVro8e8T5&amp;resource=/mathurin"</span>)</code></pre>
-<h3>Calling API methods</h3>
-<p>Every method in the activity service can be called by sending a corresponding Socket.IO <code>command</code> message, providing a data object specifying the command (or method) and possible parameters, and a callback function for the response:</p>
-<pre class="highlighted"><code class="language-javascript">socket.emit(<span class="string">'command'</span>, {id: <span class="string">'{id}'</span>, params: {<span class="comment">/*parameters*/</span>}}, <span class="function"><span class="keyword">function</span> <span class="params">(error, data)</span> {</span>
-  <span class="comment">// handle response here</span>
-});</code></pre>
-<p>Command ids are indicated for each API method below and are modeled after the equivalent URL path. For example, here's how you could call <code>GET /{channel-id}/events</code>:</p>
-<pre class="highlighted"><code class="language-javascript"><span class="keyword">var</span> cmdData = {
-  id: <span class="string">'{channel-id}.events.get'</span>,
-  params: {
-    sortAscending: <span class="literal">true</span>
-  }
-};
-socket.emit(<span class="string">'command'</span>, cmdData, <span class="function"><span class="keyword">function</span> <span class="params">(error, data)</span> {</span>
-  <span class="comment">// handle response</span>
-});</code></pre>
-<h3>Receiving data change notifications</h3>
-<p>You can be notified of changes to channels, folders and events by subscribing to the corresponding messages <code>channelsChanged</code>, <code>eventsChanged</code> and <code>foldersChanged</code>. For the latter two, the message is passed a parameters object with a <code>channelId</code> property to help you refresh only what's necessary.
-For example:</p>
-<pre class="highlighted"><code class="language-javascript">socket.on(<span class="string">'channelsChanged'</span>, <span class="keyword">function</span>() { <span class="comment">// no scope parameter for channels</span>
-  <span class="comment">// ... (retrieve latest changes and update)</span>
-});
-socket.on(<span class="string">'eventsChanged'</span>, <span class="keyword">function</span>(scope) {
-  <span class="comment">// scope.channelId contains the related channel id</span>
-  <span class="comment">// ... (retrieve latest changes and update)</span>
-});</code></pre>
 </section></div></div><div id="toc"></div><script>jQuery(document).ready(function($) {
   $('#toc').toc({
     'selectors': 'h1,h2',
