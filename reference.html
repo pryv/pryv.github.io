@@ -7,7 +7,7 @@ _gaq.push(['_trackPageview']);
   ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
   var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
 })();
-</script></head><body><header id="page-header" class="navbar navbar-fixed-top"><div class="navbar-inner"><a href="/index.html" class="brand">Pryv</a><div class="nav-collapse collapse"><ul class="nav pull-right"><li><a href="dev-index.html">Home</a></li><li><div class="version">API version: <strong>0.4.20</strong></div></li></ul></div></div></header><div id="main"><div id="sections"><section id="basics"><h1>Basics</h1><section><h2>API style</h2><div class="content"><p>Most of the API follows REST principles, meaning each item has its own unique resource URL and can be read or modified via HTTP verbs:</p>
+</script></head><body><header id="page-header" class="navbar navbar-fixed-top"><div class="navbar-inner"><a href="/index.html" class="brand">Pryv</a><div class="nav-collapse collapse"><ul class="nav pull-right"><li><a href="dev-index.html">Home</a></li><li><div class="version">API version: <strong>0.4.22</strong></div></li></ul></div></div></header><div id="main"><div id="sections"><section id="basics"><h1>Basics</h1><section><h2>API style</h2><div class="content"><p>Most of the API follows REST principles, meaning each item has its own unique resource URL and can be read or modified via HTTP verbs:</p>
 <ul>
 <li>GET to read the item(s)</li>
 <li>POST to create a new item, with a JSON message in the request body</li>
@@ -79,7 +79,7 @@ _gaq.push(['_trackPageview']);
 </div></section></section><section><h2>Channels</h2><div class="intro"><p>Methods for retrieving and manipulating <a href="#data-structure-channel">channels</a>.</p>
 </div><section class="method"><h3>Get channels</h3><div class="content"><p><code>GET /channels</code>, Socket.IO: <code>channels.get</code></p>
 <p>Gets the accessible activity channels (excluding those in the trash).</p>
-<h4>Query string parameters</h4>
+<h4>Parameters</h4>
 <ul>
 <li><code>state</code> (<code>default</code>, <code>trashed</code> or <code>all</code>): Optional. Indicates what items to return depending on their state. By default, only items that are not in the trash are returned; <code>trashed</code> returns only items in the trash, while <code>all</code> return all items regardless of their state.</li>
 </ul>
@@ -134,7 +134,7 @@ _gaq.push(['_trackPageview']);
 </aside></section></section><section><h2>Events</h2><div class="intro"><p>Methods to retrieve and manipulate <a href="#data-structure-event">events</a>.</p>
 </div><section class="method"><h3>Get events</h3><div class="content"><p><code>GET /{channel-id}/events</code>, Socket.IO: <code>{channel-id}.events.get</code></p>
 <p>Queries accessible events.</p>
-<h4>Query string parameters</h4>
+<h4>Parameters</h4>
 <ul>
 <li><code>fromTime</code> (<a href="#data-structure-timestamp">timestamp</a>): Optional. The start time of the timeframe you want to retrieve events for. Default is 24 hours before <code>toTime</code> if the latter is set; otherwise it is not taken into account.</li>
 <li><code>toTime</code> (<a href="#data-structure-timestamp">timestamp</a>): Optional. The end time of the timeframe you want to retrieve events for. Default is the current time. Note: events are considered to be within a given timeframe based on their <code>time</code> only (<code>duration</code> is not considered).</li>
@@ -279,7 +279,7 @@ _gaq.push(['_trackPageview']);
 </aside></section></section><section><h2>Folders</h2><div class="intro"><p>Methods to retrieve and manipulate <a href="#data-structure-folder">folders</a>.</p>
 </div><section class="method"><h3>Get folders</h3><div class="content"><p><code>GET /{channel-id}/folders</code>, Socket.IO: <code>{channel-id}.folders.get</code></p>
 <p>Gets the accessible folders, either from the root level or only descending from a specified parent folder.</p>
-<h4>Query string parameters</h4>
+<h4>Parameters</h4>
 <ul>
 <li><code>parentId</code> (<a href="#data-structure-identity">identity</a>): Optional. The id of the parent folder to use as root for the request. Default: <code>null</code> (returns all accessible folders from the root level).</li>
 <li><code>includeHidden</code> (<code>true</code> or <code>false</code>): Optional. When <code>true</code>, folders that are currently hidden will be included in the result. Default: <code>false</code>.</li>
@@ -332,7 +332,7 @@ _gaq.push(['_trackPageview']);
 <li>If the folder is not already in the trash, it will be moved to the trash (i.e. flagged as <code>trashed</code>)</li>
 <li>If the folder is already in the trash, it will be irreversibly deleted with its possible descendants. If events exist that refer to the deleted item(s), you must indicate how to handle them with the parameter <code>mergeEventsWithParent</code>..</li>
 </ul>
-<h4>Query string parameters</h4>
+<h4>Parameters</h4>
 <ul>
 <li><code>mergeEventsWithParent</code> (<code>true</code> or <code>false</code>): Required if actually deleting the item and if it (or any of its descendants) has linked events, ignored otherwise. If <code>true</code>, the linked events will be assigned to the parent of the deleted item; if <code>false</code>, the linked events will be deleted.</li>
 </ul>
@@ -359,7 +359,7 @@ _gaq.push(['_trackPageview']);
 <pre class="highlighted"><code class="language-bash">curl -i -H <span class="string">"Authorization: {access-token}"</span> https://{username}.pryv.io/accesses</code></pre>
 </aside></section><section class="method"><h3>Create access</h3><div class="content"><p><code>POST /accesses</code></p>
 <p>Creates a new shared access. You can only create accesses whose permissions are a subset of those linked to your own access token.</p>
-<h4>Body parameters</h4>
+<h4>Parameters</h4>
 <p>The new access's data: see <a href="#data-structure-access">access</a>.</p>
 <h4>Successful response: <code>201 Created</code></h4>
 <ul>
@@ -374,7 +374,7 @@ _gaq.push(['_trackPageview']);
 </code></pre>
 </aside></section><section class="method"><h3>Update access</h3><div class="content"><p><code>PUT /accesses/{token}</code></p>
 <p>Modifies the specified shared access. You can only modify accesses whose permissions are a subset of those linked to your own access token.</p>
-<h4>Body parameters</h4>
+<h4>Parameters</h4>
 <p>New values for the access's fields: see <a href="#data-structure-access">access</a>. All fields are optional, and only modified values must be included. TODO: example</p>
 <h4>Successful response: <code>200 OK</code></h4>
 </div><aside><h4>cURL example</h4>
@@ -402,7 +402,7 @@ _gaq.push(['_trackPageview']);
 <li>To delete a field, set its value to <code>null</code></li>
 </ul>
 <p>Settings you don't specify in the update are left untouched.</p>
-<h4>Body parameters</h4>
+<h4>Parameters</h4>
 <p>An object with the desired changes to the settings (see above).</p>
 <h4>Successful response: <code>200 OK</code></h4>
 </div><aside><h4>Simple example</h4>
