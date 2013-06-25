@@ -1,12 +1,10 @@
-<html><head></head><body><h1>Data structure</h1>
-<p>This section describes the structure of the different types of objects and values exchanged in the API.</p>
+<html><head></head><body><section id="data-structure"><h1>Data structure</h1><div class="intro"><p>This section describes the structure of the different types of objects and values exchanged in the API.</p>
 <p>Notes:</p>
 <ul>
 <li>"Read-only" = server-assigned, never set or modified by clients</li>
 <li>We should and will reformat items structure for quick visual parsing (e.g. using tables, or at least coloured labels for stuff like "optional")—for the moment we've consciously chosen low-formatting, quick-to-edit bullet lists</li>
 </ul>
-<h2><a id="data-structure-channel"></a>Channel</h2>
-<p>Each activity channel represents a "stream" or "type" of activity to track, acting as a storage bucket for related events.
+</div><section><h2><a id="data-structure-channel"></a>Channel</h2><div class="content"><p>Each activity channel represents a "stream" or "type" of activity to track, acting as a storage bucket for related events.
 Fields:</p>
 <ul>
 <li><code>id</code> (<a href="#data-structure-identity">identity</a>): Unique, read-only (except at creation). The identifier for the channel. Automatically generated if not set when creating the channel; <strong>slugified if necessary</strong>.</li>
@@ -16,14 +14,13 @@ Fields:</p>
 <li><code>timeCount</code> (<a href="#data-structure-timestamp">timestamp</a>): Read-only. Only optionally returned when querying channels, indicating the total time tracked in that channel since a given reference date and time. <strong>This will be implemented later.</strong></li>
 <li><code>trashed</code> (boolean): Optional. <code>true</code> if the channel is in the trash.</li>
 </ul>
-<p>TODO: example</p>
-<h2><a id="data-structure-event"></a>Event</h2>
-<p>Events can be period events, which are associated with a period of time, or mark events, which are just associated with a single point in time:</p>
+</div><aside><p>TODO: example</p>
+</aside></section><section><h2><a id="data-structure-event"></a>Event</h2><div class="content"><p>Events can be period events, which are associated with a period of time, or mark events, which are just associated with a single point in time:</p>
 <ul>
 <li>Period events are used to track everything with a duration, like time spent drafting a project proposal, meeting with the customer or staying at a particular location.</li>
 <li>Mark events are used to track everything else, like a note, a log message, a GPS location, a temperature measurement, or a stock market asset value.</li>
 </ul>
-<p>Differentiating them is simple: period events carry a duration, while mark events do not. Like folders, events always belong to an activity channel.</p>
+<p>Period events carry a duration, mark events do not. Like folders, events always belong to an activity channel.</p>
 <p>Fields:</p>
 <ul>
 <li><code>id</code> (<a href="#data-structure-identity">identity</a>): Unique, read-only. The server-assigned identifier for the event.</li>
@@ -49,7 +46,7 @@ Fields:</p>
 <li><code>trashed</code> (boolean): Optional. <code>true</code> if the event is in the trash.</li>
 <li><code>modified</code> (<a href="#data-structure-timestamp">timestamp</a>): Read-only. The time the event was last modified.</li>
 </ul>
-<h3>Example</h3>
+</div><aside><h4>Example</h4>
 <pre class="highlighted"><code class="language-javascript">[
   { <span class="string">"time"</span>: <span class="number">1350365877.359</span>, <span class="string">"description"</span> : <span class="string">"Some pics"</span>, <span class="string">"id"</span> : <span class="string">"event_0"</span>, <span class="string">"folderId"</span> : <span class="literal">null</span>,
     <span class="string">"tags"</span>: [<span class="string">"foraging"</span>, <span class="string">"funny"</span>],
@@ -69,8 +66,7 @@ Fields:</p>
     <span class="string">"value"</span>: { <span class="string">"location"</span>: { <span class="string">"lat"</span>: <span class="number">40.714728</span>, <span class="string">"lng"</span>: -<span class="number">73.998672</span>, <span class="number">12</span> } },
     <span class="string">"modified"</span> : <span class="number">1350373077.359</span> }
 ]</code></pre>
-<h2><a id="data-structure-folder"></a>Folder</h2>
-<p>Activity folders are the possible states or categories you track the channel's events into (folders are always specific to an activity channel). Every period event belongs to one folder, while mark events can be recorded "off-folder" as well. Activity folders follow a hierarchical tree structure: every folder can contain "child" folders (sub-folders).</p>
+</aside></section><section><h2><a id="data-structure-folder"></a>Folder</h2><div class="content"><p>Activity folders are the possible states or categories you track the channel's events into (folders are always specific to an activity channel). Every period event belongs to one folder, while mark events can be recorded "off-folder" as well. Activity folders follow a hierarchical tree structure: every folder can contain "child" folders (sub-folders).</p>
 <p>Fields:</p>
 <ul>
 <li><code>id</code> (<a href="#data-structure-identity">identity</a>): Unique, read-only (except at creation). The identifier for the folder. Automatically generated if not set when creating the folder; <strong>slugified if necessary</strong>.</li>
@@ -83,7 +79,7 @@ Fields:</p>
 <li><code>children</code> (array of folders): Read-only. The folder's sub-folders, if any. This field cannot be set in requests creating a new folders: folders are created individually by design.</li>
 <li><code>trashed</code> (boolean): Optional. <code>true</code> if the folder is in the trash.</li>
 </ul>
-<h3>Example</h3>
+</div><aside><h4>Example</h4>
 <p>A folder structure for activities:</p>
 <pre class="highlighted"><code class="language-javascript">[
   { <span class="string">"name"</span>: <span class="string">"Sport"</span>, <span class="string">"id"</span>: <span class="string">"sport"</span>, <span class="string">"parentId"</span>: <span class="literal">null</span>,
@@ -105,8 +101,7 @@ Fields:</p>
     ]
   }
 ];</code></pre>
-<h2><a id="data-structure-access"></a>Access</h2>
-<p>An access defines a set of permissions on a user's activity data (channels, folders and events). (See <a href="overview.html#sharing">how sharing works</a>.)</p>
+</aside></section><section><h2><a id="data-structure-access"></a>Access</h2><div class="content"><p>An access defines a set of permissions on a user's activity data (channels, folders and events). (See <a href="overview.html#sharing">how sharing works</a>.)</p>
 <p>Fields:</p>
 <ul>
 <li><code>token</code> (string): Unique, read-only (except at creation). The token identifying the access. Automatically generated if not set when creating the access; <strong>slugified if necessary</strong>.</li>
@@ -125,9 +120,8 @@ Fields:</p>
 </li>
 </ul>
 <p>A note about permissions: if the access defines conflicting permission levels (e.g. a folder set to "manage" but a child folder within it set to "contribute"), only the highest level is considered.</p>
-<p>TODO: example</p>
-<h2><a id="data-structure-bookmark"></a>Bookmark</h2>
-<p>Sharing bookmarks allow the user to keep track of accesses shared with her by other users.</p>
+</div><aside><p>TODO: example</p>
+</aside></section><section><h2><a id="data-structure-bookmark"></a>Bookmark</h2><div class="content"><p>Sharing bookmarks allow the user to keep track of accesses shared with her by other users.</p>
 <p>Fields:</p>
 <ul>
 <li><code>id</code> (<a href="#data-structure-identity">identity</a>): Unique, read-only. The server-assigned identifier for the bookmark.</li>
@@ -135,9 +129,8 @@ Fields:</p>
 <li><code>url</code> (string): The url pointing to the shared access's owning user's server. Not modifiable after creation.</li>
 <li><code>accessToken</code> <a href="#data-structure-identity">identity</a>: The token of the shared access itself. Not modifiable after creation.</li>
 </ul>
-<p>TODO: example</p>
-<h2><a id="data-structure-additional-data"></a>Item additional data</h2>
-<p>An object (key-value map) for client apps to store additional data about the containing item (channel, event, etc.), such as a color, a reference to an associated icon, or other app-specific metadata.</p>
+</div><aside><p>TODO: example</p>
+</aside></section><section><h2><a id="data-structure-additional-data"></a>Item additional data</h2><div class="content"><p>An object (key-value map) for client apps to store additional data about the containing item (channel, event, etc.), such as a color, a reference to an associated icon, or other app-specific metadata.</p>
 <h3>Adding, updating and removing client data</h3>
 <p>When the containing item is updated, additional data fields can be added, updated and removed as follows:</p>
 <ul>
@@ -147,24 +140,20 @@ Fields:</p>
 <p>Fields you don't specify in the update are left untouched.</p>
 <h3>Naming convention</h3>
 <p>The convention is that each app names the keys it uses with an <code>"{app-id}:"</code> prefix. For example, an app with id "riki" would store its data in fields such as <code>"riki:key": "some value"</code>.</p>
-<h2><a id="data-structure-error"></a>Error</h2>
-<p>Fields:</p>
+</div></section><section><h2><a id="data-structure-error"></a>Error</h2><div class="content"><p>Fields:</p>
 <ul>
 <li><code>id</code> (string): Identifier for the error; complements the response's HTTP error code.</li>
 <li><code>message</code> (string): A human-readable description of the error.</li>
 <li><code>subErrors</code> (array of errors): Optional. Lists the detailed causes of the main error, if any.</li>
 </ul>
-<h2>Simple types</h2>
-<h3><a id="data-structure-identity"></a>Item identity</h3>
-<p>A string value uniquely identifying an item of a given type (e.g. channel, event) for a given user. For some types of items ("structural" ones such as channels and folders), it is allowed for the identity to be optionally set by API clients; otherwise the identity is generated by the server as an alphanumeric string.</p>
-<h3><a id="data-structure-timestamp"></a>Timestamp</h3>
-<p>A positive floating-point number representing a number of seconds since any reference date and time, <strong>independently from the time zone</strong>. Because date and time synchronization between server time and client time is done by the client simply comparing the current server timestamp with its own, the reference date and time does not matter.</p>
-<p>Here are some examples of getting a valid timestamp in various environments:</p>
+</div><aside><p>TODO: example</p>
+</aside></section><section><h2>Simple types</h2><section><h3><a id="data-structure-identity"></a>Item identity</h3><div class="content"><p>A string value uniquely identifying an item of a given type (e.g. channel, event) for a given user. For some types of items ("structural" ones such as channels and folders), it is allowed for the identity to be optionally set by API clients; otherwise the identity is generated by the server as an alphanumeric string.</p>
+</div></section><section><h3><a id="data-structure-timestamp"></a>Timestamp</h3><div class="content"><p>A positive floating-point number representing a number of seconds since any reference date and time, <strong>independently from the time zone</strong>. Because date and time synchronization between server time and client time is done by the client simply comparing the current server timestamp with its own, the reference date and time does not matter.</p>
+</div><aside><p>Some examples of getting a valid timestamp in various environments:</p>
 <ul>
 <li>JavaScript: <code>Date.now() / 1000</code></li>
 <li>PHP (5+): <code>microtime(true)</code></li>
 <li>TODO: more examples</li>
 </ul>
-<h3><a id="data-structure-language-code"></a>Two-letter ISO language code</h3>
-<p>A two-letter string specifying a language following the ISO 639-1 standard (see <a href="http://en.wikipedia.org/wiki/ISO_639-1">the related Wikipedia definition</a>).</p>
-</body></html>
+</aside></section><section><h3><a id="data-structure-language-code"></a>Two-letter ISO language code</h3><div class="content"><p>A two-letter string specifying a language following the ISO 639-1 standard (see <a href="http://en.wikipedia.org/wiki/ISO_639-1">the related Wikipedia definition</a>).</p>
+</div></section></section></section></body></html>

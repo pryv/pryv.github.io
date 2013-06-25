@@ -1,9 +1,16 @@
+* {
+  box-sizing: border-box;
+}
 h1,
 h2,
 h3 {
-  margin: 2.4em 0 1.2em;
+  margin: 2em 0 1em;
 }
-h1:first-of-type {
+h1:first-of-type,
+h2:first-of-type,
+h3:first-of-type,
+h4:first-of-type,
+p:first-of-type {
   margin-top: 0;
 }
 h5,
@@ -26,15 +33,33 @@ h2 {
 h3 {
   border-bottom: 1px solid #ccc;
 }
-section {
-  margin-top: 3.5em;
-  border-top: 1px dotted #ccc;
-  padding-top: 2.5em;
+pre {
+  border: 0 solid rgba(204,204,204,0);
 }
-section:first-child {
+.navbar .brand {
+  display: block;
+  margin-left: 5px;
+  width: 80px;
+  height: 40px;
+  padding: 0;
+  text-indent: -9000px;
+  background: url("images/LogoPrYvDigital_80x40.png") no-repeat center top;
+}
+#main {
+  margin-top: 40px;
+}
+#sections > section {
+  margin-top: 2em;
+  padding-top: 2em;
+  border-top: 1px dashed #000;
+}
+#sections > section section {
+  margin-bottom: 1em;
+}
+#sections > section:first-of-type {
   margin-top: 0;
-  border-top: none;
   padding-top: 0;
+  border-top: 0 none;
 }
 #toc {
   display: none;
@@ -42,12 +67,12 @@ section:first-child {
   left: 0px;
   height: 100%;
   position: fixed;
-  background: #333;
-  box-shadow: inset -5px 0 5px 0px #000;
+  background: #3c3f46;
   width: 200px;
   padding-top: 20px;
   color: #fff;
   overflow: scroll;
+  margin-top: 40px;
 }
 #toc ul {
   margin: 0;
@@ -79,9 +104,41 @@ section:first-child {
   background: #369;
   box-shadow: inset -5px 0px 10px -5px #000;
 }
-@media (min-width: 600px) {
+@media (min-width: 767px) {
   html.js #main {
     margin-left: 200px;
+  }
+  html.js #sections {
+    float: left;
+    background-color: #dadde4;
+    margin-left: 50%;
+    padding-top: 1.2em;
+    width: 50%;
+  }
+  html.js #sections section {
+    float: left;
+    clear: both;
+    width: 100%;
+  }
+  html.js #sections section > h1,
+  html.js #sections section > h2,
+  html.js #sections section > h3,
+  html.js #sections section > .intro,
+  html.js #sections section > .content {
+    float: left;
+    clear: left;
+    width: 50%;
+    padding: 0 30px;
+  }
+  html.js #sections section > aside {
+    float: right;
+    clear: right;
+    width: 50%;
+    padding: 0 30px;
+  }
+  html.js #sections > section {
+    margin-left: -100%;
+    width: 200%;
   }
   html.js #toc {
     display: block;
