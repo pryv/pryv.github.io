@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en" class="no-js"><head><meta charset="UTF-8" /></head><body><access>SDKs</access><meta name="description" content="TODO" /><meta name="viewport" content="width=device-width, initial-scale=1" /><link rel="stylesheet" type="text/css" href="bootstrap.min.css" /><link rel="stylesheet" type="text/css" href="github.css" /><link rel="stylesheet" type="text/css" href="highlight.css" /><link rel="stylesheet" type="text/css" href="style.css" /><script src="scripts/modernizr.min.js"></script><script src="http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.js"></script><script src="scripts/jquery.toc.min.js"></script><script>var _gaq = _gaq || [];
+<!DOCTYPE html><html lang="en" class="no-js"><head><meta charset="UTF-8" /><title>Pryv API - App authorization</title><meta name="description" content="TODO" /><meta name="viewport" content="width=device-width, initial-scale=1" /><link rel="stylesheet" type="text/css" href="bootstrap/css/bootstrap.min.css" /><link rel="stylesheet" type="text/css" href="github.css" /><link rel="stylesheet" type="text/css" href="highlight.css" /><link rel="stylesheet" type="text/css" href="style.css" /><link rel="stylesheet" type="text/css" href="bootstrap/css/bootstrap-responsive.min.css" /><script src="scripts/modernizr.min.js"></script><script src="http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.js"></script><script src="scripts/jquery.toc.min.js"></script><script src="bootstrap/js/bootstrap.min.js"></script><script>var _gaq = _gaq || [];
 _gaq.push(['_setAccount', 'UA-36589447-2']);
 _gaq.push(['_trackPageview']);
 
@@ -7,7 +7,7 @@ _gaq.push(['_trackPageview']);
   ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
   var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
 })();
-</script><div id="main"><header id="pageHeader"><a href="dev-index.html">Home</a></header><div id="sections"><section id="intro"><h1>App access</h1>
+</script></head><body class="withTOC"><header id="page-header" class="navbar navbar-fixed-top"><div class="navbar-inner"><a href="/dev-index.html" class="brand">Pryv</a><a data-toggle="collapse" data-target=".nav-collapse" class="btn btn-navbar"><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></a><div class="nav-collapse collapse"><ul class="nav"><li><a href="about.html">About</a></li><li><a href="concepts.html">Concepts</a></li><li class="dropdown"><a href="#" data-toggle="dropdown" class="dropdown-toggle">Guides <b class="caret"></b></a><ul class="dropdown-menu"><li><a href="#">Getting started</a></li><li><a href="#">Data modeling</a></li></ul></li><li class="dropdown"><a href="#" data-toggle="dropdown" class="dropdown-toggle">Reference <b class="caret"></b></a><ul class="dropdown-menu"><li><a href="reference.html">API</a></li><li><a href="event-types.html">Event types</a></li><li><a href="standard-structure.html">Standard data structure</a></li><li><a href="app-access.html">App authorization</a></li></ul></li><li><a href="#">Blog</a></li></ul></div><div class="nav-header pull-right"><div class="version">API version: <strong>0.4.22</strong></div></div></div></header><div id="main-wrapper"><div id="main"><section id="intro"><h1>App access</h1>
 <p>Get an access token.</p>
 <p>TODO what is an access token and why do I need it?</p>
 <h2><a id="intro-initial-requirements"></a>Initial requirements</h2>
@@ -217,10 +217,102 @@ Use our staging servers: <a href="https://access.rec.la/access">https://access.r
 </ol>
 <h2>Sequence diagram</h2>
 <p><img src="app-access-files/custom-sequence.png" alt="Sequence Diagram" /></p>
+<h2>Json Examples</h2>
+<p>You can reporoduce this examples and try other combinations
+from <a href="https://sw.rec.la/access/test.html"></a><a href="https://sw.rec.la/access/test.html">https://sw.rec.la/access/test.html</a></p>
+<h3>Access request</h3>
+<p><strong>request</strong>: <code>POST https://reg.rec.la/access</code><br /><strong>payload</strong>:</p>
+<pre class="highlighted"><code class="json">{
+  "<span class="attribute">requestingAppId</span>": <span class="value"><span class="string">"web-page-test"</span></span>,
+  "<span class="attribute">requestedPermissions</span>": <span class="value">[
+    {
+      "<span class="attribute">channelId</span>": <span class="value"><span class="string">"diary"</span></span>,
+      "<span class="attribute">defaultName</span>": <span class="value"><span class="string">"Journal"</span></span>,
+      "<span class="attribute">level</span>": <span class="value"><span class="string">"read"</span></span>,
+      "<span class="attribute">folderPermissions</span>": <span class="value">[
+        {
+          "<span class="attribute">folderId</span>": <span class="value"><span class="string">"notes"</span></span>,
+          "<span class="attribute">level</span>": <span class="value"><span class="string">"manage"</span></span>,
+          "<span class="attribute">defaultName</span>": <span class="value"><span class="string">"Notes"</span>
+        </span>}
+      ]
+    </span>},
+    {
+      "<span class="attribute">channelId</span>": <span class="value"><span class="string">"position"</span></span>,
+      "<span class="attribute">defaultName</span>": <span class="value"><span class="string">"Position"</span></span>,
+      "<span class="attribute">level</span>": <span class="value"><span class="string">"read"</span></span>,
+      "<span class="attribute">folderPermissions</span>": <span class="value">[
+        {
+          "<span class="attribute">folderId</span>": <span class="value"><span class="string">"iphone"</span></span>,
+          "<span class="attribute">level</span>": <span class="value"><span class="string">"manage"</span></span>,
+          "<span class="attribute">defaultName</span>": <span class="value"><span class="string">"iPhone"</span>
+        </span>}
+      ]
+    </span>}
+  ]</span>,
+  "<span class="attribute">languageCode</span>": <span class="value"><span class="string">"en"</span></span>,
+  "<span class="attribute">returnURL</span>": <span class="value"><span class="literal">false</span>
+</span>}</code></pre>
+<p><strong>response</strong>: </p>
+<pre class="highlighted"><code class="perl">{
+  <span class="string">"status"</span>: <span class="string">"NEED_SIGNIN"</span>,
+  <span class="string">"code"</span>: <span class="number">201</span>,
+  <span class="string">"key"</span>: <span class="string">"dXRqBezem8v3mNxf"</span>,
+  <span class="string">"requestingAppId"</span>: <span class="string">"web-page-test"</span>,
+  <span class="string">"requestedPermissions"</span>: [
+    {
+      <span class="string">"channelId"</span>: <span class="string">"diary"</span>,
+      <span class="string">"defaultName"</span>: <span class="string">"Journal"</span>,
+      <span class="string">"level"</span>: <span class="string">"read"</span>,
+      <span class="string">"folderPermissions"</span>: [
+        {
+          <span class="string">"folderId"</span>: <span class="string">"notes"</span>,
+          <span class="string">"level"</span>: <span class="string">"manage"</span>,
+          <span class="string">"defaultName"</span>: <span class="string">"Notes"</span>
+        }
+      ]
+    },
+    {
+      <span class="string">"channelId"</span>: <span class="string">"position"</span>,
+      <span class="string">"defaultName"</span>: <span class="string">"Position"</span>,
+      <span class="string">"level"</span>: <span class="string">"read"</span>,
+      <span class="string">"folderPermissions"</span>: [
+        {
+          <span class="string">"folderId"</span>: <span class="string">"iphone"</span>,
+          <span class="string">"level"</span>: <span class="string">"manage"</span>,
+          <span class="string">"defaultName"</span>: <span class="string">"iPhone"</span>
+        }
+      ]
+    }
+  ],
+  <span class="string">"url"</span>: <span class="string">"https://sw.rec.la:2443/access/v1/access.html?lang=en&amp;key=dXRqBezem8v3mNxf&amp;requestingAppId=web-page-test&amp;returnURL=false&amp;domain=rec.la&amp;registerURL=https<span class="variable">%3A</span><span class="variable">%2F</span><span class="variable">%2Freg</span>.rec.la<span class="variable">%3A443</span>&amp;requestedPermissions=<span class="variable">%5B</span><span class="variable">%7B</span><span class="variable">%22channelId</span><span class="variable">%22</span><span class="variable">%3A</span><span class="variable">%22diary</span><span class="variable">%22</span><span class="variable">%2C</span><span class="variable">%22defaultName</span><span class="variable">%22</span><span class="variable">%3A</span><span class="variable">%22Journal</span><span class="variable">%22</span><span class="variable">%2C</span><span class="variable">%22level</span><span class="variable">%22</span><span class="variable">%3A</span><span class="variable">%22read</span><span class="variable">%22</span><span class="variable">%2C</span><span class="variable">%22folderPermissions</span><span class="variable">%22</span><span class="variable">%3A</span><span class="variable">%5B</span><span class="variable">%7B</span><span class="variable">%22folderId</span><span class="variable">%22</span><span class="variable">%3A</span><span class="variable">%22notes</span><span class="variable">%22</span><span class="variable">%2C</span><span class="variable">%22level</span><span class="variable">%22</span><span class="variable">%3A</span><span class="variable">%22manage</span><span class="variable">%22</span><span class="variable">%2C</span><span class="variable">%22defaultName</span><span class="variable">%22</span><span class="variable">%3A</span><span class="variable">%22Notes</span><span class="variable">%22</span><span class="variable">%7D</span><span class="variable">%5D</span><span class="variable">%7D</span><span class="variable">%2C</span><span class="variable">%7B</span><span class="variable">%22channelId</span><span class="variable">%22</span><span class="variable">%3A</span><span class="variable">%22position</span><span class="variable">%22</span><span class="variable">%2C</span><span class="variable">%22defaultName</span><span class="variable">%22</span><span class="variable">%3A</span><span class="variable">%22Position</span><span class="variable">%22</span><span class="variable">%2C</span><span class="variable">%22level</span><span class="variable">%22</span><span class="variable">%3A</span><span class="variable">%22read</span><span class="variable">%22</span><span class="variable">%2C</span><span class="variable">%22folderPermissions</span><span class="variable">%22</span><span class="variable">%3A</span><span class="variable">%5B</span><span class="variable">%7B</span><span class="variable">%22folderId</span><span class="variable">%22</span><span class="variable">%3A</span><span class="variable">%22iphone</span><span class="variable">%22</span><span class="variable">%2C</span><span class="variable">%22level</span><span class="variable">%22</span><span class="variable">%3A</span><span class="variable">%22manage</span><span class="variable">%22</span><span class="variable">%2C</span><span class="variable">%22defaultName</span><span class="variable">%22</span><span class="variable">%3A</span><span class="variable">%22iPhone</span><span class="variable">%22</span><span class="variable">%7D</span><span class="variable">%5D</span><span class="variable">%7D</span><span class="variable">%5D</span>"</span>,
+  <span class="string">"poll"</span>: <span class="string">"https://reg.rec.la:443/access/dXRqBezem8v3mNxf"</span>,
+  <span class="string">"returnURL"</span>: false,
+  <span class="string">"poll_rate_ms"</span>: <span class="number">1000</span>
+}</code></pre>
+<h3>Polling</h3>
+<p><strong>request</strong>: GET <code>https://reg.rec.la/access/dXRqBezem8v3mNxf</code></p>
+<p>3 response codes: </p>
+<p><strong>1 response</strong>: <code>NEED_SIGNIN</code> </p>
+<p>Content is the same than for the initial POST request.<br /><strong>poll</strong> and <strong>poll_rate_ms</strong> may vary</p>
+<p><strong>2 response</strong>: 200 <code>ACCEPTED</code></p>
+<pre class="highlighted"><code class="json">{
+  "<span class="attribute">status</span>": <span class="value"><span class="string">"ACCEPTED"</span></span>,
+  "<span class="attribute">username</span>": <span class="value"><span class="string">"jondoe"</span></span>,
+  "<span class="attribute">token</span>": <span class="value"><span class="string">"VTR7DOKN1J"</span></span>,
+  "<span class="attribute">code</span>": <span class="value"><span class="number">200</span>
+</span>}</code></pre>
+<p><strong>3 response</strong>: 403 <code>REFUSED</code></p>
+<pre class="highlighted"><code class="json">{
+  "<span class="attribute">status</span>": <span class="value"><span class="string">"REFUSED"</span></span>,
+  "<span class="attribute">reasonID</span>": <span class="value"><span class="string">"REFUSED_BY_USER"</span></span>,
+  "<span class="attribute">message</span>": <span class="value"><span class="string">"access refused by user"</span></span>,
+  "<span class="attribute">code</span>": <span class="value"><span class="number">403</span>
+</span>}</code></pre>
 </section></div></div><div id="toc"></div><script>jQuery(document).ready(function($) {
   $('#toc').toc({
     'selectors': 'h1,h2',
-    'container': '#sections',
+    'container': '#main',
     'smoothScrolling': false,
     'prefix': 'toc',
     'onHighlight': function(el) {},
@@ -228,7 +320,7 @@ Use our staging servers: <a href="https://access.rec.la/access">https://access.r
     'highlightOffset': 100,
     'anchorName': function(i, heading, prefix) {
       var $heading = $(heading),
-          sectionId = $heading.parents('section').attr('id');
+          sectionId = $heading.parents('section[id]').attr('id');
       return sectionId + ($heading.is('h1') ? '' : '-' + slugify($heading.text()));
     },
     'headerText': function(i, heading, $heading) {
