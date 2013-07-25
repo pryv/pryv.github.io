@@ -1,95 +1,40 @@
-<html><head></head><body><section id="activity"><h1>API methods</h1><div class="intro"><p>TODO: introductory text</p>
-</div><section><h2>Preliminary information</h2><section><h3>Authorization</h3><div class="content"><p>All requests for retrieving and manipulating activity data must carry a valid <a href="#data-structure-access">access token</a> in the HTTP <code>Authorization</code> header or, alternatively, in the query string's <code>auth</code> parameter.  (You get the token by using one of the <a href="app-access.html">access SDKs</a> or from sharing.)</p>
+<section id="activity"><h1>API methods</h1><div class="intro"><p>TODO: introductory text</p>
+</div><section><h2>Preliminary information</h2><section><h3>Authorization</h3><div class="content"><p>All requests for retrieving and manipulating activity data must carry a valid <a href="#data-structure-access">access token</a> in the HTTP <code>Authorization</code> header or, alternatively, in the query string&#39;s <code>auth</code> parameter.  (You get the token by using one of the <a href="app-access.html">access SDKs</a> or from sharing.)</p>
 </div><aside><h4>Example with <code>Authorization</code> header</h4>
-<pre class="highlighted"><code class="language-http"><span class="request">GET <span class="string">/{channel-id}/events</span> HTTP/1.1</span>
+<pre class="highlighted"><code class="http"><span class="request">GET <span class="string">/events</span> HTTP/1.1</span>
 <span class="attribute">Host</span>: <span class="string">yacinthe.pryv.io</span>
 <span class="attribute">Authorization</span>: <span class="string">{access-token}</span></code></pre>
 <h4>Example with <code>auth</code> query string parameter</h4>
-<pre class="highlighted"><code class="language-http"><span class="request">GET <span class="string">/{channel-id}/events?auth={access-token}</span> HTTP/1.1</span>
+<pre class="highlighted"><code class="http"><span class="request">GET <span class="string">/events?auth={access-token}</span> HTTP/1.1</span>
 <span class="attribute">Host</span>: <span class="string">yacinthe.pryv.io</span></code></pre>
 </aside></section><section><h3>Common errors</h3><div class="content"><p>Here are errors commonly returned for requests:</p>
 <ul>
-<li><code>400 Bad Request</code>, id <code>invalid-request-structure</code>: The request's structure is not that expected. This can happen e.g. with invalid JSON syntax, or when using an unexpected multipart structure for uploading file attachments.</li>
-<li><code>400 Bad Request</code>, id <code>invalid-parameters-format</code>: The request's parameters do not follow the expected format. The error's <code>data</code> contains an array of validation errors.</li>
+<li><code>400 Bad Request</code>, id <code>invalid-request-structure</code>: The request&#39;s structure is not that expected. This can happen e.g. with invalid JSON syntax, or when using an unexpected multipart structure for uploading file attachments.</li>
+<li><code>400 Bad Request</code>, id <code>invalid-parameters-format</code>: The request&#39;s parameters do not follow the expected format. The error&#39;s <code>data</code> contains an array of validation errors.</li>
 <li><code>401 Unauthorized</code>, id <code>invalid-access-token</code>: The data access token is missing or invalid.</li>
 <li><code>403 Forbidden</code>: The given access token does not grant permission for this operation. See <a href="#data-structure-access">accesses</a> for more details about accesses and permissions.</li>
 <li><code>404 Not Found</code>, possible cases:<ul>
-<li>Id <code>unknown-channel</code>: The activity channel can't be found.</li>
-<li>Id <code>unknown-folder</code>: The activity folder can't be found in the specified channel.</li>
-<li>Id <code>unknown-event</code>: The event can't be found in the specified channel.</li>
-<li>Id <code>unknown-attachment</code>: The attached file can't be found for the specified event.</li>
+<li>Id <code>unknown-stream</code>: The activity stream can&#39;t be found.</li>
+<li>Id <code>unknown-event</code>: The event can&#39;t be found.</li>
+<li>Id <code>unknown-attachment</code>: The attached file can&#39;t be found for the specified event.</li>
 </ul>
 </li>
 </ul>
-<p>And a couple of others, related to the status of the user's account:</p>
+<p>And a couple of others, related to the status of the user&#39;s account:</p>
 <ul>
-<li><code>301 Moved</code>, id <code>user-account-relocated</code>: The user has relocated her account to another Pryv server. Both the <code>Location</code> header and the error's <code>data</code> contain the equivalent URL pointing to the physical server now hosting the user's account. Note that this error can only occur between the moment the account is relocated and the moment your DNS is updated with the new server. So we're stretching the HTTP convention a little, in that the returned URL should not be used permanently (only until <code>{username}.pryv.io</code> points to the correct server again). You can decide whether you keep it for the duration of the session (if you have such a thing), for N hours, etc. (TODO: review and detail more if needed)</li>
-<li><code>402 Payment Required</code>, id <code>user-intervention-required</code>: We cannot serve the request at the moment, because the user's account has exceeded the limits of its plan. The user must log into Pryv to fix her account.</li>
+<li><code>301 Moved</code>, id <code>user-account-relocated</code>: The user has relocated her account to another Pryv server. Both the <code>Location</code> header and the error&#39;s <code>data</code> contain the equivalent URL pointing to the physical server now hosting the user&#39;s account. Note that this error can only occur between the moment the account is relocated and the moment your DNS is updated with the new server. So we&#39;re stretching the HTTP convention a little, in that the returned URL should not be used permanently (only until <code>{username}.pryv.io</code> points to the correct server again). You can decide whether you keep it for the duration of the session (if you have such a thing), for N hours, etc. (TODO: review and detail more if needed)</li>
+<li><code>402 Payment Required</code>, id <code>user-intervention-required</code>: We cannot serve the request at the moment, because the user&#39;s account has exceeded the limits of its plan. The user must log into Pryv to fix her account.</li>
 </ul>
-</div></section></section><section><h2>Channels</h2><div class="intro"><p>Methods for retrieving and manipulating <a href="#data-structure-channel">channels</a>.</p>
-</div><section class="method"><h3>Get channels</h3><div class="content"><p><code>GET /channels</code>, Socket.IO: <code>channels.get</code></p>
-<p>Gets the accessible activity channels (excluding those in the trash).</p>
-<h4>Parameters</h4>
-<ul>
-<li><code>state</code> (<code>default</code>, <code>trashed</code> or <code>all</code>): Optional. Indicates what items to return depending on their state. By default, only items that are not in the trash are returned; <code>trashed</code> returns only items in the trash, while <code>all</code> return all items regardless of their state.</li>
-</ul>
-<h4>Successful response: <code>200 OK</code></h4>
-<p>An array of <a href="#data-structure-channel">activity channels</a>) containing the accessible channels in the user's account matching the specified state, ordered by name.</p>
-</div><aside><h4>cURL example</h4>
-<pre class="highlighted"><code class="language-bash">curl -i https://{username}.pryv.io/channels?auth={access-token}</code></pre>
-</aside></section><section class="method"><h3>Create channel</h3><div class="content"><p><code>POST /channels</code>, Socket.IO: <code>channels.create</code></p>
-<p>Creates a new activity channel. Only personal accesses allow creating new channels.</p>
-<h4>Body parameters</h4>
-<p>The new channel's data: see <a href="#data-structure-channel">activity channel</a>.</p>
-<h4>Successful response: <code>201 Created</code></h4>
-<ul>
-<li><code>id</code> (<a href="#data-structure-identity">identity</a>): The created channel's id.</li>
-</ul>
-<h4>Specific errors</h4>
-<ul>
-<li><code>400 Bad Request</code>, id <code>invalid-item-id</code>: Occurs if trying to set the id to an invalid value (e.g. a reserved word like <code>"null"</code>).</li>
-<li><code>400 Bad Request</code>, id <code>item-id-already-exists</code>: A channel already exists with the same id.</li>
-<li><code>400 Bad Request</code>, id <code>item-name-already-exists</code>: A channel already exists with the same name.</li>
-</ul>
-</div><aside><h4>Simple example</h4>
-<pre class="highlighted"><code class="language-json">{ "<span class="attribute">name</span>": <span class="value"><span class="string">"Undercover Activities"</span> </span>}</code></pre>
-<h4>cURL example</h4>
-<pre class="highlighted"><code class="language-bash">
-</code></pre>
-</aside></section><section class="method"><h3>Update channel</h3><div class="content"><p><code>PUT /channels/{channel-id}</code>, Socket.IO: <code>channels.update</code></p>
-<p>Modifies the activity channel's attributes.</p>
-<h4>Body parameters</h4>
-<p>New values for the channel's fields: see <a href="#data-structure-channel">activity channel</a>. All fields are optional, and only modified values must be included.</p>
-<h4>Successful response: <code>200 OK</code></h4>
-<h4>Specific errors</h4>
-<ul>
-<li><code>400 Bad Request</code>, id <code>item-name-already-exists</code>: A channel already exists with the same name.</li>
-</ul>
-</div><aside><h4>Simple example</h4>
-<pre class="highlighted"><code class="language-json">{ "<span class="attribute">clientData</span>": <span class="value">{ "<span class="attribute">new-or-updated-client-specific-metadata</span>": <span class="value"><span class="number">42</span> </span>} </span>}</code></pre>
-<h4>cURL example</h4>
-<pre class="highlighted"><code class="language-bash">
-</code></pre>
-</aside></section><section class="method"><h3>Delete channel</h3><div class="content"><p><code>DELETE /channels/{channel-id}</code>, Socket.IO: <code>channels.del</code></p>
-<p>Trashes or deletes the given channel, depending on its current state:</p>
-<ul>
-<li>If the channel is not already in the trash, it will be moved to the trash (i.e. flagged as <code>trashed</code>)</li>
-<li>If the channel is already in the trash, it will be irreversibly deleted with all the folders and events it contains.</li>
-</ul>
-<p>Only personal accesses allow deleting channels.</p>
-<h4>Successful response: <code>200 OK</code></h4>
-</div><aside><h4>cURL example</h4>
-<pre class="highlighted"><code class="language-bash">
-</code></pre>
-</aside></section></section><section><h2>Events</h2><div class="intro"><p>Methods to retrieve and manipulate <a href="#data-structure-event">events</a>.</p>
-</div><section class="method"><h3>Get events</h3><div class="content"><p><code>GET /{channel-id}/events</code>, Socket.IO: <code>{channel-id}.events.get</code></p>
+</div></section></section><section><h2>Events</h2><div class="intro"><p>Methods to retrieve and manipulate <a href="#data-structure-event">events</a>.</p>
+</div><section class="method"><h3>Get events</h3><div class="content"><p><code>GET /events</code>, Socket.IO: <code>events.get</code></p>
 <p>Queries accessible events.</p>
 <h4>Parameters</h4>
 <ul>
 <li><code>fromTime</code> (<a href="#data-structure-timestamp">timestamp</a>): Optional. The start time of the timeframe you want to retrieve events for. Default is 24 hours before <code>toTime</code> if the latter is set; otherwise it is not taken into account.</li>
 <li><code>toTime</code> (<a href="#data-structure-timestamp">timestamp</a>): Optional. The end time of the timeframe you want to retrieve events for. Default is the current time. Note: events are considered to be within a given timeframe based on their <code>time</code> only (<code>duration</code> is not considered).</li>
-<li><code>onlyFolders</code> (array of <a href="#data-structure-identity">identity</a>): Optional. If set, only events assigned to the specified folders and their sub-folders will be returned. To retrieve events that are not assigned to any folder, just include a <code>null</code> value in the array. By default, all accessible events are returned (regardless of their folder assignment).</li>
+<li><code>streams</code> (array of <a href="#data-structure-identity">identity</a>): Optional. If set, only events assigned to the specified streams and their sub-streams will be returned. By default, all accessible events are returned regardless of their stream.</li>
 <li><code>tags</code> (array of strings): Optional. If set, only events assigned to all of the listed tags will be returned.</li>
+<li><code>running</code> (boolean): Optional. If <code>true</code>, only running period events will be returned.</li>
 <li><code>sortAscending</code> (<code>true</code> or <code>false</code>): If <code>true</code>, events will be sorted from oldest to newest. Default: false (sort descending).</li>
 <li><code>skip</code> (number): Optional. The number of items to skip in the results.</li>
 <li><code>limit</code> (number): Optional. The number of items to return in the results. A default value of 20 items is used if no other range limiting parameter is specified (<code>fromTime</code>, <code>toTime</code>).</li>
@@ -100,43 +45,44 @@
 <p>An array of <a href="#data-structure-event">events</a> containing the accessible events ordered by time (see <code>sortAscending</code> above).</p>
 <h4>Specific errors</h4>
 <ul>
-<li><code>400 Bad Request</code>, id <code>unknown-folder</code>: one (or more) of the specified folders does not exist. The unknown folders' ids are listed as an array in the error's <code>data.unknownIds</code>.</li>
+<li><code>400 Bad Request</code>, id <code>unknown-stream</code>: one (or more) of the specified streams does not exist. The unknown streams&#39; ids are listed as an array in the error&#39;s <code>data.unknownIds</code>.</li>
 </ul>
 </div><aside><h4>cURL example</h4>
-<pre class="highlighted"><code class="language-bash">curl -i https://{username}.pryv.io/{channel-id}/events?auth={access-token}</code></pre>
-</aside></section><section class="method"><h3>Create event</h3><div class="content"><p><code>POST /{channel-id}/events</code>, Socket.IO: <code>{channel-id}.events.create</code></p>
+<pre class="highlighted"><code class="bash">curl -i https://{username}.pryv.io/events?auth={access-token}</code></pre>
+</aside></section><section class="method"><h3>Create event</h3><div class="content"><p><code>POST /events</code>, Socket.IO: <code>events.create</code></p>
 <p>Records a new event. Events recorded this way must be completed events, i.e. either period events with a known duration or mark events. To start a running period event, post a <code>events/start</code> request.</p>
 <p>In addition to the usual JSON, this request accepts standard multipart/form-data content to support the creation of event with attached files in a single request. When sending a multipart request, one content part must hold the JSON for the new event and all other content parts must be the attached files.</p>
 <h4>Body parameters</h4>
-<p>The new event's data: see <a href="#data-structure-event">Event</a>.</p>
+<p>The new event&#39;s data: see <a href="#data-structure-event">Event</a>.</p>
 <h4>Successful response: <code>201 Created</code></h4>
 <ul>
-<li><code>id</code> (<a href="#data-structure-identity">identity</a>): The new event's id.</li>
-<li><code>stoppedId</code> (<a href="#data-structure-identity">identity</a>): Only in channels with <code>enforceNoEventsOverlap</code>. If set, indicates the id of the previously running period event that was stopped as a consequence of inserting the new event.</li>
+<li><code>id</code> (<a href="#data-structure-identity">identity</a>): The new event&#39;s id.</li>
+<li><code>stoppedId</code> (<a href="#data-structure-identity">identity</a>): Only in <code>singleActivity</code> streams. If set, indicates the id of the previously running period event that was stopped as a consequence of inserting the new event.</li>
 </ul>
 <h4>Specific errors</h4>
 <ul>
-<li><code>400 Bad Request</code>, id <code>unknown-folder</code>: The specified folder cannot be found.</li>
-<li><code>400 Bad Request</code>, id <code>invalid-operation</code>: The channel or specified folder is in the trash, and we prevent the recording of new events into trashed channels / folders. The error's <code>data.trashed</code> property indicates either <code>"channel"</code> or <code>"folder"</code>.</li>
-<li><code>400 Bad request</code>, id <code>periods-overlap</code>: Only in channels with <code>enforceNoEventsOverlap</code>: the new event overlaps existing period events. The overlapped events' ids are listed as an array in the error's <code>data.overlappedIds</code>.</li>
+<li><code>400 Bad Request</code>, id <code>unknown-stream</code>: The specified stream cannot be found.</li>
+<li><code>400 Bad Request</code>, id <code>invalid-operation</code>: The stream is in the trash, and we prevent the recording of new events into trashed streams.</li>
+<li><code>400 Bad request</code>, id <code>periods-overlap</code>: Only in <code>singleActivity</code> streams: the new event overlaps existing period events. The overlapped events&#39; ids are listed as an array in the error&#39;s <code>data.overlappedIds</code>.</li>
 </ul>
 </div><aside><h4>cURL example</h4>
-<pre class="highlighted"><code class="language-bash">curl -i -H <span class="string">"Content-Type: application/json"</span> -X POST -d <span class="string">'{"folderId":"{folder-id}"}'</span> https://{username}.pryv.io/{channel-id}/events?auth={access-token}</code></pre>
+<pre class="highlighted"><code class="bash">curl -i -H <span class="string">"Content-Type: application/json"</span> -X POST -d <span class="string">'{"streamId":"{stream-id}"}'</span> https://{username}.pryv.io/events?auth={access-token}</code></pre>
 <p>TODO: multipart/form-data example</p>
-</aside></section><section class="method"><h3>Start period</h3><div class="content"><p><code>POST /{channel-id}/events/start</code>, Socket.IO: <code>{channel-id}.events.start</code></p>
-<p>Starts a new period event. In channels with <code>enforceNoEventsOverlap</code>, also stops the previously running period event if any. See POST <code>/{channel-id}/events</code> for details. TODO: detail</p>
+</aside></section><section class="method"><h3>Start period</h3><div class="content"><p><code>POST /events/start</code>, Socket.IO: <code>events.start</code></p>
+<p>Starts a new period event. In <code>singleActivity</code> streams, also stops the previously running period event if any. See POST <code>/events</code> for details. TODO: detail</p>
 <h4>Body parameters</h4>
-<p>See POST <code>{channel-id}/events</code>.</p>
+<p>See POST <code>/events</code>.</p>
 <h4>Successful response: <code>201 Created</code></h4>
 <h4>Specific errors</h4>
-<p>See POST <code>/{channel-id}/events</code>.</p>
+<p>See POST <code>/events</code>.</p>
 </div><aside><h4>cURL example</h4>
-<pre class="highlighted"><code class="language-bash">curl -i -H <span class="string">"Content-Type: application/json"</span> -X POST -d <span class="string">'{"folderId":"{folder-id}"}'</span> https://{username}.pryv.io/{channel-id}/events/start?auth={access-token}</code></pre>
-</aside></section><section class="method"><h3>Stop period</h3><div class="content"><p><code>POST /{channel-id}/events/stop</code>, Socket.IO: <code>{channel-id}.events.stop</code></p>
-<p>Stops a previously running period event. In channels with <code>enforceNoEventsOverlap</code>, which guarantee that only one event is running at any given time, that event is automatically determined; for regular channels, the event to stop must be specified.</p>
+<pre class="highlighted"><code class="bash">curl -i -H <span class="string">"Content-Type: application/json"</span> -X POST -d <span class="string">'{"streamId":"{stream-id}"}'</span> https://{username}.pryv.io/events/start?auth={access-token}</code></pre>
+</aside></section><section class="method"><h3>Stop period</h3><div class="content"><p><code>POST /events/stop</code>, Socket.IO: <code>events.stop</code></p>
+<p>Stops a previously running period event. In <code>singleActivity</code> streams, which guarantee that only one event is running at any given time, that event is automatically determined; for regular streams, the event to stop must be specified.</p>
 <h4>Body parameters</h4>
 <ul>
-<li><code>id</code> (<a href="#data-structure-identity">identity</a>): The id of the event to stop. Optional in channels with <code>enforceNoEventsOverlap</code>.</li>
+<li><code>streamId</code> (<a href="#data-structure-identity">identity</a>): The id of the <code>singleActivity</code> stream in which to stop any running event. Either this or <code>id</code> must be specified.</li>
+<li><code>id</code> (<a href="#data-structure-identity">identity</a>): The id of the event to stop. Either this or <code>streamId</code> must be specified.</li>
 <li><code>time</code> (<a href="#data-structure-timestamp">timestamp</a>): Optional. The stop time. Default: now.</li>
 </ul>
 <h4>Successful response: <code>200 OK</code></h4>
@@ -147,42 +93,35 @@
 <ul>
 <li><code>400 Bad Request</code>, id <code>unknown-event</code>: The specified event cannot be found.</li>
 <li><code>400 Bad Request</code>, id <code>invalid-operation</code>: The specified event is not a running period event.</li>
-<li><code>400 Bad Request</code>, id <code>missing-parameter</code>: No event was specified and the channel does not <code>enforceNoEventsOverlap</code> (so that there can be more than one running event).</li>
+<li><code>400 Bad Request</code>, id <code>missing-parameter</code>: No event was specified and the specified stream is not a <code>singleActivity</code> stream (so that there can be more than one running event).</li>
 </ul>
 </div><aside><h4>cURL example</h4>
-<pre class="highlighted"><code class="language-bash">
+<pre class="highlighted"><code class="bash">
 </code></pre>
-</aside></section><section class="method"><h3>Get running periods</h3><div class="content"><p><code>GET /{channel-id}/events/running</code>, Socket.IO: <code>{channel-id}.events.getRunning</code></p>
-<p>Gets the currently running period events.</p>
-<h4>Successful response: <code>200 OK</code></h4>
-<p>An array of <a href="#data-structure-event">events</a> containing the running period events.</p>
-</div><aside><h4>cURL example</h4>
-<pre class="highlighted"><code class="language-bash">
-</code></pre>
-</aside></section><section class="method"><h3>Update event</h3><div class="content"><p><code>PUT /{channel-id}/events/{event-id}</code>, Socket.IO: <code>{channel-id}.events.update</code>*</p>
-<p>Modifies the event's attributes.</p>
+</aside></section><section class="method"><h3>Update event</h3><div class="content"><p><code>PUT /events/{event-id}</code>, Socket.IO: <code>events.update</code>*</p>
+<p>Modifies the event&#39;s attributes.</p>
 <h4>Body parameters</h4>
-<p>New values for the event's fields: see <a href="#data-structure-event">event</a>. All fields are optional, and only modified values must be included. TODO: example</p>
+<p>New values for the event&#39;s fields: see <a href="#data-structure-event">event</a>. All fields are optional, and only modified values must be included. TODO: example</p>
 <h4>Successful response: <code>200 OK</code></h4>
 <ul>
 <li><code>stoppedId</code> (<a href="#data-structure-identity">identity</a>): If set, indicates the id of the previously running period event that was stopped as a consequence of modifying the event.</li>
 </ul>
 <h4>Specific errors</h4>
 <ul>
-<li><code>400 Bad Request</code>, id <code>invalid-operation</code>: Returned for period events, if attempting to set the event's duration to <code>undefined</code> (i.e. still running) while one or more other period events were recorded after it. The error's <code>data.conflictingPeriodId</code> provides the id of the closest conflicting event.</li>
-<li><code>400 Bad Request</code>, id <code>periods-overlap</code>: Returned for period events, if attempting to change the event's duration to a value that causes an overlap with one or more subsequent period event(s). The overlapped events' ids are listed as an array in the error's <code>data.overlappedIds</code>.</li>
+<li><code>400 Bad Request</code>, id <code>invalid-operation</code>: Returned for period events, if attempting to set the event&#39;s duration to <code>undefined</code> (i.e. still running) while one or more other period events were recorded after it. The error&#39;s <code>data.conflictingPeriodId</code> provides the id of the closest conflicting event.</li>
+<li><code>400 Bad Request</code>, id <code>periods-overlap</code>: Returned for period events, if attempting to change the event&#39;s duration to a value that causes an overlap with one or more subsequent period event(s). The overlapped events&#39; ids are listed as an array in the error&#39;s <code>data.overlappedIds</code>.</li>
 </ul>
 </div><aside><h4>cURL example</h4>
-<pre class="highlighted"><code class="language-bash">
+<pre class="highlighted"><code class="bash">
 </code></pre>
-</aside></section><section class="method"><h3>Add attached file(s) to event</h3><div class="content"><p><code>POST /{channel-id}/events/{event-id}</code></p>
+</aside></section><section class="method"><h3>Add attached file(s) to event</h3><div class="content"><p><code>POST /events/{event-id}</code></p>
 <p>Adds one or more file attachments to the event. This request expects standard multipart/form-data content, with all content parts being the attached files.</p>
 <h4>Successful response: <code>200 OK</code></h4>
 </div><aside><h4>cURL example</h4>
-<pre class="highlighted"><code class="language-bash">curl -i -F <span class="string">'event={"type":{"class":"picture","format":"attached"}}'</span>  -F <span class="string">'file=@-'</span> https://{username}.rec.la/{channel-id}/events?auth={token} &lt; {filename}</code></pre>
+<pre class="highlighted"><code class="bash">curl -i -F <span class="string">'event={"streamId":"ePm4KDmxr","type":"picture/attached"}'</span>  -F <span class="string">'file=@-'</span> https://{username}.rec.la/events?auth={token} &lt; {filename}</code></pre>
 <p>...or...</p>
-<pre class="highlighted"><code class="language-bash">curl -i -F <span class="string">'event={"type":{"class":"picture","format":"attached"}}'</span>  -F <span class="string">"file=@{filename}"</span> https://{username}.rec.la/{channel-id}/events?auth={token}</code></pre>
-</aside></section><section class="method"><h3>Delete event</h3><div class="content"><p><code>DELETE /{channel-id}/events/{event-id}</code>, Socket.IO: <code>{channel-id}.events.del</code></p>
+<pre class="highlighted"><code class="bash">curl -i -F <span class="string">'event={"streamId":"ePm4KDmxr","type":"picture/attached"}'</span>  -F <span class="string">"file=@{filename}"</span> https://{username}.rec.la/events?auth={token}</code></pre>
+</aside></section><section class="method"><h3>Delete event</h3><div class="content"><p><code>DELETE /events/{event-id}</code>, Socket.IO: <code>events.del</code></p>
 <p>Trashes or deletes the specified event, depending on its current state:</p>
 <ul>
 <li>If the event is not already in the trash, it will be moved to the trash (i.e. flagged as <code>trashed</code>)</li>
@@ -190,95 +129,93 @@
 </ul>
 <h4>Successful response: <code>200 OK</code></h4>
 </div><aside><h4>cURL example</h4>
-<pre class="highlighted"><code class="language-bash">
+<pre class="highlighted"><code class="bash">
 </code></pre>
-</aside></section><section class="method"><h3>Get attached file</h3><div class="content"><p><code>GET /{channel-id}/events/{event-id}/{file name}</code></p>
+</aside></section><section class="method"><h3>Get attached file</h3><div class="content"><p><code>GET /events/{event-id}/{file name}</code></p>
 <p>Gets the attached file.</p>
 <h4>Successful response: <code>200 OK</code></h4>
 </div><aside><h4>cURL example</h4>
-<pre class="highlighted"><code class="language-bash">
+<pre class="highlighted"><code class="bash">
 </code></pre>
-</aside></section><section class="method"><h3>Delete attached file</h3><div class="content"><p><code>DELETE /{channel-id}/events/{event-id}/{filename}</code>, Socket.IO: <code>{channel-id}.events.deleteAttachedFile</code></p>
+</aside></section><section class="method"><h3>Delete attached file</h3><div class="content"><p><code>DELETE /events/{event-id}/{filename}</code>, Socket.IO: <code>events.deleteAttachedFile</code></p>
 <p>Irreversibly deletes the attached file.</p>
 <h4>Successful response: <code>200 OK</code></h4>
 </div><aside><h4>cURL example</h4>
 <p><code>bash</code></p>
-</aside></section><section class="method"><h3>Batch-create events</h3><div class="content"><p><code>POST /{channel-id}/events/batch</code>, Socket.IO: <code>{channel-id}.events.createBatch</code></p>
+</aside></section><section class="method"><h3>Batch-create events</h3><div class="content"><p><code>POST /events/batch</code>, Socket.IO: <code>events.createBatch</code></p>
 <p>Batch upload events that were recorded by the client while offline. The submitted events are added in-order, with results returned individually for each (see response below).</p>
 <h4>Body parameters</h4>
-<p>An array of client-recorded <a href="#data-structure-event">events</a>. In addition to the regular properties, each event must have a unique <code>tempRefId</code> defined (as it's temporary it must only be unique within the request). Also, make sure that the events' <code>time</code> is set in server time (as for single event requests).</p>
+<p>An array of client-recorded <a href="#data-structure-event">events</a>. In addition to the regular properties, each event must have a unique <code>tempRefId</code> defined (as it&#39;s temporary it must only be unique within the request). Also, make sure that the events&#39; <code>time</code> is set in server time (as for single event requests).</p>
 <h4>Successful response: <code>200 OK</code></h4>
-<p>An object with one property per event submitted holding the result for that event. Each property's name is the submitted event's client id, and its value contains:</p>
+<p>An object with one property per event submitted holding the result for that event. Each property&#39;s name is the submitted event&#39;s client id, and its value contains:</p>
 <ul>
-<li>If the event was successful created, an object with the <code>id</code> of the event, and possibly the <code>stoppedId</code> of the running period event that was stopped as a result. (For details, see POST <code>/{channel-id}/events</code>.)</li>
+<li>If the event was successful created, an object with the <code>id</code> of the event, and possibly the <code>stoppedId</code> of the running period event that was stopped as a result. (For details, see POST <code>/events</code>.)</li>
 <li>If there was an error creating the event: an object with an <code>error</code> property holding the encountered <a href="#data-structure-error">error</a>.</li>
 </ul>
 </div><aside><h4>cURL example</h4>
-<pre class="highlighted"><code class="language-bash">```
+<pre class="highlighted"><code class="markdown"><span class="code">```</span>
 
-<span class="comment">#### Example response</span>
-```json
+<span class="header">#### Example response</span>
+<span class="code">```</span>json
 {
-  <span class="string">"temp_ref_id_1"</span>: {<span class="string">"id"</span>: <span class="string">"TTMyhYEZriJ"</span>},
-  <span class="string">"temp_ref_id_2"</span>: {<span class="string">"error"</span>: {
-    <span class="string">"id"</span>: <span class="string">"unknown-folder"</span>,
-    <span class="string">"message"</span>: <span class="string">"Folder 'bad-folder-id' is unknown."</span>
+  "temp<span class="emphasis">_ref_</span>id_1": {"id": "TTMyhYEZriJ"},
+  "temp<span class="emphasis">_ref_</span>id_2": {"error": {
+<span class="code">    "id": "unknown-stream",</span>
+<span class="code">    "message": "Stream 'bad-stream-id' is unknown."</span>
   }}
 }</code></pre>
-</aside></section></section><section><h2>Folders</h2><div class="intro"><p>Methods to retrieve and manipulate <a href="#data-structure-folder">folders</a>.</p>
-</div><section class="method"><h3>Get folders</h3><div class="content"><p><code>GET /{channel-id}/folders</code>, Socket.IO: <code>{channel-id}.folders.get</code></p>
-<p>Gets the accessible folders, either from the root level or only descending from a specified parent folder.</p>
+</aside></section></section><section><h2>Streams</h2><div class="intro"><p>Methods to retrieve and manipulate <a href="#data-structure-stream">streams</a>.</p>
+</div><section class="method"><h3>Get streams</h3><div class="content"><p><code>GET /streams</code>, Socket.IO: <code>streams.get</code></p>
+<p>Gets the accessible streams, either from the root level or only descending from a specified parent stream.</p>
 <h4>Parameters</h4>
 <ul>
-<li><code>parentId</code> (<a href="#data-structure-identity">identity</a>): Optional. The id of the parent folder to use as root for the request. Default: <code>null</code> (returns all accessible folders from the root level).</li>
-<li><code>includeHidden</code> (<code>true</code> or <code>false</code>): Optional. When <code>true</code>, folders that are currently hidden will be included in the result. Default: <code>false</code>.</li>
+<li><code>parentId</code> (<a href="#data-structure-identity">identity</a>): Optional. The id of the parent stream to use as root for the request. Default: <code>null</code> (returns all accessible streams from the root level).</li>
 <li><code>state</code> (<code>default</code>, <code>trashed</code> or <code>all</code>): Optional. Indicates what items to return depending on their state. By default, only items that are not in the trash are returned; <code>trashed</code> returns only items in the trash, while <code>all</code> return all items regardless of their state.</li>
-<li><code>timeCountBase</code> (<a href="#data-structure-timestamp">timestamp</a>): Optional. If specified, the returned folders will include the summed duration of all their period events, starting from this timestamp (see <code>timeCount</code> in <a href="#data-structure-folder">activity folder</a>); otherwise no time count values will be returned.</li>
 </ul>
 <h4>Successful response: <code>200 OK</code></h4>
-<p>An array of <a href="#data-structure-folder">activity folders</a> containing the tree of the accessible folders, sorted by name.</p>
+<p>An array of <a href="#data-structure-stream">activity streams</a> containing the tree of the accessible streams, sorted by name.</p>
 <h4>Specific errors</h4>
 <ul>
-<li><code>400 Bad Request</code>, id <code>unknown-folder</code>: The specified parent folder can't be found.</li>
+<li><code>400 Bad Request</code>, id <code>unknown-stream</code>: The specified parent stream can&#39;t be found.</li>
 </ul>
 </div><aside><h4>cURL example</h4>
-<pre class="highlighted"><code class="language-bash">
+<pre class="highlighted"><code class="bash">
 </code></pre>
-</aside></section><section class="method"><h3>Create folder</h3><div class="content"><p><code>POST /{channel-id}/folders</code>, Socket.IO: <code>{channel-id}.folders.create</code></p>
-<p>Creates a new folder at the root level or as a child folder to the specified folder.</p>
+</aside></section><section class="method"><h3>Create stream</h3><div class="content"><p><code>POST /streams</code>, Socket.IO: <code>streams.create</code></p>
+<p>Creates a new stream at the root level or as a child stream to the specified stream.</p>
 <h4>Body parameters</h4>
-<p>The new folder's data: see <a href="#data-structure-folder">activity folder</a>.</p>
+<p>The new stream&#39;s data: see <a href="#data-structure-stream">activity stream</a>.</p>
 <h4>Successful response: <code>201 Created</code></h4>
 <ul>
-<li><code>id</code> (<a href="#data-structure-identity">identity</a>): The created folder's id.</li>
+<li><code>id</code> (<a href="#data-structure-identity">identity</a>): The created stream&#39;s id.</li>
 </ul>
 <h4>Specific errors</h4>
 <ul>
-<li><code>400 Bad Request</code>, id <code>item-id-already-exists</code>: A folder already exists with the same id.</li>
-<li><code>400 Bad Request</code>, id <code>item-name-already-exists</code>: A sibling folder already exists with the same name.</li>
-<li><code>400 Bad Request</code>, id <code>invalid-item-id</code>: Occurs if trying to set the id to an invalid value (e.g. a reserved word like <code>"null"</code>).</li>
+<li><code>400 Bad Request</code>, id <code>item-id-already-exists</code>: A stream already exists with the same id.</li>
+<li><code>400 Bad Request</code>, id <code>item-name-already-exists</code>: A sibling stream already exists with the same name.</li>
+<li><code>400 Bad Request</code>, id <code>invalid-item-id</code>: Occurs if trying to set the id to an invalid value (e.g. a reserved word like <code>&quot;null&quot;</code>).</li>
 </ul>
 </div><aside><h4>cURL example</h4>
-<pre class="highlighted"><code class="language-bash">
+<pre class="highlighted"><code class="bash">
 </code></pre>
-</aside></section><section class="method"><h3>Update folder</h3><div class="content"><p><code>PUT /{channel-id}/folders/{folder-id}</code>, Socket.IO: <code>{channel-id}.folders.update</code>*</p>
-<p>Modifies the activity folder's attributes.</p>
+</aside></section><section class="method"><h3>Update stream</h3><div class="content"><p><code>PUT /streams/{stream-id}</code>, Socket.IO: <code>streams.update</code>*</p>
+<p>Modifies the activity stream&#39;s attributes.</p>
 <h4>Body parameters</h4>
-<p>New values for the folder's fields: see <a href="#data-structure-folder">activity folder</a>. All fields are optional, and only modified values must be included.</p>
+<p>New values for the stream&#39;s fields: see <a href="#data-structure-stream">activity stream</a>. All fields are optional, and only modified values must be included.</p>
 <h4>Successful response: <code>200 OK</code></h4>
 <h4>Specific errors</h4>
 <ul>
-<li><code>400 Bad Request</code>, id <code>unknown-folder</code>: The specified parent folder's id is unknown.</li>
-<li><code>400 Bad Request</code>, id <code>item-name-already-exists</code>: A sibling folder already exists with the same name.</li>
+<li><code>400 Bad Request</code>, id <code>unknown-stream</code>: The specified parent stream&#39;s id is unknown.</li>
+<li><code>400 Bad Request</code>, id <code>item-name-already-exists</code>: A sibling stream already exists with the same name.</li>
 </ul>
 </div><aside><h4>cURL example</h4>
-<pre class="highlighted"><code class="language-bash">
+<pre class="highlighted"><code class="bash">
 </code></pre>
-</aside></section><section class="method"><h3>Delete folder</h3><div class="content"><p><code>DELETE /{channel-id}/folders/{folder-id}</code>, Socket.IO: <code>{channel-id}.folders.del</code></p>
-<p>Trashes or deletes the specified folder, depending on its current state:</p>
+</aside></section><section class="method"><h3>Delete stream</h3><div class="content"><p><code>DELETE /streams/{stream-id}</code>, Socket.IO: <code>streams.del</code></p>
+<p>Trashes or deletes the specified stream, depending on its current state:</p>
 <ul>
-<li>If the folder is not already in the trash, it will be moved to the trash (i.e. flagged as <code>trashed</code>)</li>
-<li>If the folder is already in the trash, it will be irreversibly deleted with its possible descendants. If events exist that refer to the deleted item(s), you must indicate how to handle them with the parameter <code>mergeEventsWithParent</code>..</li>
+<li>If the stream is not already in the trash, it will be moved to the trash (i.e. flagged as <code>trashed</code>)</li>
+<li>If the stream is already in the trash, it will be irreversibly deleted with its possible descendants. If events exist that refer to the deleted item(s), you must indicate how to handle them with the parameter <code>mergeEventsWithParent</code>..</li>
 </ul>
 <h4>Parameters</h4>
 <ul>
@@ -290,58 +227,58 @@
 <li><code>400 Bad Request</code>, id <code>missing-parameter</code>: There are events referring to the deleted items and the <code>mergeEventsWithParent</code> parameter is missing.</li>
 </ul>
 </div><aside><h4>cURL example</h4>
-<pre class="highlighted"><code class="language-bash">
+<pre class="highlighted"><code class="bash">
 </code></pre>
-</aside></section></section><section><h2><a id="activity-accesses"></a>Accesses</h2><div class="intro"><p>While full access management is reserved for trusted apps, any app can retrieve and manage shared accesses depending on its own permissions. All methods here only deal with shared accesses whose permissions are a subset of that linked to the token used for the requests. (You'll get a <code>403 Forbidden</code> error if trying to touch other types of accesses, or shared accesses with greater permissions.)</p>
+</aside></section></section><section><h2><a id="activity-accesses"></a>Accesses</h2><div class="intro"><p>While full access management is reserved for trusted apps, any app can retrieve and manage shared accesses depending on its own permissions. All methods here only deal with shared accesses whose permissions are a subset of that linked to the token used for the requests. (You&#39;ll get a <code>403 Forbidden</code> error if trying to touch other types of accesses, or shared accesses with greater permissions.)</p>
 </div><section class="method"><h3>Get current access info</h3><div class="content"><p><code>GET /access-info</code></p>
 <p>Retrieves information about the current access.</p>
 <h4>Successful response: <code>200 OK</code></h4>
-<p>An object with the <a href="#data-structure-access">access'</a> <code>name</code>, <code>type</code> and <code>permissions</code>.</p>
+<p>An object with the <a href="#data-structure-access">access&#39;</a> <code>name</code>, <code>type</code> and <code>permissions</code>.</p>
 </div><aside><h4>cURL example</h4>
-<pre class="highlighted"><code class="language-bash">curl -i -H <span class="string">"Authorization: {access-token}"</span> https://{username}.pryv.io/access-info</code></pre>
+<pre class="highlighted"><code class="bash">curl -i -H <span class="string">"Authorization: {access-token}"</span> https://{username}.pryv.io/access-info</code></pre>
 </aside></section><section class="method"><h3>Get accesses</h3><div class="content"><p><code>GET /accesses</code></p>
 <p>Gets all manageable shared accesses.</p>
 <h4>Successful response: <code>200 OK</code></h4>
-<p>An array of <a href="#data-structure-access">accesses</a> containing all manageable shared accesses in the user's account, ordered by name.</p>
+<p>An array of <a href="#data-structure-access">accesses</a> containing all manageable shared accesses in the user&#39;s account, ordered by name.</p>
 </div><aside><h4>cURL example</h4>
-<pre class="highlighted"><code class="language-bash">curl -i -H <span class="string">"Authorization: {access-token}"</span> https://{username}.pryv.io/accesses</code></pre>
+<pre class="highlighted"><code class="bash">curl -i -H <span class="string">"Authorization: {access-token}"</span> https://{username}.pryv.io/accesses</code></pre>
 </aside></section><section class="method"><h3>Create access</h3><div class="content"><p><code>POST /accesses</code></p>
 <p>Creates a new shared access. You can only create accesses whose permissions are a subset of those linked to your own access token.</p>
 <h4>Parameters</h4>
-<p>The new access's data: see <a href="#data-structure-access">access</a>.</p>
+<p>The new access&#39;s data: see <a href="#data-structure-access">access</a>.</p>
 <h4>Successful response: <code>201 Created</code></h4>
 <ul>
-<li><code>token</code> (<a href="#data-structure-identity">identity</a>): The created access's token.</li>
+<li><code>token</code> (<a href="#data-structure-identity">identity</a>): The created access&#39;s token.</li>
 </ul>
 <h4>Specific errors</h4>
 <ul>
-<li><code>400 Bad Request</code>, id <code>invalid-item-id</code>: Occurs if trying to set the token to an invalid value (e.g. a reserved word like <code>"null"</code>).</li>
+<li><code>400 Bad Request</code>, id <code>invalid-item-id</code>: Occurs if trying to set the token to an invalid value (e.g. a reserved word like <code>&quot;null&quot;</code>).</li>
 </ul>
 </div><aside><h4>cURL example</h4>
-<pre class="highlighted"><code class="language-bash">
+<pre class="highlighted"><code class="bash">
 </code></pre>
 </aside></section><section class="method"><h3>Update access</h3><div class="content"><p><code>PUT /accesses/{token}</code></p>
 <p>Modifies the specified shared access. You can only modify accesses whose permissions are a subset of those linked to your own access token.</p>
 <h4>Parameters</h4>
-<p>New values for the access's fields: see <a href="#data-structure-access">access</a>. All fields are optional, and only modified values must be included. TODO: example</p>
+<p>New values for the access&#39;s fields: see <a href="#data-structure-access">access</a>. All fields are optional, and only modified values must be included. TODO: example</p>
 <h4>Successful response: <code>200 OK</code></h4>
 </div><aside><h4>cURL example</h4>
-<pre class="highlighted"><code class="language-bash">
+<pre class="highlighted"><code class="bash">
 </code></pre>
 </aside></section><section class="method"><h3>Delete access</h3><div class="content"><p><code>DELETE /accesses/{token}</code></p>
 <p>Deletes the specified shared access. You can only delete accesses whose permissions are a subset of those linked to your own access token.</p>
 <h4>Successful response: <code>200 OK</code></h4>
 </div><aside><h4>cURL example</h4>
-<pre class="highlighted"><code class="language-bash">
+<pre class="highlighted"><code class="bash">
 </code></pre>
-</aside></section></section><section><h2><a id="activity-profile-app"></a>App profile</h2><div class="intro"><p>The app profile is a simple key-value store available for your app to keep user settings. It is exposed as a plain object with free structure. The adding/updating/deleting of settings is designed in the expectation that each setting is a key at the profile object's root, but you can structure your profile differently if you wish.</p>
+</aside></section></section><section><h2><a id="activity-profile-app"></a>App profile</h2><div class="intro"><p>The app profile is a simple key-value store available for your app to keep user settings. It is exposed as a plain object with free structure. The adding/updating/deleting of settings is designed in the expectation that each setting is a key at the profile object&#39;s root, but you can structure your profile differently if you wish.</p>
 <p>The app profile can only be used if authentified with an app access token.</p>
 </div><section class="method"><h3>Get app settings</h3><div class="content"><p><code>GET /profile/app</code></p>
 <p>Gets your app profile settings.</p>
 <h4>Successful response: <code>200 OK</code></h4>
-<p>An object containing your app's current profile settings. The method always returns an object (which will be empty if your app never defined any setting).</p>
+<p>An object containing your app&#39;s current profile settings. The method always returns an object (which will be empty if your app never defined any setting).</p>
 </div><aside><h4>cURL example</h4>
-<pre class="highlighted"><code class="language-bash">
+<pre class="highlighted"><code class="bash">
 </code></pre>
 </aside></section><section class="method"><h3>Update profile settings</h3><div class="content"><p><code>PUT /profile/app</code></p>
 <p>Adds, updates or delete settings.</p>
@@ -349,24 +286,24 @@
 <li>To add or update a setting, just set its value</li>
 <li>To delete a field, set its value to <code>null</code></li>
 </ul>
-<p>Settings you don't specify in the update are left untouched.</p>
+<p>Settings you don&#39;t specify in the update are left untouched.</p>
 <h4>Parameters</h4>
 <p>An object with the desired changes to the settings (see above).</p>
 <h4>Successful response: <code>200 OK</code></h4>
 </div><aside><h4>Simple example</h4>
-<pre class="highlighted"><code class="language-json">{
+<pre class="highlighted"><code class="json">{
   "<span class="attribute">keyToAddOrUpdate</span>": <span class="value"><span class="string">"value"</span></span>,
   "<span class="attribute">keyToDelete</span>": <span class="value"><span class="literal">null</span>
-</span>}</code></pre>
+}</span></code></pre>
 <h4>cURL example</h4>
-<pre class="highlighted"><code class="language-bash">
+<pre class="highlighted"><code class="bash">
 </code></pre>
 </aside></section></section><section><h2><a id="activity-profile-public"></a>Public profile</h2><div class="intro"><p>The public profile is a simple read-only object exposing publicly shared user information (e.g. avatar image) for use in your app.</p>
 </div><section class="method"><h3>Get public info</h3><div class="content"><p><code>GET /profile/public</code></p>
-<p>Gets the user's public profile info.</p>
+<p>Gets the user&#39;s public profile info.</p>
 <h4>Successful response: <code>200 OK</code></h4>
-<p>An object containing the user's current public profile information.</p>
+<p>An object containing the user&#39;s current public profile information.</p>
 </div><aside><h4>cURL example</h4>
-<pre class="highlighted"><code class="language-bash">
+<pre class="highlighted"><code class="bash">
 </code></pre>
-</aside></section></section></section></body></html>
+</aside></section></section></section>

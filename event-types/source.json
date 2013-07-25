@@ -5,7 +5,7 @@
       "description": "To record the time spent doing something (tasks, sports, etc.).",
       "formats": {
         "pryv": {
-          "description": "Pryv activity event. No value here, as the value is actually defined by the event's time and duration fields as well as its classification (folder, tags).",
+          "description": "Pryv activity event. No specific content here; content is defined by the event's stream, time and duration as well as possible classification (tags).",
           "type": "null"
         }
       }
@@ -57,7 +57,7 @@
       }
     },
     "encrypted": {
-      "description": "For client-side-encrypted events. The decrypted <code>payload</code> is expected to be a JSON object with the regular <code>type</code> and <code>value</code> properties (e.g. <code>{ \"type\": { \"class\": \"..\", \"format\": \"..\" }, \"value\": \"..\" }</code>). If the event has attached files, they are expected to be similarly encrypted.",
+      "description": "For client-side-encrypted events. The decrypted <code>payload</code> is expected to be a JSON object with the regular <code>type</code> and <code>content</code> properties (e.g. <code>{ \"type\": \"..\", \"content\": \"..\" }</code>). If the event has attached files, they are expected to be similarly encrypted.",
       "formats": {
         "aes-text-base64" : {
           "description": "AES encrypted payload, with a <em>text</em> key and a <em>Base64</em> payload.",
@@ -169,7 +169,7 @@
           }
         },
         "facebook": {
-          "description": "A Facebook post. See <a href=\"https://developers.facebook.com/docs/reference/api/post/\">Facebook's API doc</a> for reference. TODO: add example (Facebook post can be copied RAW as a value. \nmap: \n   fbPost.message -> pryvEvent.description\n   fbPost.created_time -> pryvEvent.time\n TBD: what to do with videos & pictures?)",
+          "description": "A Facebook post. See <a href=\"https://developers.facebook.com/docs/reference/api/post/\">Facebook's API doc</a> for reference. TODO: add example (Facebook post can be copied RAW as content. \nmap: \n   fbPost.message -> pryvEvent.description\n   fbPost.created_time -> pryvEvent.time\n TBD: what to do with videos & pictures?)",
           "type": "object",
           "properties": {
             "id": {
@@ -392,7 +392,7 @@
       "description": "To record any kind of image (photos, designs, screenshots, etc.)",
       "formats": {
         "attached": {
-          "description": "The picture is the image file attached to the event (no explicit value defined). TODO: list accepted formats.",
+          "description": "The picture is the image file attached to the event (no explicit content defined). TODO: list accepted formats.",
           "type": "null",
           "attachmentRequired": true
         },
@@ -495,7 +495,7 @@
       "description": "To record video (home snippets, Vimeo or YouTube links, etc.).",
       "formats": {
         "attached": {
-          "description": "The video is the file attached to the event (no explicit value defined). TODO: list accepted formats.",
+          "description": "The video is the file attached to the event (no explicit content defined). TODO: list accepted formats.",
           "type": "null",
           "attachmentRequired": true
         },

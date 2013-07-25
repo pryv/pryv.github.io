@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en" class="no-js"><head><meta charset="UTF-8" /><title>Pryv API - App authorization</title><meta name="description" content="TODO" /><meta name="viewport" content="width=device-width, initial-scale=1" /><link rel="stylesheet" type="text/css" href="bootstrap/css/bootstrap.min.css" /><link rel="stylesheet" type="text/css" href="github.css" /><link rel="stylesheet" type="text/css" href="highlight.css" /><link rel="stylesheet" type="text/css" href="style.css" /><link rel="stylesheet" type="text/css" href="bootstrap/css/bootstrap-responsive.min.css" /><script src="scripts/modernizr.min.js"></script><script src="http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.js"></script><script src="scripts/jquery.toc.min.js"></script><script src="bootstrap/js/bootstrap.min.js"></script><script>var _gaq = _gaq || [];
+<!DOCTYPE html><html lang="en" class="no-js"><head><meta charset="UTF-8"><title>Pryv API - App authorization</title><meta name="description" content="TODO"><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="stylesheet" type="text/css" href="bootstrap/css/bootstrap.min.css"><link rel="stylesheet" type="text/css" href="github.css"><link rel="stylesheet" type="text/css" href="highlight.css"><link rel="stylesheet" type="text/css" href="style.css"><link rel="stylesheet" type="text/css" href="bootstrap/css/bootstrap-responsive.min.css"><script src="scripts/modernizr.min.js"></script><script src="http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.js"></script><script src="scripts/jquery.toc.min.js"></script><script src="bootstrap/js/bootstrap.min.js"></script><script>var _gaq = _gaq || [];
 _gaq.push(['_setAccount', 'UA-36589447-2']);
 _gaq.push(['_trackPageview']);
 
@@ -7,7 +7,8 @@ _gaq.push(['_trackPageview']);
   ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
   var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
 })();
-</script></head><body class="with-toc"><header id="page-header" class="navbar navbar-fixed-top"><div class="navbar-inner"><a href="/dev-index.html" class="brand">Pryv</a><a data-toggle="collapse" data-target=".nav-collapse" class="btn btn-navbar"><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></a><div class="nav-collapse collapse"><ul class="nav"><li><a href="about.html">About</a></li><li><a href="concepts.html">Concepts</a></li><li class="dropdown"><a href="#" data-toggle="dropdown" class="dropdown-toggle">Guides <b class="caret"></b></a><ul class="dropdown-menu"><li><a href="#">Getting started</a></li><li><a href="#">Data modeling</a></li></ul></li><li class="dropdown"><a href="#" data-toggle="dropdown" class="dropdown-toggle">Reference <b class="caret"></b></a><ul class="dropdown-menu"><li><a href="reference.html">API</a></li><li><a href="event-types.html">Event types</a></li><li><a href="standard-structure.html">Standard data structure</a></li><li><a href="app-access.html">App authorization</a></li></ul></li><li><a href="#">Blog</a></li></ul></div><div class="nav-header pull-right"><div class="version">API version: <strong>0.4.22</strong></div></div></div></header><div id="main-wrapper"><div id="main"><section id="intro"><h1>App access</h1>
+</script></head><body class="with-toc"><header id="page-header" class="navbar navbar-fixed-top"><div class="navbar-inner"><a href="/dev-index.html" class="brand">Pryv</a><a data-toggle="collapse" data-target=".nav-collapse" class="btn btn-navbar"><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></a><div class="nav-collapse collapse"><ul class="nav"><li><a href="about.html">About</a></li><li><a href="concepts.html">Concepts</a></li><li class="dropdown"><a href="#" data-toggle="dropdown" class="dropdown-toggle">Guides <b class="caret"></b></a><ul class="dropdown-menu"><li><a href="#">Getting started</a></li><li><a href="#">Data modeling</a></li></ul></li><li class="dropdown"><a href="#" data-toggle="dropdown" class="dropdown-toggle">Reference <b class="caret"></b></a><ul class="dropdown-menu"><li><a href="reference.html">API</a></li><li><a href="event-types.html">Event types</a></li><li><a href="standard-structure.html">Standard data structure</a></li><li><a href="app-access.html">App authorization</a></li></ul></li><li><a href="#">Blog</a></li></ul></div><div class="nav-header pull-right"><div class="version">API version: <strong>0.5.1</strong></div></div></div></header><div id="main-wrapper"><div id="main"><section id="intro"><h1>THIS SECTION IS OBSOLETE AS OF API v0.5; TODO: update</h1>
+<h1>App access</h1>
 <p>Get an access token.</p>
 <p>TODO what is an access token and why do I need it?</p>
 <h2><a id="intro-initial-requirements"></a>Initial requirements</h2>
@@ -16,14 +17,14 @@ _gaq.push(['_trackPageview']);
 <h3>2. Define the access permissions you need</h3>
 <p>See the examples below, as well as the <code>permissions</code> property in the <a href="reference.html#data-structure-access">access data structure reference</a>.</p>
 <h4>Example app permissions</h4>
-<p>A "contribute" access on the "diary" channel:</p>
-<pre class="highlighted"><code class="language-json">[{
+<p>A &quot;contribute&quot; access on the &quot;diary&quot; channel:</p>
+<pre class="highlighted"><code class="json">[{
   "<span class="attribute">channelId</span>" : <span class="value"><span class="string">"diary"</span></span>,
   "<span class="attribute">defaultName</span>" : <span class="value"><span class="string">"Journal"</span></span>,
   "<span class="attribute">level</span>" : <span class="value"><span class="string">"contribute"</span>
-</span>}]</code></pre>
-<p>A "manage" access to the "notes" and "mood" folders of the "diary" channel:</p>
-<pre class="highlighted"><code class="language-json">[{
+}</span>]</code></pre>
+<p>A &quot;manage&quot; access to the &quot;notes&quot; and &quot;mood&quot; folders of the &quot;diary&quot; channel:</p>
+<pre class="highlighted"><code class="json">[{
   "<span class="attribute">channelId</span>" : <span class="value"><span class="string">"diary"</span></span>,
   "<span class="attribute">defaultName</span>" : <span class="value"><span class="string">"Journal"</span></span>,
   "<span class="attribute">level</span>" : <span class="value"><span class="string">"read"</span></span>,
@@ -32,39 +33,40 @@ _gaq.push(['_trackPageview']);
       "<span class="attribute">folderId</span>" : <span class="value"><span class="string">"notes"</span></span>,
       "<span class="attribute">level</span>" : <span class="value"><span class="string">"manage"</span></span>,
       "<span class="attribute">defaultName</span>" : <span class="value"><span class="string">"Notes"</span>
-    </span>},
+    }</span>,
     {
       "<span class="attribute">folderId</span>" : <span class="value"><span class="string">"mood"</span></span>,
       "<span class="attribute">level</span>" : <span class="value"><span class="string">"manage"</span></span>,
       "<span class="attribute">defaultName</span>" : <span class="value"><span class="string">"Mood"</span>
-    </span>}
+    }</span>
   ]
-</span>}]</code></pre>
-<p><strong>About the <code>defaultName</code> property</strong>: <code>defaultName</code> is the name you'd like the channel or folder to be created with if it does not exist, and should be in the language of the user. The property is mandatory.</p>
-</section><section id="web-app"><h1>Web app (Javascript)</h1>
+}</span>]</code></pre>
+<p><strong>About the <code>defaultName</code> property</strong>: <code>defaultName</code> is the name you&#39;d like the channel or folder to be created with if it does not exist, and should be in the language of the user. The property is mandatory.</p>
+</section><section id="web-app"><h1>THIS SECTION IS OBSOLETE AS OF API v0.5; TODO: update</h1>
+<h1>Web app (Javascript)</h1>
 <p>Obtaining an access token for your web app.</p>
 <h2>What you need</h2>
 <ul>
 <li>make sure you got the <a href="#intro-initial-requirements">initial requirements</a> ready.</li>
 <li>include the following script in your page:<ul>
-<li>Staging version (recommended at the moment):  <pre class="highlighted"><code class="language-html xml"><span class="tag">&lt;<span class="title">script</span> <span class="attribute">type</span>=<span class="value">"text/javascript"</span> <span class="attribute">src</span>=<span class="value">"https://sw.rec.la:2443/access/v1/pryv-sdk.js"</span>&gt;</span><span class="javascript"></span><span class="tag">&lt;/<span class="title">script</span>&gt;</span></code></pre>
+<li>Staging version (recommended at the moment):<pre class="highlighted"><code class="xml"><span class="tag">&lt;<span class="title">script</span> <span class="attribute">type</span>=<span class="value">"text/javascript"</span> <span class="attribute">src</span>=<span class="value">"https://sw.rec.la:2443/access/v1/pryv-sdk.js"</span>&gt;</span><span class="javascript"></span><span class="tag">&lt;/<span class="title">script</span>&gt;</span></code></pre>
 </li>
-<li>Production version:<pre class="highlighted"><code class="language-html xml"><span class="tag">&lt;<span class="title">script</span> <span class="attribute">type</span>=<span class="value">"text/javascript"</span> <span class="attribute">src</span>=<span class="value">"https://sw.pryv.me/access/v1/pryv-sdk.js"</span>&gt;</span><span class="javascript"></span><span class="tag">&lt;/<span class="title">script</span>&gt;</span></code></pre>
+<li>Production version:<pre class="highlighted"><code class="xml"><span class="tag">&lt;<span class="title">script</span> <span class="attribute">type</span>=<span class="value">"text/javascript"</span> <span class="attribute">src</span>=<span class="value">"https://sw.pryv.me/access/v1/pryv-sdk.js"</span>&gt;</span><span class="javascript"></span><span class="tag">&lt;/<span class="title">script</span>&gt;</span></code></pre>
 </li>
-<li>or the optimized CloudFront cache:<pre class="highlighted"><code class="language-html xml"><span class="tag">&lt;<span class="title">script</span> <span class="attribute">type</span>=<span class="value">"text/javascript"</span> <span class="attribute">src</span>=<span class="value">"//d3gblc8a9weyfb.cloudfront.net/access/v1/pryv-sdk.js"</span>&gt;</span><span class="javascript"></span><span class="tag">&lt;/<span class="title">script</span>&gt;</span></code></pre>
+<li>or the optimized CloudFront cache:<pre class="highlighted"><code class="xml"><span class="tag">&lt;<span class="title">script</span> <span class="attribute">type</span>=<span class="value">"text/javascript"</span> <span class="attribute">src</span>=<span class="value">"//d3gblc8a9weyfb.cloudfront.net/access/v1/pryv-sdk.js"</span>&gt;</span><span class="javascript"></span><span class="tag">&lt;/<span class="title">script</span>&gt;</span></code></pre>
 </li>
 </ul>
 </li>
 <li>construct a <code>settings</code> JSON object</li>
 <li>call <code>Pryv.Access.setup(settings)</code></li>
 </ul>
-<p>For a more fleshed-out example look at the source code of <a href="https://sw.rec.la:2443/access/demo.html"></a><a href="https://sw.rec.la/access/demo.html">https://sw.rec.la/access/demo.html</a>.</p>
+<p>For a more fleshed-out example look at the source code of <a href="https://sw.rec.la:2443/access/demo.html"><a href="https://sw.rec.la/access/demo.html">https://sw.rec.la/access/demo.html</a></a>.</p>
 <p><a name="webapp.test"></a>Or make your own tests from the page:
-<a href="https://sw.rec.la:2443/access/test.html"></a><a href="https://sw.rec.la:2443/access/test.html">https://sw.rec.la:2443/access/test.html</a></p>
+<a href="https://sw.rec.la:2443/access/test.html"><a href="https://sw.rec.la:2443/access/test.html">https://sw.rec.la:2443/access/test.html</a></a></p>
 <h3>Example: Minimalistic</h3>
-<p>This app requests a "contribute" access to the "diary" channel, using the PrYv button and a popup for sign-in.</p>
+<p>This app requests a &quot;contribute&quot; access to the &quot;diary&quot; channel, using the PrYv button and a popup for sign-in.</p>
 <p><strong>TODO: review this code</strong></p>
-<pre class="highlighted"><code class="language-html xml">
+<pre class="highlighted"><code class="xml">
     <span class="doctype">&lt;!DOCTYPE html&gt;</span>
     <span class="tag">&lt;<span class="title">html</span>&gt;</span>
     <span class="tag">&lt;<span class="title">head</span>&gt;</span>
@@ -75,7 +77,7 @@ _gaq.push(['_trackPageview']);
         <span class="tag">&lt;<span class="title">script</span> <span class="attribute">type</span>=<span class="value">"text/javascript"</span>&gt;</span><span class="javascript">
 
         <span class="function"><span class="keyword">function</span> <span class="title">callMeWithCredentials</span><span class="params">(username, appToken, languageCode)</span> {</span>
-            alert(<span class="string">"SUCCESS! username:"</span> + username + <span class="string">" appToken:"</span> + 
+            alert(<span class="string">"SUCCESS! username:"</span> + username + <span class="string">" appToken:"</span> +
                     appToken + <span class="string">" language:"</span> + languageCode);
         }
 
@@ -92,8 +94,8 @@ _gaq.push(['_trackPageview']);
               initialization : <span class="keyword">function</span>() { },
               needSignin : <span class="keyword">function</span>(popupUrl, pollUrl, pollRateMs) { },
               accepted : <span class="keyword">function</span>(username, appToken, languageCode) {
-                console.log(<span class="string">"** SUCCESS! username:"</span> + username + 
-                            <span class="string">" appToken:"</span> + appToken + 
+                console.log(<span class="string">"** SUCCESS! username:"</span> + username +
+                            <span class="string">" appToken:"</span> + appToken +
                             <span class="string">" lang:"</span> + languageCode);
               },
               refused: <span class="keyword">function</span>(reason) {
@@ -113,18 +115,18 @@ _gaq.push(['_trackPageview']);
 <ul>
 <li><code>requestingAppId</code> (string): Unique. Given by PrYv identifier for this app. It will be the key for the requested set of permission after user agreement.</li>
 <li><code>languageCode</code>(2 characters ISO 639-1 Code): Optional. If known the current language used by the user. This will influence the signin and register interface language.</li>
-<li><code>requestedPermissions</code> (object): The requested set of permissions to access user's channels &amp; folders.</li>
-<li><code>returnURL</code> (url or 'auto<extra>'): Optional. If you don't want (or can't have) the popup signin-process and prefer set a returnURL. This URL will be called at the en of the SIGNIN process.This provides a better user experience on mobile devices. Details: <a href="#webapp.returnURL">settings.returnURL</a></extra></li>
+<li><code>requestedPermissions</code> (object): The requested set of permissions to access user&#39;s channels &amp; folders.</li>
+<li><code>returnURL</code> (url or &#39;auto<extra>&#39;): Optional. If you don&#39;t want (or can&#39;t have) the popup signin-process and prefer set a returnURL. This URL will be called at the en of the SIGNIN process.This provides a better user experience on mobile devices. Details: <a href="#webapp.returnURL">settings.returnURL</a></li>
 <li><code>spanButtonID</code> (string) Optional. The id of a <code>&lt;span /&gt;</code> element in the DOM of your web page. Details: <a href="#webapp.spanButtonID">settings.spanButtonID</a></li>
-<li><code>callbacks</code> (functionS): called on each step of the sign-in process. Most of them are optional if you decided to rely on PrYv signin Button. All are optional excepted "accepted". Details: <a href="#webapp.callbacks">settings.callbacks</a><ul>
-<li><code>initialization</code> (function()): When the initialization process is started. You may display a "loading" animation or for the user.</li>
+<li><code>callbacks</code> (functionS): called on each step of the sign-in process. Most of them are optional if you decided to rely on PrYv signin Button. All are optional excepted &quot;accepted&quot;. Details: <a href="#webapp.callbacks">settings.callbacks</a><ul>
+<li><code>initialization</code> (function()): When the initialization process is started. You may display a &quot;loading&quot; animation or for the user.</li>
 <li><code>needSignin</code> (function(popupUrl,pollUrl,pollRateMs)): Optional. Triggered when the user need to be redirected to PrYv Signin or register from.<ul>
-<li>param <code>popupUrl</code> (string): The URL to open in it's own window and to present to the user.</li>
+<li>param <code>popupUrl</code> (string): The URL to open in it&#39;s own window and to present to the user.</li>
 <li>param <code>pollUrl</code> (string): The URL to poll regularly in the background to grab the result of the sigin process.</li>
 <li>param <code>pollRateMs</code> (int): The minimum interval in milliseconds between to polling.</li>
 </ul>
 </li>
-<li><code>accepted</code> (function(username,appToken,languageCode)): <strong>Mandatory</strong>. Called when the signin process succeed and the permissions requested a granted. It's also triggered after a logout action with <code>(false,false,false)</code> as parameters.</li>
+<li><code>accepted</code> (function(username,appToken,languageCode)): <strong>Mandatory</strong>. Called when the signin process succeed and the permissions requested a granted. It&#39;s also triggered after a logout action with <code>(false,false,false)</code> as parameters.</li>
 <li><code>refused</code> (function(reason)): called when the user refuse to grant the requested permissions.<ul>
 <li>param <code>reason</code>(string): Technical information on how the user refused (not to be displayed).</li>
 </ul>
@@ -137,7 +139,7 @@ _gaq.push(['_trackPageview']);
 </li>
 </ul>
 <h3><a name="webapp.returnURL"></a> settings.returnURL : Popup or URL Callback</h3>
-<p>During the authentication process, we need to open a PrYv access web page in a separate window. This is in order to secure personal user's information.  </p>
+<p>During the authentication process, we need to open a PrYv access web page in a separate window. This is in order to secure personal user&#39;s information.</p>
 <p>This window can be opened in:</p>
 <ul>
 <li>A popup, leaving the actual window open behind. This should be more comfortable on desktop browsers.</li>
@@ -197,18 +199,20 @@ prYvkey=GSbdasjgdv&amp;prYvstatus=ERROR&amp;prYvid=INTERNAL_ERROR&amp;prYvmessag
 <h3><a name="webapp.callbacks"></a> settings.callbacks Custom handling of the signin process</h3>
 <p>TODO</p>
 <h2>Pryv.Access.popupLogin()</h2>
-<p>Once setup is done, you can trigger the populLogin window from your own button.<br />Note: Trigger it from a user-click event.</p>
+<p>Once setup is done, you can trigger the populLogin window from your own button.
+Note: Trigger it from a user-click event.</p>
 <h2>Pryv.Access.logout()</h2>
 <p>Once setup is done, and user logged in. Erase current credential and restart setup with the same settings.</p>
 <p><strong>logout()</strong> will trigger a <code>settings.callbacks.success(false,false,false);</code></p>
 <h2>Pryv.Access.retry()</h2>
-<p>If a user refused to grant access, restart the setup process with the same settings. </p>
+<p>If a user refused to grant access, restart the setup process with the same settings.</p>
 <h2>Other Examples</h2>
 <h3>Full</h3>
-</section><section id="custom"><h1>Custom</h1>
+</section><section id="custom"><h1>THIS SECTION IS OBSOLETE AS OF API v0.5; TODO: update</h1>
+<h1>Custom</h1>
 <p>Implementing the authorization process and obtaining an access token all by yourself.</p>
 <p><strong>For testing: </strong>
-Use our staging servers: <a href="https://access.rec.la/access">https://access.rec.la/access</a> </p>
+Use our staging servers: <a href="https://access.rec.la/access">https://access.rec.la/access</a></p>
 <p><strong>Steps: </strong></p>
 <ol>
 <li>start an access request by calling <strong>POST <a href="https://access.pryv.io/access">https://access.pryv.io/access</a></strong></li>
@@ -216,12 +220,13 @@ Use our staging servers: <a href="https://access.rec.la/access">https://access.r
 <li>poll <strong>response.pollurl</strong> ﻿until you get the an ACCEPTED / REFUSED or ERROR status</li>
 </ol>
 <h2>Sequence diagram</h2>
-<p><img src="app-access-files/custom-sequence.png" alt="Sequence Diagram" /></p>
+<p><img src="app-access-files/custom-sequence.png" alt="Sequence Diagram"></p>
 <h2>Json Examples</h2>
 <p>You can reporoduce this examples and try other combinations
-from <a href="https://sw.rec.la/access/test.html"></a><a href="https://sw.rec.la/access/test.html">https://sw.rec.la/access/test.html</a></p>
+from <a href="https://sw.rec.la/access/test.html"><a href="https://sw.rec.la/access/test.html">https://sw.rec.la/access/test.html</a></a></p>
 <h3>Access request</h3>
-<p><strong>request</strong>: <code>POST https://reg.rec.la/access</code><br /><strong>payload</strong>:</p>
+<p><strong>request</strong>: <code>POST https://reg.rec.la/access</code>
+<strong>payload</strong>:</p>
 <pre class="highlighted"><code class="json">{
   "<span class="attribute">requestingAppId</span>": <span class="value"><span class="string">"web-page-test"</span></span>,
   "<span class="attribute">requestedPermissions</span>": <span class="value">[
@@ -234,9 +239,9 @@ from <a href="https://sw.rec.la/access/test.html"></a><a href="https://sw.rec.la
           "<span class="attribute">folderId</span>": <span class="value"><span class="string">"notes"</span></span>,
           "<span class="attribute">level</span>": <span class="value"><span class="string">"manage"</span></span>,
           "<span class="attribute">defaultName</span>": <span class="value"><span class="string">"Notes"</span>
-        </span>}
+        }</span>
       ]
-    </span>},
+    }</span>,
     {
       "<span class="attribute">channelId</span>": <span class="value"><span class="string">"position"</span></span>,
       "<span class="attribute">defaultName</span>": <span class="value"><span class="string">"Position"</span></span>,
@@ -246,14 +251,14 @@ from <a href="https://sw.rec.la/access/test.html"></a><a href="https://sw.rec.la
           "<span class="attribute">folderId</span>": <span class="value"><span class="string">"iphone"</span></span>,
           "<span class="attribute">level</span>": <span class="value"><span class="string">"manage"</span></span>,
           "<span class="attribute">defaultName</span>": <span class="value"><span class="string">"iPhone"</span>
-        </span>}
+        }</span>
       ]
-    </span>}
+    }</span>
   ]</span>,
   "<span class="attribute">languageCode</span>": <span class="value"><span class="string">"en"</span></span>,
   "<span class="attribute">returnURL</span>": <span class="value"><span class="literal">false</span>
-</span>}</code></pre>
-<p><strong>response</strong>: </p>
+}</span></code></pre>
+<p><strong>response</strong>:</p>
 <pre class="highlighted"><code class="perl">{
   <span class="string">"status"</span>: <span class="string">"NEED_SIGNIN"</span>,
   <span class="string">"code"</span>: <span class="number">201</span>,
@@ -292,23 +297,24 @@ from <a href="https://sw.rec.la/access/test.html"></a><a href="https://sw.rec.la
 }</code></pre>
 <h3>Polling</h3>
 <p><strong>request</strong>: GET <code>https://reg.rec.la/access/dXRqBezem8v3mNxf</code></p>
-<p>3 response codes: </p>
-<p><strong>1 response</strong>: <code>NEED_SIGNIN</code> </p>
-<p>Content is the same than for the initial POST request.<br /><strong>poll</strong> and <strong>poll_rate_ms</strong> may vary</p>
+<p>3 response codes:</p>
+<p><strong>1 response</strong>: <code>NEED_SIGNIN</code></p>
+<p>Content is the same than for the initial POST request.
+<strong>poll</strong> and <strong>poll_rate_ms</strong> may vary</p>
 <p><strong>2 response</strong>: 200 <code>ACCEPTED</code></p>
 <pre class="highlighted"><code class="json">{
   "<span class="attribute">status</span>": <span class="value"><span class="string">"ACCEPTED"</span></span>,
   "<span class="attribute">username</span>": <span class="value"><span class="string">"jondoe"</span></span>,
   "<span class="attribute">token</span>": <span class="value"><span class="string">"VTR7DOKN1J"</span></span>,
   "<span class="attribute">code</span>": <span class="value"><span class="number">200</span>
-</span>}</code></pre>
+}</span></code></pre>
 <p><strong>3 response</strong>: 403 <code>REFUSED</code></p>
 <pre class="highlighted"><code class="json">{
   "<span class="attribute">status</span>": <span class="value"><span class="string">"REFUSED"</span></span>,
   "<span class="attribute">reasonID</span>": <span class="value"><span class="string">"REFUSED_BY_USER"</span></span>,
   "<span class="attribute">message</span>": <span class="value"><span class="string">"access refused by user"</span></span>,
   "<span class="attribute">code</span>": <span class="value"><span class="number">403</span>
-</span>}</code></pre>
+}</span></code></pre>
 </section></div></div><div id="toc"></div><script>jQuery(document).ready(function($) {
   $('#toc').toc({
     'selectors': 'h1,h2',

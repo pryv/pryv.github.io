@@ -1,7 +1,8 @@
-<html><head></head><body><h1>Custom</h1>
+<h1>THIS SECTION IS OBSOLETE AS OF API v0.5; TODO: update</h1>
+<h1>Custom</h1>
 <p>Implementing the authorization process and obtaining an access token all by yourself.</p>
 <p><strong>For testing: </strong>
-Use our staging servers: <a href="https://access.rec.la/access">https://access.rec.la/access</a> </p>
+Use our staging servers: <a href="https://access.rec.la/access">https://access.rec.la/access</a></p>
 <p><strong>Steps: </strong></p>
 <ol>
 <li>start an access request by calling <strong>POST <a href="https://access.pryv.io/access">https://access.pryv.io/access</a></strong></li>
@@ -9,12 +10,13 @@ Use our staging servers: <a href="https://access.rec.la/access">https://access.r
 <li>poll <strong>response.pollurl</strong> ﻿until you get the an ACCEPTED / REFUSED or ERROR status</li>
 </ol>
 <h2>Sequence diagram</h2>
-<p><img src="app-access-files/custom-sequence.png" alt="Sequence Diagram" /></p>
+<p><img src="app-access-files/custom-sequence.png" alt="Sequence Diagram"></p>
 <h2>Json Examples</h2>
 <p>You can reporoduce this examples and try other combinations
-from <a href="https://sw.rec.la/access/test.html"></a><a href="https://sw.rec.la/access/test.html">https://sw.rec.la/access/test.html</a></p>
+from <a href="https://sw.rec.la/access/test.html"><a href="https://sw.rec.la/access/test.html">https://sw.rec.la/access/test.html</a></a></p>
 <h3>Access request</h3>
-<p><strong>request</strong>: <code>POST https://reg.rec.la/access</code><br /><strong>payload</strong>:</p>
+<p><strong>request</strong>: <code>POST https://reg.rec.la/access</code>
+<strong>payload</strong>:</p>
 <pre class="highlighted"><code class="json">{
   "<span class="attribute">requestingAppId</span>": <span class="value"><span class="string">"web-page-test"</span></span>,
   "<span class="attribute">requestedPermissions</span>": <span class="value">[
@@ -27,9 +29,9 @@ from <a href="https://sw.rec.la/access/test.html"></a><a href="https://sw.rec.la
           "<span class="attribute">folderId</span>": <span class="value"><span class="string">"notes"</span></span>,
           "<span class="attribute">level</span>": <span class="value"><span class="string">"manage"</span></span>,
           "<span class="attribute">defaultName</span>": <span class="value"><span class="string">"Notes"</span>
-        </span>}
+        }</span>
       ]
-    </span>},
+    }</span>,
     {
       "<span class="attribute">channelId</span>": <span class="value"><span class="string">"position"</span></span>,
       "<span class="attribute">defaultName</span>": <span class="value"><span class="string">"Position"</span></span>,
@@ -39,14 +41,14 @@ from <a href="https://sw.rec.la/access/test.html"></a><a href="https://sw.rec.la
           "<span class="attribute">folderId</span>": <span class="value"><span class="string">"iphone"</span></span>,
           "<span class="attribute">level</span>": <span class="value"><span class="string">"manage"</span></span>,
           "<span class="attribute">defaultName</span>": <span class="value"><span class="string">"iPhone"</span>
-        </span>}
+        }</span>
       ]
-    </span>}
+    }</span>
   ]</span>,
   "<span class="attribute">languageCode</span>": <span class="value"><span class="string">"en"</span></span>,
   "<span class="attribute">returnURL</span>": <span class="value"><span class="literal">false</span>
-</span>}</code></pre>
-<p><strong>response</strong>: </p>
+}</span></code></pre>
+<p><strong>response</strong>:</p>
 <pre class="highlighted"><code class="perl">{
   <span class="string">"status"</span>: <span class="string">"NEED_SIGNIN"</span>,
   <span class="string">"code"</span>: <span class="number">201</span>,
@@ -85,21 +87,21 @@ from <a href="https://sw.rec.la/access/test.html"></a><a href="https://sw.rec.la
 }</code></pre>
 <h3>Polling</h3>
 <p><strong>request</strong>: GET <code>https://reg.rec.la/access/dXRqBezem8v3mNxf</code></p>
-<p>3 response codes: </p>
-<p><strong>1 response</strong>: <code>NEED_SIGNIN</code> </p>
-<p>Content is the same than for the initial POST request.<br /><strong>poll</strong> and <strong>poll_rate_ms</strong> may vary</p>
+<p>3 response codes:</p>
+<p><strong>1 response</strong>: <code>NEED_SIGNIN</code></p>
+<p>Content is the same than for the initial POST request.
+<strong>poll</strong> and <strong>poll_rate_ms</strong> may vary</p>
 <p><strong>2 response</strong>: 200 <code>ACCEPTED</code></p>
 <pre class="highlighted"><code class="json">{
   "<span class="attribute">status</span>": <span class="value"><span class="string">"ACCEPTED"</span></span>,
   "<span class="attribute">username</span>": <span class="value"><span class="string">"jondoe"</span></span>,
   "<span class="attribute">token</span>": <span class="value"><span class="string">"VTR7DOKN1J"</span></span>,
   "<span class="attribute">code</span>": <span class="value"><span class="number">200</span>
-</span>}</code></pre>
+}</span></code></pre>
 <p><strong>3 response</strong>: 403 <code>REFUSED</code></p>
 <pre class="highlighted"><code class="json">{
   "<span class="attribute">status</span>": <span class="value"><span class="string">"REFUSED"</span></span>,
   "<span class="attribute">reasonID</span>": <span class="value"><span class="string">"REFUSED_BY_USER"</span></span>,
   "<span class="attribute">message</span>": <span class="value"><span class="string">"access refused by user"</span></span>,
   "<span class="attribute">code</span>": <span class="value"><span class="number">403</span>
-</span>}</code></pre>
-</body></html>
+}</span></code></pre>

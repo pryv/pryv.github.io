@@ -7,42 +7,38 @@ _gaq.push(['_trackPageview']);
   ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
   var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
 })();
-</script></head><body class="with-toc"><header id="page-header" class="navbar navbar-fixed-top"><div class="navbar-inner"><a href="/dev-index.html" class="brand">Pryv</a><a data-toggle="collapse" data-target=".nav-collapse" class="btn btn-navbar"><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></a><div class="nav-collapse collapse"><ul class="nav"><li><a href="about.html">About</a></li><li><a href="concepts.html">Concepts</a></li><li class="dropdown"><a href="#" data-toggle="dropdown" class="dropdown-toggle">Guides <b class="caret"></b></a><ul class="dropdown-menu"><li><a href="#">Getting started</a></li><li><a href="#">Data modeling</a></li></ul></li><li class="dropdown"><a href="#" data-toggle="dropdown" class="dropdown-toggle">Reference <b class="caret"></b></a><ul class="dropdown-menu"><li><a href="reference.html">API</a></li><li><a href="event-types.html">Event types</a></li><li><a href="standard-structure.html">Standard data structure</a></li><li><a href="app-access.html">App authorization</a></li></ul></li><li><a href="#">Blog</a></li></ul></div><div class="nav-header pull-right"><div class="version">API version: <strong>0.4.22</strong></div></div></div></header><div id="main-wrapper"><div id="main"><section id="introduction"><h1>Core concepts</h1>
-<p>TODO: rewrite this page, quickly introducing the different concepts (events, channels, tags, accesses/sharing...), then detailing each one in a section</p>
-<p>Pryv provides a RESTful HTTP API, allowing your web or native app to create or read Pryv activity data, or to provide user account management features.</p>
+</script></head><body class="with-toc"><header id="page-header" class="navbar navbar-fixed-top"><div class="navbar-inner"><a href="/dev-index.html" class="brand">Pryv</a><a data-toggle="collapse" data-target=".nav-collapse" class="btn btn-navbar"><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></a><div class="nav-collapse collapse"><ul class="nav"><li><a href="about.html">About</a></li><li><a href="concepts.html">Concepts</a></li><li class="dropdown"><a href="#" data-toggle="dropdown" class="dropdown-toggle">Guides <b class="caret"></b></a><ul class="dropdown-menu"><li><a href="#">Getting started</a></li><li><a href="#">Data modeling</a></li></ul></li><li class="dropdown"><a href="#" data-toggle="dropdown" class="dropdown-toggle">Reference <b class="caret"></b></a><ul class="dropdown-menu"><li><a href="reference.html">API</a></li><li><a href="event-types.html">Event types</a></li><li><a href="standard-structure.html">Standard data structure</a></li><li><a href="app-access.html">App authorization</a></li></ul></li><li><a href="#">Blog</a></li></ul></div><div class="nav-header pull-right"><div class="version">API version: <strong>0.5.1</strong></div></div></div></header><div id="main-wrapper"><div id="main"><section id="introduction"><h1>Core concepts</h1>
+<p>TODO: rewrite this page, quickly introducing the different concepts (events, streams, tags, accesses/sharing...), then detailing each one in a section</p>
+<p>Pryv provides a RESTful HTTP API, allowing your web or native app to interact with Pryv activity data, or to provide user account management features.</p>
 <h2>Integration objectives</h2>
 <p>There are two different uses for the API:</p>
 <ul>
-<li><p>Access activity data: Most apps will want to interact with <a href="reference.html#activity">Pryv activity data</a>. Recording and managing of activity data (events and their organization into folders and tags) is protected by <a href="reference.html#data-structure-access">accesses</a> to allow easy <a href="#sharing">sharing</a>.</p>
+<li><p>Access activity data: Most apps will want to interact with <a href="reference.html#activity">Pryv activity data</a>. Pryv events and their organization into streams and tags is protected by <a href="reference.html#data-structure-access">accesses</a>, which allow easy <a href="#sharing">sharing</a>.</p>
 </li>
 <li><p>Administration: Some apps may need to use the administration API to provide user account administration. Administration is protected by personal authentication and sessions, and is reserved for trusted apps.</p>
 </li>
 </ul>
 <p>[TODO: add simple schema here]</p>
-<h2><a id="activity-data"></a>Activity data</h2>
+<h2><a id="activity-data"></a>Pryv activity data</h2>
 <h3>Definition</h3>
-<p>Activity data are timestamped pieces of typed data, or <strong>events</strong>. Some example events are: thoughts, audio notes, photos, geographical coordinates, etc. (see the <a href="event-types.html#directory">event type directory</a>).</p>
+<p>The core of Pryv data are timestamped pieces of typed data, or <strong>events</strong>. Some example events are: thoughts, audio notes, photos, geographical coordinates, etc. (see the <a href="event-types.html#directory">event type directory</a>).</p>
 <h3>Detailed information</h3>
 <p>TODO reduce verbosity</p>
 <p>To allow Pryv apps to play nicely together and help users organize those events, there are a few additional things you need to know about:</p>
 <ul>
-<li>Each event belongs to a <strong>channel</strong>. A channel is a stream of events users usually want to see and manage together. For example, a user&#39;s thoughts, diary and social activities (Facebook, Twitter,... ) will be recorded in the same channel. There are a few standard channels there for your app to use (see <a href="standard-structure.html">standard structure</a>), but if you manage rather specific stuff you&#39;ll probably want your app to create and use its own channel. Most apps will just deal with a single channel.</li>
-<li>Within a channel, events can be classified and organized using folders, tags, or both:<ul>
-<li><strong>Folders</strong> offer a hierarchical structure for classifying and filtering events. They are exclusive (one event can only be classified into a single folder), and can contain sub-folders (child folders). Depending on your app, you may actively use folders and let the user manage them (as for a time tracking app to classify time spent on particular projects), just use a single folder (as for a social media plugin: a Facebook plugin may store all its events into a &quot;Facebook&quot; folder), or just not care about folders at all (if your app uses its own channel and tags are all you need, for example).</li>
-<li><strong>Tags</strong> offer typical flat, many-to-many organization for labeling and filtering events. One event can be tagged with multiple tags. For example, personal notes could be tagged as <em>fun</em> or <em>important</em>, or professional activities could be tagged as <em>prospection</em>, <em>meeting</em>, <em>development</em> or <em>support</em>.</li>
-</ul>
-</li>
+<li>Each event belongs to a <strong>stream</strong>. Streams usually match either organizational aspects (depending on the user, e.g. journal, photos, etc.) or data sources (like specific apps and/or devices), and follow a hierarchical organization (i.e. streams can contain sub-streams). There are a few standard streams there for your app to use (see <a href="standard-structure.html">standard structure</a>), but if you manage rather specific stuff you&#39;ll probably want your app to create and use its own stream. Many apps (e.g. data collection) will typically just deal with a single stream.</li>
+<li>Events can be further classified and organized using <strong>tags</strong>. Tags offer typical flat, many-to-many organization for labeling and filtering events. One event can be tagged with multiple tags. For example, personal notes could be tagged as <em>fun</em> or <em>important</em>, or professional activities could be tagged as <em>prospection</em>, <em>meeting</em>, <em>development</em> or <em>support</em>.</li>
 </ul>
 <p>Note that as an open system, to provide true interoperability, Pryv does not set or enforce &quot;ownership&quot; of data per app. Provided the necessary permissions, data stored by a given app can be accessed and manipulated by any other app.
-See the <a href="standard-structure.html">standard channels, folders and tags</a> we encourage you to use when appropriate if you want your app to integrate nicely within the user&#39;s Pryv experience.</p>
+See the <a href="standard-structure.html">standard streams and tags</a> we encourage you to use when appropriate if you want your app to integrate nicely within the user&#39;s Pryv experience.</p>
 <h2><a id="sharing"></a>Access / sharing</h2>
 <p>[TODO: schema?]</p>
 <h3>Overview</h3>
 <p>Apps access a user&#39;s activity data by presenting the API with an <strong>access token</strong>, meaning a specific instance of <strong>access</strong> to the data has been granted. An access can be <em>shared</em>, associated to an <em>app</em> or <em>personal</em>.</p>
 <h3>Types of access</h3>
 <ul>
-<li><p><strong>Shared</strong> accesses can be freely defined for letting other users view and possibly contribute to their activity data. They only grant access to a specific set of the user&#39;s data (see details below).</p>
-<p>  A <strong>shared access</strong> grants permissions to one or more of the user&#39;s channel(s), and further permissions within those channels, like on folder(s), tag(s) and/or a limited time frame, can be defined to filter events. Accesses allow sharing in a variety of ways, such as:</p>
+<li><p><strong>Shared</strong> accesses can be freely defined for letting other users view and possibly contribute to their data. They only grant access to a specific set of the user&#39;s data (see details below).</p>
+<p>  A <strong>shared access</strong> grants permissions to one or more of the user&#39;s stream(s), and further permissions within those streams, like on tags and/or a limited time frame, can be defined to filter events. Accesses allow sharing in a variety of ways, such as:</p>
 <ul>
 <li>in-app: the user chooses to share some events with another Pryv user, which is notified and can select to view (and possibly contribute to) the shared data and/or integrate it with her own (add it to her sharing bookmarks).</li>
 <li>URL copy-paste: the user choose to share data with another person (possibly not a Pryv user), and copies the full URL containing the access token into an e-mail or chat message. The other person can open the URL and access the web app to view (and possibly contribute to) the shared data.</li>
@@ -53,7 +49,7 @@ See the <a href="standard-structure.html">standard channels, folders and tags</a
 <li><p><strong>Personal</strong> accesses are used by trusted apps only. They grant full access to the user&#39;s data.</p>
 </li>
 </ul>
-<p>Note that only trusted apps can view and manage app and personal accesses. To register your app as trusted, please <a href="mailto:developers@pryv.com">get in touch with us</a>.</p>
+<p>Note that only trusted apps can view and manage app and personal accesses. If you want to build a trusted app, please <a href="mailto:developers@pryv.com">get in touch with us</a>.</p>
 <h3>Other details</h3>
 <p>Users can store access tokens shared by other users by adding them to their <strong>sharing bookmarks</strong> (part of the administration; available to trusted apps only).</p>
 <p>For the present time, accesses are not personal. Access tokens act exactly like digital keys: if you have the token and the name of the user with the access it identifies, you can access the data.</p>

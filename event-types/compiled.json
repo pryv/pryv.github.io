@@ -1,0 +1,604 @@
+{
+  "version": 20130521.01,
+  "types": {
+    "activity/pryv": {
+      "description": "Pryv activity event. No specific content here; content is defined by the event's stream, time and duration as well as possible classification (tags).",
+      "type": "null"
+    },
+    "audio/attached": {
+      "description": "TODO",
+      "type": "null",
+      "attachmentRequired": true
+    },
+    "audio/url": {
+      "description": "A reference to an audio file online.",
+      "type": "string",
+      "pattern": "^(https?)://.+$"
+    },
+    "call/skype": {
+      "description": "TODO (skype id)"
+    },
+    "call/telephone": {
+      "description": "TODO (number)"
+    },
+    "contact/facebook": {
+      "description": "TODO"
+    },
+    "contact/vcard": {
+      "description": "TODO"
+    },
+    "count/generic": {
+      "description": "For general items that demand no particular handling.",
+      "type": "number"
+    },
+    "encrypted/aes-text-base64": {
+      "description": "AES encrypted payload, with a <em>text</em> key and a <em>Base64</em> payload.",
+      "type": "object",
+      "properties": {
+        "payload": {
+          "description": "The encrypted data.",
+          "type": "string",
+          "required": true
+        },
+        "keyRef": {
+          "description": "A reference (e.g. id, name in keychain) to the key to use for decryption.",
+          "type": "string"
+        },
+        "hint": {
+          "description": "Alternative to <code>keyRef</code>. A textual hint about which key to use for decryption.",
+          "type": "string"
+        }
+      }
+    },
+    "file/attached": {
+      "description": "TODO",
+      "type": "null",
+      "attachmentRequired": true
+    },
+    "file/attached-multiple": {
+      "description": "TODO",
+      "type": "null",
+      "attachmentRequired": true,
+      "example": {
+        "attachments": {
+          "relative/path/to/file1.ext": {
+            "fileName": "relative_path_to_file1.ext",
+            "type": "mime-type",
+            "size": 5123
+          },
+          "relative/path/to/file2.ext": {
+            "fileName": "relative_path_to_file2.ext",
+            "type": "mime-type",
+            "size": 5123
+          }
+        },
+        "...": "..."
+      }
+    },
+    "file/url": {
+      "description": "TODO",
+      "type": "string",
+      "pattern": "^(https?)://.+$"
+    },
+    "length/cm": {
+      "description": "Centimeters.",
+      "type": "number"
+    },
+    "length/m": {
+      "description": "Meters.",
+      "type": "number"
+    },
+    "length/km": {
+      "description": "Kilometers.",
+      "type": "number"
+    },
+    "mass/kg": {
+      "description": "Kilograms.",
+      "type": "number"
+    },
+    "message/email": {
+      "description": "An e-mail message. TODO: review and complete",
+      "type": "object",
+      "properties": {
+        "from": {
+          "type": "string"
+        },
+        "to": {
+          "type": "string"
+        },
+        "cc": {
+          "type": "string"
+        },
+        "bcc": {
+          "type": "string"
+        },
+        "subject": {
+          "type": "string"
+        },
+        "body": {
+          "type": "string"
+        }
+      }
+    },
+    "message/facebook": {
+      "description": "A Facebook post. See <a href=\"https://developers.facebook.com/docs/reference/api/post/\">Facebook's API doc</a> for reference. TODO: add example (Facebook post can be copied RAW as content. \nmap: \n   fbPost.message -> pryvEvent.description\n   fbPost.created_time -> pryvEvent.time\n TBD: what to do with videos & pictures?)",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "required": true
+        },
+        "from": {
+          "type": "object",
+          "properties": {
+            "name": {
+              "type": "string",
+              "required": true
+            },
+            "id": {
+              "type": "string",
+              "required": true
+            }
+          }
+        },
+        "to": {
+          "type": "object",
+          "properties": {
+            "data": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "name": "string",
+                  "id": "string"
+                }
+              }
+            }
+          }
+        },
+        "message": {
+          "type": "string"
+        },
+        "picture": {
+          "type": "string"
+        },
+        "link": {
+          "type": "string"
+        },
+        "caption": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "source": {
+          "type": "string"
+        },
+        "icon": {
+          "type": "string"
+        },
+        "type": {
+          "type": "string"
+        }
+      }
+    },
+    "message/twitter": {
+      "description": "A Twitter post. TODO: detail",
+      "type": "object",
+      "properties": {
+        "TODO": {
+          "type": "string"
+        }
+      }
+    },
+    "money/aed": {
+      "type": "number"
+    },
+    "money/ang": {
+      "type": "number"
+    },
+    "money/ars": {
+      "type": "number"
+    },
+    "money/aud": {
+      "type": "number"
+    },
+    "money/bgn": {
+      "type": "number"
+    },
+    "money/bhd": {
+      "type": "number"
+    },
+    "money/bnd": {
+      "type": "number"
+    },
+    "money/bob": {
+      "type": "number"
+    },
+    "money/brl": {
+      "type": "number"
+    },
+    "money/bwp": {
+      "type": "number"
+    },
+    "money/cad": {
+      "type": "number"
+    },
+    "money/chf": {
+      "type": "number"
+    },
+    "money/clp": {
+      "type": "number"
+    },
+    "money/cny": {
+      "type": "number"
+    },
+    "money/cop": {
+      "type": "number"
+    },
+    "money/crc": {
+      "type": "number"
+    },
+    "money/czk": {
+      "type": "number"
+    },
+    "money/dkk": {
+      "type": "number"
+    },
+    "money/dop": {
+      "type": "number"
+    },
+    "money/dzd": {
+      "type": "number"
+    },
+    "money/eek": {
+      "type": "number"
+    },
+    "money/egp": {
+      "type": "number"
+    },
+    "money/eur": {
+      "type": "number"
+    },
+    "money/fjd": {
+      "type": "number"
+    },
+    "money/gbp": {
+      "type": "number"
+    },
+    "money/hkd": {
+      "type": "number"
+    },
+    "money/hnl": {
+      "type": "number"
+    },
+    "money/hrk": {
+      "type": "number"
+    },
+    "money/huf": {
+      "type": "number"
+    },
+    "money/idr": {
+      "type": "number"
+    },
+    "money/ils": {
+      "type": "number"
+    },
+    "money/inr": {
+      "type": "number"
+    },
+    "money/jmd": {
+      "type": "number"
+    },
+    "money/jod": {
+      "type": "number"
+    },
+    "money/jpy": {
+      "type": "number"
+    },
+    "money/kes": {
+      "type": "number"
+    },
+    "money/krw": {
+      "type": "number"
+    },
+    "money/kwd": {
+      "type": "number"
+    },
+    "money/kyd": {
+      "type": "number"
+    },
+    "money/kzt": {
+      "type": "number"
+    },
+    "money/lbp": {
+      "type": "number"
+    },
+    "money/lkr": {
+      "type": "number"
+    },
+    "money/ltl": {
+      "type": "number"
+    },
+    "money/lvl": {
+      "type": "number"
+    },
+    "money/mad": {
+      "type": "number"
+    },
+    "money/mdl": {
+      "type": "number"
+    },
+    "money/mkd": {
+      "type": "number"
+    },
+    "money/mur": {
+      "type": "number"
+    },
+    "money/mxn": {
+      "type": "number"
+    },
+    "money/myr": {
+      "type": "number"
+    },
+    "money/nad": {
+      "type": "number"
+    },
+    "money/ngn": {
+      "type": "number"
+    },
+    "money/nio": {
+      "type": "number"
+    },
+    "money/nok": {
+      "type": "number"
+    },
+    "money/npr": {
+      "type": "number"
+    },
+    "money/nzd": {
+      "type": "number"
+    },
+    "money/omr": {
+      "type": "number"
+    },
+    "money/pen": {
+      "type": "number"
+    },
+    "money/pgk": {
+      "type": "number"
+    },
+    "money/php": {
+      "type": "number"
+    },
+    "money/pkr": {
+      "type": "number"
+    },
+    "money/pln": {
+      "type": "number"
+    },
+    "money/pyg": {
+      "type": "number"
+    },
+    "money/qar": {
+      "type": "number"
+    },
+    "money/ron": {
+      "type": "number"
+    },
+    "money/rsd": {
+      "type": "number"
+    },
+    "money/rub": {
+      "type": "number"
+    },
+    "money/sar": {
+      "type": "number"
+    },
+    "money/scr": {
+      "type": "number"
+    },
+    "money/sek": {
+      "type": "number"
+    },
+    "money/sgd": {
+      "type": "number"
+    },
+    "money/skk": {
+      "type": "number"
+    },
+    "money/sll": {
+      "type": "number"
+    },
+    "money/svc": {
+      "type": "number"
+    },
+    "money/thb": {
+      "type": "number"
+    },
+    "money/tnd": {
+      "type": "number"
+    },
+    "money/try": {
+      "type": "number"
+    },
+    "money/ttd": {
+      "type": "number"
+    },
+    "money/twd": {
+      "type": "number"
+    },
+    "money/tzs": {
+      "type": "number"
+    },
+    "money/uah": {
+      "type": "number"
+    },
+    "money/ugx": {
+      "type": "number"
+    },
+    "money/usd": {
+      "type": "number"
+    },
+    "money/uyu": {
+      "type": "number"
+    },
+    "money/uzs": {
+      "type": "number"
+    },
+    "money/vnd": {
+      "type": "number"
+    },
+    "money/yer": {
+      "type": "number"
+    },
+    "money/zar": {
+      "type": "number"
+    },
+    "money/zmk": {
+      "type": "number"
+    },
+    "mood/emoticon": {
+      "description": "TODO; it's just an example."
+    },
+    "music/id3": {
+      "description": "TODO"
+    },
+    "music/itunes": {
+      "description": "TODO"
+    },
+    "music/soundcloud": {
+      "description": "TODO"
+    },
+    "note/html": {
+      "description": "An HTML-formatted note.",
+      "type": "string",
+      "maxLength": "4194304"
+    },
+    "note/txt": {
+      "description": "A plain-text note.",
+      "type": "string",
+      "maxLength": "4194304"
+    },
+    "note/webclip": {
+      "description": "An HTML-formatted note associated to its source URL.",
+      "type": "object",
+      "properties": {
+        "url": {
+          "type": "string",
+          "required": true,
+          "pattern": "^(https?)://.+$"
+        },
+        "content": {
+          "description": "An HTML-formatted string.",
+          "type": "string",
+          "maxLength": "4194304"
+        }
+      }
+    },
+    "picture/attached": {
+      "description": "The picture is the image file attached to the event (no explicit content defined). TODO: list accepted formats.",
+      "type": "null",
+      "attachmentRequired": true
+    },
+    "picture/url": {
+      "description": "A reference to a picture file online.",
+      "type": "string",
+      "pattern": "^(https?)://.+$"
+    },
+    "position/wgs84": {
+      "description": "The latest revision of the World Geodetic System (used by GPS).",
+      "type": "object",
+      "properties": {
+        "latitude": {
+          "type": "number",
+          "required": true,
+          "description": "Unit: degrees north from the equator."
+        },
+        "longitude": {
+          "type": "number",
+          "required": true,
+          "description": "Unit: degrees east from the zero meridian."
+        },
+        "altitude": {
+          "type": "number",
+          "required": false,
+          "description": "Unit: meters above sea level."
+        },
+        "horizontalAccuracy": {
+          "type": "number",
+          "required": false,
+          "description": "The radius of uncertainty for latitude and longitude. Unit: meters. Negative if latitude and longitude are invalid."
+        },
+        "verticalAccuracy": {
+          "type": "number",
+          "required": false,
+          "description": "The radius of uncertainty for altitude. Unit: meters. Negative if altitude is invalid."
+        },
+        "speed": {
+          "type": "number",
+          "required": false,
+          "description": "For informational purposes only. Unit: meters / second. Negative if invalid."
+        },
+        "bearing": {
+          "type": "number",
+          "required": false,
+          "description": "Unit: degrees clockwise from north. Negative if invalid."
+        }
+      }
+    },
+    "ratio/generic": {
+      "description": "Generic ratio.",
+      "type": "object",
+      "properties": {
+        "value": {
+          "type": "number",
+          "required": true
+        },
+        "relativeTo": {
+          "type": "number",
+          "required": true
+        }
+      }
+    },
+    "temperature/c": {
+      "description": "Celsius.",
+      "type": "number"
+    },
+    "temperature/f": {
+      "description": "Fahrenheit.",
+      "type": "number"
+    },
+    "url/http": {
+      "description": "An HTTP or HTTPS resource.",
+      "type": "string",
+      "pattern": "^(https?)://.+$"
+    },
+    "video/attached": {
+      "description": "The video is the file attached to the event (no explicit content defined). TODO: list accepted formats.",
+      "type": "null",
+      "attachmentRequired": true
+    },
+    "video/url": {
+      "description": "A reference to an video file online.",
+      "type": "string",
+      "pattern": "^(https?)://.+$"
+    },
+    "video/vimeo": {
+      "description": "A Vimeo video ID.",
+      "type": "string"
+    },
+    "video/youtube": {
+      "description": "A YouTube video ID.",
+      "type": "string"
+    },
+    "volume/l": {
+      "description": "Liters.",
+      "type": "number"
+    },
+    "volume/m3": {
+      "description": "Cubic meters.",
+      "type": "number"
+    }
+  }
+}

@@ -1,43 +1,27 @@
-<html><head></head><body><section id="data-structure"><h1>Data structure</h1><div class="intro"><p>This section describes the structure of the different types of objects and values exchanged in the API.</p>
+<section id="data-structure"><h1>Data structure</h1><div class="intro"><p>This section describes the structure of the different types of objects and values exchanged in the API.</p>
 <p>Notes:</p>
 <ul>
-<li>"Read-only" = server-assigned, never set or modified by clients</li>
-<li>We should and will reformat items structure for quick visual parsing (e.g. using tables, or at least coloured labels for stuff like "optional")—for the moment we've consciously chosen low-formatting, quick-to-edit bullet lists</li>
+<li>&quot;Read-only&quot; = server-assigned, never set or modified by clients</li>
+<li>We should and will reformat items structure for quick visual parsing (e.g. using tables, or at least coloured labels for stuff like &quot;optional&quot;)—for the moment we&#39;ve consciously chosen low-formatting, quick-to-edit bullet lists</li>
 </ul>
-</div><section><h2><a id="data-structure-channel"></a>Channel</h2><div class="content"><p>Each activity channel represents a "stream" or "type" of activity to track, acting as a storage bucket for related events.
-Fields:</p>
-<ul>
-<li><code>id</code> (<a href="#data-structure-identity">identity</a>): Unique, read-only (except at creation). The identifier for the channel. Automatically generated if not set when creating the channel; <strong>slugified if necessary</strong>.</li>
-<li><code>name</code> (string): Unique. The name identifying the channel for users.</li>
-<li><code>enforceNoEventsOverlap</code> (boolean): Optional. If specified and <code>true</code>, the system will ensure that period events in this channel never overlap.</li>
-<li><code>clientData</code> (<a href="#data-structure-additional-data">item additional data</a>): Optional. Additional client data for the channel.</li>
-<li><code>timeCount</code> (<a href="#data-structure-timestamp">timestamp</a>): Read-only. Only optionally returned when querying channels, indicating the total time tracked in that channel since a given reference date and time. <strong>This will be implemented later.</strong></li>
-<li><code>trashed</code> (boolean): Optional. <code>true</code> if the channel is in the trash.</li>
-</ul>
-</div><aside><p>TODO: example</p>
-</aside></section><section><h2><a id="data-structure-event"></a>Event</h2><div class="content"><p>Events can be period events, which are associated with a period of time, or mark events, which are just associated with a single point in time:</p>
+</div><section><h2><a id="data-structure-event"></a>Event</h2><div class="content"><p>Events can be period events, which are associated with a period of time, or mark events, which are just associated with a single point in time:</p>
 <ul>
 <li>Period events are used to track everything with a duration, like time spent drafting a project proposal, meeting with the customer or staying at a particular location.</li>
 <li>Mark events are used to track everything else, like a note, a log message, a GPS location, a temperature measurement, or a stock market asset value.</li>
 </ul>
-<p>Period events carry a duration, mark events do not. Like folders, events always belong to an activity channel.</p>
+<p>Period events carry a duration, mark events do not. Events always belong to an activity stream.</p>
 <p>Fields:</p>
 <ul>
 <li><code>id</code> (<a href="#data-structure-identity">identity</a>): Unique, read-only. The server-assigned identifier for the event.</li>
-<li><code>channelId</code> (<a href="#data-structure-identity">identity</a>): Read-only. The id of the belonging channel.</li>
-<li><code>time</code> (<a href="#data-structure-timestamp">timestamp</a>): The event's time. For period events, this is the time the event started.</li>
-<li><code>duration</code> (<a href="#data-structure-timestamp">timestamp</a> difference): Optional. If present, indicates that the event is a period event. <strong>Running period events have a duration set to <code>null</code></strong>. (We use a dedicated field for duration—instead of using the <code>value</code> field—as we do specific processing of event durations, intervals and overlapping.)</li>
-<li><code>type</code> (object): The type of the event. See the <a href="event-types.html#directory">event type directory</a> for a list of standard types.<ul>
-<li><code>class</code> (string): The type's class. Events in the same class are considered comparable and convertible.</li>
-<li><code>format</code> (string): The type's format. Depending on the class, it may indicate a measurement unit, a currency, a string format, an object structure, etc. Together with <code>class</code>, it indicates how to handle the event's <code>value</code>, if any.</li>
-</ul>
-</li>
-<li><code>value</code> (any type): Optional. The value associated with the event, if any. Depending on the <code>type</code>, this may be a mathematical value (e.g. mass, money, length, position, etc.), a link to a page, location coordinates, etc.</li>
-<li><code>folderId</code>(<a href="#data-structure-identity">identity</a>): Optional but always present in read items. Indicates the particular folder the event is associated with; <code>null</code> if no folder is assigned.</li>
+<li><code>streamId</code> (<a href="#data-structure-identity">identity</a>): The id of the belonging stream.</li>
+<li><code>time</code> (<a href="#data-structure-timestamp">timestamp</a>): The event&#39;s time. For period events, this is the time the event started.</li>
+<li><code>duration</code> (<a href="#data-structure-timestamp">timestamp</a> difference): Optional. If present, indicates that the event is a period event. <strong>Running period events have a duration set to <code>null</code></strong>. (We use a dedicated field for duration—instead of using the <code>content</code> field—as we do specific processing of event durations, intervals and overlapping.)</li>
+<li><code>type</code> (string): The type of the event. See the <a href="event-types.html#directory">event type directory</a> for a list of standard types.</li>
+<li><code>content</code> (any type): Optional. The <code>type</code>-specific content of the event, if any.</li>
 <li><code>tags</code> (array of strings): Optional but always present in read items. The tags associated with the event.</li>
 <li><code>description</code> (string): Optional. User description or comment for the event.</li>
 <li><code>attachments</code>: Optional and read-only. An object describing the files attached to the event. Each of its properties corresponds to one file and has the following structure:<ul>
-<li><code>fileName</code> (string): The file's name. The attached file's URL is obtained by appending this file name to the event's resource URL.</li>
+<li><code>fileName</code> (string): The file&#39;s name. The attached file&#39;s URL is obtained by appending this file name to the event&#39;s resource URL.</li>
 <li><code>type</code> (string): The MIME type of the file.</li>
 <li><code>size</code> (number): The size of the file, in bytes.</li>
 </ul>
@@ -47,41 +31,39 @@ Fields:</p>
 <li><code>modified</code> (<a href="#data-structure-timestamp">timestamp</a>): Read-only. The time the event was last modified.</li>
 </ul>
 </div><aside><h4>Example</h4>
-<pre class="highlighted"><code class="language-javascript">[
-  { <span class="string">"time"</span>: <span class="number">1350365877.359</span>, <span class="string">"description"</span> : <span class="string">"Some pics"</span>, <span class="string">"id"</span> : <span class="string">"event_0"</span>, <span class="string">"folderId"</span> : <span class="literal">null</span>,
+<pre class="highlighted"><code class="javascript">[
+  { <span class="string">"time"</span>: <span class="number">1350365877.359</span>, <span class="string">"description"</span> : <span class="string">"Some pics"</span>, <span class="string">"id"</span> : <span class="string">"event_0"</span>, <span class="string">"streamId"</span> : <span class="literal">null</span>,
     <span class="string">"tags"</span>: [<span class="string">"foraging"</span>, <span class="string">"funny"</span>],
-    <span class="string">"type"</span>: { <span class="string">"class"</span>: <span class="string">"picture"</span>, <span class="string">"format"</span>: <span class="string">"attached"</span> },
+    <span class="string">"type"</span>: <span class="string">"picture/attached"</span>,
     <span class="string">"attachments"</span> : {
       <span class="string">"Gina"</span>: { <span class="string">"fileName"</span>: <span class="string">"gina.jpeg"</span>, <span class="string">"type"</span>: <span class="string">"image/jpeg"</span>, <span class="string">"size"</span>: <span class="number">1236701</span> },
       <span class="string">"Enzo"</span>: { <span class="string">"fileName"</span>: <span class="string">"enzo.jpeg"</span>, <span class="string">"type"</span>: <span class="string">"image/jpeg"</span>, <span class="string">"size"</span>: <span class="number">1127465</span> }},
       <span class="string">"modified"</span> : <span class="number">1350463077.359</span> },
   { <span class="string">"time"</span> : <span class="number">1350369477.359</span>, <span class="string">"duration"</span> : <span class="number">7140</span>, <span class="string">"description"</span>: <span class="string">"A period of work"</span>,
-    <span class="string">"id"</span> : <span class="string">"event_1"</span>, <span class="string">"folderId"</span> : <span class="string">"free-veggies"</span>,
+    <span class="string">"id"</span> : <span class="string">"event_1"</span>, <span class="string">"streamId"</span> : <span class="string">"free-veggies"</span>,
     <span class="string">"tags"</span>: [<span class="string">"proposal"</span>],
-    <span class="string">"type"</span>: { <span class="string">"class"</span>: <span class="string">"activity"</span>, <span class="string">"format"</span>: <span class="string">"pryv"</span> },
+    <span class="string">"type"</span>: <span class="string">"activity/pryv"</span>,
     <span class="string">"modified"</span> : <span class="number">1350369477.359</span> },
-  { <span class="string">"time"</span> : <span class="number">1350373077.359</span>, <span class="string">"description"</span> : <span class="string">"A position"</span>, <span class="string">"id"</span> : <span class="string">"event_2"</span>, <span class="string">"folderId"</span> : <span class="literal">null</span>,
+  { <span class="string">"time"</span> : <span class="number">1350373077.359</span>, <span class="string">"description"</span> : <span class="string">"A position"</span>, <span class="string">"id"</span> : <span class="string">"event_2"</span>, <span class="string">"streamId"</span> : <span class="literal">null</span>,
     <span class="string">"tags"</span>: [],
-    <span class="string">"type"</span>: { <span class="string">"class"</span>: <span class="string">"position"</span>, <span class="string">"format"</span>: <span class="string">"wgs84"</span> },
-    <span class="string">"value"</span>: { <span class="string">"location"</span>: { <span class="string">"lat"</span>: <span class="number">40.714728</span>, <span class="string">"lng"</span>: -<span class="number">73.998672</span>, <span class="number">12</span> } },
+    <span class="string">"type"</span>: <span class="string">"position/wgs84"</span>,
+    <span class="string">"content"</span>: { <span class="string">"latitude"</span>: <span class="number">40.714728</span>, <span class="string">"longitude"</span>: -<span class="number">73.998672</span> },
     <span class="string">"modified"</span> : <span class="number">1350373077.359</span> }
 ]</code></pre>
-</aside></section><section><h2><a id="data-structure-folder"></a>Folder</h2><div class="content"><p>Activity folders are the possible states or categories you track the channel's events into (folders are always specific to an activity channel). Every period event belongs to one folder, while mark events can be recorded "off-folder" as well. Activity folders follow a hierarchical tree structure: every folder can contain "child" folders (sub-folders).</p>
+</aside></section><section><h2><a id="data-structure-stream"></a>Stream</h2><div class="content"><p>Activity streams represent organizational categories or data source for events. Streams follow a hierarchical tree structure: every stream can contain &quot;child&quot; streams (sub-streams).</p>
 <p>Fields:</p>
 <ul>
-<li><code>id</code> (<a href="#data-structure-identity">identity</a>): Unique, read-only (except at creation). The identifier for the folder. Automatically generated if not set when creating the folder; <strong>slugified if necessary</strong>.</li>
-<li><code>channelId</code> (<a href="#data-structure-identity">identity</a>): Read-only. The id of the belonging channel.</li>
-<li><code>name</code> (string): A name identifying the folder for users. The name must be unique among the folder's siblings in the folders tree structure.</li>
-<li><code>parentId</code> (<a href="#data-structure-identity">identity</a>): Optional. The identifier of the folder's parent, if any. A value of <code>null</code> indicates that the folder has no parent (i.e. root folder).</li>
-<li><code>hidden</code> (<code>true</code> or <code>false</code>): Optional. Whether the folder is currently in use or visible. Default: <code>true</code>.</li>
-<li><code>clientData</code> (<a href="#data-structure-additional-data">item additional data</a>):  Optional. Additional client data for the folder.</li>
-<li><code>timeCount</code> (<a href="#data-structure-timestamp">timestamp</a>): Read-only. Only optionally returned when querying folders, indicating the total time spent in that folder, including sub-folders, since a given reference date and time. <strong>This will be implemented later.</strong></li>
-<li><code>children</code> (array of folders): Read-only. The folder's sub-folders, if any. This field cannot be set in requests creating a new folders: folders are created individually by design.</li>
-<li><code>trashed</code> (boolean): Optional. <code>true</code> if the folder is in the trash.</li>
+<li><code>id</code> (<a href="#data-structure-identity">identity</a>): Unique, read-only (except at creation). The identifier for the stream. Automatically generated if not set when creating the stream; <strong>slugified if necessary</strong>.</li>
+<li><code>name</code> (string): A name identifying the stream for users. The name must be unique among the stream&#39;s siblings in the streams tree structure.</li>
+<li><code>parentId</code> (<a href="#data-structure-identity">identity</a>): Optional. The identifier of the stream&#39;s parent, if any. A value of <code>null</code> indicates that the stream has no parent (i.e. root stream).</li>
+<li><code>singleActivity</code> (boolean): Optional. If specified and <code>true</code>, the system will ensure that period events in this stream and its children never overlap.</li>
+<li><code>clientData</code> (<a href="#data-structure-additional-data">item additional data</a>):  Optional. Additional client data for the stream.</li>
+<li><code>children</code> (array of streams): Read-only. The stream&#39;s sub-streams, if any. This field cannot be set in requests creating a new streams: streams are created individually by design.</li>
+<li><code>trashed</code> (boolean): Optional. <code>true</code> if the stream is in the trash.</li>
 </ul>
 </div><aside><h4>Example</h4>
-<p>A folder structure for activities:</p>
-<pre class="highlighted"><code class="language-javascript">[
+<p>A stream structure for activities:</p>
+<pre class="highlighted"><code class="javascript">[
   { <span class="string">"name"</span>: <span class="string">"Sport"</span>, <span class="string">"id"</span>: <span class="string">"sport"</span>, <span class="string">"parentId"</span>: <span class="literal">null</span>,
     <span class="string">"children"</span>: [
       { <span class="string">"name"</span>: <span class="string">"Jogging"</span>, <span class="string">"id"</span>: <span class="string">"jogging"</span>, <span class="string">"parentId"</span>: <span class="string">"sport"</span>, <span class="string">"children"</span>: [] },
@@ -101,53 +83,48 @@ Fields:</p>
     ]
   }
 ];</code></pre>
-</aside></section><section><h2><a id="data-structure-access"></a>Access</h2><div class="content"><p>An access defines a set of permissions on a user's activity data (channels, folders and events). (See <a href="concepts.html#sharing">how sharing works</a>.)</p>
+</aside></section><section><h2><a id="data-structure-access"></a>Access</h2><div class="content"><p>An access defines a set of permissions on a user&#39;s activity data (streams and events). (See <a href="concepts.html#sharing">how sharing works</a>.)</p>
 <p>Fields:</p>
 <ul>
 <li><code>token</code> (string): Unique, read-only (except at creation). The token identifying the access. Automatically generated if not set when creating the access; <strong>slugified if necessary</strong>.</li>
-<li><code>type</code> (<code>"personal"</code>, <code>"app"</code> or <code>"shared"</code>): Optional. The type — or usage — of the access. Default: <code>"shared"</code>.</li>
+<li><code>type</code> (<code>&quot;personal&quot;</code>, <code>&quot;app&quot;</code> or <code>&quot;shared&quot;</code>): Optional. The type — or usage — of the access. Default: <code>&quot;shared&quot;</code>.</li>
 <li><code>name</code> (string): Unique <em>per type and device name (if defined)</em>. The name identifying the access for the user. (Note that for personal and app access, the name is used as a technical identifier and not shown as-is to the user.)</li>
 <li><code>deviceName</code> (string): Optional. Unique <em>per type and name (if defined)</em>. For app accesses only. The name of the client device running the app, if applicable.</li>
-<li><code>permissions</code>: an array of channel permission objects as described below. Ignored for personal accesses. Shared accesses are only granted access to activity data objects listed in here.<ul>
-<li><code>channelId</code> (<a href="#data-structure-identity">identity</a>): The accessible channel's id, or <code>"*"</code> for "all channels".</li>
-<li><code>level</code> (<code>"read"</code>, <code>"contribute"</code> or <code>"manage"</code>): The level of access to the channel. With <code>"contribute"</code>, the access's token holder(s) can see and record events in the channel; with <code>"manage"</code>, the access's token holder(s) can in addition modify the channel itself. This is overridden if specific folder permissions are defined (see below).</li>
-<li><code>folderPermissions</code>: Optional. An array of folder permission objects to define specific per-folder permissions. If defined, only the folders listed here will be accessible.<ul>
-<li><code>folderId</code> (<a href="#data-structure-identity">identity</a>): The accessible folder's id. If the folder has child folders, they will be accessible too. A  value of <code>null</code> can be used to set permissions for events that have no folder assigned.</li>
-<li><code>level</code> (<code>"read"</code>, <code>"contribute"</code> or <code>"manage"</code>): The level of access to the folder. With <code>"contribute"</code>, the access's token holder(s) can see and record events for the folder (and its child folders, if any); with <code>"manage"</code>, the access's token holder(s) can in addition create, modify and delete child folders.</li>
+<li><code>permissions</code>: an array of stream permission objects as described below. Ignored for personal accesses. Shared accesses are only granted access to activity data objects listed in here.<ul>
+<li><code>streamId</code> (<a href="#data-structure-identity">identity</a>): The accessible stream&#39;s id, or <code>&quot;*&quot;</code> for &quot;all streams&quot;. If the stream has child streams, they will be accessible too.</li>
+<li><code>level</code> (<code>&quot;read&quot;</code>, <code>&quot;contribute&quot;</code> or <code>&quot;manage&quot;</code>): TThe level of access to the stream. With <code>&quot;contribute&quot;</code>, the access&#39;s token holder(s) can see and record events for the stream (and its child streams, if any); with <code>&quot;manage&quot;</code>, the access&#39;s token holder(s) can in addition create, modify and delete child streams.</li>
 </ul>
 </li>
 </ul>
-</li>
-</ul>
-<p>A note about permissions: if the access defines conflicting permission levels (e.g. a folder set to "manage" but a child folder within it set to "contribute"), only the highest level is considered.</p>
+<p>A note about permissions: if the access defines conflicting permission levels (e.g. a stream set to &quot;manage&quot; but a child stream within it set to &quot;contribute&quot;), only the highest level is considered.</p>
 </div><aside><p>TODO: example</p>
 </aside></section><section><h2><a id="data-structure-bookmark"></a>Bookmark</h2><div class="content"><p>Sharing bookmarks allow the user to keep track of accesses shared with her by other users.</p>
 <p>Fields:</p>
 <ul>
 <li><code>id</code> (<a href="#data-structure-identity">identity</a>): Unique, read-only. The server-assigned identifier for the bookmark.</li>
 <li><code>name</code> (string): Unique. A name identifying the bookmark for the user.</li>
-<li><code>url</code> (string): The url pointing to the shared access's owning user's server. Not modifiable after creation.</li>
+<li><code>url</code> (string): The url pointing to the shared access&#39;s owning user&#39;s server. Not modifiable after creation.</li>
 <li><code>accessToken</code> <a href="#data-structure-identity">identity</a>: The token of the shared access itself. Not modifiable after creation.</li>
 </ul>
 </div><aside><p>TODO: example</p>
-</aside></section><section><h2><a id="data-structure-additional-data"></a>Item additional data</h2><div class="content"><p>An object (key-value map) for client apps to store additional data about the containing item (channel, event, etc.), such as a color, a reference to an associated icon, or other app-specific metadata.</p>
+</aside></section><section><h2><a id="data-structure-additional-data"></a>Item additional data</h2><div class="content"><p>An object (key-value map) for client apps to store additional data about the containing item (stream, event, etc.), such as a color, a reference to an associated icon, or other app-specific metadata.</p>
 <h3>Adding, updating and removing client data</h3>
 <p>When the containing item is updated, additional data fields can be added, updated and removed as follows:</p>
 <ul>
-<li>To add or update a field, just set its value; for example: <code>{"clientData": {"keyToAddOrUpdate": "value"}}</code></li>
-<li>To delete a field, set its value to <code>null</code>; for example: <code>{"clientData": {"keyToDelete": null}}</code></li>
+<li>To add or update a field, just set its value; for example: <code>{&quot;clientData&quot;: {&quot;keyToAddOrUpdate&quot;: &quot;value&quot;}}</code></li>
+<li>To delete a field, set its value to <code>null</code>; for example: <code>{&quot;clientData&quot;: {&quot;keyToDelete&quot;: null}}</code></li>
 </ul>
-<p>Fields you don't specify in the update are left untouched.</p>
+<p>Fields you don&#39;t specify in the update are left untouched.</p>
 <h3>Naming convention</h3>
-<p>The convention is that each app names the keys it uses with an <code>"{app-id}:"</code> prefix. For example, an app with id "riki" would store its data in fields such as <code>"riki:key": "some value"</code>.</p>
+<p>The convention is that each app names the keys it uses with an <code>&quot;{app-id}:&quot;</code> prefix. For example, an app with id &quot;riki&quot; would store its data in fields such as <code>&quot;riki:key&quot;: &quot;some value&quot;</code>.</p>
 </div></section><section><h2><a id="data-structure-error"></a>Error</h2><div class="content"><p>Fields:</p>
 <ul>
-<li><code>id</code> (string): Identifier for the error; complements the response's HTTP error code.</li>
+<li><code>id</code> (string): Identifier for the error; complements the response&#39;s HTTP error code.</li>
 <li><code>message</code> (string): A human-readable description of the error.</li>
 <li><code>subErrors</code> (array of errors): Optional. Lists the detailed causes of the main error, if any.</li>
 </ul>
 </div><aside><p>TODO: example</p>
-</aside></section><section><h2>Simple types</h2><section><h3><a id="data-structure-identity"></a>Item identity</h3><div class="content"><p>A string value uniquely identifying an item of a given type (e.g. channel, event) for a given user. For some types of items ("structural" ones such as channels and folders), it is allowed for the identity to be optionally set by API clients; otherwise the identity is generated by the server as an alphanumeric string.</p>
+</aside></section><section><h2>Simple types</h2><section><h3><a id="data-structure-identity"></a>Item identity</h3><div class="content"><p>A string value uniquely identifying an item of a given type (e.g. stream, event) for a given user. For some types of items (&quot;structural&quot; ones such as streams), it is allowed for the identity to be optionally set by API clients; otherwise the identity is generated by the server as an alphanumeric string.</p>
 </div></section><section><h3><a id="data-structure-timestamp"></a>Timestamp</h3><div class="content"><p>A positive floating-point number representing a number of seconds since any reference date and time, <strong>independently from the time zone</strong>. Because date and time synchronization between server time and client time is done by the client simply comparing the current server timestamp with its own, the reference date and time does not matter.</p>
 </div><aside><p>Some examples of getting a valid timestamp in various environments:</p>
 <ul>
@@ -156,4 +133,4 @@ Fields:</p>
 <li>TODO: more examples</li>
 </ul>
 </aside></section><section><h3><a id="data-structure-language-code"></a>Two-letter ISO language code</h3><div class="content"><p>A two-letter string specifying a language following the ISO 639-1 standard (see <a href="http://en.wikipedia.org/wiki/ISO_639-1">the related Wikipedia definition</a>).</p>
-</div></section></section></section></body></html>
+</div></section></section></section>

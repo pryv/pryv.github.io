@@ -1,17 +1,17 @@
-<html><head></head><body><section id="socketio"><h1>Socket.IO support</h1><div class="intro"><p>The activity service supports real-time interaction with <a href="http://socket.io">Socket.IO</a>, both by accepting equivalent messages for most API methods and by emitting data change notification messages. (Code examples below are in Javascript.)</p>
-</div><section><h3>Connecting</h3><div class="content"><p>In order to use Socket.IO, your app must first load the appropriate Socket.IO client library. For a Javascript web app, that's the <code>socket.io.js</code> file served by the activity server at the following URL: <code>https://{username}.pryv.io/socket.io/socket.io.js</code>. (For other languages see the related section on the <a href="https://github.com/learnboost/socket.io/wiki">Socket.IO wiki</a>.)</p>
-<p>The second step is to initialize the connection. Here's the URL you need to use:</p>
-<pre class="highlighted"><code class="ruby">https<span class="symbol">:</span>/<span class="regexp">/{username}.pryv.io:443/</span>{username}<span class="number">?a</span>uth={accessToken}&amp;resource=<span class="regexp">/{username}</span></code></pre>
+<section id="socketio"><h1>Socket.IO support</h1><div class="intro"><p>The activity service supports real-time interaction with <a href="http://socket.io">Socket.IO</a>, both by accepting equivalent messages for most API methods and by emitting data change notification messages. (Code examples below are in Javascript.)</p>
+</div><section><h3>Connecting</h3><div class="content"><p>In order to use Socket.IO, your app must first load the appropriate Socket.IO client library. For a Javascript web app, that&#39;s the <code>socket.io.js</code> file served by the activity server at the following URL: <code>https://{username}.pryv.io/socket.io/socket.io.js</code>. (For other languages see the related section on the <a href="https://github.com/learnboost/socket.io/wiki">Socket.IO wiki</a>.)</p>
+<p>The second step is to initialize the connection. Here&#39;s the URL you need to use:</p>
+<pre class="highlighted"><code class="ruby"><span class="symbol">https:</span>/<span class="regexp">/{username}.pryv.io:443/</span>{username}<span class="number">?a</span>uth={accessToken}&amp;resource=<span class="regexp">/{username}</code></pre>
 </div><aside><p>For example, in Javascript do:</p>
-<pre class="highlighted"><code class="language-javascript"><span class="keyword">var</span> socket = io.connect(<span class="string">"https://mathurin.pryv.io:443/mathurin?auth=TVVro8e8T5&amp;resource=/mathurin"</span>)</code></pre>
+<pre class="highlighted"><code class="javascript"><span class="keyword">var</span> socket = io.connect(<span class="string">"https://mathurin.pryv.io:443/mathurin?auth=TVVro8e8T5&amp;resource=/mathurin"</span>)</code></pre>
 </aside></section><section><h3>Calling API methods</h3><div class="content"><p>Every method in the activity service can be called by sending a corresponding Socket.IO <code>command</code> message, providing a data object specifying the command (or method) and possible parameters, and a callback function for the response:</p>
-<pre class="highlighted"><code class="language-javascript">socket.emit(<span class="string">'command'</span>, {id: <span class="string">'{id}'</span>, params: {<span class="comment">/*parameters*/</span>}}, <span class="function"><span class="keyword">function</span> <span class="params">(error, data)</span> {</span>
+<pre class="highlighted"><code class="javascript">socket.emit(<span class="string">'command'</span>, {id: <span class="string">'{id}'</span>, params: {<span class="comment">/*parameters*/</span>}}, <span class="function"><span class="keyword">function</span> <span class="params">(error, data)</span> {</span>
   <span class="comment">// handle response here</span>
 });</code></pre>
 <p>Command ids are indicated for each API method and are modeled after the equivalent URL path.</p>
-</div><aside><p>Here's how you could retrieve events:</p>
-<pre class="highlighted"><code class="language-javascript"><span class="keyword">var</span> cmdData = {
-  id: <span class="string">'{channel-id}.events.get'</span>,
+</div><aside><p>Here&#39;s how you could retrieve events:</p>
+<pre class="highlighted"><code class="javascript"><span class="keyword">var</span> cmdData = {
+  id: <span class="string">'events.get'</span>,
   params: {
     sortAscending: <span class="literal">true</span>
   }
@@ -19,13 +19,9 @@
 socket.emit(<span class="string">'command'</span>, cmdData, <span class="function"><span class="keyword">function</span> <span class="params">(error, data)</span> {</span>
   <span class="comment">// handle response</span>
 });</code></pre>
-</aside></section><section><h3>Receiving data change notifications</h3><div class="content"><p>You can be notified of changes to channels, folders and events by subscribing to the corresponding messages <code>channelsChanged</code>, <code>eventsChanged</code> and <code>foldersChanged</code>. For the latter two, the message is passed a parameters object with a <code>channelId</code> property to help you refresh only what's necessary.</p>
+</aside></section><section><h3>Receiving data change notifications</h3><div class="content"><p>You can be notified of changes to streams and events by subscribing to the corresponding messages <code>streamsChanged</code>, and <code>eventsChanged</code>.</p>
 </div><aside><p>For example:</p>
-<pre class="highlighted"><code class="language-javascript">socket.on(<span class="string">'channelsChanged'</span>, <span class="keyword">function</span>() { <span class="comment">// no scope parameter for channels</span>
-  <span class="comment">// ... (retrieve latest changes and update)</span>
-});
-socket.on(<span class="string">'eventsChanged'</span>, <span class="keyword">function</span>(scope) {
-  <span class="comment">// scope.channelId contains the related channel id</span>
+<pre class="highlighted"><code class="javascript">socket.on(<span class="string">'eventsChanged'</span>, <span class="keyword">function</span>() {
   <span class="comment">// ... (retrieve latest changes and update)</span>
 });</code></pre>
-</aside></section></section></body></html>
+</aside></section></section>
