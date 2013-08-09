@@ -1,5 +1,5 @@
 {
-  "version": 20130725.01,
+  "version": 20130809.01,
   "types": {
     "activity/pryv": {
       "description": "Pryv activity event. No event content needed; the activity is defined by the event's stream, time and duration (and possibly tagging).",
@@ -76,7 +76,7 @@
       "type": "string",
       "pattern": "^(https?)://.+$"
     },
-    "post/email": {
+    "message/email": {
       "description": "An e-mail message.",
       "type": "object",
       "properties": {
@@ -114,7 +114,7 @@
         }
       }
     },
-    "post/facebook": {
+    "message/facebook": {
       "description": "A Facebook post. See <a href=\"https://developers.facebook.com/docs/reference/api/post/\">Facebook's API doc</a> for reference. \n\n**map**: \n   fbPost.message -> pryvEvent.description\n   fbPost.created_time -> pryvEvent.time\n\n**optional** fields such as `link`, `source`, `privacy`.. are optional and can be saved on the object.\n\n**attached content**:  \nIf a picture is attached to this post, you may want to attach it to the \"Pryv\" Event.  \n \n - attach the picture and keep \"{filename}.png\" in the URL \n\n\n",
       "type": "object",
       "additionalProperties": true,
@@ -174,7 +174,7 @@
         }
       }
     },
-    "post/twitter": {
+    "message/twitter": {
       "description": "A Twitter post.  \n\n`Created_at` property should be used as the timestamp for the event.\n\nNot specified property that can be found in https://dev.twitter.com/docs/api/1.1/get/statuses/show/%3Aid\ncan be added to the event",
       "type": "object",
       "additionalProperties": true,
