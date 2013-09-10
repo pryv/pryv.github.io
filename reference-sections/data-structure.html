@@ -4,13 +4,7 @@
 <li>&quot;Read-only&quot; = server-assigned, never set or modified by clients</li>
 <li>We should and will reformat items structure for quick visual parsing (e.g. using tables, or at least coloured labels for stuff like &quot;optional&quot;)—for the moment we&#39;ve consciously chosen low-formatting, quick-to-edit bullet lists</li>
 </ul>
-</div><section><h2><a id="data-structure-event"></a>Event</h2><div class="content"><p>Events can be period events, which are associated with a period of time, or mark events, which are just associated with a single point in time:</p>
-<ul>
-<li>Period events are used to track everything with a duration, like time spent drafting a project proposal, meeting with the customer or staying at a particular location.</li>
-<li>Mark events are used to track everything else, like a note, a log message, a GPS location, a temperature measurement, or a stock market asset value.</li>
-</ul>
-<p>Period events carry a duration, mark events do not. Events always belong to an activity stream.</p>
-<p>Fields:</p>
+</div><section><h2><a id="data-structure-event"></a>Event</h2><div class="content"><p>See also: <a href="concepts.html#core-events">core concepts</a>.</p>
 <ul>
 <li><code>id</code> (<a href="#data-structure-identity">identity</a>): Unique, read-only. The server-assigned identifier for the event.</li>
 <li><code>streamId</code> (<a href="#data-structure-identity">identity</a>): The id of the belonging stream.</li>
@@ -50,8 +44,7 @@
     <span class="string">"content"</span>: { <span class="string">"latitude"</span>: <span class="number">40.714728</span>, <span class="string">"longitude"</span>: -<span class="number">73.998672</span> },
     <span class="string">"modified"</span> : <span class="number">1350373077.359</span> }
 ]</code></pre>
-</aside></section><section><h2><a id="data-structure-stream"></a>Stream</h2><div class="content"><p>Activity streams represent organizational categories or data source for events. Streams follow a hierarchical tree structure: every stream can contain &quot;child&quot; streams (sub-streams).</p>
-<p>Fields:</p>
+</aside></section><section><h2><a id="data-structure-stream"></a>Stream</h2><div class="content"><p>See also: <a href="concepts.html#core-streams">core concepts</a>.</p>
 <ul>
 <li><code>id</code> (<a href="#data-structure-identity">identity</a>): Unique, read-only (except at creation). The identifier for the stream. Automatically generated if not set when creating the stream; <strong>slugified if necessary</strong>.</li>
 <li><code>name</code> (string): A name identifying the stream for users. The name must be unique among the stream&#39;s siblings in the streams tree structure.</li>
@@ -83,8 +76,7 @@
     ]
   }
 ];</code></pre>
-</aside></section><section><h2><a id="data-structure-access"></a>Access</h2><div class="content"><p>An access defines a set of permissions on a user&#39;s activity data (streams and events). (See <a href="concepts.html#sharing">how sharing works</a>.)</p>
-<p>Fields:</p>
+</aside></section><section><h2><a id="data-structure-access"></a>Access</h2><div class="content"><p>See also: <a href="concepts.html#core-accesses">core concepts</a>.</p>
 <ul>
 <li><code>token</code> (string): Unique, read-only (except at creation). The token identifying the access. Automatically generated if not set when creating the access; <strong>slugified if necessary</strong>.</li>
 <li><code>type</code> (<code>&quot;personal&quot;</code>, <code>&quot;app&quot;</code> or <code>&quot;shared&quot;</code>): Optional. The type — or usage — of the access. Default: <code>&quot;shared&quot;</code>.</li>
@@ -98,8 +90,7 @@
 </ul>
 <p>A note about permissions: if the access defines conflicting permission levels (e.g. a stream set to &quot;manage&quot; but a child stream within it set to &quot;contribute&quot;), only the highest level is considered.</p>
 </div><aside><p>TODO: example</p>
-</aside></section><section><h2><a id="data-structure-bookmark"></a>Bookmark</h2><div class="content"><p>Sharing bookmarks allow the user to keep track of accesses shared with her by other users.</p>
-<p>Fields:</p>
+</aside></section><section><h2><a id="data-structure-bookmark"></a>Bookmark</h2><div class="content"><p>See also: <a href="concepts.html#core-subscriptions">core concepts</a>.</p>
 <ul>
 <li><code>id</code> (<a href="#data-structure-identity">identity</a>): Unique, read-only. The server-assigned identifier for the bookmark.</li>
 <li><code>name</code> (string): Unique. A name identifying the bookmark for the user.</li>
