@@ -50,7 +50,7 @@ Authorization: {access-token}</code></pre>
   &quot;id&quot;: &quot;invalid-access-token&quot;,
   &quot;message&quot;: &quot;Cannot find access with token &#39;bad-token&#39;.&quot;
 }</code></pre>
-</aside></section></section><section id="methods"><h1>API methods</h1><div class="intro"><p>Not all methods are available over Socket.IO for the moment; for those that are, we indicate the command id next to the HTTP verb and path.</p>
+</aside></section></section><section id="methods"><h1>API methods</h1><div class="intro"><p>Not all methods are available over Socket.IO for the moment; for those that are, we indicate the method id next to the HTTP verb and path.</p>
 </div><section><h2>Preliminary information</h2><section><h3>Authorization</h3><div class="content"><p>All requests for retrieving and manipulating activity data must carry a valid <a href="#data-structure-access">access token</a> in the HTTP <code>Authorization</code> header or, alternatively, in the query string&#39;s <code>auth</code> parameter.  (You get the token by using one of the <a href="app-access.html">access SDKs</a> or from sharing.)</p>
 </div><aside><h4>Example with <code>Authorization</code> header</h4>
 <pre><code class="language-http">GET /events HTTP/1.1
@@ -391,11 +391,11 @@ The created access&#39;s token.</p>
 <pre><code>https://{username}.pryv.io:443/{username}?auth={accessToken}&amp;resource=/{username}</code></pre>
 </div><aside><p>For example, in Javascript do:</p>
 <pre><code class="language-javascript">var socket = io.connect(&quot;https://mathurin.pryv.io:443/mathurin?auth=TVVro8e8T5&amp;resource=/mathurin&quot;)</code></pre>
-</aside></section><section><h3>Calling API methods</h3><div class="content"><p>Every method in the activity service can be called by sending a corresponding Socket.IO <code>command</code> message, providing a data object specifying the command (or method) and possible parameters, and a callback function for the response:</p>
-<pre><code class="language-javascript">socket.emit(&#39;command&#39;, {id: &#39;{id}&#39;, params: {/*parameters*/}}, function (error, data) {
+</aside></section><section><h3>Calling API methods</h3><div class="content"><p>Every method in the activity service can be called by sending a corresponding Socket.IO <code>callMethod</code> message, providing a data object specifying the method and possible parameters, and a callback function for the response:</p>
+<pre><code class="language-javascript">socket.emit(&#39;callMethod&#39;, {id: &#39;{id}&#39;, params: {/*parameters*/}}, function (error, data) {
   // handle response here
 });</code></pre>
-<p>Command ids are indicated for each API method and are modeled after the equivalent URL path.</p>
+<p>Method ids are indicated for each API method and are modeled after the equivalent URL path.</p>
 </div><aside><p>Here&#39;s how you could retrieve events:</p>
 <pre><code class="language-javascript">var cmdData = {
   id: &#39;events.get&#39;,
@@ -403,7 +403,7 @@ The created access&#39;s token.</p>
     sortAscending: true
   }
 };
-socket.emit(&#39;command&#39;, cmdData, function (error, data) {
+socket.emit(&#39;callMethod&#39;, cmdData, function (error, data) {
   // handle response
 });</code></pre>
 </aside></section><section><h3>Receiving data change notifications</h3><div class="content"><p>You can be notified of changes to streams and events by subscribing to the corresponding messages <code>streamsChanged</code>, and <code>eventsChanged</code>.</p>
@@ -474,11 +474,23 @@ Additional client data for the event.</p>
 </th><td><p><span class="type">boolean</span>
 <span class="label optional">optional</span><br>
 <code>true</code> if the event is in the trash.</p>
+</td></tr><tr><th><p><code>created</code></p>
+</th><td><p><span class="type"><a href="#data-structure-timestamp">timestamp</a></span>
+<span class="label read-only">read-only</span><br>
+The time the event was created.</p>
+</td></tr><tr><th><p><code>createdBy</code></p>
+</th><td><p><span class="type"><a href="#data-structure-identity">identity</a></span>
+<span class="label read-only">read-only</span><br>
+The id of the access used to create the event.</p>
 </td></tr><tr><th><p><code>modified</code></p>
 </th><td><p><span class="type"><a href="#data-structure-timestamp">timestamp</a></span>
 <span class="label read-only">read-only</span><br>
 The time the event was last modified.</p>
-</td></tr></table></div><aside><h4>Example</h4>
+</td></tr><tr><th><p><code>modifiedBy</code></p>
+</th><td><p><span class="type"><a href="#data-structure-identity">identity</a></span>
+<span class="label read-only">read-only</span><br>
+The id of the last access used to modify the event.</p>
+</td></tr></table></div><aside><h4>Example (TODO: update)</h4>
 <pre><code class="language-javascript">[
   { &quot;time&quot;: 1350365877.359, &quot;description&quot; : &quot;Some pics&quot;, &quot;id&quot; : &quot;event_0&quot;, &quot;streamId&quot; : null,
     &quot;tags&quot;: [&quot;foraging&quot;, &quot;funny&quot;],
@@ -486,7 +498,7 @@ The time the event was last modified.</p>
     &quot;attachments&quot; : {
       &quot;Gina&quot;: { &quot;fileName&quot;: &quot;gina.jpeg&quot;, &quot;type&quot;: &quot;image/jpeg&quot;, &quot;size&quot;: 1236701 },
       &quot;Enzo&quot;: { &quot;fileName&quot;: &quot;enzo.jpeg&quot;, &quot;type&quot;: &quot;image/jpeg&quot;, &quot;size&quot;: 1127465 }},
-      &quot;modified&quot; : 1350463077.359 },
+    &quot;modified&quot; : 1350463077.359 },
   { &quot;time&quot; : 1350369477.359, &quot;duration&quot; : 7140, &quot;description&quot;: &quot;A period of work&quot;,
     &quot;id&quot; : &quot;event_1&quot;, &quot;streamId&quot; : &quot;free-veggies&quot;,
     &quot;tags&quot;: [&quot;proposal&quot;],
@@ -527,7 +539,23 @@ The stream&#39;s sub-streams, if any. This field cannot be set in requests creat
 </th><td><p><span class="type">boolean</span>
 <span class="label optional">optional</span><br>
 <code>true</code> if the stream is in the trash.</p>
-</td></tr></table></div><aside><h4>Example</h4>
+</td></tr><tr><th><p><code>created</code></p>
+</th><td><p><span class="type"><a href="#data-structure-timestamp">timestamp</a></span>
+<span class="label read-only">read-only</span><br>
+The time the stream was created.</p>
+</td></tr><tr><th><p><code>createdBy</code></p>
+</th><td><p><span class="type"><a href="#data-structure-identity">identity</a></span>
+<span class="label read-only">read-only</span><br>
+The id of the access used to create the stream.</p>
+</td></tr><tr><th><p><code>modified</code></p>
+</th><td><p><span class="type"><a href="#data-structure-timestamp">timestamp</a></span>
+<span class="label read-only">read-only</span><br>
+The time the stream was last modified.</p>
+</td></tr><tr><th><p><code>modifiedBy</code></p>
+</th><td><p><span class="type"><a href="#data-structure-identity">identity</a></span>
+<span class="label read-only">read-only</span><br>
+The id of the last access used to modify the stream.</p>
+</td></tr></table></div><aside><h4>Example (TODO: update)</h4>
 <p>A stream structure for activities:</p>
 <pre><code class="language-javascript">[
   { &quot;name&quot;: &quot;Sport&quot;, &quot;id&quot;: &quot;sport&quot;, &quot;parentId&quot;: null,
