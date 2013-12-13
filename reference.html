@@ -402,19 +402,13 @@ The created access&#39;s token.</p>
 <pre><code>https://{username}.pryv.io:443/{username}?auth={accessToken}&amp;resource=/{username}</code></pre>
 </div><aside><p>For example, in Javascript do:</p>
 <pre><code class="language-javascript">var socket = io.connect(&quot;https://mathurin.pryv.io:443/mathurin?auth=TVVro8e8T5&amp;resource=/mathurin&quot;)</code></pre>
-</aside></section><section><h3>Calling API methods</h3><div class="content"><p>Every method in the activity service can be called by sending a corresponding Socket.IO <code>callMethod</code> message, providing a data object specifying the method and possible parameters, and a callback function for the response:</p>
-<pre><code class="language-javascript">socket.emit(&#39;callMethod&#39;, {id: &#39;{id}&#39;, params: {/*parameters*/}}, function (error, data) {
+</aside></section><section><h3>Calling API methods</h3><div class="content"><p>Every method in the activity service can be called by sending a corresponding Socket.IO <code>{method-id}</code> message, passing a parameters object, and a callback function for the response:</p>
+<pre><code class="language-javascript">socket.emit(&#39;{method-id}&#39;, {/*parameters*/}, function (error, data) {
   // handle response here
 });</code></pre>
 <p>Method ids are indicated for each API method and are modeled after the equivalent URL path.</p>
 </div><aside><p>Here&#39;s how you could retrieve events:</p>
-<pre><code class="language-javascript">var cmdData = {
-  id: &#39;events.get&#39;,
-  params: {
-    sortAscending: true
-  }
-};
-socket.emit(&#39;callMethod&#39;, cmdData, function (error, data) {
+<pre><code class="language-javascript">socket.emit(&#39;events.get&#39;, {sortAscending: true}, function (error, data) {
   // handle response
 });</code></pre>
 </aside></section><section><h3>Receiving data change notifications</h3><div class="content"><p>You can be notified of changes to streams and events by subscribing to the corresponding messages <code>streamsChanged</code>, and <code>eventsChanged</code>.</p>
