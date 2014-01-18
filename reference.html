@@ -8,7 +8,7 @@ _gaq.push(['_trackPageview']);
   ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
   var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
 })();
-</script></head><body class="with-toc with-examples"><header id="page-header" class="navbar navbar-fixed-top"><div class="navbar-inner"><a href="dev-index.html" class="brand">Pryv</a><a data-toggle="collapse" data-target=".nav-collapse" class="btn btn-navbar"><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></a><div class="nav-collapse collapse"><ul class="nav"><li><a href="about.html">About</a></li><li><a href="concepts.html">Concepts</a></li><li><a href="reference.html">API reference</a></li><li><a href="event-typez.html">Event types</a></li><li><a href="app-access.html">App access</a></li><li class="dropdown"><a href="#" data-toggle="dropdown" class="dropdown-toggle">More <b class="caret"></b></a><ul class="dropdown-menu"><li><a href="apps-and-services.html">Pryv apps and services</a></li><li><a href="code-libraries.html">Code libraries</a></li></ul></li><!--li.dropdown<a href="#" data-toggle="dropdown" class="dropdown-toggle">Guides <b class="caret"></b></a><ul class="dropdown-menu"><li><a href="#">Getting started</a></li><li><a href="#">Data modeling</a></li></ul>--><!--li.dropdown<a href="#" data-toggle="dropdown" class="dropdown-toggle">Reference <b class="caret"></b></a><ul class="dropdown-menu"><li><a href="reference.html">API</a></li><li><a href="event-typez.html">Event types</a></li><li><a href="standard-structure.html">Standard data structure</a></li><li><a href="app-access.html">App authorization</a></li></ul>--><!--li<a href="#">Blog</a>--></ul></div><div class="nav-header pull-right"><div class="version">API version: <strong>0.6.1</strong></div></div></div></header><div id="main-wrapper" class="container"><div id="main" class="row"><section id="basics"><h1>Basics</h1><section><h2>API style</h2><div class="content"><p>Most of the API follows REST principles, meaning each item has its own unique resource URL and can be read or modified via HTTP verbs:</p>
+</script></head><body class="with-toc with-examples"><header id="page-header" class="navbar navbar-fixed-top"><div class="navbar-inner"><a href="dev-index.html" class="brand">Pryv</a><a data-toggle="collapse" data-target=".nav-collapse" class="btn btn-navbar"><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></a><div class="nav-collapse collapse"><ul class="nav"><li><a href="about.html">About</a></li><li><a href="concepts.html">Concepts</a></li><li><a href="reference.html">API reference</a></li><li><a href="event-typez.html">Event types</a></li><li><a href="app-access.html">App access</a></li><li class="dropdown"><a href="#" data-toggle="dropdown" class="dropdown-toggle">More <b class="caret"></b></a><ul class="dropdown-menu"><li><a href="apps-and-services.html">Pryv apps and services</a></li><li><a href="code-libraries.html">Code libraries</a></li></ul></li><!--li.dropdown<a href="#" data-toggle="dropdown" class="dropdown-toggle">Guides <b class="caret"></b></a><ul class="dropdown-menu"><li><a href="#">Getting started</a></li><li><a href="#">Data modeling</a></li></ul>--><!--li.dropdown<a href="#" data-toggle="dropdown" class="dropdown-toggle">Reference <b class="caret"></b></a><ul class="dropdown-menu"><li><a href="reference.html">API</a></li><li><a href="event-typez.html">Event types</a></li><li><a href="standard-structure.html">Standard data structure</a></li><li><a href="app-access.html">App authorization</a></li></ul>--><!--li<a href="#">Blog</a>--></ul></div><div class="nav-header pull-right"><div class="version">API version: <strong>0.7.0WIP</strong></div></div></div></header><div id="main-wrapper" class="container"><div id="main" class="row"><section id="basics"><h1>Basics</h1><section><h2>API style</h2><div class="content"><p>Most of the API follows REST principles, meaning each item has its own unique resource URL and can be read or modified via HTTP verbs:</p>
 <ul>
 <li><strong>GET</strong> to read the item(s)</li>
 <li><strong>POST</strong> to create a new item, with a JSON message in the request body</li>
@@ -31,7 +31,7 @@ Authorization: {access-token}</code></pre>
   &quot;type&quot;: &quot;position/wgs84&quot;,
   &quot;content&quot;: { &quot;latitude&quot;: 40.714728, &quot;longitude&quot;: -73.998672 },
 }</code></pre>
-</aside></section><section><h2>Alternative request method</h2><div class="content"><p>Because we can&#39;t fathom out the crazy rationale behind <a href="https://developer.mozilla.org/en-US/docs/HTTP/Access_control_CORS">HTTP access control (CORS) rules</a>, we offer web apps an alternative way to place POST, PUT and DELETE requests in the API by using <code>application/x-www-form-urlencoded</code> POST requests with the following fields (all optional):</p>
+</aside></section><section><h2>Alternative HTTP request method</h2><div class="content"><p>Because we can&#39;t fathom out the crazy rationale behind <a href="https://developer.mozilla.org/en-US/docs/HTTP/Access_control_CORS">HTTP access control (CORS) rules</a>, we offer web apps an alternative way to place POST, PUT and DELETE requests in the API by using <code>application/x-www-form-urlencoded</code> POST requests with the following fields (all optional):</p>
 <table class="definitions"><tr><th><p><code>_method</code></p>
 </th><td><p>The HTTP override method to use (usually <code>PUT</code> or <code>DELETE</code>; <code>POST</code> is used if not set).</p>
 </td></tr><tr><th><p><code>_auth</code></p>
@@ -39,12 +39,12 @@ Authorization: {access-token}</code></pre>
 </td></tr><tr><th><p><code>_json</code></p>
 </th><td><p>Considered as the JSON request body if set (overriding all other body content, if any).</p>
 </td></tr></table><p>This is intended for web apps only; if your app isn&#39;t running in browsers you should use regular requests.</p>
-</div></section><section><h2>Common HTTP headers</h2><div class="content"><p>The following headers are included in every response:</p>
-<table class="definitions"><tr><th><p><code>API-Version</code></p>
-</th><td><p>The version of the API in the form <code>{major}.{minor}.{revision}</code></p>
-</td></tr><tr><th><p><code>Server-Time</code></p>
+</div></section><section><h2>Common response metadata</h2><div class="content"><p>The following metadata is included in every response:</p>
+<table class="definitions"><tr><th><p><code>meta.apiVersion</code></p>
+</th><td><p>The version of the API in the form <code>{major}.{minor}.{revision}</code>. Mirrored in HTTP header <code>API-Version</code>.</p>
+</td></tr><tr><th><p><code>meta.serverTime</code></p>
 </th><td><p>The current server time as a <a href="#data-structure-timestamp">timestamp</a>. Keeping reference of the server time is an absolute necessity to properly read and write event times.</p>
-</td></tr></table></div></section><section><h2>Errors</h2><div class="content"><p>When an error occurs, the API returns a 4xx or 5xx status code, with the response body usually containing an <a href="#data-structure-error">error</a> object detailing the cause.</p>
+</td></tr></table></div></section><section><h2>Errors</h2><div class="content"><p>When an error occurs, the API returns a 4xx or 5xx status code, with the response containing an <code>error</code> property (of type <a href="#data-structure-error">error</a>) detailing the cause.</p>
 </div><aside><h4>Example error response</h4>
 <pre><code class="language-json">{
   &quot;id&quot;: &quot;invalid-access-token&quot;,
@@ -133,8 +133,10 @@ Indicates what items to return depending on their state. By default, only items 
 <span class="label optional">optional</span><br>
 If specified, only events modified since that time will be returned.</p>
 </td></tr></table><h4>Successful response: OK <code>200</code></h4>
-<p>An array of <a href="#data-structure-event">events</a> containing the accessible events ordered by time (see <code>sortAscending</code> above).</p>
-</div><aside><h4>cURL example</h4>
+<table class="definitions"><tr><th><p><code>events</code></p>
+</th><td><p><span class="type">array of <a href="#data-structure-event">events</a></span><br>
+The accessible events ordered by time (see <code>sortAscending</code> above).</p>
+</td></tr></table></div><aside><h4>cURL example</h4>
 <pre><code class="language-bash">curl -i https://{username}.pryv.io/events?auth={access-token}</code></pre>
 </aside></section><section class="method"><h3>Create event</h3><div class="content"><p><code>POST /events</code>, Socket.IO: <code>events.create</code></p>
 <p>Records a new event. It is recommended that events recorded this way are completed events, i.e. either period events with a known duration or mark events. To start a running period event, use <a href="#TODO">Start period</a> instead.</p>
@@ -142,9 +144,9 @@ If specified, only events modified since that time will be returned.</p>
 <h4>Body parameters</h4>
 <p>The new event&#39;s data: see <a href="#data-structure-event">Event</a>.</p>
 <h4>Successful response: created <code>201</code></h4>
-<table class="definitions"><tr><th><p><code>id</code></p>
-</th><td><p><span class="type"><a href="#data-structure-identity">identity</a></span><br>
-The new event&#39;s id.</p>
+<table class="definitions"><tr><th><p><code>event</code></p>
+</th><td><p><span class="type"><a href="#data-structure-event">event</a></span><br>
+The created event.</p>
 </td></tr><tr><th><p><code>stoppedId</code></p>
 </th><td><p><span class="type"><a href="#data-structure-identity">identity</a></span><br>
 Only in <code>singleActivity</code> streams. If set, indicates the id of the previously running period event that was stopped as a consequence of inserting the new event.</p>
@@ -176,7 +178,7 @@ The stop time. Default: now.</p>
 </td></tr></table><h4>Successful response: OK <code>200</code></h4>
 <table class="definitions"><tr><th><p><code>stoppedId</code></p>
 </th><td><p><span class="type"><a href="#data-structure-identity">identity</a></span><br>
-The id of the previously running period event that was stopped, or null if no running event was found.</p>
+Only in <code>singleActivity</code> streams. The id of the previously running period event that was stopped, or null if no running event was found.</p>
 </td></tr></table><h4>Specific errors</h4>
 <ul>
 <li>Bad request <code>400</code>, <code>unknown-event</code>: The specified event cannot be found.</li>
@@ -190,9 +192,12 @@ The id of the previously running period event that was stopped, or null if no ru
 <h4>Body parameters</h4>
 <p>New values for the event&#39;s fields: see <a href="#data-structure-event">event</a>. All fields are optional, and only modified values must be included. TODO: example</p>
 <h4>Successful response: OK <code>200</code></h4>
-<table class="definitions"><tr><th><p><code>stoppedId</code></p>
+<table class="definitions"><tr><th><p><code>event</code></p>
+</th><td><p><span class="type"><a href="#data-structure-event">event</a></span><br>
+The updated event.</p>
+</td></tr><tr><th><p><code>stoppedId</code></p>
 </th><td><p><span class="type"><a href="#data-structure-identity">identity</a></span><br>
-If set, indicates the id of the previously running period event that was stopped as a consequence of modifying the event.</p>
+Only in <code>singleActivity</code> streams. If set, indicates the id of the previously running period event that was stopped as a consequence of modifying the event.</p>
 </td></tr></table><h4>Specific errors</h4>
 <ul>
 <li>Bad request <code>400</code>, <code>invalid-operation</code>: Returned for period events, if attempting to set the event&#39;s duration to <code>undefined</code> (i.e. still running) while one or more other period events were recorded after it. The error&#39;s <code>data.conflictingPeriodId</code> provides the id of the closest conflicting event.</li>
@@ -207,13 +212,13 @@ If set, indicates the id of the previously running period event that was stopped
 <pre><code class="language-bash">curl -i -F &#39;event={&quot;streamId&quot;:&quot;ePm4KDmxr&quot;,&quot;type&quot;:&quot;picture/attached&quot;}&#39;  -F &#39;file=@-&#39; https://{username}.pryv.io/events?auth={token} &lt; {filename}</code></pre>
 <p>...or...</p>
 <pre><code class="language-bash">curl -i -F &#39;event={&quot;streamId&quot;:&quot;ePm4KDmxr&quot;,&quot;type&quot;:&quot;picture/attached&quot;}&#39;  -F &quot;file=@{filename}&quot; https://{username}.pryv.io/events?auth={token}</code></pre>
-</aside></section><section class="method"><h3>Delete event</h3><div class="content"><p><code>DELETE /events/{event-id}</code>, Socket.IO: <code>events.del</code></p>
+</aside></section><section class="method"><h3>Delete event</h3><div class="content"><p><code>DELETE /events/{event-id}</code>, Socket.IO: <code>events.delete</code></p>
 <p>Trashes or deletes the specified event, depending on its current state:</p>
 <ul>
 <li>If the event is not already in the trash, it will be moved to the trash (i.e. flagged as <code>trashed</code>)</li>
 <li>If the event is already in the trash, it will be irreversibly deleted (including all its attached files, if any).</li>
 </ul>
-<h4>Successful response: OK <code>200</code></h4>
+<h4>Successful response: No content <code>204</code></h4>
 </div><aside><h4>cURL example</h4>
 <pre><code class="language-bash">#TODO</code></pre>
 </aside></section><section class="method"><h3>Get attached file</h3><div class="content"><p><code>GET /events/{event-id}/{file name}</code></p>
@@ -223,10 +228,11 @@ If set, indicates the id of the previously running period event that was stopped
 <pre><code class="language-bash">#TODO</code></pre>
 </aside></section><section class="method"><h3>Delete attached file</h3><div class="content"><p><code>DELETE /events/{event-id}/{filename}</code>, Socket.IO: <code>events.deleteAttachedFile</code></p>
 <p>Irreversibly deletes the attached file.</p>
-<h4>Successful response: OK <code>200</code></h4>
+<h4>Successful response: No content <code>204</code></h4>
 </div><aside><h4>cURL example</h4>
 <pre><code class="language-bash">#TODO</code></pre>
 </aside></section><section class="method"><h3>Batch-create events</h3><div class="content"><p><code>POST /events/batch</code>, Socket.IO: <code>events.createBatch</code></p>
+<p><strong>This will be replaced with a generic batch method accepting any type of method calls.</strong></p>
 <p>Batch upload events that were recorded by the client while offline. The submitted events are added in-order, with results returned individually for each (see response below).</p>
 <h4>Parameters</h4>
 <p>An array of client-recorded <a href="#data-structure-event">events</a>. In addition to the regular properties, each event must have a unique <code>tempRefId</code> defined (as it&#39;s temporary it must only be unique within the request). Also, make sure that the events&#39; <code>time</code> is set in server time (as for single event requests).</p>
@@ -265,8 +271,10 @@ The id of the parent stream to use as root for the request. Default: <code>null<
 <span class="label optional">optional</span><br>
 Indicates what items to return depending on their state. By default, only items that are not in the trash are returned; <code>all</code> return all items regardless of their state.</p>
 </td></tr></table><h4>Successful response: OK <code>200</code></h4>
-<p>An array of <a href="#data-structure-stream">activity streams</a> containing the tree of the accessible streams, sorted by name.</p>
-<h4>Specific errors</h4>
+<table class="definitions"><tr><th><p><code>streams</code></p>
+</th><td><p><span class="type">array of <a href="#data-structure-stream">streams</a></span><br>
+The tree of the accessible streams, sorted by name.</p>
+</td></tr></table><h4>Specific errors</h4>
 <ul>
 <li>Bad request <code>400</code>, <code>unknown-stream</code>: The specified parent stream can&#39;t be found.</li>
 </ul>
@@ -282,9 +290,9 @@ Indicates what items to return depending on their state. By default, only items 
 <h4>Body parameters</h4>
 <p>The new stream&#39;s data: see <a href="#data-structure-stream">activity stream</a>.</p>
 <h4>Successful response: created <code>201</code></h4>
-<table class="definitions"><tr><th><p><code>id</code></p>
-</th><td><p><span class="type"><a href="#data-structure-identity">identity</a></span><br>
-The created stream&#39;s id.</p>
+<table class="definitions"><tr><th><p><code>stream</code></p>
+</th><td><p><span class="type"><a href="#data-structure-stream">stream</a></span><br>
+The created stream.</p>
 </td></tr></table><h4>Specific errors</h4>
 <ul>
 <li>Bad request <code>400</code>, <code>item-id-already-exists</code>: A stream already exists with the same id.</li>
@@ -298,14 +306,17 @@ The created stream&#39;s id.</p>
 <h4>Parameters</h4>
 <p>New values for the stream&#39;s fields: see <a href="#data-structure-stream">activity stream</a>. All fields are optional, and only modified values must be included.</p>
 <h4>Successful response: OK <code>200</code></h4>
-<h4>Specific errors</h4>
+<table class="definitions"><tr><th><p><code>stream</code></p>
+</th><td><p><span class="type"><a href="#data-structure-stream">stream</a></span><br>
+The updated stream (without child streams).</p>
+</td></tr></table><h4>Specific errors</h4>
 <ul>
 <li>Bad request <code>400</code>, <code>unknown-stream</code>: The specified parent stream&#39;s id is unknown.</li>
 <li>Bad request <code>400</code>, <code>item-name-already-exists</code>: A sibling stream already exists with the same name.</li>
 </ul>
 </div><aside><h4>cURL example</h4>
 <pre><code class="language-bash">#TODO</code></pre>
-</aside></section><section class="method"><h3>Delete stream</h3><div class="content"><p><code>DELETE /streams/{stream-id}</code>, Socket.IO: <code>streams.del</code></p>
+</aside></section><section class="method"><h3>Delete stream</h3><div class="content"><p><code>DELETE /streams/{stream-id}</code>, Socket.IO: <code>streams.delete</code></p>
 <p>Trashes or deletes the specified stream, depending on its current state:</p>
 <ul>
 <li>If the stream is not already in the trash, it will be moved to the trash (i.e. flagged as <code>trashed</code>)</li>
@@ -315,7 +326,7 @@ The created stream&#39;s id.</p>
 <table class="definitions"><tr><th><p><code>mergeEventsWithParent</code></p>
 </th><td><p><span class="type"><code>true</code>|<code>false</code></span><br>
 Required if actually deleting the item and if it (or any of its descendants) has linked events, ignored otherwise. If <code>true</code>, the linked events will be assigned to the parent of the deleted item; if <code>false</code>, the linked events will be deleted.</p>
-</td></tr></table><h4>Successful response: OK <code>200</code></h4>
+</td></tr></table><h4>Successful response: No content <code>204</code></h4>
 <h4>Specific errors</h4>
 <ul>
 <li>Bad request <code>400</code>, <code>missing-parameter</code>: There are events referring to the deleted items and the <code>mergeEventsWithParent</code> parameter is missing.</li>
@@ -326,42 +337,52 @@ Required if actually deleting the item and if it (or any of its descendants) has
 </div><section class="method"><h3>Get current access info</h3><div class="content"><p><code>GET /access-info</code></p>
 <p>Retrieves information about the current access.</p>
 <h4>Successful response: OK <code>200</code></h4>
-<p>An object with the <a href="#data-structure-access">access&#39;</a> <code>name</code>, <code>type</code> and <code>permissions</code>.</p>
-</div><aside><h4>cURL example</h4>
+<table class="definitions"><tr><th><p><code>name</code></p>
+</th><td><p><span class="type">string</span><br>
+The current access&#39; name.</p>
+</td></tr><tr><th><p><code>type</code></p>
+</th><td><p><span class="type">string</span><br>
+The current access&#39; type.</p>
+</td></tr><tr><th><p><code>permissions</code></p>
+</th><td><p><span class="type"><a href="#data-structure-access">access</a>.permissions</span><br>
+The current access&#39; permissions.</p>
+</td></tr></table></div><aside><h4>cURL example</h4>
 <pre><code class="language-bash">curl -i -H &quot;Authorization: {access-token}&quot; https://{username}.pryv.io/access-info</code></pre>
 </aside></section><section class="method"><h3>Get accesses</h3><div class="content"><p><code>GET /accesses</code></p>
 <p>Gets all manageable shared accesses.</p>
 <h4>Successful response: OK <code>200</code></h4>
-<p>An array of <a href="#data-structure-access">accesses</a> containing all manageable shared accesses in the user&#39;s account, ordered by name.</p>
-</div><aside><h4>cURL example</h4>
+<table class="definitions"><tr><th><p><code>accesses</code></p>
+</th><td><p><span class="type">array of <a href="#data-structure-access">accesses</a></span><br>
+All manageable shared accesses in the user&#39;s account, ordered by name.</p>
+</td></tr></table></div><aside><h4>cURL example</h4>
 <pre><code class="language-bash">curl -i -H &quot;Authorization: {access-token}&quot; https://{username}.pryv.io/accesses</code></pre>
 </aside></section><section class="method"><h3>Create access</h3><div class="content"><p><code>POST /accesses</code></p>
 <p>Creates a new shared access. You can only create accesses whose permissions are a subset of those linked to your own access token.</p>
 <h4>Parameters</h4>
 <p>The new access&#39;s data: see <a href="#data-structure-access">access</a>.</p>
 <h4>Successful response: created <code>201</code></h4>
-<table class="definitions"><tr><th><p><code>id</code></p>
-</th><td><p><span class="type"><a href="#data-structure-identity">identity</a></span><br>
-The created access&#39;s identifier.</p>
-</td></tr><tr><th><p><code>token</code></p>
-</th><td><p><span class="type">string</span><br>
-The created access&#39;s token.</p>
+<table class="definitions"><tr><th><p><code>access</code></p>
+</th><td><p><span class="type"><a href="#data-structure-access">access</a></span><br>
+The created access.</p>
 </td></tr></table><h4>Specific errors</h4>
 <ul>
 <li>Bad request <code>400</code>, <code>invalid-item-id</code>: Occurs if trying to set the token to an invalid value (e.g. a reserved word like <code>&quot;null&quot;</code>).</li>
 </ul>
 </div><aside><h4>cURL example</h4>
 <pre><code class="language-bash">#TODO</code></pre>
-</aside></section><section class="method"><h3>Update access</h3><div class="content"><p><code>PUT /accesses/{token}</code></p>
+</aside></section><section class="method"><h3>Update access</h3><div class="content"><p><code>PUT /accesses/{id}</code></p>
 <p>Modifies the specified shared access. You can only modify accesses whose permissions are a subset of those linked to your own access token.</p>
 <h4>Parameters</h4>
 <p>New values for the access&#39;s fields: see <a href="#data-structure-access">access</a>. All fields are optional, and only modified values must be included. TODO: example</p>
 <h4>Successful response: OK <code>200</code></h4>
-</div><aside><h4>cURL example</h4>
+<table class="definitions"><tr><th><p><code>access</code></p>
+</th><td><p><span class="type"><a href="#data-structure-access">access</a></span><br>
+The updated access.</p>
+</td></tr></table></div><aside><h4>cURL example</h4>
 <pre><code class="language-bash">#TODO</code></pre>
-</aside></section><section class="method"><h3>Delete access</h3><div class="content"><p><code>DELETE /accesses/{token}</code></p>
+</aside></section><section class="method"><h3>Delete access</h3><div class="content"><p><code>DELETE /accesses/{id}</code></p>
 <p>Deletes the specified shared access. You can only delete accesses whose permissions are a subset of those linked to your own access token.</p>
-<h4>Successful response: OK <code>200</code></h4>
+<h4>Successful response: No content <code>204</code></h4>
 </div><aside><h4>cURL example</h4>
 <pre><code class="language-bash">#TODO</code></pre>
 </aside></section></section><section><h2><a id="activity-profile-app"></a>App profile</h2><div class="intro"><p>The app profile is a simple key-value store available for your app to keep user settings. It is exposed as a plain object with free structure. The adding/updating/deleting of settings is designed in the expectation that each setting is a key at the profile object&#39;s root, but you can structure your profile differently if you wish.</p>
@@ -369,8 +390,10 @@ The created access&#39;s token.</p>
 </div><section class="method"><h3>Get app settings</h3><div class="content"><p><code>GET /profile/app</code></p>
 <p>Gets your app profile settings.</p>
 <h4>Successful response: OK <code>200</code></h4>
-<p>An object containing your app&#39;s current profile settings. The method always returns an object (which will be empty if your app never defined any setting).</p>
-</div><aside><h4>cURL example</h4>
+<table class="definitions"><tr><th><p><code>profile</code></p>
+</th><td><p><span class="type">object</span><br>
+Your app&#39;s current profile settings. (Empty if your app never defined any setting.)</p>
+</td></tr></table></div><aside><h4>cURL example</h4>
 <pre><code class="language-bash">#TODO</code></pre>
 </aside></section><section class="method"><h3>Update profile settings</h3><div class="content"><p><code>PUT /profile/app</code></p>
 <p>Adds, updates or delete settings.</p>
@@ -382,7 +405,10 @@ The created access&#39;s token.</p>
 <h4>Parameters</h4>
 <p>An object with the desired changes to the settings (see above).</p>
 <h4>Successful response: OK <code>200</code></h4>
-</div><aside><h4>Simple example</h4>
+<table class="definitions"><tr><th><p><code>profile</code></p>
+</th><td><p><span class="type">object</span><br>
+Your app&#39;s updated profile settings.</p>
+</td></tr></table></div><aside><h4>Simple example</h4>
 <pre><code class="language-json">{
   &quot;keyToAddOrUpdate&quot;: &quot;value&quot;,
   &quot;keyToDelete&quot;: null
@@ -393,8 +419,10 @@ The created access&#39;s token.</p>
 </div><section class="method"><h3>Get public info</h3><div class="content"><p><code>GET /profile/public</code></p>
 <p>Gets the user&#39;s public profile info.</p>
 <h4>Successful response: OK <code>200</code></h4>
-<p>An object containing the user&#39;s current public profile information.</p>
-</div><aside><h4>cURL example</h4>
+<table class="definitions"><tr><th><p><code>profile</code></p>
+</th><td><p><span class="type">object</span><br>
+The user&#39;s current public profile information.</p>
+</td></tr></table></div><aside><h4>cURL example</h4>
 <pre><code class="language-bash">#TODO</code></pre>
 </aside></section></section></section><section id="socketio"><h1>Socket.IO support</h1><div class="intro"><p>The activity service supports real-time interaction with <a href="http://socket.io">Socket.IO</a>, both by accepting equivalent messages for most API methods and by emitting data change notification messages. (Code examples below are in Javascript.)</p>
 </div><section><h3>Connecting</h3><div class="content"><p>In order to use Socket.IO, your app must first load the appropriate Socket.IO client library. For a Javascript web app, that&#39;s the <code>socket.io.js</code> file served by the activity server at the following URL: <code>https://{username}.pryv.io/socket.io/socket.io.js</code>. (For other languages see the related section on the <a href="https://github.com/learnboost/socket.io/wiki">Socket.IO wiki</a>.)</p>
