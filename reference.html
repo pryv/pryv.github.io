@@ -3,7 +3,7 @@
 <!--[if lt IE 9]>
   <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
   <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
-<![endif]--><link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/css?family=PT+Sans"><link rel="stylesheet" type="text/css" href="fonts/stylesheet.css"><link rel="stylesheet" type="text/css" href="style.css"><link rel="stylesheet" type="text/css" href="highlight.css"></head><body class="with-toc with-examples"><header id="page-header"><nav role="navigation" class="navbar navbar-default navbar-fixed-top"><div class="container-fluid"><div class="navbar-header"><a href="dev-index.html" class="navbar-brand logo"><img src="images/LogoPrYvDigital-API.png" alt="Pryv"></a><button type="button" data-toggle="collapse" data-target="#main-nav" class="navbar-toggle"><span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button></div><div id="main-nav" class="collapse navbar-collapse"><ul class="nav navbar-nav"><li><a href="/about.html">About</a></li><li><a href="/concepts.html">Concepts</a></li><li><a href="/reference.html">API reference</a></li><li><a href="/event-typez.html">Event types</a></li><li><a href="/app-access.html">App access</a></li><li class="dropdown"><a href="#" data-toggle="dropdown" class="dropdown-toggle">More <b class="caret"></b></a><ul class="dropdown-menu"><li><a href="/apps-and-services.html">Pryv apps and services</a></li><li><a href="/code-libraries.html">Code libraries</a></li></ul></li><!--li.dropdown<a href="#" data-toggle="dropdown" class="dropdown-toggle">Guides <b class="caret"></b></a><ul class="dropdown-menu"><li><a href="#">Getting started</a></li><li><a href="#">Data modeling</a></li></ul>--><!--li.dropdown<a href="#" data-toggle="dropdown" class="dropdown-toggle">Reference <b class="caret"></b></a><ul class="dropdown-menu"><li><a href="/reference.html">API</a></li><li><a href="/event-typez.html">Event types</a></li><li><a href="/standard-structure.html">Standard data structure</a></li><li><a href="/app-access.html">App authorization</a></li></ul>--><!--li<a href="#">Blog</a>--></ul><p class="navbar-text navbar-right version">API version: <strong>0.7.2</strong></p><form class="navbar-form navbar-right"><div class="form-group"><label for="examples-format">Examples:</label><select id="examples-format" class="form-control"><option value="json" selected="selected">Raw JSON</option><option value="http">cURL</option><option value="sockets">Socket.IO</option></select></div></form></div></div></nav></header><div id="main-wrapper" class="container-fluid"><div id="main"><section id="basics"><h1 id="basics">Basics</h1>
+<![endif]--><link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/css?family=PT+Sans"><link rel="stylesheet" type="text/css" href="fonts/stylesheet.css"><link rel="stylesheet" type="text/css" href="style.css"><link rel="stylesheet" type="text/css" href="highlight.css"></head><body class="with-toc with-examples"><header id="page-header"><nav role="navigation" class="navbar navbar-default navbar-fixed-top"><div class="container-fluid"><div class="navbar-header"><a href="dev-index.html" class="navbar-brand logo"><img src="images/LogoPrYvDigital-API.png" alt="Pryv"></a><button type="button" data-toggle="collapse" data-target="#main-nav" class="navbar-toggle"><span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button></div><div id="main-nav" class="collapse navbar-collapse"><ul class="nav navbar-nav"><li><a href="/about.html">About</a></li><li><a href="/concepts.html">Concepts</a></li><li><a href="/reference.html">API reference</a></li><li><a href="/event-typez.html">Event types</a></li><li><a href="/app-access.html">App access</a></li><li class="dropdown"><a href="#" data-toggle="dropdown" class="dropdown-toggle">More <b class="caret"></b></a><ul class="dropdown-menu"><li><a href="/apps-and-services.html">Pryv apps and services</a></li><li><a href="/code-libraries.html">Code libraries</a></li></ul></li><!--li.dropdown<a href="#" data-toggle="dropdown" class="dropdown-toggle">Guides <b class="caret"></b></a><ul class="dropdown-menu"><li><a href="#">Getting started</a></li><li><a href="#">Data modeling</a></li></ul>--><!--li.dropdown<a href="#" data-toggle="dropdown" class="dropdown-toggle">Reference <b class="caret"></b></a><ul class="dropdown-menu"><li><a href="/reference.html">API</a></li><li><a href="/event-typez.html">Event types</a></li><li><a href="/standard-structure.html">Standard data structure</a></li><li><a href="/app-access.html">App authorization</a></li></ul>--><!--li<a href="#">Blog</a>--></ul><p class="navbar-text navbar-right version">API version: <strong>0.7.3</strong></p><form class="navbar-form navbar-right"><div class="form-group"><label for="examples-format">Examples:</label><select id="examples-format" class="form-control"><option value="json" selected="selected">Raw JSON</option><option value="http">cURL</option><option value="sockets">Socket.IO</option></select></div></form></div></div></nav></header><div id="main-wrapper" class="container-fluid"><div id="main"><section id="basics"><h1 id="basics">Basics</h1>
 <section id="basics-endpoint-url"><h2 id="endpoint-url">Endpoint URL</h2>
 <div class="content"><div class="intro"><pre><code>https://{username}.pryv.io
 </code></pre><p>Each user account uses a dedicated API endpoint as it is potentially served from a different location.</p>
@@ -25,14 +25,14 @@ for removing resources; logical deletion (trashing) is supported for some resour
 Host: {username}.pryv.io
 Authorization: {token}
 </code></pre>
-</div></aside><section id="basics-calling-with-http-alternative-http-request-method"><h3 id="alternative-http-request-method">Alternative HTTP request method</h3>
+</div></aside><section id="basics-calling-with-http-alternative-http-request-method"> <h3 id="alternative-http-request-method">Alternative HTTP request method</h3>
 <div class="content"><div class="intro"><p>Because we could&#39;t fathom out the rationale behind <a href="https://developer.mozilla.org/en-US/docs/HTTP/Access_control_CORS">HTTP access control (CORS) rules</a>, the API allows web apps to fake POST, PUT and DELETE requests through <code>application/x-www-form-urlencoded</code> POST requests with the following fields (all optional):</p>
 </div><table class="definitions"><tr><th><code>_method</code></th><td><div class="header"></div><div class="description"><p>The HTTP override method to use (usually <code>PUT</code> or <code>DELETE</code>; <code>POST</code> is used if not set).</p>
 </div></td></tr><tr><th><code>_auth</code></th><td><div class="header"></div><div class="description"><p>The <code>Authorization</code> header value (alternative to sending the header itself).</p>
 </div></td></tr><tr><th><code>_json</code></th><td><div class="header"></div><div class="description"><p>Considered as the JSON request body if set (overriding all other body content, if any).</p>
 </div></td></tr></table></div></section></section><section id="basics-calling-with-websockets"><h2 id="calling-with-websockets">Calling with websockets</h2>
 <div class="content"><div class="intro"><p>The API supports real-time interaction by accepting websocket connections via <a href="http://socket.io">Socket.IO</a>.</p>
-</div></div><section id="basics-calling-with-websockets-connecting"><h3 id="connecting">Connecting</h3>
+</div></div><section id="basics-calling-with-websockets-connecting"> <h3 id="connecting">Connecting</h3>
 <div class="content"><div class="intro"><p>First, load the right Socket.IO client library.</p>
 <ul>
 <li><p>For a web app, the Javascript lib is directly served by the API at:</p>
@@ -46,11 +46,11 @@ Authorization: {token}
 </code></pre></div></div><aside><div class="example"><p>In a web app</p>
 <pre><code class="lang-html">&lt;script src=&quot;https://chuangzi.pryv.io/socket.io/socket.io.js&quot;&gt;&lt;/script&gt;
 &lt;script&gt;
-var socket = io.connect(&quot;https://chuangzi.pryv.io:443/chuangzi?auth=chrrl6w2a0003j9jxyop59qrt&amp;resource=/chuangzi&quot;);
+var socket = io.connect(&quot;https://chuangzi.pryv.io:443/chuangzi?auth=chrt872w00003lypuq634pjol&amp;resource=/chuangzi&quot;);
 });
 &lt;/script&gt;
 </code></pre>
-</div></aside></section><section id="basics-calling-with-websockets-calling-methods"><h3 id="calling-methods">Calling methods</h3>
+</div></aside></section><section id="basics-calling-with-websockets-calling-methods"> <h3 id="calling-methods">Calling methods</h3>
 <div class="content"><div class="intro"><p>You call API methods by sending a corresponding Socket.IO <code>{method-id}</code> message, passing a parameters object and a callback:</p>
 <pre><code class="lang-javascript">// javascript
 socket.emit(&#39;{method-id}&#39;, {/*parameters*/}, function (error, result) {
@@ -63,7 +63,7 @@ socket.emit(&#39;{method-id}&#39;, {/*parameters*/}, function (error, result) {
   // ...
 });
 </code></pre>
-</div></aside></section><section id="basics-calling-with-websockets-subscribing-to-changes"><h3 id="subscribing-to-changes">Subscribing to changes</h3>
+</div></aside></section><section id="basics-calling-with-websockets-subscribing-to-changes"> <h3 id="subscribing-to-changes">Subscribing to changes</h3>
 <div class="content"><div class="intro"><p>Get notified when data changes by subscribing to messages <code>eventsChanged</code> and <code>streamsChanged</code>.</p>
 </div></div><aside><div class="example"><p>Subscribing to events changes (Javascript)</p>
 <pre><code class="lang-javascript">socket.on(&#39;eventsChanged&#39;, function() {
@@ -74,7 +74,7 @@ socket.emit(&#39;{method-id}&#39;, {/*parameters*/}, function (error, result) {
 <div class="content"><div class="intro"><p>The API exchanges data with clients in JSON (MIME type <code>application/json</code>), except when uploading/downloading attached files.</p>
 </div></div><aside><div class="example"><p>Example event</p>
 <pre><code>{
-  "id": "chrrl6wh0000uj9jx2csmhpfc",
+  "id": "chrt873c6000ulypu2rxgwr29",
   "time": 1350373077.359,
   "streamId": "diary",
   "tags": [],
@@ -83,10 +83,10 @@ socket.emit(&#39;{method-id}&#39;, {/*parameters*/}, function (error, result) {
     "latitude": 40.714728,
     "longitude": -73.998672
   },
-  "created": 1392624893.412,
-  "createdBy": "chrrl6w280000j9jxfu3urxea",
-  "modified": 1392624893.412,
-  "modifiedBy": "chrrl6w280000j9jxfu3urxea"
+  "created": 1392723999.654,
+  "createdBy": "chrt872vy0000lypumvcj1zi2",
+  "modified": 1392723999.654,
+  "modifiedBy": "chrt872vy0000lypumvcj1zi2"
 }</code></pre></div></aside></section><section id="basics-authorization"><h2 id="authorization">Authorization</h2>
 <div class="content"><div class="intro"><p>All requests for retrieving and manipulating activity data must carry a valid <a href="#data-structure-access">access token</a> in the HTTP <code>Authorization</code> header or, alternatively, in the query string&#39;s <code>auth</code> parameter. With Socket.IO the token is passed in the handshake.</p>
 <p>(Access tokens are obtained via the <a href="/app-access.html">app auth flow</a> or from sharing.)</p>
@@ -101,10 +101,10 @@ Host: {username}.pryv.io
 </code></pre>
 </div></aside></section><section id="basics-common-metadata"><h2 id="common-metadata">Common metadata</h2>
 <div class="content"><div class="intro"><p>General API and server information.</p>
-</div></div><section id="basics-common-metadata-http"><h3 id="in-http-headers">In HTTP headers</h3>
+</div></div><section id="basics-common-metadata-http"> <h3 id="in-http-headers">In HTTP headers</h3>
 <div class="content"><div class="intro"><p>Every HTTP response has header:</p>
 </div><table class="definitions"><tr><th><code>API-Version</code></th><td><div class="header"></div><div class="description"><p>The version of the API in the form <code>{major}.{minor}.{revision}</code>. Mirrored in method results as <code>meta.apiVersion</code>.</p>
-</div></td></tr></table></div></section><section id="basics-common-metadata-method-results"><h3 id="in-method-results">In method results</h3>
+</div></td></tr></table></div></section><section id="basics-common-metadata-method-results"> <h3 id="in-method-results">In method results</h3>
 <div class="content"><div class="intro"><p>Every JSON method result has properties:</p>
 </div><table class="definitions"><tr><th><code>meta.apiVersion</code></th><td><div class="header"></div><div class="description"><p>The version of the API in the form <code>{major}.{minor}.{revision}</code>. Mirrored in HTTP header <code>API-Version</code>.</p>
 </div></td></tr><tr><th><code>meta.serverTime</code></th><td><div class="header"></div><div class="description"><p>The current server time as a <a href="data-structure-timestamp">timestamp</a>. Keeping track of server time is necessary to properly handle time in API calls.</p>
@@ -113,7 +113,7 @@ Host: {username}.pryv.io
 </div></div><aside><div class="example"><pre><code>{
   "id": "invalid-access-token",
   "message": "Cannot find access with token 'bad-token'."
-}</code></pre></div></aside><section id="basics-errors-usual-errors"><h3 id="usual-errors">Usual errors</h3>
+}</code></pre></div></aside><section id="basics-errors-usual-errors"> <h3 id="usual-errors">Usual errors</h3>
 <div class="content"><div class="intro"><p>See also <a href="#data-structure-error">error data structure</a>.</p>
 </div><table class="definitions"><tr><th><code>invalid-request-structure</code></th><td><div class="header"><span class="http"><span class="label">HTTP</span><span class="label-value"><code>400</code></span></span></div><div class="description"><p>The request&#39;s structure is not that expected; for example: invalid JSON syntax, unexpected multipart structure when uploading file attachments.</p>
 </div></td></tr><tr><th><code>invalid-parameters-format</code></th><td><div class="header"><span class="http"><span class="label">HTTP</span><span class="label-value"><code>400</code></span></span></div><div class="description"><p>The request&#39;s parameters do not follow the expected format. The error&#39;s <code>data</code> contains an array of validation errors.</p>
@@ -131,57 +131,57 @@ Host: {username}.pryv.io
 </div></td></tr></table></div></section></section></section><section id="methods"><h1 id="api-methods">API methods</h1>
 <section id="methods-events"><h2 id="events">Events</h2>
 <div class="content"><div class="intro"><p>Methods to retrieve and manipulate <a href="#data-structure-event">events</a>.</p>
-</div></div><section id="methods-events-events-get" class="method"><h3 id="get-events">Get events</h3>
+</div></div><section id="methods-events-events-get" class="method"> <h3 id="get-events">Get events</h3>
 <div class="content"><div class="meta"><span class="method-id"><span class="label">id</span><span class="label-value"><code>events.get</code></span></span><span class="http"><span class="label">HTTP</span><span class="label-value"><code>GET /events</code></span></span></div><div class="intro"><p>Queries accessible events.</p>
 </div><h4 id="parameters">Parameters</h4>
-<table class="definitions"><tr><th><code>fromTime</code></th><td><div class="header"><span class="type"><a href="#data-structure-timestamp">timestamp</a></span><span class="label optional">optional</span></div><div class="description"><p>The start time of the timeframe you want to retrieve events for. Default is 24 hours before <code>toTime</code> if the latter is set; otherwise it is not taken into account.</p>
-</div></td></tr><tr><th><code>toTime</code></th><td><div class="header"><span class="type"><a href="#data-structure-timestamp">timestamp</a></span><span class="label optional">optional</span></div><div class="description"><p>The end time of the timeframe you want to retrieve events for. Default is the current time. Note: events are considered to be within a given timeframe based on their <code>time</code> only (<code>duration</code> is not considered).</p>
-</div></td></tr><tr><th><code>streams</code></th><td><div class="header"><span class="type">array of <a href="#data-structure-identity">identity</a></span><span class="label optional">optional</span></div><div class="description"><p>If set, only events assigned to the specified streams and their sub-streams will be returned. By default, all accessible events are returned regardless of their stream.</p>
-</div></td></tr><tr><th><code>tags</code></th><td><div class="header"><span class="type">array of strings</span><span class="label optional">optional</span></div><div class="description"><p>If set, only events assigned to any of the listed tags will be returned.</p>
-</div></td></tr><tr><th><code>running</code></th><td><div class="header"><span class="type">boolean</span><span class="label optional">optional</span></div><div class="description"><p>If <code>true</code>, only running period events will be returned.</p>
-</div></td></tr><tr><th><code>sortAscending</code></th><td><div class="header"><span class="type"><code>true</code>|<code>false</code></span><span class="label optional">optional</span></div><div class="description"><p>If <code>true</code>, events will be sorted from oldest to newest. Default: false (sort descending).</p>
-</div></td></tr><tr><th><code>skip</code></th><td><div class="header"><span class="type">number</span><span class="label optional">optional</span></div><div class="description"><p>The number of items to skip in the results.</p>
-</div></td></tr><tr><th><code>limit</code></th><td><div class="header"><span class="type">number</span><span class="label optional">optional</span></div><div class="description"><p>The number of items to return in the results. A default value of 20 items is used if no other range limiting parameter is specified (<code>fromTime</code>, <code>toTime</code>).</p>
-</div></td></tr><tr><th><code>state</code></th><td><div class="header"><span class="type"><code>default</code>|<code>trashed</code>|<code>all</code></span><span class="label optional">optional</span></div><div class="description"><p>Indicates what items to return depending on their state. By default, only items that are not in the trash are returned; <code>trashed</code> returns only items in the trash, while <code>all</code> return all items regardless of their state.</p>
-</div></td></tr><tr><th><code>modifiedSince</code></th><td><div class="header"><span class="type"><a href="#data-structure-timestamp">timestamp</a></span><span class="label optional">optional</span></div><div class="description"><p>If specified, only events modified since that time will be returned.</p>
+<table class="definitions"><tr><th><code>fromTime</code></th><td><div class="header"><span class="type"><a href="#data-structure-timestamp">timestamp</a></span><span class="label label-default optional">optional</span></div><div class="description"><p>The start time of the timeframe you want to retrieve events for. Default is 24 hours before <code>toTime</code> if the latter is set; otherwise it is not taken into account.</p>
+</div></td></tr><tr><th><code>toTime</code></th><td><div class="header"><span class="type"><a href="#data-structure-timestamp">timestamp</a></span><span class="label label-default optional">optional</span></div><div class="description"><p>The end time of the timeframe you want to retrieve events for. Default is the current time. Note: events are considered to be within a given timeframe based on their <code>time</code> only (<code>duration</code> is not considered).</p>
+</div></td></tr><tr><th><code>streams</code></th><td><div class="header"><span class="type">array of <a href="#data-structure-identity">identity</a></span><span class="label label-default optional">optional</span></div><div class="description"><p>If set, only events assigned to the specified streams and their sub-streams will be returned. By default, all accessible events are returned regardless of their stream.</p>
+</div></td></tr><tr><th><code>tags</code></th><td><div class="header"><span class="type">array of strings</span><span class="label label-default optional">optional</span></div><div class="description"><p>If set, only events assigned to any of the listed tags will be returned.</p>
+</div></td></tr><tr><th><code>running</code></th><td><div class="header"><span class="type">boolean</span><span class="label label-default optional">optional</span></div><div class="description"><p>If <code>true</code>, only running period events will be returned.</p>
+</div></td></tr><tr><th><code>sortAscending</code></th><td><div class="header"><span class="type"><code>true</code>|<code>false</code></span><span class="label label-default optional">optional</span></div><div class="description"><p>If <code>true</code>, events will be sorted from oldest to newest. Default: false (sort descending).</p>
+</div></td></tr><tr><th><code>skip</code></th><td><div class="header"><span class="type">number</span><span class="label label-default optional">optional</span></div><div class="description"><p>The number of items to skip in the results.</p>
+</div></td></tr><tr><th><code>limit</code></th><td><div class="header"><span class="type">number</span><span class="label label-default optional">optional</span></div><div class="description"><p>The number of items to return in the results. A default value of 20 items is used if no other range limiting parameter is specified (<code>fromTime</code>, <code>toTime</code>).</p>
+</div></td></tr><tr><th><code>state</code></th><td><div class="header"><span class="type"><code>default</code>|<code>trashed</code>|<code>all</code></span><span class="label label-default optional">optional</span></div><div class="description"><p>Indicates what items to return depending on their state. By default, only items that are not in the trash are returned; <code>trashed</code> returns only items in the trash, while <code>all</code> return all items regardless of their state.</p>
+</div></td></tr><tr><th><code>modifiedSince</code></th><td><div class="header"><span class="type"><a href="#data-structure-timestamp">timestamp</a></span><span class="label label-default optional">optional</span></div><div class="description"><p>If specified, only events modified since that time will be returned.</p>
 </div></td></tr></table><h4 id="result">Result</h4>
 <span class="http"><span class="label">HTTP</span><span class="label-value"><code>200 OK</code></span></span><table class="definitions"><tr><th><code>events</code></th><td><div class="header"><span class="type">array of <a href="#data-structure-event">events</a></span></div><div class="description"><p>The accessible events ordered by time (see <code>sortAscending</code> above).</p>
 </div></td></tr></table></div><aside><div class="example"><div class="tab-content"><div class="tab-pane json active"><pre><code>{}</code></pre><div class="step-marker">⬇</div><pre><code>{
   "events": [
     {
-      "id": "chrrl6wh0000sj9jx454r0g32",
-      "time": 1392628493.412,
+      "id": "chrt873c6000slypu2ggk0jma",
+      "time": 1392727599.654,
       "streamId": "diary",
       "tags": [],
       "type": "picture/attached",
       "content": null,
       "attachments": [
         {
-          "id": "chrrl6wh0000tj9jxn9giscji",
+          "id": "chrt873c6000tlypu4h717jip",
           "fileName": "photo.jpg",
           "type": "image/jpeg",
           "size": 2561
         }
       ],
-      "created": 1392628493.412,
-      "createdBy": "chrrl6w2a0004j9jxr0qmu1a0",
-      "modified": 1392628493.412,
-      "modifiedBy": "chrrl6w2a0004j9jxr0qmu1a0"
+      "created": 1392727599.654,
+      "createdBy": "chrt872w00004lypujmtnl09g",
+      "modified": 1392727599.654,
+      "modifiedBy": "chrt872w00004lypujmtnl09g"
     },
     {
-      "id": "chrrl6wh0000jj9jxdptiy0vd",
-      "time": 1392632093.412,
+      "id": "chrt873c5000jlypuevji7xcd",
+      "time": 1392731199.653,
       "streamId": "jogging",
       "tags": [],
       "type": "activity/pryv",
       "content": null,
-      "created": 1392632093.412,
-      "createdBy": "chrrl6w290001j9jx0dqjqsgd",
-      "modified": 1392632093.412,
-      "modifiedBy": "chrrl6w290001j9jx0dqjqsgd"
+      "created": 1392731199.653,
+      "createdBy": "chrt872vz0001lypuuh4qzsx7",
+      "modified": 1392731199.653,
+      "modifiedBy": "chrt872vz0001lypuuh4qzsx7"
     },
     {
-      "id": "chrrl6wh0000uj9jx2csmhpfc",
+      "id": "chrt873c6000ulypu2rxgwr29",
       "time": 1350373077.359,
       "streamId": "diary",
       "tags": [],
@@ -190,52 +190,52 @@ Host: {username}.pryv.io
         "latitude": 40.714728,
         "longitude": -73.998672
       },
-      "created": 1392624893.412,
-      "createdBy": "chrrl6w280000j9jxfu3urxea",
-      "modified": 1392624893.412,
-      "modifiedBy": "chrrl6w280000j9jxfu3urxea"
+      "created": 1392723999.654,
+      "createdBy": "chrt872vy0000lypumvcj1zi2",
+      "modified": 1392723999.654,
+      "modifiedBy": "chrt872vy0000lypumvcj1zi2"
     }
   ]
 }</code></pre></div><div class="tab-pane http"><pre><code>curl -i https://${username}.pryv.io/events?auth=${token}</code></pre><div class="step-marker">⬇</div><pre><code>HTTP/1.1 200 OK
 Content-Type: application/json; charset=utf-8
-API-Version: 0.7.2
+API-Version: 0.7.3
 
 {
   "events": [
     {
-      "id": "chrrl6wh0000sj9jx454r0g32",
-      "time": 1392628493.412,
+      "id": "chrt873c6000slypu2ggk0jma",
+      "time": 1392727599.654,
       "streamId": "diary",
       "tags": [],
       "type": "picture/attached",
       "content": null,
       "attachments": [
         {
-          "id": "chrrl6wh0000tj9jxn9giscji",
+          "id": "chrt873c6000tlypu4h717jip",
           "fileName": "photo.jpg",
           "type": "image/jpeg",
           "size": 2561
         }
       ],
-      "created": 1392628493.412,
-      "createdBy": "chrrl6w2a0004j9jxr0qmu1a0",
-      "modified": 1392628493.412,
-      "modifiedBy": "chrrl6w2a0004j9jxr0qmu1a0"
+      "created": 1392727599.654,
+      "createdBy": "chrt872w00004lypujmtnl09g",
+      "modified": 1392727599.654,
+      "modifiedBy": "chrt872w00004lypujmtnl09g"
     },
     {
-      "id": "chrrl6wh0000jj9jxdptiy0vd",
-      "time": 1392632093.412,
+      "id": "chrt873c5000jlypuevji7xcd",
+      "time": 1392731199.653,
       "streamId": "jogging",
       "tags": [],
       "type": "activity/pryv",
       "content": null,
-      "created": 1392632093.412,
-      "createdBy": "chrrl6w290001j9jx0dqjqsgd",
-      "modified": 1392632093.412,
-      "modifiedBy": "chrrl6w290001j9jx0dqjqsgd"
+      "created": 1392731199.653,
+      "createdBy": "chrt872vz0001lypuuh4qzsx7",
+      "modified": 1392731199.653,
+      "modifiedBy": "chrt872vz0001lypuuh4qzsx7"
     },
     {
-      "id": "chrrl6wh0000uj9jx2csmhpfc",
+      "id": "chrt873c6000ulypu2rxgwr29",
       "time": 1350373077.359,
       "streamId": "diary",
       "tags": [],
@@ -244,48 +244,48 @@ API-Version: 0.7.2
         "latitude": 40.714728,
         "longitude": -73.998672
       },
-      "created": 1392624893.412,
-      "createdBy": "chrrl6w280000j9jxfu3urxea",
-      "modified": 1392624893.412,
-      "modifiedBy": "chrrl6w280000j9jxfu3urxea"
+      "created": 1392723999.654,
+      "createdBy": "chrt872vy0000lypumvcj1zi2",
+      "modified": 1392723999.654,
+      "modifiedBy": "chrt872vy0000lypumvcj1zi2"
     }
   ]
 }</code></pre></div><div class="tab-pane sockets"><pre><code>socket.emit('events.get', {}, callback);</code></pre><div class="step-marker">⬇</div><pre><code>{
   "events": [
     {
-      "id": "chrrl6wh0000sj9jx454r0g32",
-      "time": 1392628493.412,
+      "id": "chrt873c6000slypu2ggk0jma",
+      "time": 1392727599.654,
       "streamId": "diary",
       "tags": [],
       "type": "picture/attached",
       "content": null,
       "attachments": [
         {
-          "id": "chrrl6wh0000tj9jxn9giscji",
+          "id": "chrt873c6000tlypu4h717jip",
           "fileName": "photo.jpg",
           "type": "image/jpeg",
           "size": 2561
         }
       ],
-      "created": 1392628493.412,
-      "createdBy": "chrrl6w2a0004j9jxr0qmu1a0",
-      "modified": 1392628493.412,
-      "modifiedBy": "chrrl6w2a0004j9jxr0qmu1a0"
+      "created": 1392727599.654,
+      "createdBy": "chrt872w00004lypujmtnl09g",
+      "modified": 1392727599.654,
+      "modifiedBy": "chrt872w00004lypujmtnl09g"
     },
     {
-      "id": "chrrl6wh0000jj9jxdptiy0vd",
-      "time": 1392632093.412,
+      "id": "chrt873c5000jlypuevji7xcd",
+      "time": 1392731199.653,
       "streamId": "jogging",
       "tags": [],
       "type": "activity/pryv",
       "content": null,
-      "created": 1392632093.412,
-      "createdBy": "chrrl6w290001j9jx0dqjqsgd",
-      "modified": 1392632093.412,
-      "modifiedBy": "chrrl6w290001j9jx0dqjqsgd"
+      "created": 1392731199.653,
+      "createdBy": "chrt872vz0001lypuuh4qzsx7",
+      "modified": 1392731199.653,
+      "modifiedBy": "chrt872vz0001lypuuh4qzsx7"
     },
     {
-      "id": "chrrl6wh0000uj9jx2csmhpfc",
+      "id": "chrt873c6000ulypu2rxgwr29",
       "time": 1350373077.359,
       "streamId": "diary",
       "tags": [],
@@ -294,13 +294,13 @@ API-Version: 0.7.2
         "latitude": 40.714728,
         "longitude": -73.998672
       },
-      "created": 1392624893.412,
-      "createdBy": "chrrl6w280000j9jxfu3urxea",
-      "modified": 1392624893.412,
-      "modifiedBy": "chrrl6w280000j9jxfu3urxea"
+      "created": 1392723999.654,
+      "createdBy": "chrt872vy0000lypumvcj1zi2",
+      "modified": 1392723999.654,
+      "modifiedBy": "chrt872vy0000lypumvcj1zi2"
     }
   ]
-}</code></pre></div></div></div></aside></section><section id="methods-events-events-create" class="method"><h3 id="create-event">Create event</h3>
+}</code></pre></div></div></div></aside></section><section id="methods-events-events-create" class="method"> <h3 id="create-event">Create event</h3>
 <div class="content"><div class="meta"><span class="method-id"><span class="label">id</span><span class="label-value"><code>events.create</code></span></span><span class="http"><span class="label">HTTP</span><span class="label-value"><code>POST /events</code></span></span></div><div class="intro"><p>Records a new event. It is recommended that events recorded this way are completed events, i.e. either period events with a known duration or mark events. To start a running period event, use <a href="#methods-events-events-start">Start period</a> instead.</p>
 <p>In addition to JSON, this request accepts standard multipart/form-data content to support the creation of event with attached files in a single request. When sending a multipart request, one content part must hold the JSON for the new event and all other content parts must be the attached files.</p>
 </div><h4 id="parameters">Parameters</h4>
@@ -318,33 +318,33 @@ API-Version: 0.7.2
   "content": 90
 }</code></pre><div class="step-marker">⬇</div><pre><code>{
   "event": {
-    "id": "chrrl6wh0000qj9jxrgqedr8s",
-    "time": 1392632093.412,
+    "id": "chrt873c6000qlypu3wxnrxrj",
+    "time": 1392731199.654,
     "streamId": "weight",
     "tags": [],
     "type": "mass/kg",
     "content": 90,
-    "created": 1392632093.412,
-    "createdBy": "chrrl6w290001j9jx0dqjqsgd",
-    "modified": 1392632093.412,
-    "modifiedBy": "chrrl6w290001j9jx0dqjqsgd"
+    "created": 1392731199.654,
+    "createdBy": "chrt872vz0001lypuuh4qzsx7",
+    "modified": 1392731199.654,
+    "modifiedBy": "chrt872vz0001lypuuh4qzsx7"
   }
 }</code></pre></div><div class="tab-pane http"><pre><code>curl -i -X POST -d '{"streamId":"weight","type":"mass/kg","content":90}' https://${username}.pryv.io/events?auth=${token}</code></pre><div class="step-marker">⬇</div><pre><code>HTTP/1.1 201 Created
 Content-Type: application/json; charset=utf-8
-API-Version: 0.7.2
+API-Version: 0.7.3
 
 {
   "event": {
-    "id": "chrrl6wh0000qj9jxrgqedr8s",
-    "time": 1392632093.412,
+    "id": "chrt873c6000qlypu3wxnrxrj",
+    "time": 1392731199.654,
     "streamId": "weight",
     "tags": [],
     "type": "mass/kg",
     "content": 90,
-    "created": 1392632093.412,
-    "createdBy": "chrrl6w290001j9jx0dqjqsgd",
-    "modified": 1392632093.412,
-    "modifiedBy": "chrrl6w290001j9jx0dqjqsgd"
+    "created": 1392731199.654,
+    "createdBy": "chrt872vz0001lypuuh4qzsx7",
+    "modified": 1392731199.654,
+    "modifiedBy": "chrt872vz0001lypuuh4qzsx7"
   }
 }</code></pre></div><div class="tab-pane sockets"><pre><code>socket.emit('events.create', {
   "streamId": "weight",
@@ -352,42 +352,42 @@ API-Version: 0.7.2
   "content": 90
 }, callback);</code></pre><div class="step-marker">⬇</div><pre><code>{
   "event": {
-    "id": "chrrl6wh0000qj9jxrgqedr8s",
-    "time": 1392632093.412,
+    "id": "chrt873c6000qlypu3wxnrxrj",
+    "time": 1392731199.654,
     "streamId": "weight",
     "tags": [],
     "type": "mass/kg",
     "content": 90,
-    "created": 1392632093.412,
-    "createdBy": "chrrl6w290001j9jx0dqjqsgd",
-    "modified": 1392632093.412,
-    "modifiedBy": "chrrl6w290001j9jx0dqjqsgd"
+    "created": 1392731199.654,
+    "createdBy": "chrt872vz0001lypuuh4qzsx7",
+    "modified": 1392731199.654,
+    "modifiedBy": "chrt872vz0001lypuuh4qzsx7"
   }
 }</code></pre></div></div></div><div class="example"><p>cURL with attachment</p>
 <pre><code class="lang-bash">curl -i -F &#39;event={&quot;streamId&quot;:&quot;diary&quot;,&quot;type&quot;:&quot;picture/attached&quot;}&#39;  -F &quot;file=@photo.jpg&quot; https://${username}.pryv.io/events?auth=${token}
 </code></pre>
 <div class="step-marker">⬇</div><pre><code>{
   "event": {
-    "id": "chrrl6wh0000sj9jx454r0g32",
-    "time": 1392628493.412,
+    "id": "chrt873c6000slypu2ggk0jma",
+    "time": 1392727599.654,
     "streamId": "diary",
     "tags": [],
     "type": "picture/attached",
     "content": null,
     "attachments": [
       {
-        "id": "chrrl6wh0000tj9jxn9giscji",
+        "id": "chrt873c6000tlypu4h717jip",
         "fileName": "photo.jpg",
         "type": "image/jpeg",
         "size": 2561
       }
     ],
-    "created": 1392628493.412,
-    "createdBy": "chrrl6w2a0004j9jxr0qmu1a0",
-    "modified": 1392628493.412,
-    "modifiedBy": "chrrl6w2a0004j9jxr0qmu1a0"
+    "created": 1392727599.654,
+    "createdBy": "chrt872w00004lypujmtnl09g",
+    "modified": 1392727599.654,
+    "modifiedBy": "chrt872w00004lypujmtnl09g"
   }
-}</code></pre></div></aside></section><section id="methods-events-events-start" class="method"><h3 id="start-period">Start period</h3>
+}</code></pre></div></aside></section><section id="methods-events-events-start" class="method"> <h3 id="start-period">Start period</h3>
 <div class="content"><div class="meta"><span class="method-id"><span class="label">id</span><span class="label-value"><code>events.start</code></span></span><span class="http"><span class="label">HTTP</span><span class="label-value"><code>POST /events/start</code></span></span></div><div class="intro"><p>Starts a new period event. This is equivalent to starting an event with a null <code>duration</code>. In <code>singleActivity</code> streams, also stops the previously running period event if any.</p>
 <p>See <a href="#methods-events-events-create">Create event</a> for details.</p>
 </div></div><aside><div class="example"><p>Starting an activity</p>
@@ -396,59 +396,59 @@ API-Version: 0.7.2
   "type": "activity/pryv"
 }</code></pre><div class="step-marker">⬇</div><pre><code>{
   "event": {
-    "id": "chrrl6wh0000kj9jxcuuilup7",
-    "time": 1392632093.412,
+    "id": "chrt873c5000klypuae5937c6",
+    "time": 1392731199.653,
     "duration": null,
     "streamId": "bicycling",
     "tags": [],
     "type": "activity/pryv",
     "content": null,
-    "created": 1392632093.412,
-    "createdBy": "chrrl6w290001j9jx0dqjqsgd",
-    "modified": 1392632093.412,
-    "modifiedBy": "chrrl6w290001j9jx0dqjqsgd"
+    "created": 1392731199.653,
+    "createdBy": "chrt872vz0001lypuuh4qzsx7",
+    "modified": 1392731199.653,
+    "modifiedBy": "chrt872vz0001lypuuh4qzsx7"
   }
 }</code></pre></div><div class="tab-pane http"><pre><code>curl -i -X POST -d '{"streamId":"bicycling","type":"activity/pryv"}' https://${username}.pryv.io/events/start?auth=${token}</code></pre><div class="step-marker">⬇</div><pre><code>HTTP/1.1 201 Created
 Content-Type: application/json; charset=utf-8
-API-Version: 0.7.2
+API-Version: 0.7.3
 
 {
   "event": {
-    "id": "chrrl6wh0000kj9jxcuuilup7",
-    "time": 1392632093.412,
+    "id": "chrt873c5000klypuae5937c6",
+    "time": 1392731199.653,
     "duration": null,
     "streamId": "bicycling",
     "tags": [],
     "type": "activity/pryv",
     "content": null,
-    "created": 1392632093.412,
-    "createdBy": "chrrl6w290001j9jx0dqjqsgd",
-    "modified": 1392632093.412,
-    "modifiedBy": "chrrl6w290001j9jx0dqjqsgd"
+    "created": 1392731199.653,
+    "createdBy": "chrt872vz0001lypuuh4qzsx7",
+    "modified": 1392731199.653,
+    "modifiedBy": "chrt872vz0001lypuuh4qzsx7"
   }
 }</code></pre></div><div class="tab-pane sockets"><pre><code>socket.emit('events.start', {
   "streamId": "bicycling",
   "type": "activity/pryv"
 }, callback);</code></pre><div class="step-marker">⬇</div><pre><code>{
   "event": {
-    "id": "chrrl6wh0000kj9jxcuuilup7",
-    "time": 1392632093.412,
+    "id": "chrt873c5000klypuae5937c6",
+    "time": 1392731199.653,
     "duration": null,
     "streamId": "bicycling",
     "tags": [],
     "type": "activity/pryv",
     "content": null,
-    "created": 1392632093.412,
-    "createdBy": "chrrl6w290001j9jx0dqjqsgd",
-    "modified": 1392632093.412,
-    "modifiedBy": "chrrl6w290001j9jx0dqjqsgd"
+    "created": 1392731199.653,
+    "createdBy": "chrt872vz0001lypuuh4qzsx7",
+    "modified": 1392731199.653,
+    "modifiedBy": "chrt872vz0001lypuuh4qzsx7"
   }
-}</code></pre></div></div></div></aside></section><section id="methods-events-events-stop" class="method"><h3 id="stop-period">Stop period</h3>
+}</code></pre></div></div></div></aside></section><section id="methods-events-events-stop" class="method"> <h3 id="stop-period">Stop period</h3>
 <div class="content"><div class="meta"><span class="method-id"><span class="label">id</span><span class="label-value"><code>events.stop</code></span></span><span class="http"><span class="label">HTTP</span><span class="label-value"><code>POST /events/stop</code></span></span></div><div class="intro"><p>Stops a running period event. In <code>singleActivity</code> streams, which guarantee that only one event is running at any given time, that event is automatically determined; for regular streams, the event to stop must be specified.</p>
 </div><h4 id="parameters">Parameters</h4>
 <table class="definitions"><tr><th><code>streamId</code></th><td><div class="header"><span class="type"><a href="data-structure-identity">identity</a></span></div><div class="description"><p>The id of the <code>singleActivity</code> stream in which to stop the running event. Either this or <code>id</code> must be specified.</p>
 </div></td></tr><tr><th><code>id</code></th><td><div class="header"><span class="type"><a href="data-structure-identity">identity</a></span></div><div class="description"><p>The id of the event to stop. Either this or <code>streamId</code> must be specified.</p>
-</div></td></tr><tr><th><code>time</code></th><td><div class="header"><span class="type"><a href="data-structure-timestamp">timestamp</a></span><span class="label optional">optional</span></div><div class="description"><p>The stop time. Default: now.</p>
+</div></td></tr><tr><th><code>time</code></th><td><div class="header"><span class="type"><a href="data-structure-timestamp">timestamp</a></span><span class="label label-default optional">optional</span></div><div class="description"><p>The stop time. Default: now.</p>
 </div></td></tr></table><h4 id="result">Result</h4>
 <span class="http"><span class="label">HTTP</span><span class="label-value"><code>200 OK</code></span></span><table class="definitions"><tr><th><code>stoppedId</code></th><td><div class="header"><span class="type"><a href="data-structure-identity">identity</a></span></div><div class="description"><p>The id of the event that was stopped or null if no running event was found.</p>
 </div></td></tr></table><h4 id="specific-errors">Specific errors</h4>
@@ -457,21 +457,21 @@ API-Version: 0.7.2
 </div></td></tr><tr><th><code>missing-parameter</code></th><td><div class="header"><span class="http"><span class="label">HTTP</span><span class="label-value"><code>400</code></span></span></div><div class="description"><p>No <code>id</code> was specified and the specified stream is not a <code>singleActivity</code> stream (so that there can be more than one running event).</p>
 </div></td></tr></table></div><aside><div class="example"><div class="tab-content"><div class="tab-pane json active"><pre><code>{
   "streamId": "bicycling",
-  "time": 1392632093.753
+  "time": 1392731199.963
 }</code></pre><div class="step-marker">⬇</div><pre><code>{
-  "stoppedId": "chrrl6wh0000kj9jxcuuilup7"
-}</code></pre></div><div class="tab-pane http"><pre><code>curl -i -X POST -d '{"streamId":"bicycling","time":1392632093.753}' https://${username}.pryv.io/events/stop?auth=${token}</code></pre><div class="step-marker">⬇</div><pre><code>HTTP/1.1 200 OK
+  "stoppedId": "chrt873c5000klypuae5937c6"
+}</code></pre></div><div class="tab-pane http"><pre><code>curl -i -X POST -d '{"streamId":"bicycling","time":1392731199.963}' https://${username}.pryv.io/events/stop?auth=${token}</code></pre><div class="step-marker">⬇</div><pre><code>HTTP/1.1 200 OK
 Content-Type: application/json; charset=utf-8
-API-Version: 0.7.2
+API-Version: 0.7.3
 
 {
-  "stoppedId": "chrrl6wh0000kj9jxcuuilup7"
+  "stoppedId": "chrt873c5000klypuae5937c6"
 }</code></pre></div><div class="tab-pane sockets"><pre><code>socket.emit('events.stop', {
   "streamId": "bicycling",
-  "time": 1392632093.753
+  "time": 1392731199.963
 }, callback);</code></pre><div class="step-marker">⬇</div><pre><code>{
-  "stoppedId": "chrrl6wh0000kj9jxcuuilup7"
-}</code></pre></div></div></div></aside></section><section id="methods-events-events-update" class="method"><h3 id="update-event">Update event</h3>
+  "stoppedId": "chrt873c5000klypuae5937c6"
+}</code></pre></div></div></div></aside></section><section id="methods-events-events-update" class="method"> <h3 id="update-event">Update event</h3>
 <div class="content"><div class="meta"><span class="method-id"><span class="label">id</span><span class="label-value"><code>events.update</code></span></span><span class="http"><span class="label">HTTP</span><span class="label-value"><code>PUT /events/{id}</code></span></span></div><div class="intro"><p>Modifies the event.</p>
 </div><h4 id="parameters">Parameters</h4>
 <table class="definitions"><tr><th><code>id</code></th><td><div class="header"><span class="type"><a href="data-structure-identity">identity</a></span><span class="http"><span class="label">HTTP</span><span class="label-value"><span>set in request path</span></span></span></div><div class="description"><p>The id of the event.</p>
@@ -484,7 +484,7 @@ API-Version: 0.7.2
 </div></td></tr><tr><th><code>periods-overlap</code></th><td><div class="header"><span class="http"><span class="label">HTTP</span><span class="label-value"><code>400</code></span></span></div><div class="description"><p>Only in <code>singleActivity</code> streams. The time and/or duration of the period event cannot be set to overlap with other period events. The overlapping events&#39; ids are listed as an array in the error&#39;s <code>data.overlappedIds</code>.</p>
 </div></td></tr></table></div><aside><div class="example"><p>Adding a tag</p>
 <div class="tab-content"><div class="tab-pane json active"><pre><code>{
-  "id": "chrrl6wh0000uj9jx2csmhpfc",
+  "id": "chrt873c6000ulypu2rxgwr29",
   "update": {
     "tags": [
       "home"
@@ -495,9 +495,9 @@ API-Version: 0.7.2
     "tags": [
       "home"
     ],
-    "modified": 1392632093.753,
-    "modifiedBy": "chrrl6w290001j9jx0dqjqsgd",
-    "id": "chrrl6wh0000uj9jx2csmhpfc",
+    "modified": 1392731199.963,
+    "modifiedBy": "chrt872vz0001lypuuh4qzsx7",
+    "id": "chrt873c6000ulypu2rxgwr29",
     "time": 1350373077.359,
     "streamId": "diary",
     "type": "position/wgs84",
@@ -505,21 +505,21 @@ API-Version: 0.7.2
       "latitude": 40.714728,
       "longitude": -73.998672
     },
-    "created": 1392624893.412,
-    "createdBy": "chrrl6w280000j9jxfu3urxea"
+    "created": 1392723999.654,
+    "createdBy": "chrt872vy0000lypumvcj1zi2"
   }
-}</code></pre></div><div class="tab-pane http"><pre><code>curl -i -X PUT -d '{"tags":["home"]}' https://${username}.pryv.io/events/chrrl6wh0000uj9jx2csmhpfc?auth=${token}</code></pre><div class="step-marker">⬇</div><pre><code>HTTP/1.1 200 OK
+}</code></pre></div><div class="tab-pane http"><pre><code>curl -i -X PUT -d '{"tags":["home"]}' https://${username}.pryv.io/events/chrt873c6000ulypu2rxgwr29?auth=${token}</code></pre><div class="step-marker">⬇</div><pre><code>HTTP/1.1 200 OK
 Content-Type: application/json; charset=utf-8
-API-Version: 0.7.2
+API-Version: 0.7.3
 
 {
   "event": {
     "tags": [
       "home"
     ],
-    "modified": 1392632093.753,
-    "modifiedBy": "chrrl6w290001j9jx0dqjqsgd",
-    "id": "chrrl6wh0000uj9jx2csmhpfc",
+    "modified": 1392731199.963,
+    "modifiedBy": "chrt872vz0001lypuuh4qzsx7",
+    "id": "chrt873c6000ulypu2rxgwr29",
     "time": 1350373077.359,
     "streamId": "diary",
     "type": "position/wgs84",
@@ -527,11 +527,11 @@ API-Version: 0.7.2
       "latitude": 40.714728,
       "longitude": -73.998672
     },
-    "created": 1392624893.412,
-    "createdBy": "chrrl6w280000j9jxfu3urxea"
+    "created": 1392723999.654,
+    "createdBy": "chrt872vy0000lypumvcj1zi2"
   }
 }</code></pre></div><div class="tab-pane sockets"><pre><code>socket.emit('events.update', {
-  "id": "chrrl6wh0000uj9jx2csmhpfc",
+  "id": "chrt873c6000ulypu2rxgwr29",
   "update": {
     "tags": [
       "home"
@@ -542,9 +542,9 @@ API-Version: 0.7.2
     "tags": [
       "home"
     ],
-    "modified": 1392632093.753,
-    "modifiedBy": "chrrl6w290001j9jx0dqjqsgd",
-    "id": "chrrl6wh0000uj9jx2csmhpfc",
+    "modified": 1392731199.963,
+    "modifiedBy": "chrt872vz0001lypuuh4qzsx7",
+    "id": "chrt873c6000ulypu2rxgwr29",
     "time": 1350373077.359,
     "streamId": "diary",
     "type": "position/wgs84",
@@ -552,21 +552,21 @@ API-Version: 0.7.2
       "latitude": 40.714728,
       "longitude": -73.998672
     },
-    "created": 1392624893.412,
-    "createdBy": "chrrl6w280000j9jxfu3urxea"
+    "created": 1392723999.654,
+    "createdBy": "chrt872vy0000lypumvcj1zi2"
   }
-}</code></pre></div></div></div></aside></section><section id="methods-events-events-addAttachment" class="method"><h3 id="add-attachment-s-">Add attachment(s)</h3>
+}</code></pre></div></div></div></aside></section><section id="methods-events-events-addAttachment" class="method"> <h3 id="add-attachment-s-">Add attachment(s)</h3>
 <div class="content"><div class="meta"><span class="http"><span class="label">HTTP-only</span><span class="label-value"><code>POST /events/{id}</code></span></span></div><div class="intro"><p>Adds one or more file attachments to the event. This request expects standard multipart/form-data content, with all content parts being the attached files.</p>
 </div><h4 id="result">Result</h4>
 <span class="http"><span class="label">HTTP</span><span class="label-value"><code>200 OK</code></span></span><table class="definitions"><tr><th><code>event</code></th><td><div class="header"><span class="type"><a href="data-structure-event">event</a></span></div><div class="description"><p>The updated event.</p>
 </div></td></tr></table></div><aside><div class="example"><p>cURL</p>
-<pre><code class="lang-bash">curl -i -F &quot;file=@{filename}&quot; https://${username}.pryv.io/events/chrrl6wh0000sj9jx454r0g32?auth=${token}
+<pre><code class="lang-bash">curl -i -F &quot;file=@{filename}&quot; https://${username}.pryv.io/events/chrt873c6000slypu2ggk0jma?auth=${token}
 </code></pre>
-</div></aside></section><section id="methods-events-events-getAttachment" class="method"><h3 id="get-attachment">Get attachment</h3>
+</div></aside></section><section id="methods-events-events-getAttachment" class="method"> <h3 id="get-attachment">Get attachment</h3>
 <div class="content"><div class="meta"><span class="http"><span class="label">HTTP-only</span><span class="label-value"><code>GET /events/{id}/{fileId}</code></span></span></div><div class="intro"><p>Gets the attached file.</p>
 </div><h4 id="result">Result</h4>
 <span class="http"><span class="label">HTTP</span><span class="label-value"><code>200 OK</code></span></span><p>The file&#39;s contents.</p>
-</div><aside></aside></section><section id="methods-events-events-deleteAttachment" class="method"><h3 id="delete-attachment">Delete attachment</h3>
+</div><aside></aside></section><section id="methods-events-events-deleteAttachment" class="method"> <h3 id="delete-attachment">Delete attachment</h3>
 <div class="content"><div class="meta"><span class="method-id"><span class="label">id</span><span class="label-value"><code>events.deleteAttachment</code></span></span><span class="http"><span class="label">HTTP</span><span class="label-value"><code>DELETE /events/{id}/{fileId}</code></span></span></div><div class="intro"><p>Irreversibly deletes the attached file.</p>
 </div><h4 id="parameters">Parameters</h4>
 <table class="definitions"><tr><th><code>id</code></th><td><div class="header"><span class="type"><a href="data-structure-identity">identity</a></span><span class="http"><span class="label">HTTP</span><span class="label-value"><span>set in request path</span></span></span></div><div class="description"><p>The id of the event.</p>
@@ -574,58 +574,58 @@ API-Version: 0.7.2
 </div></td></tr></table><h4 id="result">Result</h4>
 <span class="http"><span class="label">HTTP</span><span class="label-value"><code>200 OK</code></span></span><table class="definitions"><tr><th><code>event</code></th><td><div class="header"><span class="type"><a href="data-structure-event">event</a></span></div><div class="description"><p>The updated event.</p>
 </div></td></tr></table></div><aside><div class="example"><div class="tab-content"><div class="tab-pane json active"><pre><code>{
-  "id": "chrrl6wh0000lj9jxl2a6m1g7",
-  "fileId": "chrrl6wh0000mj9jxhsnpp4xt"
+  "id": "chrt873c5000llypujxuzzshf",
+  "fileId": "chrt873c5000mlypuw6aj3mqj"
 }</code></pre><div class="step-marker">⬇</div><pre><code>{
   "event": {
-    "id": "chrrl6wh0000lj9jxl2a6m1g7",
-    "time": 1392632093.412,
+    "id": "chrt873c5000llypujxuzzshf",
+    "time": 1392731199.653,
     "duration": null,
-    "streamId": "chrrl6wgz0009j9jxwj11picm",
+    "streamId": "chrt873c40009lypu2ueziken",
     "tags": [],
     "type": "activity/pryv",
     "content": null,
-    "created": 1392632093.412,
-    "createdBy": "chrrl6w290001j9jx0dqjqsgd",
-    "modified": 1392632093.412,
-    "modifiedBy": "chrrl6w290001j9jx0dqjqsgd"
+    "created": 1392731199.653,
+    "createdBy": "chrt872vz0001lypuuh4qzsx7",
+    "modified": 1392731199.653,
+    "modifiedBy": "chrt872vz0001lypuuh4qzsx7"
   }
-}</code></pre></div><div class="tab-pane http"><pre><code>curl -i -X DELETE -d '{}' https://${username}.pryv.io/events/chrrl6wh0000lj9jxl2a6m1g7/chrrl6wh0000mj9jxhsnpp4xt?auth=${token}</code></pre><div class="step-marker">⬇</div><pre><code>HTTP/1.1 200 OK
+}</code></pre></div><div class="tab-pane http"><pre><code>curl -i -X DELETE -d '{}' https://${username}.pryv.io/events/chrt873c5000llypujxuzzshf/chrt873c5000mlypuw6aj3mqj?auth=${token}</code></pre><div class="step-marker">⬇</div><pre><code>HTTP/1.1 200 OK
 Content-Type: application/json; charset=utf-8
-API-Version: 0.7.2
+API-Version: 0.7.3
 
 {
   "event": {
-    "id": "chrrl6wh0000lj9jxl2a6m1g7",
-    "time": 1392632093.412,
+    "id": "chrt873c5000llypujxuzzshf",
+    "time": 1392731199.653,
     "duration": null,
-    "streamId": "chrrl6wgz0009j9jxwj11picm",
+    "streamId": "chrt873c40009lypu2ueziken",
     "tags": [],
     "type": "activity/pryv",
     "content": null,
-    "created": 1392632093.412,
-    "createdBy": "chrrl6w290001j9jx0dqjqsgd",
-    "modified": 1392632093.412,
-    "modifiedBy": "chrrl6w290001j9jx0dqjqsgd"
+    "created": 1392731199.653,
+    "createdBy": "chrt872vz0001lypuuh4qzsx7",
+    "modified": 1392731199.653,
+    "modifiedBy": "chrt872vz0001lypuuh4qzsx7"
   }
 }</code></pre></div><div class="tab-pane sockets"><pre><code>socket.emit('events.deleteAttachment', {
-  "id": "chrrl6wh0000lj9jxl2a6m1g7",
-  "fileId": "chrrl6wh0000mj9jxhsnpp4xt"
+  "id": "chrt873c5000llypujxuzzshf",
+  "fileId": "chrt873c5000mlypuw6aj3mqj"
 }, callback);</code></pre><div class="step-marker">⬇</div><pre><code>{
   "event": {
-    "id": "chrrl6wh0000lj9jxl2a6m1g7",
-    "time": 1392632093.412,
+    "id": "chrt873c5000llypujxuzzshf",
+    "time": 1392731199.653,
     "duration": null,
-    "streamId": "chrrl6wgz0009j9jxwj11picm",
+    "streamId": "chrt873c40009lypu2ueziken",
     "tags": [],
     "type": "activity/pryv",
     "content": null,
-    "created": 1392632093.412,
-    "createdBy": "chrrl6w290001j9jx0dqjqsgd",
-    "modified": 1392632093.412,
-    "modifiedBy": "chrrl6w290001j9jx0dqjqsgd"
+    "created": 1392731199.653,
+    "createdBy": "chrt872vz0001lypuuh4qzsx7",
+    "modified": 1392731199.653,
+    "modifiedBy": "chrt872vz0001lypuuh4qzsx7"
   }
-}</code></pre></div></div></div></aside></section><section id="methods-events-events-delete" class="method"><h3 id="delete-event">Delete event</h3>
+}</code></pre></div></div></div></aside></section><section id="methods-events-events-delete" class="method"> <h3 id="delete-event">Delete event</h3>
 <div class="content"><div class="meta"><span class="method-id"><span class="label">id</span><span class="label-value"><code>events.delete</code></span></span><span class="http"><span class="label">HTTP</span><span class="label-value"><code>DELETE /events/{id}</code></span></span></div><div class="intro"><p>Trashes or deletes the specified event, depending on its current state:</p>
 <ul>
 <li>If the event is not already in the trash, it will be moved to the trash (i.e. flagged as <code>trashed</code>)</li>
@@ -638,62 +638,62 @@ API-Version: 0.7.2
 </div></td></tr></table><h4 id="result-deleted">Result: deleted</h4>
 <span class="http"><span class="label">HTTP</span><span class="label-value"><code>204 No content</code></span></span></div><aside><div class="example"><p>Trashing</p>
 <div class="tab-content"><div class="tab-pane json active"><pre><code>{
-  "id": "chrrl6wh0000rj9jx9pgolr6y"
+  "id": "chrt873c6000rlypuuctqetu5"
 }</code></pre><div class="step-marker">⬇</div><pre><code>{
   "event": {
     "trashed": true,
-    "modified": 1392632093.754,
-    "modifiedBy": "chrrl6w290001j9jx0dqjqsgd",
-    "id": "chrrl6wh0000rj9jx9pgolr6y",
-    "time": 1392628493.412,
+    "modified": 1392731199.964,
+    "modifiedBy": "chrt872vz0001lypuuh4qzsx7",
+    "id": "chrt873c6000rlypuuctqetu5",
+    "time": 1392727599.654,
     "streamId": "diary",
     "tags": [],
     "type": "note/text",
     "content": "道可道非常道。。。",
-    "created": 1392628493.412,
-    "createdBy": "chrrl6w290001j9jx0dqjqsgd"
+    "created": 1392727599.654,
+    "createdBy": "chrt872vz0001lypuuh4qzsx7"
   }
-}</code></pre></div><div class="tab-pane http"><pre><code>curl -i -X DELETE -d '{}' https://${username}.pryv.io/events/chrrl6wh0000rj9jx9pgolr6y?auth=${token}</code></pre><div class="step-marker">⬇</div><pre><code>HTTP/1.1 200 OK
+}</code></pre></div><div class="tab-pane http"><pre><code>curl -i -X DELETE -d '{}' https://${username}.pryv.io/events/chrt873c6000rlypuuctqetu5?auth=${token}</code></pre><div class="step-marker">⬇</div><pre><code>HTTP/1.1 200 OK
 Content-Type: application/json; charset=utf-8
-API-Version: 0.7.2
+API-Version: 0.7.3
 
 {
   "event": {
     "trashed": true,
-    "modified": 1392632093.754,
-    "modifiedBy": "chrrl6w290001j9jx0dqjqsgd",
-    "id": "chrrl6wh0000rj9jx9pgolr6y",
-    "time": 1392628493.412,
+    "modified": 1392731199.964,
+    "modifiedBy": "chrt872vz0001lypuuh4qzsx7",
+    "id": "chrt873c6000rlypuuctqetu5",
+    "time": 1392727599.654,
     "streamId": "diary",
     "tags": [],
     "type": "note/text",
     "content": "道可道非常道。。。",
-    "created": 1392628493.412,
-    "createdBy": "chrrl6w290001j9jx0dqjqsgd"
+    "created": 1392727599.654,
+    "createdBy": "chrt872vz0001lypuuh4qzsx7"
   }
 }</code></pre></div><div class="tab-pane sockets"><pre><code>socket.emit('events.delete', {
-  "id": "chrrl6wh0000rj9jx9pgolr6y"
+  "id": "chrt873c6000rlypuuctqetu5"
 }, callback);</code></pre><div class="step-marker">⬇</div><pre><code>{
   "event": {
     "trashed": true,
-    "modified": 1392632093.754,
-    "modifiedBy": "chrrl6w290001j9jx0dqjqsgd",
-    "id": "chrrl6wh0000rj9jx9pgolr6y",
-    "time": 1392628493.412,
+    "modified": 1392731199.964,
+    "modifiedBy": "chrt872vz0001lypuuh4qzsx7",
+    "id": "chrt873c6000rlypuuctqetu5",
+    "time": 1392727599.654,
     "streamId": "diary",
     "tags": [],
     "type": "note/text",
     "content": "道可道非常道。。。",
-    "created": 1392628493.412,
-    "createdBy": "chrrl6w290001j9jx0dqjqsgd"
+    "created": 1392727599.654,
+    "createdBy": "chrt872vz0001lypuuh4qzsx7"
   }
 }</code></pre></div></div></div></aside></section></section><section id="methods-streams"><h2 id="streams">Streams</h2>
 <div class="content"><div class="intro"><p>Methods to retrieve and manipulate <a href="data-structure-stream">streams</a>.</p>
-</div></div><section id="methods-streams-streams-get" class="method"><h3 id="get-streams">Get streams</h3>
+</div></div><section id="methods-streams-streams-get" class="method"> <h3 id="get-streams">Get streams</h3>
 <div class="content"><div class="meta"><span class="method-id"><span class="label">id</span><span class="label-value"><code>streams.get</code></span></span><span class="http"><span class="label">HTTP</span><span class="label-value"><code>GET /streams</code></span></span></div><div class="intro"><p>Gets the accessible streams hierarchy.</p>
 </div><h4 id="parameters">Parameters</h4>
-<table class="definitions"><tr><th><code>parentId</code></th><td><div class="header"><span class="type"><a href="data-structure-identity">identity</a></span><span class="label optional">optional</span></div><div class="description"><p>The id of the parent stream from which to retrieve streams. Default: <code>null</code> (returns all accessible streams from the root level).</p>
-</div></td></tr><tr><th><code>state</code></th><td><div class="header"><span class="type"><code>default</code>|<code>all</code></span><span class="label optional">optional</span></div><div class="description"><p>By default, only items that are not in the trash are returned; <code>all</code> return all items regardless of their state.</p>
+<table class="definitions"><tr><th><code>parentId</code></th><td><div class="header"><span class="type"><a href="data-structure-identity">identity</a></span><span class="label label-default optional">optional</span></div><div class="description"><p>The id of the parent stream from which to retrieve streams. Default: <code>null</code> (returns all accessible streams from the root level).</p>
+</div></td></tr><tr><th><code>state</code></th><td><div class="header"><span class="type"><code>default</code>|<code>all</code></span><span class="label label-default optional">optional</span></div><div class="description"><p>By default, only items that are not in the trash are returned; <code>all</code> return all items regardless of their state.</p>
 </div></td></tr></table><h4 id="result">Result</h4>
 <span class="http"><span class="label">HTTP</span><span class="label-value"><code>200 OK</code></span></span><table class="definitions"><tr><th><code>streams</code></th><td><div class="header"><span class="type">array of <a href="data-structure-stream">streams</a></span></div><div class="description"><p>The tree of the accessible streams, sorted by name.</p>
 </div></td></tr></table></div><aside><div class="example"><p>Retrieving streams for work activities</p>
@@ -702,155 +702,155 @@ API-Version: 0.7.2
 }</code></pre><div class="step-marker">⬇</div><pre><code>{
   "streams": [
     {
-      "id": "chrrl6wgy0008j9jxcdefnmjv",
+      "id": "chrt873c40008lypu0zneeri2",
       "name": "Noble Works Co.",
       "parentId": "work",
       "children": [
         {
-          "id": "chrrl6wgz000aj9jxct4filhn",
+          "id": "chrt873c4000alypu7kza6wl0",
           "name": "Last Be First",
-          "parentId": "chrrl6wgy0008j9jxcdefnmjv",
+          "parentId": "chrt873c40008lypu0zneeri2",
           "children": [],
-          "created": 1329518224.527861,
-          "createdBy": "chrrl6w280000j9jxfu3urxea",
-          "modified": 1329518243.5892205,
-          "modifiedBy": "chrrl6w280000j9jxfu3urxea"
+          "created": 1329617327.269991,
+          "createdBy": "chrt872vy0000lypumvcj1zi2",
+          "modified": 1329617657.9192479,
+          "modifiedBy": "chrt872vy0000lypumvcj1zi2"
         },
         {
-          "id": "chrrl6wgz000bj9jxtykiw0lm",
+          "id": "chrt873c4000blypugffgw393",
           "name": "Big Tree",
-          "parentId": "chrrl6wgy0008j9jxcdefnmjv",
+          "parentId": "chrt873c40008lypu0zneeri2",
           "children": [],
-          "created": 1329518224.527861,
-          "createdBy": "chrrl6w280000j9jxfu3urxea",
-          "modified": 1329518239.9076993,
-          "modifiedBy": "chrrl6w280000j9jxfu3urxea"
+          "created": 1329617327.269991,
+          "createdBy": "chrt872vy0000lypumvcj1zi2",
+          "modified": 1329617392.3635619,
+          "modifiedBy": "chrt872vy0000lypumvcj1zi2"
         },
         {
-          "id": "chrrl6wgz000cj9jxh4d8w3vh",
+          "id": "chrt873c4000clypuagx6r4z4",
           "name": "Inner Light",
-          "parentId": "chrrl6wgy0008j9jxcdefnmjv",
+          "parentId": "chrt873c40008lypu0zneeri2",
           "children": [],
-          "created": 1329518224.527861,
-          "createdBy": "chrrl6w280000j9jxfu3urxea",
-          "modified": 1329518494.7030683,
-          "modifiedBy": "chrrl6w280000j9jxfu3urxea"
+          "created": 1329617327.269991,
+          "createdBy": "chrt872vy0000lypumvcj1zi2",
+          "modified": 1329617333.9653935,
+          "modifiedBy": "chrt872vy0000lypumvcj1zi2"
         }
       ],
-      "created": 1329518203.670316,
-      "createdBy": "chrrl6w280000j9jxfu3urxea",
-      "modified": 1329518371.7207947,
-      "modifiedBy": "chrrl6w280000j9jxfu3urxea"
+      "created": 1329617304.3336692,
+      "createdBy": "chrt872vy0000lypumvcj1zi2",
+      "modified": 1329617334.6868684,
+      "modifiedBy": "chrt872vy0000lypumvcj1zi2"
     },
     {
-      "id": "chrrl6wgz0009j9jxwj11picm",
+      "id": "chrt873c40009lypu2ueziken",
       "name": "Freelancing",
       "parentId": "work",
       "children": [
         {
-          "id": "chrrl6wgz000dj9jx2umu0q0z",
+          "id": "chrt873c4000dlypunbcorelv",
           "name": "Funky Veggies",
-          "parentId": "chrrl6wgz0009j9jxwj11picm",
+          "parentId": "chrt873c40009lypu2ueziken",
           "children": [],
-          "created": 1329518204.1999571,
-          "createdBy": "chrrl6w280000j9jxfu3urxea",
-          "modified": 1329518445.9863446,
-          "modifiedBy": "chrrl6w280000j9jxfu3urxea"
+          "created": 1329617308.5043762,
+          "createdBy": "chrt872vy0000lypumvcj1zi2",
+          "modified": 1329617637.2889543,
+          "modifiedBy": "chrt872vy0000lypumvcj1zi2"
         },
         {
-          "id": "chrrl6wgz000ej9jxea2sy0xw",
+          "id": "chrt873c4000elypuj8k9kdhz",
           "name": "Jojo Lapin & sons",
-          "parentId": "chrrl6wgz0009j9jxwj11picm",
+          "parentId": "chrt873c40009lypu2ueziken",
           "children": [],
-          "created": 1329518204.1999571,
-          "createdBy": "chrrl6w280000j9jxfu3urxea",
-          "modified": 1329518431.7747626,
-          "modifiedBy": "chrrl6w280000j9jxfu3urxea"
+          "created": 1329617308.5043762,
+          "createdBy": "chrt872vy0000lypumvcj1zi2",
+          "modified": 1329617512.5583293,
+          "modifiedBy": "chrt872vy0000lypumvcj1zi2"
         }
       ],
-      "created": 1329518203.670316,
-      "createdBy": "chrrl6w280000j9jxfu3urxea",
-      "modified": 1329518286.3693159,
-      "modifiedBy": "chrrl6w280000j9jxfu3urxea"
+      "created": 1329617304.3336692,
+      "createdBy": "chrt872vy0000lypumvcj1zi2",
+      "modified": 1329617427.740049,
+      "modifiedBy": "chrt872vy0000lypumvcj1zi2"
     }
   ]
 }</code></pre></div><div class="tab-pane http"><pre><code>curl -i https://${username}.pryv.io/streams?auth=${token}&parentId=work</code></pre><div class="step-marker">⬇</div><pre><code>HTTP/1.1 200 OK
 Content-Type: application/json; charset=utf-8
-API-Version: 0.7.2
+API-Version: 0.7.3
 
 {
   "streams": [
     {
-      "id": "chrrl6wgy0008j9jxcdefnmjv",
+      "id": "chrt873c40008lypu0zneeri2",
       "name": "Noble Works Co.",
       "parentId": "work",
       "children": [
         {
-          "id": "chrrl6wgz000aj9jxct4filhn",
+          "id": "chrt873c4000alypu7kza6wl0",
           "name": "Last Be First",
-          "parentId": "chrrl6wgy0008j9jxcdefnmjv",
+          "parentId": "chrt873c40008lypu0zneeri2",
           "children": [],
-          "created": 1329518224.527861,
-          "createdBy": "chrrl6w280000j9jxfu3urxea",
-          "modified": 1329518243.5892205,
-          "modifiedBy": "chrrl6w280000j9jxfu3urxea"
+          "created": 1329617327.269991,
+          "createdBy": "chrt872vy0000lypumvcj1zi2",
+          "modified": 1329617657.9192479,
+          "modifiedBy": "chrt872vy0000lypumvcj1zi2"
         },
         {
-          "id": "chrrl6wgz000bj9jxtykiw0lm",
+          "id": "chrt873c4000blypugffgw393",
           "name": "Big Tree",
-          "parentId": "chrrl6wgy0008j9jxcdefnmjv",
+          "parentId": "chrt873c40008lypu0zneeri2",
           "children": [],
-          "created": 1329518224.527861,
-          "createdBy": "chrrl6w280000j9jxfu3urxea",
-          "modified": 1329518239.9076993,
-          "modifiedBy": "chrrl6w280000j9jxfu3urxea"
+          "created": 1329617327.269991,
+          "createdBy": "chrt872vy0000lypumvcj1zi2",
+          "modified": 1329617392.3635619,
+          "modifiedBy": "chrt872vy0000lypumvcj1zi2"
         },
         {
-          "id": "chrrl6wgz000cj9jxh4d8w3vh",
+          "id": "chrt873c4000clypuagx6r4z4",
           "name": "Inner Light",
-          "parentId": "chrrl6wgy0008j9jxcdefnmjv",
+          "parentId": "chrt873c40008lypu0zneeri2",
           "children": [],
-          "created": 1329518224.527861,
-          "createdBy": "chrrl6w280000j9jxfu3urxea",
-          "modified": 1329518494.7030683,
-          "modifiedBy": "chrrl6w280000j9jxfu3urxea"
+          "created": 1329617327.269991,
+          "createdBy": "chrt872vy0000lypumvcj1zi2",
+          "modified": 1329617333.9653935,
+          "modifiedBy": "chrt872vy0000lypumvcj1zi2"
         }
       ],
-      "created": 1329518203.670316,
-      "createdBy": "chrrl6w280000j9jxfu3urxea",
-      "modified": 1329518371.7207947,
-      "modifiedBy": "chrrl6w280000j9jxfu3urxea"
+      "created": 1329617304.3336692,
+      "createdBy": "chrt872vy0000lypumvcj1zi2",
+      "modified": 1329617334.6868684,
+      "modifiedBy": "chrt872vy0000lypumvcj1zi2"
     },
     {
-      "id": "chrrl6wgz0009j9jxwj11picm",
+      "id": "chrt873c40009lypu2ueziken",
       "name": "Freelancing",
       "parentId": "work",
       "children": [
         {
-          "id": "chrrl6wgz000dj9jx2umu0q0z",
+          "id": "chrt873c4000dlypunbcorelv",
           "name": "Funky Veggies",
-          "parentId": "chrrl6wgz0009j9jxwj11picm",
+          "parentId": "chrt873c40009lypu2ueziken",
           "children": [],
-          "created": 1329518204.1999571,
-          "createdBy": "chrrl6w280000j9jxfu3urxea",
-          "modified": 1329518445.9863446,
-          "modifiedBy": "chrrl6w280000j9jxfu3urxea"
+          "created": 1329617308.5043762,
+          "createdBy": "chrt872vy0000lypumvcj1zi2",
+          "modified": 1329617637.2889543,
+          "modifiedBy": "chrt872vy0000lypumvcj1zi2"
         },
         {
-          "id": "chrrl6wgz000ej9jxea2sy0xw",
+          "id": "chrt873c4000elypuj8k9kdhz",
           "name": "Jojo Lapin & sons",
-          "parentId": "chrrl6wgz0009j9jxwj11picm",
+          "parentId": "chrt873c40009lypu2ueziken",
           "children": [],
-          "created": 1329518204.1999571,
-          "createdBy": "chrrl6w280000j9jxfu3urxea",
-          "modified": 1329518431.7747626,
-          "modifiedBy": "chrrl6w280000j9jxfu3urxea"
+          "created": 1329617308.5043762,
+          "createdBy": "chrt872vy0000lypumvcj1zi2",
+          "modified": 1329617512.5583293,
+          "modifiedBy": "chrt872vy0000lypumvcj1zi2"
         }
       ],
-      "created": 1329518203.670316,
-      "createdBy": "chrrl6w280000j9jxfu3urxea",
-      "modified": 1329518286.3693159,
-      "modifiedBy": "chrrl6w280000j9jxfu3urxea"
+      "created": 1329617304.3336692,
+      "createdBy": "chrt872vy0000lypumvcj1zi2",
+      "modified": 1329617427.740049,
+      "modifiedBy": "chrt872vy0000lypumvcj1zi2"
     }
   ]
 }</code></pre></div><div class="tab-pane sockets"><pre><code>socket.emit('streams.get', {
@@ -858,79 +858,79 @@ API-Version: 0.7.2
 }, callback);</code></pre><div class="step-marker">⬇</div><pre><code>{
   "streams": [
     {
-      "id": "chrrl6wgy0008j9jxcdefnmjv",
+      "id": "chrt873c40008lypu0zneeri2",
       "name": "Noble Works Co.",
       "parentId": "work",
       "children": [
         {
-          "id": "chrrl6wgz000aj9jxct4filhn",
+          "id": "chrt873c4000alypu7kza6wl0",
           "name": "Last Be First",
-          "parentId": "chrrl6wgy0008j9jxcdefnmjv",
+          "parentId": "chrt873c40008lypu0zneeri2",
           "children": [],
-          "created": 1329518224.527861,
-          "createdBy": "chrrl6w280000j9jxfu3urxea",
-          "modified": 1329518243.5892205,
-          "modifiedBy": "chrrl6w280000j9jxfu3urxea"
+          "created": 1329617327.269991,
+          "createdBy": "chrt872vy0000lypumvcj1zi2",
+          "modified": 1329617657.9192479,
+          "modifiedBy": "chrt872vy0000lypumvcj1zi2"
         },
         {
-          "id": "chrrl6wgz000bj9jxtykiw0lm",
+          "id": "chrt873c4000blypugffgw393",
           "name": "Big Tree",
-          "parentId": "chrrl6wgy0008j9jxcdefnmjv",
+          "parentId": "chrt873c40008lypu0zneeri2",
           "children": [],
-          "created": 1329518224.527861,
-          "createdBy": "chrrl6w280000j9jxfu3urxea",
-          "modified": 1329518239.9076993,
-          "modifiedBy": "chrrl6w280000j9jxfu3urxea"
+          "created": 1329617327.269991,
+          "createdBy": "chrt872vy0000lypumvcj1zi2",
+          "modified": 1329617392.3635619,
+          "modifiedBy": "chrt872vy0000lypumvcj1zi2"
         },
         {
-          "id": "chrrl6wgz000cj9jxh4d8w3vh",
+          "id": "chrt873c4000clypuagx6r4z4",
           "name": "Inner Light",
-          "parentId": "chrrl6wgy0008j9jxcdefnmjv",
+          "parentId": "chrt873c40008lypu0zneeri2",
           "children": [],
-          "created": 1329518224.527861,
-          "createdBy": "chrrl6w280000j9jxfu3urxea",
-          "modified": 1329518494.7030683,
-          "modifiedBy": "chrrl6w280000j9jxfu3urxea"
+          "created": 1329617327.269991,
+          "createdBy": "chrt872vy0000lypumvcj1zi2",
+          "modified": 1329617333.9653935,
+          "modifiedBy": "chrt872vy0000lypumvcj1zi2"
         }
       ],
-      "created": 1329518203.670316,
-      "createdBy": "chrrl6w280000j9jxfu3urxea",
-      "modified": 1329518371.7207947,
-      "modifiedBy": "chrrl6w280000j9jxfu3urxea"
+      "created": 1329617304.3336692,
+      "createdBy": "chrt872vy0000lypumvcj1zi2",
+      "modified": 1329617334.6868684,
+      "modifiedBy": "chrt872vy0000lypumvcj1zi2"
     },
     {
-      "id": "chrrl6wgz0009j9jxwj11picm",
+      "id": "chrt873c40009lypu2ueziken",
       "name": "Freelancing",
       "parentId": "work",
       "children": [
         {
-          "id": "chrrl6wgz000dj9jx2umu0q0z",
+          "id": "chrt873c4000dlypunbcorelv",
           "name": "Funky Veggies",
-          "parentId": "chrrl6wgz0009j9jxwj11picm",
+          "parentId": "chrt873c40009lypu2ueziken",
           "children": [],
-          "created": 1329518204.1999571,
-          "createdBy": "chrrl6w280000j9jxfu3urxea",
-          "modified": 1329518445.9863446,
-          "modifiedBy": "chrrl6w280000j9jxfu3urxea"
+          "created": 1329617308.5043762,
+          "createdBy": "chrt872vy0000lypumvcj1zi2",
+          "modified": 1329617637.2889543,
+          "modifiedBy": "chrt872vy0000lypumvcj1zi2"
         },
         {
-          "id": "chrrl6wgz000ej9jxea2sy0xw",
+          "id": "chrt873c4000elypuj8k9kdhz",
           "name": "Jojo Lapin & sons",
-          "parentId": "chrrl6wgz0009j9jxwj11picm",
+          "parentId": "chrt873c40009lypu2ueziken",
           "children": [],
-          "created": 1329518204.1999571,
-          "createdBy": "chrrl6w280000j9jxfu3urxea",
-          "modified": 1329518431.7747626,
-          "modifiedBy": "chrrl6w280000j9jxfu3urxea"
+          "created": 1329617308.5043762,
+          "createdBy": "chrt872vy0000lypumvcj1zi2",
+          "modified": 1329617512.5583293,
+          "modifiedBy": "chrt872vy0000lypumvcj1zi2"
         }
       ],
-      "created": 1329518203.670316,
-      "createdBy": "chrrl6w280000j9jxfu3urxea",
-      "modified": 1329518286.3693159,
-      "modifiedBy": "chrrl6w280000j9jxfu3urxea"
+      "created": 1329617304.3336692,
+      "createdBy": "chrt872vy0000lypumvcj1zi2",
+      "modified": 1329617427.740049,
+      "modifiedBy": "chrt872vy0000lypumvcj1zi2"
     }
   ]
-}</code></pre></div></div></div></aside></section><section id="methods-streams-streams-create" class="method"><h3 id="create-stream">Create stream</h3>
+}</code></pre></div></div></div></aside></section><section id="methods-streams-streams-create" class="method"> <h3 id="create-stream">Create stream</h3>
 <div class="content"><div class="meta"><span class="method-id"><span class="label">id</span><span class="label-value"><code>streams.create</code></span></span><span class="http"><span class="label">HTTP</span><span class="label-value"><code>POST /streams</code></span></span></div><div class="intro"><p>Creates a new stream.</p>
 </div><h4 id="parameters">Parameters</h4>
 <p>The new stream&#39;s data: see <a href="data-structure-stream">stream</a>.</p>
@@ -951,14 +951,14 @@ API-Version: 0.7.2
     "name": "Diastolic pressure",
     "parentId": "heart",
     "children": [],
-    "created": 1392632093.411,
-    "createdBy": "chrrl6w290001j9jx0dqjqsgd",
-    "modified": 1392632093.411,
-    "modifiedBy": "chrrl6w290001j9jx0dqjqsgd"
+    "created": 1392731199.653,
+    "createdBy": "chrt872vz0001lypuuh4qzsx7",
+    "modified": 1392731199.653,
+    "modifiedBy": "chrt872vz0001lypuuh4qzsx7"
   }
 }</code></pre></div><div class="tab-pane http"><pre><code>curl -i -X POST -d '{"id":"diastolic","name":"Diastolic pressure","parentId":"heart"}' https://${username}.pryv.io/streams?auth=${token}</code></pre><div class="step-marker">⬇</div><pre><code>HTTP/1.1 201 Created
 Content-Type: application/json; charset=utf-8
-API-Version: 0.7.2
+API-Version: 0.7.3
 
 {
   "stream": {
@@ -966,10 +966,10 @@ API-Version: 0.7.2
     "name": "Diastolic pressure",
     "parentId": "heart",
     "children": [],
-    "created": 1392632093.411,
-    "createdBy": "chrrl6w290001j9jx0dqjqsgd",
-    "modified": 1392632093.411,
-    "modifiedBy": "chrrl6w290001j9jx0dqjqsgd"
+    "created": 1392731199.653,
+    "createdBy": "chrt872vz0001lypuuh4qzsx7",
+    "modified": 1392731199.653,
+    "modifiedBy": "chrt872vz0001lypuuh4qzsx7"
   }
 }</code></pre></div><div class="tab-pane sockets"><pre><code>socket.emit('streams.create', {
   "id": "diastolic",
@@ -981,12 +981,12 @@ API-Version: 0.7.2
     "name": "Diastolic pressure",
     "parentId": "heart",
     "children": [],
-    "created": 1392632093.411,
-    "createdBy": "chrrl6w290001j9jx0dqjqsgd",
-    "modified": 1392632093.411,
-    "modifiedBy": "chrrl6w290001j9jx0dqjqsgd"
+    "created": 1392731199.653,
+    "createdBy": "chrt872vz0001lypuuh4qzsx7",
+    "modified": 1392731199.653,
+    "modifiedBy": "chrt872vz0001lypuuh4qzsx7"
   }
-}</code></pre></div></div></div></aside></section><section id="methods-streams-streams-update" class="method"><h3 id="update-stream">Update stream</h3>
+}</code></pre></div></div></div></aside></section><section id="methods-streams-streams-update" class="method"> <h3 id="update-stream">Update stream</h3>
 <div class="content"><div class="meta"><span class="method-id"><span class="label">id</span><span class="label-value"><code>streams.update</code></span></span><span class="http"><span class="label">HTTP</span><span class="label-value"><code>PUT /streams/{id}</code></span></span></div><div class="intro"><p>Modifies the stream.</p>
 </div><h4 id="parameters">Parameters</h4>
 <table class="definitions"><tr><th><code>id</code></th><td><div class="header"><span class="type"><a href="data-structure-identity">identity</a></span><span class="http"><span class="label">HTTP</span><span class="label-value"><span>set in request path</span></span></span></div><div class="description"><p>The id of the stream.</p>
@@ -1004,26 +1004,26 @@ API-Version: 0.7.2
 }</code></pre><div class="step-marker">⬇</div><pre><code>{
   "stream": {
     "name": "Slothing",
-    "modified": 1392632093.754,
-    "modifiedBy": "chrrl6w290001j9jx0dqjqsgd",
+    "modified": 1392731199.964,
+    "modifiedBy": "chrt872vz0001lypuuh4qzsx7",
     "id": "sport",
     "parentId": null,
-    "created": 1329518189.411,
-    "createdBy": "chrrl6w280000j9jxfu3urxea"
+    "created": 1329617295.653,
+    "createdBy": "chrt872vy0000lypumvcj1zi2"
   }
 }</code></pre></div><div class="tab-pane http"><pre><code>curl -i -X PUT -d '{"name":"Slothing"}' https://${username}.pryv.io/streams/sport?auth=${token}</code></pre><div class="step-marker">⬇</div><pre><code>HTTP/1.1 200 OK
 Content-Type: application/json; charset=utf-8
-API-Version: 0.7.2
+API-Version: 0.7.3
 
 {
   "stream": {
     "name": "Slothing",
-    "modified": 1392632093.754,
-    "modifiedBy": "chrrl6w290001j9jx0dqjqsgd",
+    "modified": 1392731199.964,
+    "modifiedBy": "chrt872vz0001lypuuh4qzsx7",
     "id": "sport",
     "parentId": null,
-    "created": 1329518189.411,
-    "createdBy": "chrrl6w280000j9jxfu3urxea"
+    "created": 1329617295.653,
+    "createdBy": "chrt872vy0000lypumvcj1zi2"
   }
 }</code></pre></div><div class="tab-pane sockets"><pre><code>socket.emit('streams.update', {
   "id": "sport",
@@ -1033,14 +1033,14 @@ API-Version: 0.7.2
 }, callback);</code></pre><div class="step-marker">⬇</div><pre><code>{
   "stream": {
     "name": "Slothing",
-    "modified": 1392632093.754,
-    "modifiedBy": "chrrl6w290001j9jx0dqjqsgd",
+    "modified": 1392731199.964,
+    "modifiedBy": "chrt872vz0001lypuuh4qzsx7",
     "id": "sport",
     "parentId": null,
-    "created": 1329518189.411,
-    "createdBy": "chrrl6w280000j9jxfu3urxea"
+    "created": 1329617295.653,
+    "createdBy": "chrt872vy0000lypumvcj1zi2"
   }
-}</code></pre></div></div></div></aside></section><section id="methods-streams-streams-delete" class="method"><h3 id="delete-stream">Delete stream</h3>
+}</code></pre></div></div></div></aside></section><section id="methods-streams-streams-delete" class="method"> <h3 id="delete-stream">Delete stream</h3>
 <div class="content"><div class="meta"><span class="method-id"><span class="label">id</span><span class="label-value"><code>streams.delete</code></span></span><span class="http"><span class="label">HTTP</span><span class="label-value"><code>DELETE /streams/{id}</code></span></span></div><div class="intro"><p>Trashes or deletes the specified stream, depending on its current state:</p>
 <ul>
 <li>If the stream is not already in the trash, it will be moved to the trash (i.e. flagged as <code>trashed</code>)</li>
@@ -1060,57 +1060,57 @@ API-Version: 0.7.2
 }</code></pre><div class="step-marker">⬇</div><pre><code>{
   "event": {
     "trashed": true,
-    "modified": 1392632093.754,
-    "modifiedBy": "chrrl6w290001j9jx0dqjqsgd",
+    "modified": 1392731199.964,
+    "modifiedBy": "chrt872vz0001lypuuh4qzsx7",
     "id": "weight",
     "name": "Weight",
     "parentId": "health",
     "children": [],
-    "created": 1329518212.6362374,
-    "createdBy": "chrrl6w280000j9jxfu3urxea"
+    "created": 1329617309.3516908,
+    "createdBy": "chrt872vy0000lypumvcj1zi2"
   }
 }</code></pre></div><div class="tab-pane http"><pre><code>curl -i -X DELETE -d '{}' https://${username}.pryv.io/streams/weight?auth=${token}</code></pre><div class="step-marker">⬇</div><pre><code>HTTP/1.1 200 OK
 Content-Type: application/json; charset=utf-8
-API-Version: 0.7.2
+API-Version: 0.7.3
 
 {
   "event": {
     "trashed": true,
-    "modified": 1392632093.754,
-    "modifiedBy": "chrrl6w290001j9jx0dqjqsgd",
+    "modified": 1392731199.964,
+    "modifiedBy": "chrt872vz0001lypuuh4qzsx7",
     "id": "weight",
     "name": "Weight",
     "parentId": "health",
     "children": [],
-    "created": 1329518212.6362374,
-    "createdBy": "chrrl6w280000j9jxfu3urxea"
+    "created": 1329617309.3516908,
+    "createdBy": "chrt872vy0000lypumvcj1zi2"
   }
 }</code></pre></div><div class="tab-pane sockets"><pre><code>socket.emit('streams.delete', {
   "id": "weight"
 }, callback);</code></pre><div class="step-marker">⬇</div><pre><code>{
   "event": {
     "trashed": true,
-    "modified": 1392632093.754,
-    "modifiedBy": "chrrl6w290001j9jx0dqjqsgd",
+    "modified": 1392731199.964,
+    "modifiedBy": "chrt872vz0001lypuuh4qzsx7",
     "id": "weight",
     "name": "Weight",
     "parentId": "health",
     "children": [],
-    "created": 1329518212.6362374,
-    "createdBy": "chrrl6w280000j9jxfu3urxea"
+    "created": 1329617309.3516908,
+    "createdBy": "chrt872vy0000lypumvcj1zi2"
   }
 }</code></pre></div></div></div></aside></section></section><section id="methods-accesses"><h2 id="accesses">Accesses</h2>
 <div class="content"><div class="intro"><p>Methods to retrieve and manipulate <a href="data-structure-access">accesses</a>, e.g. for sharing.
 Any app can manage shared accesses whose permissions are a subset of its own. (Full access management is available to trusted apps.)</p>
-</div></div><section id="methods-accesses-accesses-get" class="method"><h3 id="get-accesses">Get accesses</h3>
+</div></div><section id="methods-accesses-accesses-get" class="method"> <h3 id="get-accesses">Get accesses</h3>
 <div class="content"><div class="meta"><span class="method-id"><span class="label">id</span><span class="label-value"><code>accesses.get</code></span></span><span class="http"><span class="label">HTTP</span><span class="label-value"><code>GET /accesses</code></span></span></div><div class="intro"><p>Gets manageable accesses.</p>
 </div><h4 id="result">Result</h4>
 <span class="http"><span class="label">HTTP</span><span class="label-value"><code>200 OK</code></span></span><table class="definitions"><tr><th><code>accesses</code></th><td><div class="header"><span class="type">array of <a href="data-structure-access">accesses</a></span></div><div class="description"><p>All manageable accesses in the user&#39;s account, ordered by name.</p>
 </div></td></tr></table></div><aside><div class="example"><div class="tab-content"><div class="tab-pane json active"><pre><code>{}</code></pre><div class="step-marker">⬇</div><pre><code>{
   "accesses": [
     {
-      "id": "chrrl6w2a0004j9jxr0qmu1a0",
-      "token": "chrrl6w2a0005j9jx8171wzd6",
+      "id": "chrt872w00004lypujmtnl09g",
+      "token": "chrt872w00005lypualk1jg1i",
       "type": "shared",
       "name": "Arthur",
       "permissions": [
@@ -1119,21 +1119,21 @@ Any app can manage shared accesses whose permissions are a subset of its own. (F
           "level": "contribute"
         }
       ],
-      "created": 1392588892.882,
-      "createdBy": "chrrl6w290001j9jx0dqjqsgd",
-      "modified": 1392588892.882,
-      "modifiedBy": "chrrl6w290001j9jx0dqjqsgd"
+      "created": 1392687999.072,
+      "createdBy": "chrt872vz0001lypuuh4qzsx7",
+      "modified": 1392687999.072,
+      "modifiedBy": "chrt872vz0001lypuuh4qzsx7"
     }
   ]
 }</code></pre></div><div class="tab-pane http"><pre><code>curl -i https://${username}.pryv.io/accesses?auth=${token}</code></pre><div class="step-marker">⬇</div><pre><code>HTTP/1.1 200 OK
 Content-Type: application/json; charset=utf-8
-API-Version: 0.7.2
+API-Version: 0.7.3
 
 {
   "accesses": [
     {
-      "id": "chrrl6w2a0004j9jxr0qmu1a0",
-      "token": "chrrl6w2a0005j9jx8171wzd6",
+      "id": "chrt872w00004lypujmtnl09g",
+      "token": "chrt872w00005lypualk1jg1i",
       "type": "shared",
       "name": "Arthur",
       "permissions": [
@@ -1142,17 +1142,17 @@ API-Version: 0.7.2
           "level": "contribute"
         }
       ],
-      "created": 1392588892.882,
-      "createdBy": "chrrl6w290001j9jx0dqjqsgd",
-      "modified": 1392588892.882,
-      "modifiedBy": "chrrl6w290001j9jx0dqjqsgd"
+      "created": 1392687999.072,
+      "createdBy": "chrt872vz0001lypuuh4qzsx7",
+      "modified": 1392687999.072,
+      "modifiedBy": "chrt872vz0001lypuuh4qzsx7"
     }
   ]
 }</code></pre></div><div class="tab-pane sockets"><pre><code>socket.emit('accesses.get', {}, callback);</code></pre><div class="step-marker">⬇</div><pre><code>{
   "accesses": [
     {
-      "id": "chrrl6w2a0004j9jxr0qmu1a0",
-      "token": "chrrl6w2a0005j9jx8171wzd6",
+      "id": "chrt872w00004lypujmtnl09g",
+      "token": "chrt872w00005lypualk1jg1i",
       "type": "shared",
       "name": "Arthur",
       "permissions": [
@@ -1161,13 +1161,13 @@ API-Version: 0.7.2
           "level": "contribute"
         }
       ],
-      "created": 1392588892.882,
-      "createdBy": "chrrl6w290001j9jx0dqjqsgd",
-      "modified": 1392588892.882,
-      "modifiedBy": "chrrl6w290001j9jx0dqjqsgd"
+      "created": 1392687999.072,
+      "createdBy": "chrt872vz0001lypuuh4qzsx7",
+      "modified": 1392687999.072,
+      "modifiedBy": "chrt872vz0001lypuuh4qzsx7"
     }
   ]
-}</code></pre></div></div></div></aside></section><section id="methods-accesses-accesses-create" class="method"><h3 id="create-access">Create access</h3>
+}</code></pre></div></div></div></aside></section><section id="methods-accesses-accesses-create" class="method"> <h3 id="create-access">Create access</h3>
 <div class="content"><div class="meta"><span class="method-id"><span class="label">id</span><span class="label-value"><code>accesses.create</code></span></span><span class="http"><span class="label">HTTP</span><span class="label-value"><code>POST /accesses</code></span></span></div><div class="intro"><p>Creates a new access. You can only create accesses whose permissions are a subset of those granted to your own access token.</p>
 </div><h4 id="parameters">Parameters</h4>
 <p>An object with the new access&#39;s data: see <a href="data-structure-access">access</a>.</p>
@@ -1185,8 +1185,8 @@ API-Version: 0.7.2
   ]
 }</code></pre><div class="step-marker">⬇</div><pre><code>{
   "access": {
-    "id": "chrrl6w2a0006j9jxdu2ca0bo",
-    "token": "chrrl6w2a0007j9jxlxyiuirm",
+    "id": "chrt872w00006lypuyxxqrb0y",
+    "token": "chrt872w00007lypud6utsu4t",
     "type": "shared",
     "name": "For colleagues",
     "permissions": [
@@ -1195,19 +1195,19 @@ API-Version: 0.7.2
         "level": "read"
       }
     ],
-    "created": 1392632092.882,
-    "createdBy": "chrrl6w290001j9jx0dqjqsgd",
-    "modified": 1392632092.882,
-    "modifiedBy": "chrrl6w290001j9jx0dqjqsgd"
+    "created": 1392731199.072,
+    "createdBy": "chrt872vz0001lypuuh4qzsx7",
+    "modified": 1392731199.072,
+    "modifiedBy": "chrt872vz0001lypuuh4qzsx7"
   }
 }</code></pre></div><div class="tab-pane http"><pre><code>curl -i -X POST -d '{"name":"For colleagues","permissions":[{"streamId":"work","level":"read"}]}' https://${username}.pryv.io/accesses?auth=${token}</code></pre><div class="step-marker">⬇</div><pre><code>HTTP/1.1 201 Created
 Content-Type: application/json; charset=utf-8
-API-Version: 0.7.2
+API-Version: 0.7.3
 
 {
   "access": {
-    "id": "chrrl6w2a0006j9jxdu2ca0bo",
-    "token": "chrrl6w2a0007j9jxlxyiuirm",
+    "id": "chrt872w00006lypuyxxqrb0y",
+    "token": "chrt872w00007lypud6utsu4t",
     "type": "shared",
     "name": "For colleagues",
     "permissions": [
@@ -1216,10 +1216,10 @@ API-Version: 0.7.2
         "level": "read"
       }
     ],
-    "created": 1392632092.882,
-    "createdBy": "chrrl6w290001j9jx0dqjqsgd",
-    "modified": 1392632092.882,
-    "modifiedBy": "chrrl6w290001j9jx0dqjqsgd"
+    "created": 1392731199.072,
+    "createdBy": "chrt872vz0001lypuuh4qzsx7",
+    "modified": 1392731199.072,
+    "modifiedBy": "chrt872vz0001lypuuh4qzsx7"
   }
 }</code></pre></div><div class="tab-pane sockets"><pre><code>socket.emit('accesses.create', {
   "name": "For colleagues",
@@ -1231,8 +1231,8 @@ API-Version: 0.7.2
   ]
 }, callback);</code></pre><div class="step-marker">⬇</div><pre><code>{
   "access": {
-    "id": "chrrl6w2a0006j9jxdu2ca0bo",
-    "token": "chrrl6w2a0007j9jxlxyiuirm",
+    "id": "chrt872w00006lypuyxxqrb0y",
+    "token": "chrt872w00007lypud6utsu4t",
     "type": "shared",
     "name": "For colleagues",
     "permissions": [
@@ -1241,12 +1241,12 @@ API-Version: 0.7.2
         "level": "read"
       }
     ],
-    "created": 1392632092.882,
-    "createdBy": "chrrl6w290001j9jx0dqjqsgd",
-    "modified": 1392632092.882,
-    "modifiedBy": "chrrl6w290001j9jx0dqjqsgd"
+    "created": 1392731199.072,
+    "createdBy": "chrt872vz0001lypuuh4qzsx7",
+    "modified": 1392731199.072,
+    "modifiedBy": "chrt872vz0001lypuuh4qzsx7"
   }
-}</code></pre></div></div></div></aside></section><section id="methods-accesses-accesses-update" class="method"><h3 id="update-access">Update access</h3>
+}</code></pre></div></div></div></aside></section><section id="methods-accesses-accesses-update" class="method"> <h3 id="update-access">Update access</h3>
 <div class="content"><div class="meta"><span class="method-id"><span class="label">id</span><span class="label-value"><code>accesses.update</code></span></span><span class="http"><span class="label">HTTP</span><span class="label-value"><code>PUT /accesses/{id}</code></span></span></div><div class="intro"><p>Modifies the specified access. You can only modify accesses whose permissions are a subset of those granted to your own access token.</p>
 </div><h4 id="parameters">Parameters</h4>
 <table class="definitions"><tr><th><code>id</code></th><td><div class="header"><span class="type"><a href="data-structure-identity">identity</a></span><span class="http"><span class="label">HTTP</span><span class="label-value"><span>set in request path</span></span></span></div><div class="description"><p>The id of the access.</p>
@@ -1255,7 +1255,7 @@ API-Version: 0.7.2
 <span class="http"><span class="label">HTTP</span><span class="label-value"><code>200 OK</code></span></span><table class="definitions"><tr><th><code>access</code></th><td><div class="header"><span class="type"><a href="data-structure-access">access</a></span></div><div class="description"><p>The updated access.</p>
 </div></td></tr></table></div><aside><div class="example"><p>Adjusting permission level</p>
 <div class="tab-content"><div class="tab-pane json active"><pre><code>{
-  "id": "chrrl6w2a0006j9jxdu2ca0bo",
+  "id": "chrt872w00006lypuyxxqrb0y",
   "update": {
     "permissions": [
       {
@@ -1272,18 +1272,18 @@ API-Version: 0.7.2
         "streamId": "work"
       }
     ],
-    "modified": 1392632093.754,
-    "modifiedBy": "chrrl6w290001j9jx0dqjqsgd",
-    "id": "chrrl6w2a0006j9jxdu2ca0bo",
-    "token": "chrrl6w2a0007j9jxlxyiuirm",
+    "modified": 1392731199.964,
+    "modifiedBy": "chrt872vz0001lypuuh4qzsx7",
+    "id": "chrt872w00006lypuyxxqrb0y",
+    "token": "chrt872w00007lypud6utsu4t",
     "type": "shared",
     "name": "For colleagues",
-    "created": 1392632092.882,
-    "createdBy": "chrrl6w290001j9jx0dqjqsgd"
+    "created": 1392731199.072,
+    "createdBy": "chrt872vz0001lypuuh4qzsx7"
   }
-}</code></pre></div><div class="tab-pane http"><pre><code>curl -i -X PUT -d '{"permissions":[{"level":"contribute","streamId":"work"}]}' https://${username}.pryv.io/accesses/chrrl6w2a0006j9jxdu2ca0bo?auth=${token}</code></pre><div class="step-marker">⬇</div><pre><code>HTTP/1.1 200 OK
+}</code></pre></div><div class="tab-pane http"><pre><code>curl -i -X PUT -d '{"permissions":[{"level":"contribute","streamId":"work"}]}' https://${username}.pryv.io/accesses/chrt872w00006lypuyxxqrb0y?auth=${token}</code></pre><div class="step-marker">⬇</div><pre><code>HTTP/1.1 200 OK
 Content-Type: application/json; charset=utf-8
-API-Version: 0.7.2
+API-Version: 0.7.3
 
 {
   "access": {
@@ -1293,17 +1293,17 @@ API-Version: 0.7.2
         "streamId": "work"
       }
     ],
-    "modified": 1392632093.754,
-    "modifiedBy": "chrrl6w290001j9jx0dqjqsgd",
-    "id": "chrrl6w2a0006j9jxdu2ca0bo",
-    "token": "chrrl6w2a0007j9jxlxyiuirm",
+    "modified": 1392731199.964,
+    "modifiedBy": "chrt872vz0001lypuuh4qzsx7",
+    "id": "chrt872w00006lypuyxxqrb0y",
+    "token": "chrt872w00007lypud6utsu4t",
     "type": "shared",
     "name": "For colleagues",
-    "created": 1392632092.882,
-    "createdBy": "chrrl6w290001j9jx0dqjqsgd"
+    "created": 1392731199.072,
+    "createdBy": "chrt872vz0001lypuuh4qzsx7"
   }
 }</code></pre></div><div class="tab-pane sockets"><pre><code>socket.emit('accesses.update', {
-  "id": "chrrl6w2a0006j9jxdu2ca0bo",
+  "id": "chrt872w00006lypuyxxqrb0y",
   "update": {
     "permissions": [
       {
@@ -1320,31 +1320,31 @@ API-Version: 0.7.2
         "streamId": "work"
       }
     ],
-    "modified": 1392632093.754,
-    "modifiedBy": "chrrl6w290001j9jx0dqjqsgd",
-    "id": "chrrl6w2a0006j9jxdu2ca0bo",
-    "token": "chrrl6w2a0007j9jxlxyiuirm",
+    "modified": 1392731199.964,
+    "modifiedBy": "chrt872vz0001lypuuh4qzsx7",
+    "id": "chrt872w00006lypuyxxqrb0y",
+    "token": "chrt872w00007lypud6utsu4t",
     "type": "shared",
     "name": "For colleagues",
-    "created": 1392632092.882,
-    "createdBy": "chrrl6w290001j9jx0dqjqsgd"
+    "created": 1392731199.072,
+    "createdBy": "chrt872vz0001lypuuh4qzsx7"
   }
-}</code></pre></div></div></div></aside></section><section id="methods-accesses-accesses-delete" class="method"><h3 id="delete-access">Delete access</h3>
+}</code></pre></div></div></div></aside></section><section id="methods-accesses-accesses-delete" class="method"> <h3 id="delete-access">Delete access</h3>
 <div class="content"><div class="meta"><span class="method-id"><span class="label">id</span><span class="label-value"><code>accesses.delete</code></span></span><span class="http"><span class="label">HTTP</span><span class="label-value"><code>DELETE /accesses/{id}</code></span></span></div><div class="intro"><p>Deletes the specified access. You can only delete accesses whose permissions are a subset of those granted to your own access token.</p>
 </div><h4 id="parameters">Parameters</h4>
 <table class="definitions"><tr><th><code>id</code></th><td><div class="header"><span class="type"><a href="data-structure-identity">identity</a></span><span class="http"><span class="label">HTTP</span><span class="label-value"><span>set in request path</span></span></span></div><div class="description"><p>The id of the access.</p>
 </div></td></tr></table><h4 id="result">Result</h4>
 <span class="http"><span class="label">HTTP</span><span class="label-value"><code>204 No content</code></span></span></div><aside><div class="example"><div class="tab-content"><div class="tab-pane json active"><pre><code>{
-  "id": "chrrl6w2a0004j9jxr0qmu1a0"
-}</code></pre><div class="step-marker">⬇</div><pre><code>{}</code></pre></div><div class="tab-pane http"><pre><code>curl -i -X DELETE -d '{}' https://${username}.pryv.io/accesses/chrrl6w2a0004j9jxr0qmu1a0?auth=${token}</code></pre><div class="step-marker">⬇</div><pre><code>HTTP/1.1 204 No content
+  "id": "chrt872w00004lypujmtnl09g"
+}</code></pre><div class="step-marker">⬇</div><pre><code>{}</code></pre></div><div class="tab-pane http"><pre><code>curl -i -X DELETE -d '{}' https://${username}.pryv.io/accesses/chrt872w00004lypujmtnl09g?auth=${token}</code></pre><div class="step-marker">⬇</div><pre><code>HTTP/1.1 204 No content
 Content-Type: application/json; charset=utf-8
-API-Version: 0.7.2
+API-Version: 0.7.3
 
 {}</code></pre></div><div class="tab-pane sockets"><pre><code>socket.emit('accesses.delete', {
-  "id": "chrrl6w2a0004j9jxr0qmu1a0"
+  "id": "chrt872w00004lypujmtnl09g"
 }, callback);</code></pre><div class="step-marker">⬇</div><pre><code>{}</code></pre></div></div></div></aside></section></section><section id="methods-profile"><h2 id="profile-sets">Profile sets</h2>
 <div class="content"><div class="intro"><p>Methods to read and write profile sets. Profile sets are plain key-value stores of user-level settings.</p>
-</div></div><section id="methods-profile-profile-getPublic" class="method"><h3 id="get-public-user-profile">Get public user profile</h3>
+</div></div><section id="methods-profile-profile-getPublic" class="method"> <h3 id="get-public-user-profile">Get public user profile</h3>
 <div class="content"><div class="meta"><span class="method-id"><span class="label">id</span><span class="label-value"><code>profile.getPublic</code></span></span><span class="http"><span class="label">HTTP</span><span class="label-value"><code>GET /profile/public</code></span></span></div><div class="intro"><p>Gets the user&#39;s public profile set, which contains the information the user makes publicly available (e.g. avatar image). Available to all accesses.</p>
 </div><h4 id="result">Result</h4>
 <span class="http"><span class="label">HTTP</span><span class="label-value"><code>200 OK</code></span></span><table class="definitions"><tr><th><code>profile</code></th><td><div class="header"><span class="type">object</span></div><div class="description"><p>The user&#39;s current public profile set.</p>
@@ -1354,7 +1354,7 @@ API-Version: 0.7.2
   }
 }</code></pre></div><div class="tab-pane http"><pre><code>curl -i https://${username}.pryv.io/profile/public?auth=${token}</code></pre><div class="step-marker">⬇</div><pre><code>HTTP/1.1 200 OK
 Content-Type: application/json; charset=utf-8
-API-Version: 0.7.2
+API-Version: 0.7.3
 
 {
   "profile": {
@@ -1364,7 +1364,7 @@ API-Version: 0.7.2
   "profile": {
     "avatarURL": "http://www.gravatar.com/avatar/1beb9d80bf842c1d90ebdab356908538"
   }
-}</code></pre></div></div></div></aside></section><section id="methods-profile-profile-getApp" class="method"><h3 id="get-app-profile">Get app profile</h3>
+}</code></pre></div></div></div></aside></section><section id="methods-profile-profile-getApp" class="method"> <h3 id="get-app-profile">Get app profile</h3>
 <div class="content"><div class="meta"><span class="method-id"><span class="label">id</span><span class="label-value"><code>profile.getApp</code></span></span><span class="http"><span class="label">HTTP</span><span class="label-value"><code>GET /profile/app</code></span></span></div><div class="intro"><p>Gets the app&#39;s dedicated user profile set, which contains app-level settings for the user. Available to app accesses.</p>
 </div><h4 id="result">Result</h4>
 <span class="http"><span class="label">HTTP</span><span class="label-value"><code>200 OK</code></span></span><table class="definitions"><tr><th><code>profile</code></th><td><div class="header"><span class="type">object</span></div><div class="description"><p>The app&#39;s current profile set. (Empty if the app never defined any setting.)</p>
@@ -1376,7 +1376,7 @@ API-Version: 0.7.2
   }
 }</code></pre></div><div class="tab-pane http"><pre><code>curl -i https://${username}.pryv.io/profile/app?auth=${token}</code></pre><div class="step-marker">⬇</div><pre><code>HTTP/1.1 200 OK
 Content-Type: application/json; charset=utf-8
-API-Version: 0.7.2
+API-Version: 0.7.3
 
 {
   "profile": {
@@ -1390,7 +1390,7 @@ API-Version: 0.7.2
     "setting2": true,
     "setting3": 123
   }
-}</code></pre></div></div></div></aside></section><section id="methods-profile-profile-updateApp" class="method"><h3 id="update-app-profile">Update app profile</h3>
+}</code></pre></div></div></div></aside></section><section id="methods-profile-profile-updateApp" class="method"> <h3 id="update-app-profile">Update app profile</h3>
 <div class="content"><div class="meta"><span class="method-id"><span class="label">id</span><span class="label-value"><code>profile.updateApp</code></span></span><span class="http"><span class="label">HTTP</span><span class="label-value"><code>PUT /profile/app</code></span></span></div><div class="intro"><p>Adds, updates or delete app profile keys.</p>
 <ul>
 <li>To add or update a key, just set its value</li>
@@ -1411,7 +1411,7 @@ API-Version: 0.7.2
   }
 }</code></pre></div><div class="tab-pane http"><pre><code>curl -i -X PUT -d '{"setting1":"new value","setting2":null}' https://${username}.pryv.io/profile/app?auth=${token}</code></pre><div class="step-marker">⬇</div><pre><code>HTTP/1.1 200 OK
 Content-Type: application/json; charset=utf-8
-API-Version: 0.7.2
+API-Version: 0.7.3
 
 {
   "profile": {
@@ -1428,7 +1428,7 @@ API-Version: 0.7.2
   }
 }</code></pre></div></div></div></aside></section></section><section id="methods-utils"><h2 id="utils">Utils</h2>
 <div class="content"><div class="intro"><p>Utility methods that don&#39;t pertain to a particular resource type.</p>
-</div></div><section id="methods-utils-getAccessInfo" class="method"><h3 id="get-current-access-info">Get current access info</h3>
+</div></div><section id="methods-utils-getAccessInfo" class="method"> <h3 id="get-current-access-info">Get current access info</h3>
 <div class="content"><div class="meta"><span class="method-id"><span class="label">id</span><span class="label-value"><code>getAccessInfo</code></span></span><span class="http"><span class="label">HTTP</span><span class="label-value"><code>GET /access-info</code></span></span></div><div class="intro"><p>Retrieves the name, type and permissions of the access in use.</p>
 </div><h4 id="result">Result</h4>
 <span class="http"><span class="label">HTTP</span><span class="label-value"><code>200 OK</code></span></span><table class="definitions"><tr><th><code>name</code></th><td><div class="header"><span class="type">string</span></div><div class="description"><p>The access&#39; name.</p>
@@ -1445,7 +1445,7 @@ API-Version: 0.7.2
   ]
 }</code></pre></div><div class="tab-pane http"><pre><code>curl -i https://${username}.pryv.io/access-info?auth=${token}</code></pre><div class="step-marker">⬇</div><pre><code>HTTP/1.1 200 OK
 Content-Type: application/json; charset=utf-8
-API-Version: 0.7.2
+API-Version: 0.7.3
 
 {
   "name": "my-app-id",
@@ -1465,7 +1465,7 @@ API-Version: 0.7.2
       "level": "contribute"
     }
   ]
-}</code></pre></div></div></div></aside></section><section id="methods-utils-callBatch" class="method"><h3 id="call-batch">Call batch</h3>
+}</code></pre></div></div></div></aside></section><section id="methods-utils-callBatch" class="method"> <h3 id="call-batch">Call batch</h3>
 <div class="content"><div class="meta"><span class="method-id"><span class="label">id</span><span class="label-value"><code>callBatch</code></span></span><span class="http"><span class="label">HTTP</span><span class="label-value"><code>POST /</code></span></span></div><div class="intro"><p>Sends a batch of API methods calls in one go (e.g. for to syncing offline changes when resuming connectivity).</p>
 </div><h4 id="parameters">Parameters</h4>
 <p>Array of method call objects, each defined as follows:</p>
@@ -1506,93 +1506,93 @@ API-Version: 0.7.2
   "results": [
     {
       "event": {
-        "id": "chrrl6wh0000nj9jx762mxtyh",
+        "id": "chrt873c5000nlypuiajfsyzs",
         "time": 1385046854.282,
         "streamId": "heart",
         "tags": [],
         "type": "frequency/bpm",
         "content": 90,
-        "created": 1392632093.412,
-        "createdBy": "chrrl6w290001j9jx0dqjqsgd",
-        "modified": 1392632093.412,
-        "modifiedBy": "chrrl6w290001j9jx0dqjqsgd"
+        "created": 1392731199.654,
+        "createdBy": "chrt872vz0001lypuuh4qzsx7",
+        "modified": 1392731199.654,
+        "modifiedBy": "chrt872vz0001lypuuh4qzsx7"
       }
     },
     {
       "event": {
-        "id": "chrrl6wh0000oj9jxuvcmt4w7",
+        "id": "chrt873c6000olypuk7x8j78d",
         "time": 1385046854.282,
         "streamId": "systolic",
         "tags": [],
         "type": "pressure/mmhg",
         "content": 120,
-        "created": 1392632093.412,
-        "createdBy": "chrrl6w290001j9jx0dqjqsgd",
-        "modified": 1392632093.412,
-        "modifiedBy": "chrrl6w290001j9jx0dqjqsgd"
+        "created": 1392731199.654,
+        "createdBy": "chrt872vz0001lypuuh4qzsx7",
+        "modified": 1392731199.654,
+        "modifiedBy": "chrt872vz0001lypuuh4qzsx7"
       }
     },
     {
       "event": {
-        "id": "chrrl6wh0000pj9jxqy7q72pu",
+        "id": "chrt873c6000plypu6e6db5k2",
         "time": 1385046854.282,
         "streamId": "diastolic",
         "tags": [],
         "type": "pressure/mmhg",
         "content": 80,
-        "created": 1392632093.412,
-        "createdBy": "chrrl6w290001j9jx0dqjqsgd",
-        "modified": 1392632093.412,
-        "modifiedBy": "chrrl6w290001j9jx0dqjqsgd"
+        "created": 1392731199.654,
+        "createdBy": "chrt872vz0001lypuuh4qzsx7",
+        "modified": 1392731199.654,
+        "modifiedBy": "chrt872vz0001lypuuh4qzsx7"
       }
     }
   ]
 }</code></pre></div><div class="tab-pane http"><pre><code>curl -i -X POST -d '[{"methodId":"events.create","params":{"time":1385046854.282,"streamId":"heart","type":"frequency/bpm","content":90}},{"methodId":"events.create","params":{"time":1385046854.282,"streamId":"systolic","type":"pressure/mmhg","content":120}},{"methodId":"events.create","params":{"time":1385046854.282,"streamId":"diastolic","type":"pressure/mmhg","content":80}}]' https://${username}.pryv.io/?auth=${token}</code></pre><div class="step-marker">⬇</div><pre><code>HTTP/1.1 200 OK
 Content-Type: application/json; charset=utf-8
-API-Version: 0.7.2
+API-Version: 0.7.3
 
 {
   "results": [
     {
       "event": {
-        "id": "chrrl6wh0000nj9jx762mxtyh",
+        "id": "chrt873c5000nlypuiajfsyzs",
         "time": 1385046854.282,
         "streamId": "heart",
         "tags": [],
         "type": "frequency/bpm",
         "content": 90,
-        "created": 1392632093.412,
-        "createdBy": "chrrl6w290001j9jx0dqjqsgd",
-        "modified": 1392632093.412,
-        "modifiedBy": "chrrl6w290001j9jx0dqjqsgd"
+        "created": 1392731199.654,
+        "createdBy": "chrt872vz0001lypuuh4qzsx7",
+        "modified": 1392731199.654,
+        "modifiedBy": "chrt872vz0001lypuuh4qzsx7"
       }
     },
     {
       "event": {
-        "id": "chrrl6wh0000oj9jxuvcmt4w7",
+        "id": "chrt873c6000olypuk7x8j78d",
         "time": 1385046854.282,
         "streamId": "systolic",
         "tags": [],
         "type": "pressure/mmhg",
         "content": 120,
-        "created": 1392632093.412,
-        "createdBy": "chrrl6w290001j9jx0dqjqsgd",
-        "modified": 1392632093.412,
-        "modifiedBy": "chrrl6w290001j9jx0dqjqsgd"
+        "created": 1392731199.654,
+        "createdBy": "chrt872vz0001lypuuh4qzsx7",
+        "modified": 1392731199.654,
+        "modifiedBy": "chrt872vz0001lypuuh4qzsx7"
       }
     },
     {
       "event": {
-        "id": "chrrl6wh0000pj9jxqy7q72pu",
+        "id": "chrt873c6000plypu6e6db5k2",
         "time": 1385046854.282,
         "streamId": "diastolic",
         "tags": [],
         "type": "pressure/mmhg",
         "content": 80,
-        "created": 1392632093.412,
-        "createdBy": "chrrl6w290001j9jx0dqjqsgd",
-        "modified": 1392632093.412,
-        "modifiedBy": "chrrl6w290001j9jx0dqjqsgd"
+        "created": 1392731199.654,
+        "createdBy": "chrt872vz0001lypuuh4qzsx7",
+        "modified": 1392731199.654,
+        "modifiedBy": "chrt872vz0001lypuuh4qzsx7"
       }
     }
   ]
@@ -1628,44 +1628,44 @@ API-Version: 0.7.2
   "results": [
     {
       "event": {
-        "id": "chrrl6wh0000nj9jx762mxtyh",
+        "id": "chrt873c5000nlypuiajfsyzs",
         "time": 1385046854.282,
         "streamId": "heart",
         "tags": [],
         "type": "frequency/bpm",
         "content": 90,
-        "created": 1392632093.412,
-        "createdBy": "chrrl6w290001j9jx0dqjqsgd",
-        "modified": 1392632093.412,
-        "modifiedBy": "chrrl6w290001j9jx0dqjqsgd"
+        "created": 1392731199.654,
+        "createdBy": "chrt872vz0001lypuuh4qzsx7",
+        "modified": 1392731199.654,
+        "modifiedBy": "chrt872vz0001lypuuh4qzsx7"
       }
     },
     {
       "event": {
-        "id": "chrrl6wh0000oj9jxuvcmt4w7",
+        "id": "chrt873c6000olypuk7x8j78d",
         "time": 1385046854.282,
         "streamId": "systolic",
         "tags": [],
         "type": "pressure/mmhg",
         "content": 120,
-        "created": 1392632093.412,
-        "createdBy": "chrrl6w290001j9jx0dqjqsgd",
-        "modified": 1392632093.412,
-        "modifiedBy": "chrrl6w290001j9jx0dqjqsgd"
+        "created": 1392731199.654,
+        "createdBy": "chrt872vz0001lypuuh4qzsx7",
+        "modified": 1392731199.654,
+        "modifiedBy": "chrt872vz0001lypuuh4qzsx7"
       }
     },
     {
       "event": {
-        "id": "chrrl6wh0000pj9jxqy7q72pu",
+        "id": "chrt873c6000plypu6e6db5k2",
         "time": 1385046854.282,
         "streamId": "diastolic",
         "tags": [],
         "type": "pressure/mmhg",
         "content": 80,
-        "created": 1392632093.412,
-        "createdBy": "chrrl6w290001j9jx0dqjqsgd",
-        "modified": 1392632093.412,
-        "modifiedBy": "chrrl6w290001j9jx0dqjqsgd"
+        "created": 1392731199.654,
+        "createdBy": "chrt872vz0001lypuuh4qzsx7",
+        "modified": 1392731199.654,
+        "modifiedBy": "chrt872vz0001lypuuh4qzsx7"
       }
     }
   ]
@@ -1673,61 +1673,61 @@ API-Version: 0.7.2
 <div class="intro"><p>This section describes the structure of the different types of objects and values exchanged in the API.</p>
 </div><section id="data-structure-event"><h2 id="event">Event</h2>
 <div class="content"><div class="intro"><p>See also: <a href="/concepts.html#core-events">core concepts</a>.</p>
-</div><table class="definitions"><tr><th><code>id</code></th><td><div class="header"><span class="type"><a href="#data-structure-identity">identity</a></span><span class="label unique">unique</span><span class="label read-only">read-only</span></div><div class="description"><p>The server-assigned identifier for the event.</p>
+</div><table class="definitions"><tr><th><code>id</code></th><td><div class="header"><span class="type"><a href="#data-structure-identity">identity</a></span><span class="label label-default unique">unique</span><span class="label label-default read-only">read-only</span></div><div class="description"><p>The server-assigned identifier for the event.</p>
 </div></td></tr><tr><th><code>streamId</code></th><td><div class="header"><span class="type"><a href="#data-structure-identity">identity</a></span></div><div class="description"><p>The id of the belonging stream.</p>
 </div></td></tr><tr><th><code>time</code></th><td><div class="header"><span class="type"><a href="#data-structure-timestamp">timestamp</a></span></div><div class="description"><p>The event&#39;s time. For period events, this is the time the event started.</p>
-</div></td></tr><tr><th><code>duration</code></th><td><div class="header"><span class="type"><a href="#data-structure-timestamp">timestamp</a></span><span class="label optional">optional</span></div><div class="description"><p>If present, indicates that the event is a period event. <strong>Running period events have a duration set to <code>null</code></strong>. (We use a dedicated field for duration—instead of using the <code>content</code> field—as we do specific processing of event durations, intervals and overlapping.)</p>
+</div></td></tr><tr><th><code>duration</code></th><td><div class="header"><span class="type"><a href="#data-structure-timestamp">timestamp</a></span><span class="label label-default optional">optional</span></div><div class="description"><p>If present, indicates that the event is a period event. <strong>Running period events have a duration set to <code>null</code></strong>. (We use a dedicated field for duration—instead of using the <code>content</code> field—as we do specific processing of event durations, intervals and overlapping.)</p>
 </div></td></tr><tr><th><code>type</code></th><td><div class="header"><span class="type">string</span></div><div class="description"><p>The type of the event. See the <a href="/event-typez.html#directory">event type directory</a> for a list of standard types.</p>
-</div></td></tr><tr><th><code>content</code></th><td><div class="header"><span class="type">any type</span><span class="label optional">optional</span></div><div class="description"><p>The <code>type</code>-specific content of the event, if any.</p>
-</div></td></tr><tr><th><code>tags</code></th><td><div class="header"><span class="type">array of strings</span><span class="label optional">optional (always present in read items)</span></div><div class="description"><p>The tags associated with the event.</p>
-</div></td></tr><tr><th><code>references</code></th><td><div class="header"><span class="type">array of <a href="#data-structure-identity">identity</a></span><span class="label optional">optional (always present in read items)</span></div><div class="description"><p>Other events associated with the event. <em>Note: event references aren&#39;t yet implemented in the API today.</em></p>
-</div></td></tr><tr><th><code>description</code></th><td><div class="header"><span class="type">string</span><span class="label optional">optional</span></div><div class="description"><p>User description or comment for the event.</p>
-</div></td></tr><tr><th><code>attachments</code></th><td><div class="header"><span class="type">array of attachment objects</span><span class="label optional">optional</span><span class="label read-only">read-only</span></div><div class="description"><p>An array describing the files attached to the event. Each item has the following structure:</p>
+</div></td></tr><tr><th><code>content</code></th><td><div class="header"><span class="type">any type</span><span class="label label-default optional">optional</span></div><div class="description"><p>The <code>type</code>-specific content of the event, if any.</p>
+</div></td></tr><tr><th><code>tags</code></th><td><div class="header"><span class="type">array of strings</span><span class="label label-default optional">optional (always present in read items)</span></div><div class="description"><p>The tags associated with the event.</p>
+</div></td></tr><tr><th><code>references</code></th><td><div class="header"><span class="type">array of <a href="#data-structure-identity">identity</a></span><span class="label label-default optional">optional (always present in read items)</span></div><div class="description"><p>Other events associated with the event. <em>Note: event references aren&#39;t yet implemented in the API today.</em></p>
+</div></td></tr><tr><th><code>description</code></th><td><div class="header"><span class="type">string</span><span class="label label-default optional">optional</span></div><div class="description"><p>User description or comment for the event.</p>
+</div></td></tr><tr><th><code>attachments</code></th><td><div class="header"><span class="type">array of attachment objects</span><span class="label label-default optional">optional</span><span class="label label-default read-only">read-only</span></div><div class="description"><p>An array describing the files attached to the event. Each item has the following structure:</p>
 </div><table class="definitions"><tr><th><code>id</code></th><td><div class="header"><span class="type"><a href="#data-structure-identity">identity</a></span></div><div class="description"><p>The file&#39;s id. The attached file&#39;s URL is obtained by appending this id to the event&#39;s resource URL.</p>
 </div></td></tr><tr><th><code>fileName</code></th><td><div class="header"><span class="type">string</span></div><div class="description"><p>The file&#39;s name as uploaded.</p>
 </div></td></tr><tr><th><code>type</code></th><td><div class="header"><span class="type">string</span></div><div class="description"><p>The MIME type of the file.</p>
 </div></td></tr><tr><th><code>size</code></th><td><div class="header"><span class="type">number</span></div><div class="description"><p>The size of the file, in bytes.</p>
-</div></td></tr></table></td></tr><tr><th><code>clientData</code></th><td><div class="header"><span class="type"><a href="#data-structure-key-value">key-value</a></span><span class="label optional">optional</span></div><div class="description"><p>Additional client data for the event.</p>
-</div></td></tr><tr><th><code>trashed</code></th><td><div class="header"><span class="type">boolean</span><span class="label optional">optional</span></div><div class="description"><p><code>true</code> if the event is in the trash.</p>
-</div></td></tr><tr><th><code>created</code></th><td><div class="header"><span class="type"><a href="#data-structure-timestamp">timestamp</a></span><span class="label read-only">read-only</span></div><div class="description"><p>The time the event was created.</p>
-</div></td></tr><tr><th><code>createdBy</code></th><td><div class="header"><span class="type"><a href="#data-structure-identity">identity</a></span><span class="label read-only">read-only</span></div><div class="description"><p>The id of the access used to create the event.</p>
-</div></td></tr><tr><th><code>modified</code></th><td><div class="header"><span class="type"><a href="#data-structure-timestamp">timestamp</a></span><span class="label read-only">read-only</span></div><div class="description"><p>The time the event was last modified.</p>
-</div></td></tr><tr><th><code>modifiedBy</code></th><td><div class="header"><span class="type"><a href="#data-structure-identity">identity</a></span><span class="label read-only">read-only</span></div><div class="description"><p>The id of the last access used to modify the event.</p>
+</div></td></tr></table></td></tr><tr><th><code>clientData</code></th><td><div class="header"><span class="type"><a href="#data-structure-key-value">key-value</a></span><span class="label label-default optional">optional</span></div><div class="description"><p>Additional client data for the event.</p>
+</div></td></tr><tr><th><code>trashed</code></th><td><div class="header"><span class="type">boolean</span><span class="label label-default optional">optional</span></div><div class="description"><p><code>true</code> if the event is in the trash.</p>
+</div></td></tr><tr><th><code>created</code></th><td><div class="header"><span class="type"><a href="#data-structure-timestamp">timestamp</a></span><span class="label label-default read-only">read-only</span></div><div class="description"><p>The time the event was created.</p>
+</div></td></tr><tr><th><code>createdBy</code></th><td><div class="header"><span class="type"><a href="#data-structure-identity">identity</a></span><span class="label label-default read-only">read-only</span></div><div class="description"><p>The id of the access used to create the event.</p>
+</div></td></tr><tr><th><code>modified</code></th><td><div class="header"><span class="type"><a href="#data-structure-timestamp">timestamp</a></span><span class="label label-default read-only">read-only</span></div><div class="description"><p>The time the event was last modified.</p>
+</div></td></tr><tr><th><code>modifiedBy</code></th><td><div class="header"><span class="type"><a href="#data-structure-identity">identity</a></span><span class="label label-default read-only">read-only</span></div><div class="description"><p>The id of the last access used to modify the event.</p>
 </div></td></tr></table></div><aside><div class="example"><p>A picture</p>
 <pre><code>{
-  "id": "chrrl6wh0000sj9jx454r0g32",
-  "time": 1392628493.412,
+  "id": "chrt873c6000slypu2ggk0jma",
+  "time": 1392727599.654,
   "streamId": "diary",
   "tags": [],
   "type": "picture/attached",
   "content": null,
   "attachments": [
     {
-      "id": "chrrl6wh0000tj9jxn9giscji",
+      "id": "chrt873c6000tlypu4h717jip",
       "fileName": "photo.jpg",
       "type": "image/jpeg",
       "size": 2561
     }
   ],
-  "created": 1392628493.412,
-  "createdBy": "chrrl6w2a0004j9jxr0qmu1a0",
-  "modified": 1392628493.412,
-  "modifiedBy": "chrrl6w2a0004j9jxr0qmu1a0"
+  "created": 1392727599.654,
+  "createdBy": "chrt872w00004lypujmtnl09g",
+  "modified": 1392727599.654,
+  "modifiedBy": "chrt872w00004lypujmtnl09g"
 }</code></pre></div><div class="example"><p>An activity</p>
 <pre><code>{
-  "id": "chrrl6wh0000jj9jxdptiy0vd",
-  "time": 1392632093.412,
+  "id": "chrt873c5000jlypuevji7xcd",
+  "time": 1392731199.653,
   "streamId": "jogging",
   "tags": [],
   "type": "activity/pryv",
   "content": null,
-  "created": 1392632093.412,
-  "createdBy": "chrrl6w290001j9jx0dqjqsgd",
-  "modified": 1392632093.412,
-  "modifiedBy": "chrrl6w290001j9jx0dqjqsgd"
+  "created": 1392731199.653,
+  "createdBy": "chrt872vz0001lypuuh4qzsx7",
+  "modified": 1392731199.653,
+  "modifiedBy": "chrt872vz0001lypuuh4qzsx7"
 }</code></pre></div><div class="example"><p>A position</p>
 <pre><code>{
-  "id": "chrrl6wh0000uj9jx2csmhpfc",
+  "id": "chrt873c6000ulypu2rxgwr29",
   "time": 1350373077.359,
   "streamId": "diary",
   "tags": [],
@@ -1736,23 +1736,23 @@ API-Version: 0.7.2
     "latitude": 40.714728,
     "longitude": -73.998672
   },
-  "created": 1392624893.412,
-  "createdBy": "chrrl6w280000j9jxfu3urxea",
-  "modified": 1392624893.412,
-  "modifiedBy": "chrrl6w280000j9jxfu3urxea"
+  "created": 1392723999.654,
+  "createdBy": "chrt872vy0000lypumvcj1zi2",
+  "modified": 1392723999.654,
+  "modifiedBy": "chrt872vy0000lypumvcj1zi2"
 }</code></pre></div></aside></section><section id="data-structure-stream"><h2 id="stream">Stream</h2>
 <div class="content"><div class="intro"><p>See also: <a href="/concepts.html#core-streams">core concepts</a>.</p>
-</div><table class="definitions"><tr><th><code>id</code></th><td><div class="header"><span class="type"><a href="#data-structure-identity">identity</a></span><span class="label unique">unique</span><span class="label read-only">read-only (except at creation)</span></div><div class="description"><p>The identifier for the stream. Automatically generated if not set when creating the stream; <strong>slugified if necessary</strong>.</p>
-</div></td></tr><tr><th><code>name</code></th><td><div class="header"><span class="type">string</span><span class="label unique">unique among siblings</span></div><div class="description"><p>A name identifying the stream for users. The name must be unique among the stream&#39;s siblings in the streams tree structure.</p>
-</div></td></tr><tr><th><code>parentId</code></th><td><div class="header"><span class="type"><a href="#data-structure-identity">identity</a></span><span class="label optional">optional</span></div><div class="description"><p>The identifier of the stream&#39;s parent, if any. A value of <code>null</code> indicates that the stream has no parent (i.e. root stream).</p>
-</div></td></tr><tr><th><code>singleActivity</code></th><td><div class="header"><span class="type">boolean</span><span class="label optional">optional</span></div><div class="description"><p>If specified and <code>true</code>, the system will ensure that period events in this stream and its children never overlap.</p>
-</div></td></tr><tr><th><code>clientData</code></th><td><div class="header"><span class="type"><a href="#data-structure-key-value">key-value</a></span><span class="label optional">optional</span></div><div class="description"><p>Additional client data for the stream.</p>
-</div></td></tr><tr><th><code>children</code></th><td><div class="header"><span class="type">array of streams</span><span class="label read-only">read-only</span></div><div class="description"><p>The stream&#39;s sub-streams, if any. This field cannot be set in requests creating a new streams: streams are created individually by design.</p>
-</div></td></tr><tr><th><code>trashed</code></th><td><div class="header"><span class="type">boolean</span><span class="label optional">optional</span></div><div class="description"><p><code>true</code> if the stream is in the trash.</p>
-</div></td></tr><tr><th><code>created</code></th><td><div class="header"><span class="type"><a href="#data-structure-timestamp">timestamp</a></span><span class="label read-only">read-only</span></div><div class="description"><p>The time the stream was created.</p>
-</div></td></tr><tr><th><code>createdBy</code></th><td><div class="header"><span class="type"><a href="#data-structure-identity">identity</a></span><span class="label read-only">read-only</span></div><div class="description"><p>The id of the access used to create the stream.</p>
-</div></td></tr><tr><th><code>modified</code></th><td><div class="header"><span class="type"><a href="#data-structure-timestamp">timestamp</a></span><span class="label read-only">read-only</span></div><div class="description"><p>The time the stream was last modified.</p>
-</div></td></tr><tr><th><code>modifiedBy</code></th><td><div class="header"><span class="type"><a href="#data-structure-identity">identity</a></span><span class="label read-only">read-only</span></div><div class="description"><p>The id of the last access used to modify the stream.</p>
+</div><table class="definitions"><tr><th><code>id</code></th><td><div class="header"><span class="type"><a href="#data-structure-identity">identity</a></span><span class="label label-default unique">unique</span><span class="label label-default read-only">read-only (except at creation)</span></div><div class="description"><p>The identifier for the stream. Automatically generated if not set when creating the stream; <strong>slugified if necessary</strong>.</p>
+</div></td></tr><tr><th><code>name</code></th><td><div class="header"><span class="type">string</span><span class="label label-default unique">unique among siblings</span></div><div class="description"><p>A name identifying the stream for users. The name must be unique among the stream&#39;s siblings in the streams tree structure.</p>
+</div></td></tr><tr><th><code>parentId</code></th><td><div class="header"><span class="type"><a href="#data-structure-identity">identity</a></span><span class="label label-default optional">optional</span></div><div class="description"><p>The identifier of the stream&#39;s parent, if any. A value of <code>null</code> indicates that the stream has no parent (i.e. root stream).</p>
+</div></td></tr><tr><th><code>singleActivity</code></th><td><div class="header"><span class="type">boolean</span><span class="label label-default optional">optional</span></div><div class="description"><p>If specified and <code>true</code>, the system will ensure that period events in this stream and its children never overlap.</p>
+</div></td></tr><tr><th><code>clientData</code></th><td><div class="header"><span class="type"><a href="#data-structure-key-value">key-value</a></span><span class="label label-default optional">optional</span></div><div class="description"><p>Additional client data for the stream.</p>
+</div></td></tr><tr><th><code>children</code></th><td><div class="header"><span class="type">array of streams</span><span class="label label-default read-only">read-only</span></div><div class="description"><p>The stream&#39;s sub-streams, if any. This field cannot be set in requests creating a new streams: streams are created individually by design.</p>
+</div></td></tr><tr><th><code>trashed</code></th><td><div class="header"><span class="type">boolean</span><span class="label label-default optional">optional</span></div><div class="description"><p><code>true</code> if the stream is in the trash.</p>
+</div></td></tr><tr><th><code>created</code></th><td><div class="header"><span class="type"><a href="#data-structure-timestamp">timestamp</a></span><span class="label label-default read-only">read-only</span></div><div class="description"><p>The time the stream was created.</p>
+</div></td></tr><tr><th><code>createdBy</code></th><td><div class="header"><span class="type"><a href="#data-structure-identity">identity</a></span><span class="label label-default read-only">read-only</span></div><div class="description"><p>The id of the access used to create the stream.</p>
+</div></td></tr><tr><th><code>modified</code></th><td><div class="header"><span class="type"><a href="#data-structure-timestamp">timestamp</a></span><span class="label label-default read-only">read-only</span></div><div class="description"><p>The time the stream was last modified.</p>
+</div></td></tr><tr><th><code>modifiedBy</code></th><td><div class="header"><span class="type"><a href="#data-structure-identity">identity</a></span><span class="label label-default read-only">read-only</span></div><div class="description"><p>The id of the last access used to modify the stream.</p>
 </div></td></tr></table></div><aside><div class="example"><p>A structure for activities</p>
 <pre><code>[
   {
@@ -1765,26 +1765,26 @@ API-Version: 0.7.2
         "name": "Jogging",
         "parentId": "sport",
         "children": [],
-        "created": 1329518191.5269437,
-        "createdBy": "chrrl6w280000j9jxfu3urxea",
-        "modified": 1329518362.4388347,
-        "modifiedBy": "chrrl6w280000j9jxfu3urxea"
+        "created": 1329617310.2855592,
+        "createdBy": "chrt872vy0000lypumvcj1zi2",
+        "modified": 1329617443.6257253,
+        "modifiedBy": "chrt872vy0000lypumvcj1zi2"
       },
       {
         "id": "bicycling",
         "name": "Bicycling",
         "parentId": "sport",
         "children": [],
-        "created": 1329518191.5269437,
-        "createdBy": "chrrl6w280000j9jxfu3urxea",
-        "modified": 1329518368.0788777,
-        "modifiedBy": "chrrl6w280000j9jxfu3urxea"
+        "created": 1329617310.2855592,
+        "createdBy": "chrt872vy0000lypumvcj1zi2",
+        "modified": 1329617321.7132452,
+        "modifiedBy": "chrt872vy0000lypumvcj1zi2"
       }
     ],
-    "created": 1329518189.411,
-    "createdBy": "chrrl6w280000j9jxfu3urxea",
-    "modified": 1329518493.555149,
-    "modifiedBy": "chrrl6w280000j9jxfu3urxea"
+    "created": 1329617295.653,
+    "createdBy": "chrt872vy0000lypumvcj1zi2",
+    "modified": 1329617583.6523244,
+    "modifiedBy": "chrt872vy0000lypumvcj1zi2"
   },
   {
     "id": "work",
@@ -1793,112 +1793,112 @@ API-Version: 0.7.2
     "singleActivity": true,
     "children": [
       {
-        "id": "chrrl6wgy0008j9jxcdefnmjv",
+        "id": "chrt873c40008lypu0zneeri2",
         "name": "Noble Works Co.",
         "parentId": "work",
         "children": [
           {
-            "id": "chrrl6wgz000aj9jxct4filhn",
+            "id": "chrt873c4000alypu7kza6wl0",
             "name": "Last Be First",
-            "parentId": "chrrl6wgy0008j9jxcdefnmjv",
+            "parentId": "chrt873c40008lypu0zneeri2",
             "children": [],
-            "created": 1329518224.527861,
-            "createdBy": "chrrl6w280000j9jxfu3urxea",
-            "modified": 1329518243.5892205,
-            "modifiedBy": "chrrl6w280000j9jxfu3urxea"
+            "created": 1329617327.269991,
+            "createdBy": "chrt872vy0000lypumvcj1zi2",
+            "modified": 1329617657.9192479,
+            "modifiedBy": "chrt872vy0000lypumvcj1zi2"
           },
           {
-            "id": "chrrl6wgz000bj9jxtykiw0lm",
+            "id": "chrt873c4000blypugffgw393",
             "name": "Big Tree",
-            "parentId": "chrrl6wgy0008j9jxcdefnmjv",
+            "parentId": "chrt873c40008lypu0zneeri2",
             "children": [],
-            "created": 1329518224.527861,
-            "createdBy": "chrrl6w280000j9jxfu3urxea",
-            "modified": 1329518239.9076993,
-            "modifiedBy": "chrrl6w280000j9jxfu3urxea"
+            "created": 1329617327.269991,
+            "createdBy": "chrt872vy0000lypumvcj1zi2",
+            "modified": 1329617392.3635619,
+            "modifiedBy": "chrt872vy0000lypumvcj1zi2"
           },
           {
-            "id": "chrrl6wgz000cj9jxh4d8w3vh",
+            "id": "chrt873c4000clypuagx6r4z4",
             "name": "Inner Light",
-            "parentId": "chrrl6wgy0008j9jxcdefnmjv",
+            "parentId": "chrt873c40008lypu0zneeri2",
             "children": [],
-            "created": 1329518224.527861,
-            "createdBy": "chrrl6w280000j9jxfu3urxea",
-            "modified": 1329518494.7030683,
-            "modifiedBy": "chrrl6w280000j9jxfu3urxea"
+            "created": 1329617327.269991,
+            "createdBy": "chrt872vy0000lypumvcj1zi2",
+            "modified": 1329617333.9653935,
+            "modifiedBy": "chrt872vy0000lypumvcj1zi2"
           }
         ],
-        "created": 1329518203.670316,
-        "createdBy": "chrrl6w280000j9jxfu3urxea",
-        "modified": 1329518371.7207947,
-        "modifiedBy": "chrrl6w280000j9jxfu3urxea"
+        "created": 1329617304.3336692,
+        "createdBy": "chrt872vy0000lypumvcj1zi2",
+        "modified": 1329617334.6868684,
+        "modifiedBy": "chrt872vy0000lypumvcj1zi2"
       },
       {
-        "id": "chrrl6wgz0009j9jxwj11picm",
+        "id": "chrt873c40009lypu2ueziken",
         "name": "Freelancing",
         "parentId": "work",
         "children": [
           {
-            "id": "chrrl6wgz000dj9jx2umu0q0z",
+            "id": "chrt873c4000dlypunbcorelv",
             "name": "Funky Veggies",
-            "parentId": "chrrl6wgz0009j9jxwj11picm",
+            "parentId": "chrt873c40009lypu2ueziken",
             "children": [],
-            "created": 1329518204.1999571,
-            "createdBy": "chrrl6w280000j9jxfu3urxea",
-            "modified": 1329518445.9863446,
-            "modifiedBy": "chrrl6w280000j9jxfu3urxea"
+            "created": 1329617308.5043762,
+            "createdBy": "chrt872vy0000lypumvcj1zi2",
+            "modified": 1329617637.2889543,
+            "modifiedBy": "chrt872vy0000lypumvcj1zi2"
           },
           {
-            "id": "chrrl6wgz000ej9jxea2sy0xw",
+            "id": "chrt873c4000elypuj8k9kdhz",
             "name": "Jojo Lapin & sons",
-            "parentId": "chrrl6wgz0009j9jxwj11picm",
+            "parentId": "chrt873c40009lypu2ueziken",
             "children": [],
-            "created": 1329518204.1999571,
-            "createdBy": "chrrl6w280000j9jxfu3urxea",
-            "modified": 1329518431.7747626,
-            "modifiedBy": "chrrl6w280000j9jxfu3urxea"
+            "created": 1329617308.5043762,
+            "createdBy": "chrt872vy0000lypumvcj1zi2",
+            "modified": 1329617512.5583293,
+            "modifiedBy": "chrt872vy0000lypumvcj1zi2"
           }
         ],
-        "created": 1329518203.670316,
-        "createdBy": "chrrl6w280000j9jxfu3urxea",
-        "modified": 1329518286.3693159,
-        "modifiedBy": "chrrl6w280000j9jxfu3urxea"
+        "created": 1329617304.3336692,
+        "createdBy": "chrt872vy0000lypumvcj1zi2",
+        "modified": 1329617427.740049,
+        "modifiedBy": "chrt872vy0000lypumvcj1zi2"
       }
     ],
-    "created": 1329518189.411,
-    "createdBy": "chrrl6w280000j9jxfu3urxea",
-    "modified": 1329518430.1150677,
-    "modifiedBy": "chrrl6w280000j9jxfu3urxea"
+    "created": 1329617295.653,
+    "createdBy": "chrt872vy0000lypumvcj1zi2",
+    "modified": 1329617473.4417531,
+    "modifiedBy": "chrt872vy0000lypumvcj1zi2"
   }
 ]</code></pre></div></aside></section><section id="data-structure-tag"><h2 id="tag">Tag</h2>
 <div class="content"><div class="intro"><p>Tags can be plain text or typed tags; this describes the latter. See also: <a href="/concepts.html#core-tags">core concepts</a>. <em>Note: typed tags aren&#39;t yet implemented in the API today.</em></p>
-</div><table class="definitions"><tr><th><code>id</code></th><td><div class="header"><span class="type"><a href="#data-structure-identity">identity</a></span><span class="label unique">unique</span><span class="label read-only">read-only</span></div><div class="description"><p>The identifier for the tag.</p>
+</div><table class="definitions"><tr><th><code>id</code></th><td><div class="header"><span class="type"><a href="#data-structure-identity">identity</a></span><span class="label label-default unique">unique</span><span class="label label-default read-only">read-only</span></div><div class="description"><p>The identifier for the tag.</p>
 </div></td></tr><tr><th><code>type</code></th><td><div class="header"><span class="type">string</span></div><div class="description"><p>The type of the tag. See the <a href="#TODO">tag type directory</a> for a list of standard types.</p>
-</div></td></tr><tr><th><code>content</code></th><td><div class="header"><span class="type">any type</span><span class="label optional">optional</span></div><div class="description"><p>The <code>type</code>-specific content of the tag, if any.</p>
-</div></td></tr><tr><th><code>clientData</code></th><td><div class="header"><span class="type"><a href="#data-structure-key-value">key-value</a></span><span class="label optional">optional</span></div><div class="description"><p>Additional client data for the tag.</p>
-</div></td></tr><tr><th><code>trashed</code></th><td><div class="header"><span class="type">boolean</span><span class="label optional">optional</span></div><div class="description"><p><code>true</code> if the tag is in the trash.</p>
-</div></td></tr><tr><th><code>created</code></th><td><div class="header"><span class="type"><a href="#data-structure-timestamp">timestamp</a></span><span class="label read-only">read-only</span></div><div class="description"><p>The time the tag was created.</p>
-</div></td></tr><tr><th><code>createdBy</code></th><td><div class="header"><span class="type"><a href="#data-structure-identity">identity</a></span><span class="label read-only">read-only</span></div><div class="description"><p>The id of the access used to create the tag.</p>
-</div></td></tr><tr><th><code>modified</code></th><td><div class="header"><span class="type"><a href="#data-structure-timestamp">timestamp</a></span><span class="label read-only">read-only</span></div><div class="description"><p>The time the tag was last modified.</p>
-</div></td></tr><tr><th><code>modifiedBy</code></th><td><div class="header"><span class="type"><a href="#data-structure-identity">identity</a></span><span class="label read-only">read-only</span></div><div class="description"><p>The id of the last access used to modify the tag.</p>
+</div></td></tr><tr><th><code>content</code></th><td><div class="header"><span class="type">any type</span><span class="label label-default optional">optional</span></div><div class="description"><p>The <code>type</code>-specific content of the tag, if any.</p>
+</div></td></tr><tr><th><code>clientData</code></th><td><div class="header"><span class="type"><a href="#data-structure-key-value">key-value</a></span><span class="label label-default optional">optional</span></div><div class="description"><p>Additional client data for the tag.</p>
+</div></td></tr><tr><th><code>trashed</code></th><td><div class="header"><span class="type">boolean</span><span class="label label-default optional">optional</span></div><div class="description"><p><code>true</code> if the tag is in the trash.</p>
+</div></td></tr><tr><th><code>created</code></th><td><div class="header"><span class="type"><a href="#data-structure-timestamp">timestamp</a></span><span class="label label-default read-only">read-only</span></div><div class="description"><p>The time the tag was created.</p>
+</div></td></tr><tr><th><code>createdBy</code></th><td><div class="header"><span class="type"><a href="#data-structure-identity">identity</a></span><span class="label label-default read-only">read-only</span></div><div class="description"><p>The id of the access used to create the tag.</p>
+</div></td></tr><tr><th><code>modified</code></th><td><div class="header"><span class="type"><a href="#data-structure-timestamp">timestamp</a></span><span class="label label-default read-only">read-only</span></div><div class="description"><p>The time the tag was last modified.</p>
+</div></td></tr><tr><th><code>modifiedBy</code></th><td><div class="header"><span class="type"><a href="#data-structure-identity">identity</a></span><span class="label label-default read-only">read-only</span></div><div class="description"><p>The id of the last access used to modify the tag.</p>
 </div></td></tr></table></div><aside></aside></section><section id="data-structure-access"><h2 id="access">Access</h2>
 <div class="content"><div class="intro"><p>See also: <a href="/concepts.html#core-accesses">core concepts</a>.</p>
-</div><table class="definitions"><tr><th><code>id</code></th><td><div class="header"><span class="type"><a href="#data-structure-identity">identity</a></span><span class="label unique">unique</span><span class="label read-only">read-only</span></div><div class="description"><p>The identifier for the access.</p>
-</div></td></tr><tr><th><code>token</code></th><td><div class="header"><span class="type">string</span><span class="label unique">unique</span><span class="label read-only">read-only (except at creation)</span></div><div class="description"><p>The token identifying the access. Automatically generated if not set when creating the access; <strong>slugified if necessary</strong>.</p>
-</div></td></tr><tr><th><code>type</code></th><td><div class="header"><span class="type"><code>personal</code>|<code>app</code>|<code>shared</code></span><span class="label optional">optional</span><span class="label read-only">read-only (except at creation)</span></div><div class="description"><p>The type — or usage — of the access. Default: <code>shared</code>.</p>
-</div></td></tr><tr><th><code>name</code></th><td><div class="header"><span class="type">string</span><span class="label unique">unique per type and device</span></div><div class="description"><p>The name identifying the access for the user. (For personal and app access, the name is used as a technical identifier and not shown as-is to the user.)</p>
-</div></td></tr><tr><th><code>deviceName</code></th><td><div class="header"><span class="type">string</span><span class="label unique">unique per type and name</span><span class="label optional">optional</span></div><div class="description"><p>For app accesses only. The name of the client device running the app, if applicable.</p>
+</div><table class="definitions"><tr><th><code>id</code></th><td><div class="header"><span class="type"><a href="#data-structure-identity">identity</a></span><span class="label label-default unique">unique</span><span class="label label-default read-only">read-only</span></div><div class="description"><p>The identifier for the access.</p>
+</div></td></tr><tr><th><code>token</code></th><td><div class="header"><span class="type">string</span><span class="label label-default unique">unique</span><span class="label label-default read-only">read-only (except at creation)</span></div><div class="description"><p>The token identifying the access. Automatically generated if not set when creating the access; <strong>slugified if necessary</strong>.</p>
+</div></td></tr><tr><th><code>type</code></th><td><div class="header"><span class="type"><code>personal</code>|<code>app</code>|<code>shared</code></span><span class="label label-default optional">optional</span><span class="label label-default read-only">read-only (except at creation)</span></div><div class="description"><p>The type — or usage — of the access. Default: <code>shared</code>.</p>
+</div></td></tr><tr><th><code>name</code></th><td><div class="header"><span class="type">string</span><span class="label label-default unique">unique per type and device</span></div><div class="description"><p>The name identifying the access for the user. (For personal and app access, the name is used as a technical identifier and not shown as-is to the user.)</p>
+</div></td></tr><tr><th><code>deviceName</code></th><td><div class="header"><span class="type">string</span><span class="label label-default unique">unique per type and name</span><span class="label label-default optional">optional</span></div><div class="description"><p>For app accesses only. The name of the client device running the app, if applicable.</p>
 </div></td></tr><tr><th><code>permissions</code></th><td><div class="header"><span class="type">array of permission objects</span></div><div class="description"><p>Ignored for personal accesses. If permission levels conflict (e.g. stream set to &quot;manage&quot; and child stream set to &quot;contribute&quot;), only the highest level is considered. Each permission object has the following structure:</p>
 </div><table class="definitions"><tr><th><code>streamId</code>|<code>tag</code></th><td><div class="header"><span class="type"><a href="#data-structure-identity">identity</a> | string</span></div><div class="description"><p>The id of the stream or the tag the permission applies to, or <code>*</code> for all streams/tags. Stream permissions are recursively applied to child streams.</p>
 </div></td></tr><tr><th><code>level</code></th><td><div class="header"><span class="type"><code>read</code>|<code>contribute</code>|<code>manage</code></span></div><div class="description"><p>The level of access to the stream. With <code>contribute</code>, one can see and record events for the stream/tag (and child streams for stream permissions); with <code>manage</code>, one can in addition create, modify and delete child streams.</p>
-</div></td></tr></table></td></tr><tr><th><code>created</code></th><td><div class="header"><span class="type"><a href="#data-structure-timestamp">timestamp</a></span><span class="label read-only">read-only</span></div><div class="description"><p>The time the access was created.</p>
-</div></td></tr><tr><th><code>createdBy</code></th><td><div class="header"><span class="type"><a href="#data-structure-identity">identity</a></span><span class="label read-only">read-only</span></div><div class="description"><p>The id of the access used to create the access.</p>
-</div></td></tr><tr><th><code>modified</code></th><td><div class="header"><span class="type"><a href="#data-structure-timestamp">timestamp</a></span><span class="label read-only">read-only</span></div><div class="description"><p>The time the access was last modified.</p>
-</div></td></tr><tr><th><code>modifiedBy</code></th><td><div class="header"><span class="type"><a href="#data-structure-identity">identity</a></span><span class="label read-only">read-only</span></div><div class="description"><p>The id of the last access used to modify the access.</p>
+</div></td></tr></table></td></tr><tr><th><code>created</code></th><td><div class="header"><span class="type"><a href="#data-structure-timestamp">timestamp</a></span><span class="label label-default read-only">read-only</span></div><div class="description"><p>The time the access was created.</p>
+</div></td></tr><tr><th><code>createdBy</code></th><td><div class="header"><span class="type"><a href="#data-structure-identity">identity</a></span><span class="label label-default read-only">read-only</span></div><div class="description"><p>The id of the access used to create the access.</p>
+</div></td></tr><tr><th><code>modified</code></th><td><div class="header"><span class="type"><a href="#data-structure-timestamp">timestamp</a></span><span class="label label-default read-only">read-only</span></div><div class="description"><p>The time the access was last modified.</p>
+</div></td></tr><tr><th><code>modifiedBy</code></th><td><div class="header"><span class="type"><a href="#data-structure-identity">identity</a></span><span class="label label-default read-only">read-only</span></div><div class="description"><p>The id of the last access used to modify the access.</p>
 </div></td></tr></table></div><aside><div class="example"><p>An app access</p>
 <pre><code>{
-  "id": "chrrl6w290001j9jx0dqjqsgd",
-  "token": "chrrl6w2a0003j9jxyop59qrt",
+  "id": "chrt872vz0001lypuuh4qzsx7",
+  "token": "chrt872w00003lypuq634pjol",
   "type": "app",
   "name": "my-app-id",
   "permissions": [
@@ -1907,14 +1907,14 @@ API-Version: 0.7.2
       "level": "contribute"
     }
   ],
-  "created": 1392545692.882,
-  "createdBy": "chrrl6w280000j9jxfu3urxea",
-  "modified": 1392545692.882,
-  "modifiedBy": "chrrl6w280000j9jxfu3urxea"
+  "created": 1392644799.072,
+  "createdBy": "chrt872vy0000lypumvcj1zi2",
+  "modified": 1392644799.072,
+  "modifiedBy": "chrt872vy0000lypumvcj1zi2"
 }</code></pre></div></aside></section><section id="data-structure-followed-slices"><h2 id="followed-slices">Followed slices</h2>
 <div class="content"><div class="intro"><p>See also: <a href="/concepts.html#core-followed-slices">core concepts</a>.</p>
-</div><table class="definitions"><tr><th><code>id</code></th><td><div class="header"><span class="type"><a href="#data-structure-identity">identity</a></span><span class="label unique">unique</span><span class="label read-only">read-only</span></div><div class="description"><p>The server-assigned identifier for the followed slice.</p>
-</div></td></tr><tr><th><code>name</code></th><td><div class="header"><span class="type">string</span><span class="label unique">unique</span></div><div class="description"><p>A name identifying the followed slice for the user.</p>
+</div><table class="definitions"><tr><th><code>id</code></th><td><div class="header"><span class="type"><a href="#data-structure-identity">identity</a></span><span class="label label-default unique">unique</span><span class="label label-default read-only">read-only</span></div><div class="description"><p>The server-assigned identifier for the followed slice.</p>
+</div></td></tr><tr><th><code>name</code></th><td><div class="header"><span class="type">string</span><span class="label label-default unique">unique</span></div><div class="description"><p>A name identifying the followed slice for the user.</p>
 </div></td></tr><tr><th><code>url</code></th><td><div class="header"><span class="type">URL</span></div><div class="description"><p>The URL of the API endpoint of the account hosting the slice. Not modifiable after creation.</p>
 </div></td></tr><tr><th><code>accessToken</code></th><td><div class="header"><span class="type">string</span></div><div class="description"><p>The token of the shared access itself. Not modifiable after creation.</p>
 </div></td></tr></table></div><aside></aside></section><section id="data-structure-key-value"><h2 id="key-value">Key-value</h2>
@@ -1931,8 +1931,8 @@ API-Version: 0.7.2
 </div></div><aside></aside></section><section id="data-structure-error"><h2 id="error">Error</h2>
 <div class="content"><table class="definitions"><tr><th><code>id</code></th><td><div class="header"><span class="type">string</span></div><div class="description"><p>Identifier for the error.</p>
 </div></td></tr><tr><th><code>message</code></th><td><div class="header"><span class="type">string</span></div><div class="description"><p>A human-readable description of the error.</p>
-</div></td></tr><tr><th><code>data</code></th><td><div class="header"><span class="type">any type</span><span class="label optional">optional</span></div><div class="description"><p>Additional machine-readable details (specified for each error if relevant).</p>
-</div></td></tr><tr><th><code>subErrors</code></th><td><div class="header"><span class="type">array of errors</span><span class="label optional">optional</span></div><div class="description"><p>Lists the detailed causes of the main error, if any.</p>
+</div></td></tr><tr><th><code>data</code></th><td><div class="header"><span class="type">any type</span><span class="label label-default optional">optional</span></div><div class="description"><p>Additional machine-readable details (specified for each error if relevant).</p>
+</div></td></tr><tr><th><code>subErrors</code></th><td><div class="header"><span class="type">array of errors</span><span class="label label-default optional">optional</span></div><div class="description"><p>Lists the detailed causes of the main error, if any.</p>
 </div></td></tr></table></div><aside></aside></section><section id="data-structure-identity"><h2 id="item-identity">Item identity</h2>
 <div class="content"><div class="intro"><p>A string uniquely identifying an item for a given user. For some types of items (&quot;structural&quot; ones such as streams), it is allowed for the identity to be optionally set by API clients; otherwise the identity is generated by the server.</p>
 </div></div><aside></aside></section><section id="data-structure-timestamp"><h2 id="timestamp">Timestamp</h2>
