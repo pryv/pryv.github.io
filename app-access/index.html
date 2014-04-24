@@ -1,0 +1,330 @@
+<!DOCTYPE html><html lang="en" class="no-js"><head><meta charset="UTF-8"><meta name="description" content="TODO"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Pryv API - App auth</title><link rel="stylesheet" type="text/css" href="/assets/bootstrap/css/bootstrap.min.css"><!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+<!--[if lt IE 9]>
+  <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+  <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+<![endif]--><link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/css?family=PT+Sans"><link rel="stylesheet" type="text/css" href="/assets/fonts/stylesheet.css"><link rel="stylesheet" type="text/css" href="/assets/style.css"><link rel="stylesheet" type="text/css" href="/assets/highlight/styles/zenburn.css"></head><body class="with-toc"><header id="page-header"><nav role="navigation" class="navbar navbar-default navbar-fixed-top"><div class="container"><div class="navbar-header"><a href="/" class="navbar-brand logo"><img src="/assets/images/LogoPrYvDigital-API.png" alt="Pryv"></a><button type="button" data-toggle="collapse" data-target="#main-nav" class="navbar-toggle"><span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button></div><div id="main-nav" class="collapse navbar-collapse"><ul class="nav navbar-nav"><li><a href="/about">About</a></li><li><a href="/concepts">Concepts</a></li><li><a href="/reference">Reference</a></li><li><a href="/event-types">Event types</a></li><li class="dropdown"><a href="#" data-toggle="dropdown" class="dropdown-toggle">More <b class="caret"></b></a><ul class="dropdown-menu"><li><a href="/change-log">API change log</a></li><li><a href="/apps-and-services">Pryv apps &amp; services</a></li><li><a href="/code-libraries">Code libraries</a></li><li><a href="/faq">FAQ</a></li></ul></li><!--li.dropdown<a href="#" data-toggle="dropdown" class="dropdown-toggle">Guides <b class="caret"></b></a><ul class="dropdown-menu"><li><a href="#">Getting started</a></li><li><a href="#">Data modeling</a></li></ul>--><!--li.dropdown<a href="#" data-toggle="dropdown" class="dropdown-toggle">Reference <b class="caret"></b></a><ul class="dropdown-menu"><li><a href="/reference">Reference</a></li><li><a href="/event-types">Event types</a></li><li><a href="/standard-structure">Standard data structure</a></li></ul>--><!--li<a href="#">Blog</a>--></ul><p class="navbar-text navbar-right version"><a href="/change-log" title="View change log">API version: <strong>0.7.16</strong></a></p></div></div></nav></header><div id="main-wrapper" class="container"><div id="main"><h1 class="page-title">App authorization flow</h1><section id="intro"><h1>Introduction</h1>
+<p>Get an access token.</p>
+<p>TODO what is an access token and why do I need it?</p>
+<h2><a id="intro-initial-requirements"></a>Initial requirements</h2>
+<h3>1. Get a Pryv app id for your app</h3>
+<p>A Pryv app id is a string uniquely identifying your app. For the moment, just <a href="mailto:developers@pryv.com">ask us</a> to obtain your app id.</p>
+<h3>2. Define the access permissions you need</h3>
+<p>See the examples below, as well as the <code>permissions</code> property in the <a href="reference.html#data-structure-access">access data structure reference</a>.</p>
+<h4>Example app permissions</h4>
+<p>A &quot;contribute&quot; access on the &quot;diary&quot; stream:</p>
+<pre><code class="language-json">[{
+  &quot;streamId&quot; : &quot;diary&quot;,
+  &quot;defaultName&quot; : &quot;Journal&quot;,
+  &quot;level&quot; : &quot;contribute&quot;
+}]</code></pre>
+<p>A &quot;manage&quot; access to the &quot;notes&quot; and &quot;mood&quot; folders of the &quot;diary&quot; channel:</p>
+<pre><code class="language-json">[{
+   &quot;streamId&quot; : &quot;diary&quot;,
+   &quot;defaultName&quot; : &quot;Journal&quot;,
+   &quot;level&quot; : &quot;read&quot;,
+  },
+  {
+   &quot;streamId&quot; : &quot;notes&quot;,
+   &quot;level&quot; : &quot;manage&quot;,
+   &quot;defaultName&quot; : &quot;Notes&quot;
+   },
+   {
+    &quot;streamId&quot; : &quot;mood&quot;,
+    &quot;level&quot; : &quot;manage&quot;,
+    &quot;defaultName&quot; : &quot;Mood&quot;
+   }
+}]</code></pre>
+<p><strong>About the <code>defaultName</code> property</strong>: <code>defaultName</code> is the name you&#39;d like the stream to be created with if it does not exist, and should be in the language of the user. The property is mandatory.</p>
+</section><section id="webapp"><h1>Web app (Javascript)</h1>
+<p>Obtaining an access token for your web app.</p>
+<p><strong> Warning !! The Pryv.Access javascript utility structure is changing .. it works as this today,
+but expect upcoming changes </strong></p>
+<h2>What you need</h2>
+<ul>
+<li>make sure you got the <a href="#intro-initial-requirements">initial requirements</a> ready.</li>
+<li>include the following script in your page:<ul>
+<li>Staging version (recommended at the moment):<pre><code class="language-html">&lt;script type=&quot;text/javascript&quot; src=&quot;https://sw.pryv.li:2443/access/v1/pryv-sdk.js&quot;&gt;&lt;/script&gt;</code></pre>
+</li>
+<li>Production version:<pre><code class="language-html">&lt;script type=&quot;text/javascript&quot; src=&quot;https://sw.pryv.me/access/v1/pryv-sdk.js&quot;&gt;&lt;/script&gt;</code></pre>
+</li>
+<li>or the optimized CloudFront cache:<pre><code class="language-html">&lt;script type=&quot;text/javascript&quot; src=&quot;//d3gblc8a9weyfb.cloudfront.net/access/v1/pryv-sdk.js&quot;&gt;&lt;/script&gt;</code></pre>
+</li>
+</ul>
+</li>
+<li>construct a <code>settings</code> JSON object</li>
+<li>call <code>Pryv.Access.setup(settings)</code></li>
+</ul>
+<p>For a more fleshed-out example look at the source code of <a href="https://sw.pryv.li:2443/access/demo.html"><a href="https://sw.pryv.li/access/demo.html">https://sw.pryv.li/access/demo.html</a></a>.</p>
+<p><a name="webapp.test"></a>Or make your own tests from the page:
+<a href="https://sw.pryv.li:2443/access/test.html"><a href="https://sw.pryv.li:2443/access/test.html">https://sw.pryv.li:2443/access/test.html</a></a></p>
+<h3>Example: Minimalistic</h3>
+<p>This app requests a &quot;contribute&quot; access to the &quot;diary&quot; stream, using the PrYv button and a popup for sign-in.</p>
+<p><strong>TODO: review this code</strong></p>
+<pre><code class="language-html">
+    &lt;!DOCTYPE html&gt;
+    &lt;html&gt;
+    &lt;head&gt;
+    &lt;title&gt;Minimalistic example&lt;/title&gt;
+    &lt;script type=&quot;text/javascript&quot; src=&quot;//d3gblc8a9weyfb.cloudfront.net/access/v1/pryv-sdk.js&quot;&gt;&lt;/script&gt;
+    &lt;/head&gt;
+    &lt;body&gt;
+        &lt;script type=&quot;text/javascript&quot;&gt;
+
+        function callMeWithCredentials(username, appToken, languageCode) {
+            alert(&quot;SUCCESS! username:&quot; + username + &quot; appToken:&quot; +
+                    appToken + &quot; language:&quot; + languageCode);
+        }
+
+        var requestedPermissions = [{&quot;streamId&quot; : &quot;diary&quot;,
+                                    &quot;defaultName&quot; : &quot;Diary&quot;, // this name is localized
+                                         &quot;level&quot; : &quot;contribute&quot;}];
+
+        Pryv.Access.setup({
+            requestingAppId : &#39;pryv-mini-example&#39;,
+            requestedPermissions : requestedPermissions,
+            returnURL: &#39;auto#&#39;,
+            spanButtonID : &#39;pryvButton&#39;,
+            callbacks : {
+              initialization : function() { },
+              needSignin : function(popupUrl, pollUrl, pollRateMs) { },
+              accepted : function(username, appToken, languageCode) {
+                console.log(&quot;** SUCCESS! username:&quot; + username +
+                            &quot; appToken:&quot; + appToken +
+                            &quot; lang:&quot; + languageCode);
+              },
+              refused: function(reason) {
+                 console.log(&quot;** REFUSED! &quot; + reason);
+              },
+              error: function(code, message) {
+                console.log(&quot;** ERROR! &quot; + code + &quot; &quot; + message);
+           }
+        });
+
+        &lt;/script&gt;
+        &lt;span id=&#39;pryvButton&#39;&gt;&lt;/span&gt;
+    &lt;/body&gt;
+    &lt;/html&gt;</code></pre>
+<h2>Pryv.Access.setup(settings)</h2>
+<p>The <strong>settings</strong> object supports the following parameters:</p>
+<ul>
+<li><code>requestingAppId</code> (string): Unique. Given by PrYv identifier for this app. It will be the key for the requested set of permission after user agreement.</li>
+<li><code>languageCode</code>(2 characters ISO 639-1 Code): Optional. If known the current language used by the user. This will influence the signin and register interface language.</li>
+<li><code>requestedPermissions</code> (object): The requested set of permissions to access user&#39;s streams.</li>
+<li><code>returnURL</code> (url or &#39;auto<extra>&#39;): Optional. If you don&#39;t want (or can&#39;t have) the popup signin-process and prefer set a returnURL. This URL will be called at the en of the SIGNIN process.This provides a better user experience on mobile devices. Details: <a href="#webapp.returnURL">settings.returnURL</a></li>
+<li><code>spanButtonID</code> (string) Optional. The id of a <code>&lt;span /&gt;</code> element in the DOM of your web page. Details: <a href="#webapp.spanButtonID">settings.spanButtonID</a></li>
+<li><code>callbacks</code> (functionS): called on each step of the sign-in process. Most of them are optional if you decided to rely on PrYv signin Button. All are optional excepted &quot;accepted&quot;. Details: <a href="#webapp.callbacks">settings.callbacks</a><ul>
+<li><code>initialization</code> (function()): When the initialization process is started. You may display a &quot;loading&quot; animation or for the user.</li>
+<li><code>needSignin</code> (function(popupUrl,pollUrl,pollRateMs)): Optional. Triggered when the user need to be redirected to PrYv Signin or register from.<ul>
+<li>param <code>popupUrl</code> (string): The URL to open in it&#39;s own window and to present to the user.</li>
+<li>param <code>pollUrl</code> (string): The URL to poll regularly in the background to grab the result of the sigin process.</li>
+<li>param <code>pollRateMs</code> (int): The minimum interval in milliseconds between to polling.</li>
+</ul>
+</li>
+<li><code>accepted</code> (function(username,appToken,languageCode)): <strong>Mandatory</strong>. Called when the signin process succeed and the permissions requested a granted. It&#39;s also triggered after a logout action with <code>(false,false,false)</code> as parameters.</li>
+<li><code>refused</code> (function(reason)): called when the user refuse to grant the requested permissions.<ul>
+<li>param <code>reason</code>(string): Technical information on how the user refused (not to be displayed).</li>
+</ul>
+</li>
+<li><code>error</code> (function(pryvError)): called when an error interupting the signup process occured.<ul>
+<li>param <code>pryvError</code> (object): <code>{id: .., message: .., detail: ..}</code></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h3><a name="webapp.returnURL"></a> settings.returnURL : Popup or URL Callback</h3>
+<p>During the authentication process, we need to open a PrYv access web page in a separate window. This is in order to secure personal user&#39;s information.</p>
+<p>This window can be opened in:</p>
+<ul>
+<li>A popup, leaving the actual window open behind. This should be more comfortable on desktop browsers.</li>
+<li>In place of the actual window, the user goes thru the process and come back to the URL you set at the end of the process.</li>
+</ul>
+<h4>* Popup</h4>
+<p>If you want the authorization process to take place in a popup just set the <code>returnURL</code> settings to <code>false</code>.</p>
+<h4>* Self or Auto</h4>
+<p>If you want the authorization process to take place in the same windows, returning to this same exact url you can use <code>self[extra_params]&lt;trailer&gt;</code> or <code>auto[extra_params]&lt;trailer&gt;</code>.</p>
+<p>When the user returns to this same page, the pryv-access-sdk will parse <code>prYv</code> parameters.</p>
+<ul>
+<li>command<ul>
+<li><strong>self</strong>: Use the current page as returnURL value</li>
+<li><strong>auto</strong>: (prefered method) Use a returnURL when a mobile or tablet browser is detected and a popupOtherwise</li>
+</ul>
+</li>
+<li>parameters<ul>
+<li><strong>&lt;trailer&gt;</strong>: one of <code>?</code>, a <code>#</code> or a <code>&amp;</code></li>
+<li><strong>[extra_parms]</strong>: Use this space (uri_encoded) as a custom payload for the returning user.</li>
+</ul>
+</li>
+</ul>
+<p>EXAMPLES</p>
+<ul>
+<li><p>with <code>https://mysite.com/page.php</code> as source URL.</p>
+<ul>
+<li><strong>self#</strong> -&gt; <code>https://mysite.com/page.php#prYvkey=JDJKhadja&amp;prYvstatus=...</code></li>
+<li><strong>self?</strong> -&gt; <code>https://mysite.com/page.php?prYvkey=JDJKhadja&amp;prYvstatus=...</code></li>
+<li><strong>self?mycustom=A&amp;</strong> -&gt; <code>https://mysite.com/page.php?mycustom=A&amp;prYvkey=JDJKh...</code></li>
+<li><strong>auto?mobile=1&amp;</strong> (if mobile) -&gt; <code>https://mysite.com/page.php?mobile=1&amp;prYvkey=JD...</code></li>
+</ul>
+</li>
+<li><p>with <code>https://mysite.com/page.php?mycustom=1</code> as source URL.</p>
+<ul>
+<li><strong>self&amp;</strong> -&gt; <code>https://mysite.com/page.php?mycustom=1&amp;prYvk...</code></li>
+</ul>
+</li>
+</ul>
+<p>Make your own tests from the <a href="webapp.test">test page</a>.</p>
+<h4>* Custom</h4>
+<p>Set the return URL to your own page such as</p>
+<pre><code>https://www.mysite.com/end-of-Pryv.Access-process.php?</code></pre>
+<p><strong>Attention!!</strong> The url submitted <em>must</em> end with a <code>?</code>, a <code>#</code> or a <code>&amp;</code>
+Returned status will be appended to this URL.</p>
+<h4>Examples of return URL</h4>
+<p>ACCEPTED</p>
+<pre><code>    https://www.mysite.com/end-of-Pryv.Access-process.php?
+prYvkey=GSbdasjgdv&amp;prYvstatus=ACCEPTED&amp;prYvusername=yacinthe&amp;prYvtoken=VVhjDJDDG</code></pre>
+<p>REFUSED</p>
+<pre><code>    https://www.mysite.com/end-of-Pryv.Access-process.php?
+prYvkey=GSbdasjgdv&amp;prYvstatus=REFUSED&amp;prYvmessage=refused+by+user</code></pre>
+<p>ERROR</p>
+<pre><code>    https://www.mysite.com/end-of-Pryv.Access-process.php?
+prYvkey=GSbdasjgdv&amp;prYvstatus=ERROR&amp;prYvid=INTERNAL_ERROR&amp;prYvmessage=...</code></pre>
+<h3><a name="webapp.spanButtonID"></a> settings.spanButtonID : Rely on PrYv standard Button</h3>
+<p>TODO</p>
+<h3><a name="webapp.callbacks"></a> settings.callbacks Custom handling of the signin process</h3>
+<p>TODO</p>
+<h2>Pryv.Access.popupLogin()</h2>
+<p>Once setup is done, you can trigger the populLogin window from your own button.
+Note: Trigger it from a user-click event.</p>
+<h2>Pryv.Access.logout()</h2>
+<p>Once setup is done, and user logged in. Erase current credential and restart setup with the same settings.</p>
+<p><strong>logout()</strong> will trigger a <code>settings.callbacks.success(false,false,false);</code></p>
+<h2>Pryv.Access.retry()</h2>
+<p>If a user refused to grant access, restart the setup process with the same settings.</p>
+<h2>Other Examples</h2>
+<h3>Full</h3>
+</section><section id="custom"><h1>Custom</h1>
+<p>Implementing the authorization process and obtaining an access token all by yourself.</p>
+<p><strong>For testing: </strong>
+Use our staging servers: <a href="https://access.pryv.in/access">https://access.pryv.in/access</a></p>
+<p><strong>Steps: </strong></p>
+<ol>
+<li>start an access request by calling <strong>POST <a href="https://access.pryv.io/access">https://access.pryv.io/access</a></strong></li>
+<li>open <strong>response.url</strong>  in a webview</li>
+<li>poll <strong>response.pollurl</strong> ﻿until you get the an ACCEPTED / REFUSED or ERROR status</li>
+</ol>
+<h2>Sequence diagram</h2>
+<p><img src="custom-sequence.png" alt="Sequence Diagram"></p>
+<h2>Json Examples</h2>
+<p>You can reporoduce this examples and try other combinations
+from <a href="https://sw.pryv.li/access/test.html"><a href="https://sw.pryv.li/access/test.html">https://sw.pryv.li/access/test.html</a></a></p>
+<h3>Access request</h3>
+<p><strong>request</strong>: <code>POST https://reg.pryv.in/access</code>
+<strong>payload</strong>:</p>
+<pre><code>{
+  &quot;requestingAppId&quot;: &quot;web-page-test&quot;,
+  &quot;requestedPermissions&quot;: [
+    {
+      &quot;streamId&quot;: &quot;diary&quot;,
+      &quot;defaultName&quot;: &quot;Journal&quot;,
+      &quot;level&quot;: &quot;read&quot;,
+    },
+    {
+      &quot;streamId&quot;: &quot;notes&quot;,
+      &quot;level&quot;: &quot;manage&quot;,
+      &quot;defaultName&quot;: &quot;Notes&quot;
+    },
+    {
+      &quot;streamId&quot;: &quot;position&quot;,
+      &quot;defaultName&quot;: &quot;Position&quot;,
+      &quot;level&quot;: &quot;read&quot;
+    },
+    {
+      &quot;streamId&quot;: &quot;iphone&quot;,
+      &quot;level&quot;: &quot;manage&quot;,
+      &quot;defaultName&quot;: &quot;iPhone&quot;
+     }
+  ],
+  &quot;languageCode&quot;: &quot;en&quot;,
+  &quot;returnURL&quot;: false
+}</code></pre>
+<p><strong>response</strong>:</p>
+<pre><code>{
+  &quot;status&quot;: &quot;NEED_SIGNIN&quot;,
+  &quot;code&quot;: 201,
+  &quot;key&quot;: &quot;dXRqBezem8v3mNxf&quot;,
+  &quot;requestingAppId&quot;: &quot;web-page-test&quot;,
+  &quot;requestedPermissions&quot;: [
+    {
+     &quot;streamId&quot;: &quot;diary&quot;,
+     &quot;defaultName&quot;: &quot;Journal&quot;,
+     &quot;level&quot;: &quot;read&quot;,
+    },
+    {
+     &quot;streamId&quot;: &quot;notes&quot;,
+     &quot;level&quot;: &quot;manage&quot;,
+     &quot;defaultName&quot;: &quot;Notes&quot;
+     }
+    },
+    {
+     &quot;streamId&quot;: &quot;position&quot;,
+     &quot;defaultName&quot;: &quot;Position&quot;,
+     &quot;level&quot;: &quot;read&quot;
+    }
+  ],
+  &quot;url&quot;: &quot;https://sw.pryv.in:2443/access/v1/access.html?lang=en&amp;key=dXRqBezem8v3mNxf&amp;requestingAppId=web-page-test&amp;returnURL=false&amp;domain=pryv.in&amp;registerURL=https%3A%2F%2Freg.pryv.in%3A443&amp;requestedPermissions=%5B%7B%22streamId%22%3A%22diary%22%2C%22defaultName%22%3A%22Journal%22%2C%22level%22%3A%22read%22%2C%22folderPermissions%22%3A%5B%7B%22streamId%22%3A%22notes%22%2C%22level%22%3A%22manage%22%2C%22defaultName%22%3A%22Notes%22%7D%5D%7D%2C%7B%22streamId%22%3A%22position%22%2C%22defaultName%22%3A%22Position%22%2C%22level%22%3A%22read%22%2C%22folderPermissions%22%3A%5B%7B%22streamId%22%3A%22iphone%22%2C%22level%22%3A%22manage%22%2C%22defaultName%22%3A%22iPhone%22%7D%5D%7D%5D&quot;,
+  &quot;poll&quot;: &quot;https://reg.pryv.in:443/access/dXRqBezem8v3mNxf&quot;,
+  &quot;returnURL&quot;: false,
+  &quot;poll_rate_ms&quot;: 1000
+}</code></pre>
+<h3>Polling</h3>
+<p><strong>request</strong>: GET <code>https://reg.pryv.in/access/dXRqBezem8v3mNxf</code></p>
+<p>3 response codes:</p>
+<p><strong>1 response</strong>: <code>NEED_SIGNIN</code></p>
+<p>Content is the same than for the initial POST request.
+<strong>poll</strong> and <strong>poll_rate_ms</strong> may vary</p>
+<p><strong>2 response</strong>: 200 <code>ACCEPTED</code></p>
+<pre><code>{
+  &quot;status&quot;: &quot;ACCEPTED&quot;,
+  &quot;username&quot;: &quot;jondoe&quot;,
+  &quot;token&quot;: &quot;VTR7DOKN1J&quot;,
+  &quot;code&quot;: 200
+}</code></pre>
+<p><strong>3 response</strong>: 403 <code>REFUSED</code></p>
+<pre><code>{
+  &quot;status&quot;: &quot;REFUSED&quot;,
+  &quot;reasonID&quot;: &quot;REFUSED_BY_USER&quot;,
+  &quot;message&quot;: &quot;access refused by user&quot;,
+  &quot;code&quot;: 403
+}</code></pre>
+</section></div><div id="toc"></div></div><footer id="page-footer"><nav class="navbar navbar-default"><div class="container"><div id="footer-nav"><ul class="nav navbar-nav"><li><a href="mailto:developers@pryv.com">Contact us</a></li><li><a href="http://github.com/pryv">GitHub</a></li></ul></div></div></nav></footer><script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script><script src="/assets/js/jquery.toc.min.js"></script><script src="/assets/bootstrap/js/bootstrap.min.js"></script><!-- TOC generation--><script>jQuery(document).ready(function($) {
+  $('#toc').toc({
+    'selectors': 'h1:not(.page-title),h2',
+    'container': '#main',
+    'smoothScrolling': false,
+    'prefix': 'toc',
+    'onHighlight': function(el) {},
+    'highlightOnScroll': true,
+    'highlightOffset': 100,
+    'anchorName': function(i, heading, prefix) {
+      var $heading = $(heading),
+      sectionId = $heading.parents('section[id]').attr('id');
+      return sectionId + ($heading.is('h1') ? '' : '-' + slugify($heading.text()));
+    },
+    'headerText': function(i, heading, $heading) {
+      return $heading.text();
+    }
+  });
+  function slugify(text) {
+    return text.toLowerCase().replace(/[^\w- ]+/g,'').replace(/ +/g,'-');
+  }
+});
+</script><!-- Code blocks highlighting--><script src="/assets/highlight/highlight.pack.js"></script><script>hljs.initHighlightingOnLoad();
+</script><!-- Google Analytics--><script>var _gaq = _gaq || [];
+_gaq.push(['_setAccount', 'UA-36589447-2']);
+_gaq.push(['_trackPageview']);
+(function() {
+  var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+  ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+  var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+})();</script></body></html>
