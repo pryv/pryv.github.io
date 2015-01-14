@@ -188,7 +188,42 @@ Host: reg.pryv.io
 </div></td></tr><tr><th><code>user-account-relocated</code></th><td><div class="header"><span class="http"><span class="label">HTTP</span><span class="label-value"><code>301</code></span></span></div><div class="description"><p>The user has relocated her account to another server. Both the <code>Location</code> header and the error&#39;s <code>data</code> contain the equivalent URL pointing to the physical server now hosting the user&#39;s account. This error can only occur between the moment the account is relocated and the moment your DNS is updated to point to the new server. So we&#39;re stretching the HTTP convention a little, in that the returned URL should not be used permanently (only until <code>{username}.pryv.io</code> points to the correct server again). It&#39;s up to you to decide whether to keep it for the duration of the session (if you use sessions), for a given time, etc.</p>
 </div></td></tr><tr><th><code>user-intervention-required</code></th><td><div class="header"><span class="http"><span class="label">HTTP</span><span class="label-value"><code>402</code></span></span></div><div class="description"><p>The request cannot be served temporarily because the user&#39;s account has exceeded its limits. The user must log into her account and fix the issue.</p>
 </div></td></tr></table></div></section></section></section><section id="methods"><h1 id="api-methods">API methods</h1>
-<section id="methods-events"><h2 id="events">Events</h2>
+<section id="methods-auth"><h2 id="authentication">Authentication</h2>
+<div class="content"><div class="meta"><span class="label trusted-only">Trusted apps only</span></div><div class="intro"><p>Methods for trusted apps to login/logout users.</p>
+</div></div><section id="methods-auth-auth-login" class="method"> <h3 id="login-user">Login user</h3>
+<div class="content"><div class="meta"><span class="method-id"><span class="label">id</span><span class="label-value"><code>auth.login</code></span></span><span class="http"><span class="label">HTTP</span><span class="label-value"><code>POST /auth/login</code></span></span></div><div class="intro"><p>Authenticates the user against the provided credentials, opening a personal access session. This is one of the only API methods that do not expect an <a href="#basics-authentication">auth parameter</a>.</p>
+</div><h4 id="parameters">Parameters</h4>
+<table class="definitions"><tr><th><code>username</code></th><td><div class="header"><span class="type">string</span></div><div class="description"><p>The user&#39;s username.</p>
+</div></td></tr><tr><th><code>password</code></th><td><div class="header"><span class="type">string</span></div><div class="description"><p>The user&#39;s password.</p>
+</div></td></tr><tr><th><code>appId</code></th><td><div class="header"><span class="type">string</span></div><div class="description"><p>Your app&#39;s unique identifier.</p>
+</div></td></tr></table><h4 id="result">Result</h4>
+<span class="http"><span class="label">HTTP</span><span class="label-value"><code>200 OK</code></span></span><table class="definitions"><tr><th><code>token</code></th><td><div class="header"><span class="type">string</span></div><div class="description"><p>The personal access token to use for further API calls.</p>
+</div></td></tr><tr><th><code>preferredLanguage</code></th><td><div class="header"><span class="type">string</span></div><div class="description"><p>The user&#39;s preferred language as a 2-letter ISO language code.</p>
+</div></td></tr></table></div><aside><div class="example"><div class="tab-content"><div class="tab-pane json active"><pre><code>{
+  "username": "chuangzi",
+  "password": "B|_|tt3rfly!",
+  "appId": "my-app-id"
+}</code></pre><div class="step-marker">⬇</div><pre><code>{
+  "token": "ci4wuqdn90002qfpugb2n0x03",
+  "preferredLanguage": "zh"
+}</code></pre></div><div class="tab-pane http"><pre><code>curl -i -X POST -H 'Content-Type: application/json' -d '{"username":"chuangzi","password":"B|_|tt3rfly!","appId":"my-app-id"}' https://${username}.pryv.io/auth/login?auth=${token}</code></pre><div class="step-marker">⬇</div><pre><code>HTTP/1.1 200 OK
+Content-Type: application/json; charset=utf-8
+API-Version: 0.8.1
+
+{
+  "token": "ci4wuqdn90002qfpugb2n0x03",
+  "preferredLanguage": "zh"
+}</code></pre></div><div class="tab-pane sockets"><pre><code>socket.emit('auth.login', {
+  "username": "chuangzi",
+  "password": "B|_|tt3rfly!",
+  "appId": "my-app-id"
+}, callback);</code></pre><div class="step-marker">⬇</div><pre><code>{
+  "token": "ci4wuqdn90002qfpugb2n0x03",
+  "preferredLanguage": "zh"
+}</code></pre></div></div></div></aside></section><section id="methods-auth-auth-logout" class="method"> <h3 id="logout-user">Logout user</h3>
+<div class="content"><div class="meta"><span class="method-id"><span class="label">id</span><span class="label-value"><code>auth.logout</code></span></span><span class="http"><span class="label">HTTP</span><span class="label-value"><code>POST /auth/logout</code></span></span></div><div class="intro"><p>Terminates a personal access session by invalidating its access token (the user will have to login again).</p>
+</div><h4 id="result">Result</h4>
+<span class="http"><span class="label">HTTP</span><span class="label-value"><code>200 OK</code></span></span></div><aside></aside></section></section><section id="methods-events"><h2 id="events">Events</h2>
 <div class="content"><div class="meta"></div><div class="intro"><p>Methods to retrieve and manipulate <a href="#data-structure-event">events</a>.</p>
 </div></div><section id="methods-events-events-get" class="method"> <h3 id="get-events">Get events</h3>
 <div class="content"><div class="meta"><span class="method-id"><span class="label">id</span><span class="label-value"><code>events.get</code></span></span><span class="http"><span class="label">HTTP</span><span class="label-value"><code>GET /events</code></span></span></div><div class="intro"><p>Queries accessible events.</p>
@@ -1407,7 +1442,43 @@ API-Version: 0.8.1
 
 {}</code></pre></div><div class="tab-pane sockets"><pre><code>socket.emit('accesses.delete', {
   "id": "ci4wuqdna0004qfpulsyktmfh"
-}, callback);</code></pre><div class="step-marker">⬇</div><pre><code>{}</code></pre></div></div></div></aside></section></section><section id="methods-profile"><h2 id="profile-sets">Profile sets</h2>
+}, callback);</code></pre><div class="step-marker">⬇</div><pre><code>{}</code></pre></div></div></div></aside></section><section id="methods-accesses-accesses-checkApp" class="method"> <h3 id="check-app-authorization">Check app authorization</h3>
+<div class="content"><div class="meta"><span class="method-id"><span class="label">id</span><span class="label-value"><code>accesses.checkApp</code></span></span><span class="http"><span class="label">HTTP</span><span class="label-value"><code>POST /accesses/check-app</code></span></span><span class="label trusted-only">Trusted apps only</span></div><div class="intro"><p>For the app authorization process. Checks if the app requesting authorization already has access with the same permissions (and on the same device, if applicable), and returns details of the requested permissions&#39; streams (for display) if not.</p>
+</div><h4 id="parameters">Parameters</h4>
+<table class="definitions"><tr><th><code>requestingAppId</code></th><td><div class="header"><span class="type">string</span></div><div class="description"><p>The id of the app requesting authorization.</p>
+</div></td></tr><tr><th><code>deviceName</code></th><td><div class="header"><span class="type">string</span><span class="label label-default optional">optional</span></div><div class="description"><p>The name of the device running the app requesting authorization, if applicable.</p>
+</div></td></tr><tr><th><code>requestedPermissions</code></th><td><div class="header"><span class="type">array of permission request objects</span></div><div class="description"><p>An array of permission request objects, which are identical to stream permission objects of <a href="#data-structure-access">accesses</a> except that each stream permission object must have a <code>defaultName</code> property specifying the name the stream should be created with later if missing.</p>
+</div></td></tr></table><h4 id="result">Result</h4>
+<span class="http"><span class="label">HTTP</span><span class="label-value"><code>200 OK</code></span></span><table class="definitions"><tr><th><code>checkedPermissions</code></th><td><div class="header"><span class="type">array of permission request objects</span></div><div class="description"><p>Set if no matching access already exists.
+A updated copy of the <code>requestedPermissions</code> parameter, with the <code>defaultName</code> property of stream permissions replaced by <code>name</code> for each existing stream (set to the actual name of the item). (For missing streams the <code>defaultName</code> property is left untouched.) If streams already exist with the same name but a different <code>id</code>, <code>defaultName</code> is updated with a valid alternative proposal (in such cases the result also has an <code>error</code> property to signal the issue).</p>
+</div></td></tr><tr><th><code>mismatchingAccess</code></th><td><div class="header"><span class="type"><a href="#data-structure-access">access</a></span></div><div class="description"><p>Set if an access already exists for the requesting app, but with different permissions than those requested.</p>
+</div></td></tr><tr><th><code>matchingAccess</code></th><td><div class="header"><span class="type"><a href="#data-structure-access">access</a></span></div><div class="description"><p>Set if an access already exists for the requesting app with matching permissions. The existing <a href="#data-structure-access">access</a>.</p>
+</div></td></tr></table></div><aside></aside></section></section><section id="methods-followed-slices"><h2 id="followed-slices">Followed slices</h2>
+<div class="content"><div class="meta"><span class="label trusted-only">Trusted apps only</span></div><div class="intro"><p>Methods to retrieve and manipulate <a href="#data-structure-followed-slice">followed slices</a>.</p>
+</div></div><section id="methods-followed-slices-followedSlices-get" class="method"> <h3 id="get-followed-slices">Get followed slices</h3>
+<div class="content"><div class="meta"><span class="method-id"><span class="label">id</span><span class="label-value"><code>followedSlices.get</code></span></span><span class="http"><span class="label">HTTP</span><span class="label-value"><code>GET /followed-slices</code></span></span></div><div class="intro"><p>Gets followed slices.</p>
+</div><h4 id="result">Result</h4>
+<span class="http"><span class="label">HTTP</span><span class="label-value"><code>200 OK</code></span></span><table class="definitions"><tr><th><code>followedSlices</code></th><td><div class="header"><span class="type">array of <a href="#data-structure-followed-slice">followed slices</a></span></div><div class="description"><p>All followed slices in the user&#39;s account, ordered by name.</p>
+</div></td></tr></table></div><aside></aside></section><section id="methods-followed-slices-followedSlices-create" class="method"> <h3 id="create-followed-slice">Create followed slice</h3>
+<div class="content"><div class="meta"><span class="method-id"><span class="label">id</span><span class="label-value"><code>followedSlices.create</code></span></span><span class="http"><span class="label">HTTP</span><span class="label-value"><code>POST /followed-slices</code></span></span></div><div class="intro"><p>Creates a new followed slice.</p>
+</div><h4 id="parameters">Parameters</h4>
+<p>An object with the new followed slice&#39;s data: see <a href="#data-structure-followed-slice">followed slice</a>.</p>
+<h4 id="result">Result</h4>
+<span class="http"><span class="label">HTTP</span><span class="label-value"><code>201 Created</code></span></span><table class="definitions"><tr><th><code>followedSlice</code></th><td><div class="header"><span class="type"><a href="#data-structure-followed-slice">followed slice</a></span></div><div class="description"><p>The created followed slice.</p>
+</div></td></tr></table></div><aside></aside></section><section id="methods-followed-slices-followedSlices-update" class="method"> <h3 id="update-followed-slice">Update followed slice</h3>
+<div class="content"><div class="meta"><span class="method-id"><span class="label">id</span><span class="label-value"><code>followedSlices.update</code></span></span><span class="http"><span class="label">HTTP</span><span class="label-value"><code>PUT /followed-slices/{id}</code></span></span></div><div class="intro"><p>Modifies the specified followed slice.</p>
+</div><h4 id="parameters">Parameters</h4>
+<table class="definitions"><tr><th><code>id</code></th><td><div class="header"><span class="type"><a href="#data-structure-identifier">identifier</a></span><span class="http"><span class="label">HTTP</span><span class="label-value"><span>set in request path</span></span></span></div><div class="description"><p>The id of the followed slice.</p>
+</div></td></tr><tr><th><code>update</code></th><td><div class="header"><span class="type">object</span><span class="http"><span class="label">HTTP</span><span class="label-value"><span>= request body</span></span></span></div><div class="description"><p>New values for the followed slice&#39;s fields: see <a href="#data-structure-followed-slice">followed slice</a>. All fields are optional, and only modified values must be included.</p>
+</div></td></tr></table><h4 id="result">Result</h4>
+<span class="http"><span class="label">HTTP</span><span class="label-value"><code>200 OK</code></span></span><table class="definitions"><tr><th><code>followedSlice</code></th><td><div class="header"><span class="type"><a href="#data-structure-followed-slice">followed slice</a></span></div><div class="description"><p>The updated followed slice.</p>
+</div></td></tr></table></div><aside></aside></section><section id="methods-followed-slices-followedSlices-delete" class="method"> <h3 id="delete-followed-slice">Delete followed slice</h3>
+<div class="content"><div class="meta"><span class="method-id"><span class="label">id</span><span class="label-value"><code>followedSlices.delete</code></span></span><span class="http"><span class="label">HTTP</span><span class="label-value"><code>DELETE /followed-slices/{id}</code></span></span></div><div class="intro"><p>Deletes the specified followed slice.</p>
+</div><h4 id="parameters">Parameters</h4>
+<table class="definitions"><tr><th><code>id</code></th><td><div class="header"><span class="type"><a href="#data-structure-identifier">identifier</a></span><span class="http"><span class="label">HTTP</span><span class="label-value"><span>set in request path</span></span></span></div><div class="description"><p>The id of the followed slice.</p>
+</div></td></tr></table><h4 id="result">Result</h4>
+<span class="http"><span class="label">HTTP</span><span class="label-value"><code>200 OK</code></span></span><table class="definitions"><tr><th><code>followedSliceDeletion</code></th><td><div class="header"><span class="type"><a href="#data-structure-item-deletion">item deletion</a></span></div><div class="description"><p>The deletion record.</p>
+</div></td></tr></table></div><aside></aside></section></section><section id="methods-profile"><h2 id="profile-sets">Profile sets</h2>
 <div class="content"><div class="meta"></div><div class="intro"><p>Methods to read and write profile sets. Profile sets are plain key-value stores of user-level settings.</p>
 </div></div><section id="methods-profile-profile-getPublic" class="method"> <h3 id="get-public-user-profile">Get public user profile</h3>
 <div class="content"><div class="meta"><span class="method-id"><span class="label">id</span><span class="label-value"><code>profile.getPublic</code></span></span><span class="http"><span class="label">HTTP</span><span class="label-value"><code>GET /profile/public</code></span></span></div><div class="intro"><p>Gets the user&#39;s public profile set, which contains the information the user makes publicly available (e.g. avatar image). Available to all accesses.</p>
@@ -1491,7 +1562,109 @@ API-Version: 0.8.1
     "setting1": "new value",
     "setting3": 123
   }
-}</code></pre></div></div></div></aside></section></section><section id="methods-utils"><h2 id="utils">Utils</h2>
+}</code></pre></div></div></div></aside></section><section id="methods-profile-profile-get" class="method"> <h3 id="get-profile">Get profile</h3>
+<div class="content"><div class="meta"><span class="method-id"><span class="label">id</span><span class="label-value"><code>profile.get</code></span></span><span class="http"><span class="label">HTTP</span><span class="label-value"><code>GET /profile/{id}</code></span></span><span class="label trusted-only">Trusted apps only</span></div><div class="intro"><p>Gets the specified user profile set.</p>
+</div><h4 id="parameters">Parameters</h4>
+<table class="definitions"><tr><th><code>id</code></th><td><div class="header"><span class="type"><a href="#data-structure-identifier">identifier</a></span><span class="http"><span class="label">HTTP</span><span class="label-value"><span>set in request path</span></span></span></div><div class="description"><p>The id of the profile set.</p>
+</div></td></tr></table><h4 id="result">Result</h4>
+<span class="http"><span class="label">HTTP</span><span class="label-value"><code>200 OK</code></span></span><table class="definitions"><tr><th><code>profile</code></th><td><div class="header"><span class="type">object</span></div><div class="description"><p>The profile set.</p>
+</div></td></tr></table></div><aside></aside></section><section id="methods-profile-profile-update" class="method"> <h3 id="update-profile">Update profile</h3>
+<div class="content"><div class="meta"><span class="method-id"><span class="label">id</span><span class="label-value"><code>profile.update</code></span></span><span class="http"><span class="label">HTTP</span><span class="label-value"><code>PUT /profile/{id}</code></span></span><span class="label trusted-only">Trusted apps only</span></div><div class="intro"><p>Adds, updates or delete profile keys.</p>
+<ul>
+<li>To add or update a key, just set its value</li>
+<li>To delete a key, set its value to <code>null</code></li>
+</ul>
+<p>Existing keys not included in the update are left untouched.</p>
+</div><h4 id="parameters">Parameters</h4>
+<table class="definitions"><tr><th><code>id</code></th><td><div class="header"><span class="type"><a href="#data-structure-identifier">identifier</a></span><span class="http"><span class="label">HTTP</span><span class="label-value"><span>set in request path</span></span></span></div><div class="description"><p>The id of the profile set.</p>
+</div></td></tr><tr><th><code>update</code></th><td><div class="header"><span class="type">object</span><span class="http"><span class="label">HTTP</span><span class="label-value"><span>= request body</span></span></span></div><div class="description"><p>An object with the desired key changes (see above).</p>
+</div></td></tr></table><h4 id="result">Result</h4>
+<span class="http"><span class="label">HTTP</span><span class="label-value"><code>200 OK</code></span></span><table class="definitions"><tr><th><code>profile</code></th><td><div class="header"><span class="type">object</span></div><div class="description"><p>The updated profile set.</p>
+</div></td></tr></table></div><aside></aside></section></section><section id="methods-account"><h2 id="account-management">Account management</h2>
+<div class="content"><div class="meta"><span class="label trusted-only">Trusted apps only</span></div><div class="intro"><p>Methods to manage the user&#39;s account.</p>
+</div></div><section id="methods-account-account-get" class="method"> <h3 id="get-account-information">Get account information</h3>
+<div class="content"><div class="meta"><span class="method-id"><span class="label">id</span><span class="label-value"><code>account.get</code></span></span><span class="http"><span class="label">HTTP</span><span class="label-value"><code>GET /account</code></span></span></div><div class="intro"><p>Retrieves the user&#39;s account information.</p>
+</div><h4 id="result">Result</h4>
+<span class="http"><span class="label">HTTP</span><span class="label-value"><code>200 OK</code></span></span><table class="definitions"><tr><th><code>account</code></th><td><div class="header"><span class="type"><a href="#data-structure-account">account information</a></span></div><div class="description"><p>The user&#39;s account information.</p>
+</div></td></tr></table></div><aside><div class="example"><div class="tab-content"><div class="tab-pane json active"><pre><code>{}</code></pre><div class="step-marker">⬇</div><pre><code>{
+  "account": {
+    "username": "chuangzi",
+    "email": "chuangzi@dao.info",
+    "language": "zh"
+  }
+}</code></pre></div><div class="tab-pane http"><pre><code>curl -i https://${username}.pryv.io/account?auth=${token}</code></pre><div class="step-marker">⬇</div><pre><code>HTTP/1.1 200 OK
+Content-Type: application/json; charset=utf-8
+API-Version: 0.8.1
+
+{
+  "account": {
+    "username": "chuangzi",
+    "email": "chuangzi@dao.info",
+    "language": "zh"
+  }
+}</code></pre></div><div class="tab-pane sockets"><pre><code>socket.emit('account.get', {}, callback);</code></pre><div class="step-marker">⬇</div><pre><code>{
+  "account": {
+    "username": "chuangzi",
+    "email": "chuangzi@dao.info",
+    "language": "zh"
+  }
+}</code></pre></div></div></div></aside></section><section id="methods-account-account-update" class="method"> <h3 id="update-account-information">Update account information</h3>
+<div class="content"><div class="meta"><span class="method-id"><span class="label">id</span><span class="label-value"><code>account.update</code></span></span><span class="http"><span class="label">HTTP</span><span class="label-value"><code>PUT /account</code></span></span></div><div class="intro"><p>Modifies the user&#39;s account information.</p>
+</div><h4 id="parameters">Parameters</h4>
+<table class="definitions"><tr><th><code>update</code></th><td><div class="header"><span class="type">object</span><span class="http"><span class="label">HTTP</span><span class="label-value"><span>= request body</span></span></span></div><div class="description"><p>New values for the account information&#39;s fields: see <a href="#data-structure-account">account information</a>. All fields are optional, and only modified values must be included.</p>
+</div></td></tr></table><h4 id="result">Result</h4>
+<span class="http"><span class="label">HTTP</span><span class="label-value"><code>200 OK</code></span></span><table class="definitions"><tr><th><code>account</code></th><td><div class="header"><span class="type"><a href="#data-structure-account">account information</a></span></div><div class="description"><p>The updated account information.</p>
+</div></td></tr></table></div><aside></aside></section><section id="methods-account-account-changePassword" class="method"> <h3 id="change-password">Change password</h3>
+<div class="content"><div class="meta"><span class="method-id"><span class="label">id</span><span class="label-value"><code>account.changePassword</code></span></span><span class="http"><span class="label">HTTP</span><span class="label-value"><code>POST /account/change-password</code></span></span></div><div class="intro"><p>Modifies the user&#39;s password.</p>
+</div><h4 id="parameters">Parameters</h4>
+<table class="definitions"><tr><th><code>oldPassword</code></th><td><div class="header"><span class="type">string</span></div><div class="description"><p>The current password.</p>
+</div></td></tr><tr><th><code>newPassword</code></th><td><div class="header"><span class="type">string</span></div><div class="description"><p>The new password.</p>
+</div></td></tr></table><h4 id="result">Result</h4>
+<span class="http"><span class="label">HTTP</span><span class="label-value"><code>200 OK</code></span></span><h4 id="specific-errors">Specific errors</h4>
+<table class="definitions"><tr><th><code>invalid-operation</code></th><td><div class="header"><span class="http"><span class="label">HTTP</span><span class="label-value"><code>400</code></span></span></div><div class="description"><p>The given password does not match.</p>
+</div></td></tr></table></div><aside><div class="example"><div class="tab-content"><div class="tab-pane json active"><pre><code>{
+  "oldPassword": "B|_|tt3rfly!",
+  "newPassword": "//\\_.:o0o:._//\\"
+}</code></pre><div class="step-marker">⬇</div><pre><code>{}</code></pre></div><div class="tab-pane http"><pre><code>curl -i -X POST -H 'Content-Type: application/json' -d '{"oldPassword":"B|_|tt3rfly!","newPassword":"//\\_.:o0o:._//\\"}' https://${username}.pryv.io/account/change-password?auth=${token}</code></pre><div class="step-marker">⬇</div><pre><code>HTTP/1.1 200 OK
+Content-Type: application/json; charset=utf-8
+API-Version: 0.8.1
+
+{}</code></pre></div><div class="tab-pane sockets"><pre><code>socket.emit('account.changePassword', {
+  "oldPassword": "B|_|tt3rfly!",
+  "newPassword": "//\\_.:o0o:._//\\"
+}, callback);</code></pre><div class="step-marker">⬇</div><pre><code>{}</code></pre></div></div></div></aside></section><section id="methods-account-account-requestPasswordReset" class="method"> <h3 id="request-password-reset">Request password reset</h3>
+<div class="content"><div class="meta"><span class="method-id"><span class="label">id</span><span class="label-value"><code>account.requestPasswordReset</code></span></span><span class="http"><span class="label">HTTP</span><span class="label-value"><code>POST /account/request-password-reset</code></span></span></div><div class="intro"><p>Requests the resetting of the user&#39;s password. An e-mail containing an expiring reset token (e.g. in a link) will be sent to the user. This method does not expect an <a href="#basics-authentication">auth parameter</a>.</p>
+</div><h4 id="parameters">Parameters</h4>
+<table class="definitions"><tr><th><code>appId</code></th><td><div class="header"><span class="type">string</span></div><div class="description"><p>Your app&#39;s unique identifier.</p>
+</div></td></tr></table><h4 id="result">Result</h4>
+<span class="http"><span class="label">HTTP</span><span class="label-value"><code>200 OK</code></span></span></div><aside><div class="example"><div class="tab-content"><div class="tab-pane json active"><pre><code>{
+  "appId": "my-app-id"
+}</code></pre><div class="step-marker">⬇</div><pre><code>{}</code></pre></div><div class="tab-pane http"><pre><code>curl -i -X POST -H 'Content-Type: application/json' -d '{"appId":"my-app-id"}' https://${username}.pryv.io/account/request-password-reset?auth=${token}</code></pre><div class="step-marker">⬇</div><pre><code>HTTP/1.1 200 OK
+Content-Type: application/json; charset=utf-8
+API-Version: 0.8.1
+
+{}</code></pre></div><div class="tab-pane sockets"><pre><code>socket.emit('account.requestPasswordReset', {
+  "appId": "my-app-id"
+}, callback);</code></pre><div class="step-marker">⬇</div><pre><code>{}</code></pre></div></div></div></aside></section><section id="methods-account-account-resetPassword" class="method"> <h3 id="reset-password">Reset password</h3>
+<div class="content"><div class="meta"><span class="method-id"><span class="label">id</span><span class="label-value"><code>account.resetPassword</code></span></span><span class="http"><span class="label">HTTP</span><span class="label-value"><code>POST /account/reset-password</code></span></span></div><div class="intro"><p>Resets the user&#39;s password, authenticating the request with the given reset token (see &quot;request password reset&quot; above). This method does not expect an <a href="#basics-authentication">auth parameter</a>.</p>
+</div><h4 id="parameters">Parameters</h4>
+<table class="definitions"><tr><th><code>resetToken</code></th><td><div class="header"><span class="type">string</span></div><div class="description"><p>The expiring reset token that was sent to the user after requesting the password reset.</p>
+</div></td></tr><tr><th><code>newPassword</code></th><td><div class="header"><span class="type">string</span></div><div class="description"><p>The new password.</p>
+</div></td></tr><tr><th><code>appId</code></th><td><div class="header"><span class="type">string</span></div><div class="description"><p>Your app&#39;s unique identifier.</p>
+</div></td></tr></table><h4 id="result">Result</h4>
+<span class="http"><span class="label">HTTP</span><span class="label-value"><code>200 OK</code></span></span></div><aside><div class="example"><div class="tab-content"><div class="tab-pane json active"><pre><code>{
+  "resetToken": "chtplghfp0000hqjx814u6393",
+  "newPassword": "Dr0ws$4p",
+  "appId": "my-app-id"
+}</code></pre><div class="step-marker">⬇</div><pre><code>{}</code></pre></div><div class="tab-pane http"><pre><code>curl -i -X POST -H 'Content-Type: application/json' -d '{"resetToken":"chtplghfp0000hqjx814u6393","newPassword":"Dr0ws$4p","appId":"my-app-id"}' https://${username}.pryv.io/account/reset-password?auth=${token}</code></pre><div class="step-marker">⬇</div><pre><code>HTTP/1.1 200 OK
+Content-Type: application/json; charset=utf-8
+API-Version: 0.8.1
+
+{}</code></pre></div><div class="tab-pane sockets"><pre><code>socket.emit('account.resetPassword', {
+  "resetToken": "chtplghfp0000hqjx814u6393",
+  "newPassword": "Dr0ws$4p",
+  "appId": "my-app-id"
+}, callback);</code></pre><div class="step-marker">⬇</div><pre><code>{}</code></pre></div></div></div></aside></section></section><section id="methods-utils"><h2 id="utils">Utils</h2>
 <div class="content"><div class="meta"></div><div class="intro"><p>Utility methods that don&#39;t pertain to a particular resource type.</p>
 </div></div><section id="methods-utils-getAccessInfo" class="method"> <h3 id="get-current-access-info">Get current access info</h3>
 <div class="content"><div class="meta"><span class="method-id"><span class="label">id</span><span class="label-value"><code>getAccessInfo</code></span></span><span class="http"><span class="label">HTTP</span><span class="label-value"><code>GET /access-info</code></span></span></div><div class="intro"><p>Retrieves the name, type and permissions of the access in use.</p>
@@ -1977,7 +2150,21 @@ API-Version: 0.8.1
   "createdBy": "ci4wuqdn90000qfpuag5afm0l",
   "modified": 1421162219.926,
   "modifiedBy": "ci4wuqdn90000qfpuag5afm0l"
-}</code></pre></div></aside></section><section id="data-structure-item-deletion"><h2 id="item-deletion">Item deletion</h2>
+}</code></pre></div></aside></section><section id="data-structure-followed-slice"><h2 id="followed-slice">Followed slice</h2>
+<div class="content"><div class="meta"><span class="label trusted-only">Trusted apps only</span></div><div class="intro"><p>See also: <a href="/concepts#core-followed-slices">core concepts</a>.</p>
+</div><table class="definitions"><tr><th><code>id</code></th><td><div class="header"><span class="type"><a href="#data-structure-identifier">identifier</a></span><span class="label label-default unique">unique</span><span class="label label-default read-only">read-only</span></div><div class="description"><p>The server-assigned identifier for the followed slice.</p>
+</div></td></tr><tr><th><code>name</code></th><td><div class="header"><span class="type">string</span><span class="label label-default unique">unique</span></div><div class="description"><p>A name identifying the followed slice for the user.</p>
+</div></td></tr><tr><th><code>url</code></th><td><div class="header"><span class="type">URL</span></div><div class="description"><p>The URL of the API endpoint of the account hosting the slice. Not modifiable after creation.</p>
+</div></td></tr><tr><th><code>accessToken</code></th><td><div class="header"><span class="type">string</span></div><div class="description"><p>The token of the shared access itself. Not modifiable after creation.</p>
+</div></td></tr></table></div><aside></aside></section><section id="data-structure-account"><h2 id="account-information">Account information</h2>
+<div class="content"><div class="meta"><span class="label trusted-only">Trusted apps only</span></div><div class="intro"><p>User account information.</p>
+</div><table class="definitions"><tr><th><code>username</code></th><td><div class="header"><span class="type">string</span><span class="label label-default unique">unique</span><span class="label label-default read-only">read-only</span></div><div class="description"><p>The user&#39;s username.</p>
+</div></td></tr><tr><th><code>email</code></th><td><div class="header"><span class="type">string</span><span class="label label-default unique">unique</span></div><div class="description"><p>The user&#39;s contact e-mail address.</p>
+</div></td></tr><tr><th><code>language</code></th><td><div class="header"><span class="type">string</span></div><div class="description"><p>The user&#39;s preferred language as a 2-letter ISO language code.</p>
+</div></td></tr><tr><th><code>storageUsed</code></th><td><div class="header"><span class="type">object</span></div><div class="description"><p>The current storage size used by the user account.</p>
+</div><table class="definitions"><tr><th><code>dbDocuments</code></th><td><div class="header"><span class="type">number</span></div><div class="description"><p>Bytes used by documents (records) in the database.</p>
+</div></td></tr><tr><th><code>attachedFiles</code></th><td><div class="header"><span class="type">number</span></div><div class="description"><p>Bytes used by attached files.</p>
+</div></td></tr></table></td></tr></table></div><aside></aside></section><section id="data-structure-item-deletion"><h2 id="item-deletion">Item deletion</h2>
 <div class="content"><div class="meta"></div><div class="intro"><p>A record of a deleted item for sync purposes. Item deletions are currently kept for a year.</p>
 </div><table class="definitions"><tr><th><code>id</code></th><td><div class="header"><span class="type"><a href="#data-structure-identifier">identifier</a></span></div><div class="description"><p>The identifier of the deleted item.</p>
 </div></td></tr><tr><th><code>deleted</code></th><td><div class="header"><span class="type"><a href="#data-structure-timestamp">timestamp</a></span><span class="label label-default optional">optional</span></div><div class="description"><p>The time the item was deleted.</p>
