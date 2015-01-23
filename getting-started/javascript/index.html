@@ -62,13 +62,14 @@ pryv.Auth.setup(settings);
 <h3 id="connect-to-the-account">Connect to the account</h3>
 <pre><code class="lang-javascript">var connection = new pryv.Connection(credentials);
 </code></pre>
-<h3 id="retrieve-data">Retrieve data</h3>
+<h3 id="retrieve-manipulate-events">Retrieve &amp; manipulate events</h3>
+<h4 id="retrieve">Retrieve</h4>
 <pre><code class="lang-javascript">var filter = new pryv.Filter({limit : 20});
 connection.events.get(filter, function (err, events) {
   // ...
 });
 </code></pre>
-<h3 id="create-data">Create data</h3>
+<h4 id="create">Create</h4>
 <pre><code class="lang-javascript">var eventData = {
   streamId: &#39;diary&#39;,
   type: &#39;note/txt&#39;,
@@ -78,17 +79,22 @@ connection.events.create(eventData, function (err, event) {
   // ...
 });
 </code></pre>
-<h3 id="update-data">Update data</h3>
+<h4 id="update">Update</h4>
 <pre><code class="lang-javascript">event.content = &#39;Updated content.&#39;;
 event.update(function (err, updatedEvent) {
   // ...
 });
 </code></pre>
-<h3 id="delete-data">Delete data</h3>
+<h4 id="delete">Delete</h4>
 <pre><code class="lang-javascript">event.delete(function (err, trashedEventOrNull) {
   // ...
 });
 </code></pre>
+<h3 id="examples">Examples</h3>
+<p>On JSFiddle:</p>
+<ul>
+<li><a href="http://jsfiddle.net/pryv/fr4e834p/11/">Basic example: authenticate &amp; retrieve data</a></li>
+</ul>
 <h3 id="further-resources">Further resources</h3>
 <ul>
 <li><a href="/reference">API reference</a></li>
