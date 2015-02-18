@@ -1,0 +1,126 @@
+<!DOCTYPE html><html lang="en" class="no-js"><head><meta charset="UTF-8"><meta name="description" content="TODO"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Getting started: Java | Pryv API</title><link rel="icon" href="/assets/images/favicon-black.ico" type="image/x-icon"><link rel="apple-touch-icon" sizes="120x120" href="/assets/images/apple-touch-icon-120x120-black.png"><link rel="apple-touch-icon" sizes="152x152" href="/assets/images/apple-touch-icon-152x152-black.png"><link rel="apple-touch-icon" sizes="180x180" href="/assets/images/apple-touch-icon-180x180-black.png"><!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+<!--[if lt IE 9]>
+  <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+  <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+<![endif]--><link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Roboto:400,300,500,700,400italic|Roboto+Condensed:400,300,700"><link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/styles/docco.min.css"><link rel="stylesheet" type="text/css" href="/assets/fonts/ss-gizmo.min.css"><link rel="stylesheet" type="text/css" href="/assets/style.css"></head><body class="with-toc"><header id="page-header"><nav role="navigation" class="navbar navbar-default navbar-fixed-top"><div class="container-fluid"><div class="navbar-header"><a href="http://pryv.com" title="Pryv home" class="navbar-brand logo pryv-home"><img src="/assets/images/icon-home.svg" alt="Pryv home" height="50"></a><a href="/" title="Developers home" class="navbar-brand logo"><img src="/assets/images/logo-256-black.png" alt="Developers home"></a><button type="button" data-toggle="collapse" data-target="#main-nav" class="navbar-toggle"><span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button></div><div id="main-nav" class="collapse navbar-collapse"><ul class="nav navbar-nav"><li class="dropdown"><a href="#" data-toggle="dropdown" class="dropdown-toggle">Guides <b class="caret"></b></a><ul class="dropdown-menu"><!--+menuItem('getting-started', 'Getting started (soon)', {disabled: true})--><li><a href="/getting-started/javascript">Getting started: Javascript</a></li><li class="active"><a href="/getting-started/java">Getting started: Java</a></li><li><a href="/concepts">API concepts</a></li><!--+menuItem('data-modeling', 'Data modeling') —> into "Concepts"??--></ul></li><li class="dropdown"><a href="#" data-toggle="dropdown" class="dropdown-toggle">Reference <b class="caret"></b></a><ul class="dropdown-menu"><li><a href="/reference">API reference</a></li><li><a href="/change-log">API change log</a></li><li><a href="/event-types">Event types</a></li><!--+menuItem('standardStructure')--></ul></li><li class="dropdown"><a href="#" data-toggle="dropdown" class="dropdown-toggle">Code <b class="caret"></b></a><ul class="dropdown-menu"><li><a href="/code-libraries">Code libraries</a></li><li><a href="/apps-and-services">Example apps</a></li></ul></li><!--lia(href='#') Blog--></ul><div class="navbar-right"><p class="navbar-text version"><a href="/change-log" title="View change log">API version: <strong>0.8.1</strong></a></p></div></div></div></nav></header><div id="main-wrapper" class="container container-narrow"><div id="main"><h1 class="page-title">Getting started: Java</h1><p>A few initial pointers to get going with <a href="https://github.com/pryv/lib-java">our Java library</a>.<br>
+<a href="http://github.com/pryv/dev-site/issues">Feedback and suggestions welcome</a>.</p>
+<h3 id="install-the-library">Install the library</h3>
+<p>Clone the git repo:</p>
+<pre><code class="lang-bash">git clone https://github.com/pryv/lib-java
+</code></pre>
+<p>Install <a href="http://books.sonatype.com/mvnref-book/reference/installation-sect-maven-install.html">Maven</a> and install the library locally:</p>
+<pre><code class="lang-bash">mvn install
+</code></pre>
+<p>add the dependency in your project&#39;s pom.xml file:</p>
+<pre><code class="lang-xml">&lt;dependency&gt;
+        &lt;groupId&gt;com.pryv&lt;/groupId&gt;
+        &lt;artifactId&gt;lib&lt;/artifactId&gt;
+        &lt;version&gt;0.1.0&lt;/version&gt;
+&lt;/dependency&gt;
+</code></pre>
+<p><em>(Note: The lib will soon be made available on the Maven central repository.)</em></p>
+<h3 id="authorize-your-app">Authorize your app</h3>
+<p>First obtain an app identifier (for now: just <a href="mailto:developers@pryv.com">ask us</a>), then in your client code:</p>
+<pre><code class="lang-java">// Here we request full permissions on a custom stream;
+// in practice, scope and permission level will vary depending on your needs
+Permission permission = new Permission(&quot;example-app&quot;, Permission.Level.manage, &quot;Example App&quot;);
+List&lt;Permission&gt; permissions = new ArrayList&lt;Permission&gt;();
+permissions.add(permission);
+
+AuthView view = new AuthView() {
+    public void onAuthSuccess(String username, String token) {
+      // provides username and valid token
+      ...
+    }
+
+    public void onAuthError(String message) {
+      // display error message
+      ...
+    }
+
+    public void onAuthRefused(int reasonId, String message, String detail) {
+        // display authentication refused message
+        ...
+    }
+
+    public void displayLoginVew(String loginURL) {
+      // generate WebView to load URL to enter credentials
+      ...
+    }
+};
+
+AuthController authenticator = new AuthControllerImpl(REQUESTING_APP_ID, permissions, &quot;en&quot;, &quot;&quot;, view);
+authenticator.signIn();
+</code></pre>
+<p>See also: <a href="/reference/#authorizing-your-app">app authorization in the API reference</a></p>
+<h3 id="connect-to-the-account">Connect to the account</h3>
+<pre><code class="lang-java">connection = new Connection(username, token, new DBinitCallback());
+</code></pre>
+<h3 id="retrieve-manipulate-events">Retrieve &amp; manipulate events</h3>
+<h4 id="retrieve">Retrieve</h4>
+<pre><code class="lang-java">Filter filter = new Filter();
+filter.setLimit(20);
+// &#39;this&#39; implements EventsCallback
+connection.getEvents(filter, this);
+</code></pre>
+<h4 id="create">Create</h4>
+<pre><code class="lang-java">Event newEvent = new Event()
+newEvent.setStreamId(&quot;diary&quot;);
+newEvent.setType(&quot;note/txt&quot;);
+newEvent.setContent(&quot;I track, therefore I am.&quot;);
+// &#39;this&#39; implements EventsCallback
+connection.createEvent(newEvent, this);
+</code></pre>
+<h4 id="update">Update</h4>
+<pre><code class="lang-java">event.setContent = &quot;Updated content.&quot;;
+// &#39;this&#39; implements EventsCallback
+connection.updateEvent(event, this);
+</code></pre>
+<h4 id="delete">Delete</h4>
+<pre><code class="lang-java">// &#39;this&#39; implements EventsCallback
+connection.deleteEvent(event, this);
+</code></pre>
+<h3 id="examples">Examples</h3>
+<ul>
+<li><a href="https://github.com/pryv/lib-java/blob/master/src/test/java/com/pryv/examples/BasicExample.java">Basic example: authenticate &amp; retrieve data</a></li>
+<li><a href="https://github.com/pryv/lib-java/blob/master/examples/JavaApp/JavaApp/src/main/java/com/pryv/ExampleApp.java#L47">Java App example: JavaFX app to view user data</a></li>
+</ul>
+<h3 id="further-resources">Further resources</h3>
+<ul>
+<li><a href="/reference">API reference</a></li>
+</ul>
+</div><nav id="toc"></nav></div><footer id="page-footer"><nav class="navbar navbar-default"><div class="container-fluid"><div id="footer-nav"><ul class="nav navbar-nav"><li><a href="mailto:developers@pryv.com">Send a message</a></li><li><a href="http://github.com/pryv">GitHub</a></li><li><a href="http://pryv.com">pryv.com</a></li></ul></div></div></nav></footer><script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script><script src="/assets/bootstrap.min.js"></script><script src="/assets/js/toc.min.js"></script><!-- TOC generation--><script>jQuery(document).ready(function($) {
+  var offset = 50;
+
+  $('#toc').toc({
+    selector: '#main h1:not(.page-title),#main h2,#main h3',
+    ulClass: 'nav'
+  });
+
+  $('body').scrollspy({
+    target: '#toc',
+    offset: offset
+  });
+
+  // fix offset when navigating
+  $('#toc li a, a.toc-anchor').click(function (e) {
+    e.preventDefault();
+    var target = $(this).attr('href');
+    window.location.hash = target;
+    $(target)[0].scrollIntoView();
+    if ($(window).scrollTop() + $(window).height() !== $(document).height()) {
+      // only adjust when not at bottom
+      scrollBy(0, -offset + 1);
+    }
+  });
+});
+</script><!-- Code blocks highlighting--><script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/highlight.min.js"></script><script>hljs.initHighlightingOnLoad();
+</script><!-- Google Analytics--><script>var _gaq = _gaq || [];
+_gaq.push(['_setAccount', 'UA-36589447-2']);
+_gaq.push(['_trackPageview']);
+(function() {
+  var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+  ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+  var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+})();</script></body></html>
