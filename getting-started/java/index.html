@@ -54,32 +54,210 @@ AuthController authenticator = new AuthControllerImpl(REQUESTING_APP_ID, permiss
 authenticator.signIn();
 </code></pre>
 <p>See also: <a href="/reference/#authorizing-your-app">app authorization in the API reference</a></p>
-<h3 id="connect-to-the-account">Connect to the account</h3>
+<h3 id="setup-connection">Setup connection</h3>
 <pre><code class="lang-java">connection = new Connection(username, token, new DBinitCallback());
+
+// define the scope of the cached data. Leave null to cache all Pryv data (including data from other apps)
+new Filter scope = new Filter();
+scope.addStream(myTrackedStream);
+connection.setupCacheScope(scope)
 </code></pre>
 <h3 id="retrieve-manipulate-events">Retrieve &amp; manipulate events</h3>
 <h4 id="retrieve">Retrieve</h4>
 <pre><code class="lang-java">Filter filter = new Filter();
 filter.setLimit(20);
-// &#39;this&#39; implements EventsCallback
-connection.getEvents(filter, this);
+connection.events.get(filter, new GetEventsCallback() {
+    @Override
+    public void cacheCallback(List&lt;Event&gt; events, Map&lt;String, Double&gt; eventDeletions) {
+        // do something            
+    }
+
+    @Override
+    public void onCacheError(String errorMessage) {
+        // do something
+    }
+
+    @Override
+    public void apiCallback(List&lt;Event&gt; events, Map&lt;String, Double&gt; eventDeletions, Double serverTime) {
+        // do something
+    }
+
+    @Override
+    public void onApiError(String errorMessage, Double serverTime) {
+        // do something
+    }
+});
 </code></pre>
 <h4 id="create">Create</h4>
 <pre><code class="lang-java">Event newEvent = new Event()
 newEvent.setStreamId(&quot;diary&quot;);
 newEvent.setType(&quot;note/txt&quot;);
 newEvent.setContent(&quot;I track, therefore I am.&quot;);
-// &#39;this&#39; implements EventsCallback
-connection.createEvent(newEvent, this);
+connection.events.create(newEvent, new EventsCallback() {
+    @Override
+    public void onApiSuccess(String successMessage, Event event, String stoppedId, Double serverTime) {
+        // do something            
+    }
+
+    @Override
+    public void onApiError(String errorMessage, Double serverTime) {
+        // do something
+    }
+
+    @Override
+    public void onCacheSuccess(String successMessage, Event event) {
+        // do something
+    }
+
+    @Override
+    public void onCacheError(String errorMessage) {
+        // do something
+    }
+});
 </code></pre>
 <h4 id="update">Update</h4>
 <pre><code class="lang-java">event.setContent = &quot;Updated content.&quot;;
-// &#39;this&#39; implements EventsCallback
-connection.updateEvent(event, this);
+connection.events.update(event, new EventsCallback() {
+    @Override
+    public void onApiSuccess(String successMessage, Event event, String stoppedId, Double serverTime) {
+        // do something            
+    }
+
+    @Override
+    public void onApiError(String errorMessage, Double serverTime) {
+        // do something
+    }
+
+    @Override
+    public void onCacheSuccess(String successMessage, Event event) {
+        // do something
+    }
+
+    @Override
+    public void onCacheError(String errorMessage) {
+        // do something
+    }
+});
 </code></pre>
 <h4 id="delete">Delete</h4>
-<pre><code class="lang-java">// &#39;this&#39; implements EventsCallback
-connection.deleteEvent(event, this);
+<pre><code class="lang-java">connection.events.delete(event, new EventsCallback() {
+    @Override
+    public void onApiSuccess(String successMessage, Event event, String stoppedId, Double serverTime) {
+        // do something            
+    }
+
+    @Override
+    public void onApiError(String errorMessage, Double serverTime) {
+        // do something
+    }
+
+    @Override
+    public void onCacheSuccess(String successMessage, Event event) {
+        // do something
+    }
+
+    @Override
+    public void onCacheError(String errorMessage) {
+        // do something
+    }
+});
+</code></pre>
+<h3 id="retrieve-and-manipulate-streams">Retrieve and manipulate Streams</h3>
+<h4 id="retrieve">Retrieve</h4>
+<pre><code class="lang-java">connection.streams.get(null, new GetStreamsCallback() {
+    @Override
+    public void cacheCallback(Map&lt;String, Stream&gt; streams, Map&lt;String, Double&gt; streamDeletions) {
+        // do something            
+    }
+
+    @Override
+    public void onCacheError(String errorMessage) {
+        // do something
+    }
+
+    @Override
+    public void apiCallback(Map&lt;String, Stream&gt; streams, Map&lt;String, Double&gt; streamDeletions, Double serverTime) {
+        // do something
+    }
+
+    @Override
+    public void onApiError(String errorMessage, Double serverTime) {
+        // do something
+    }
+});
+</code></pre>
+<h4 id="create">Create</h4>
+<pre><code class="lang-java">Stream newStream = new Stream();
+newStream.setId(&quot;heartRate&quot;);
+newStream.setName(&quot;Heart rate&quot;);
+connection.streams.create(newStream, new StreamsCallback() {
+    @Override
+    public void onApiSuccess(String successMessage, Stream stream, Double serverTime) {
+        // do something
+    }
+
+    @Override
+    public void onApiError(String errorMessage, Double serverTime) {
+        // do something
+    }
+
+    @Override
+    public void onCacheSuccess(String successMessage, Stream stream) {
+        // do something
+    }
+
+    @Override
+    public void onCacheError(String errorMessage) {
+        // do something
+    }
+});
+</code></pre>
+<h4 id="update">Update</h4>
+<pre><code class="lang-java">stream.setParentId(&quot;health&quot;);
+connection.streams.update(stream, new StreamsCallback() {
+    @Override
+    public void onApiSuccess(String successMessage, Stream stream, Double serverTime) {
+        // do something
+    }
+
+    @Override
+    public void onApiError(String errorMessage, Double serverTime) {
+        // do something
+    }
+
+    @Override
+    public void onCacheSuccess(String successMessage, Stream stream) {
+        // do something
+    }
+
+    @Override
+    public void onCacheError(String errorMessage) {
+        // do something
+    }
+});
+</code></pre>
+<h4 id="delete">Delete</h4>
+<pre><code class="lang-java">connection.streams.delete(stream, new StreamsCallback() {
+    @Override
+    public void onApiSuccess(String successMessage, Stream stream, Double serverTime) {
+        // do something
+    }
+
+    @Override
+    public void onApiError(String errorMessage, Double serverTime) {
+        // do something
+    }
+
+    @Override
+    public void onCacheSuccess(String successMessage, Stream stream) {
+        // do something
+    }
+
+    @Override
+    public void onCacheError(String errorMessage) {
+        // do something
+    }
+});
 </code></pre>
 <h3 id="further-resources">Further resources</h3>
 <ul>
