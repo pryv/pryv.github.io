@@ -7,21 +7,48 @@
 <a href="http://github.com/pryv/dev-site/issues">Feedback and suggestions welcome</a>.</p>
 <h3 id="examples">Examples</h3>
 <ul>
-<li><a href="https://github.com/pryv/lib-java/blob/master/examples/BasicExample/src/main/java/BasicExample.java#L32">Basic example: authenticate &amp; retrieve data</a><br>
-Run it via <code>examples/BasicExample/run.sh</code></li>
-<li><a href="https://github.com/pryv/lib-java/blob/master/examples/JavaApp/src/main/java/com/pryv/ExampleApp.java#L47">Java App example: JavaFX app to view user data</a><br>
-Run it via <code>examples/JavaApp/run.sh</code> (Java 1.8 required)</li>
+<li><p><a href="https://github.com/pryv/app-java-examples/blob/master/BasicExample/src/main/java/BasicExample.java">Java Basic example: authenticate &amp; retrieve data</a><br></p>
+</li>
+<li><p><a href="https://github.com/pryv/app-java-examples/tree/master/JavaFxApp">Java App example: JavaFX app to view user data</a><br></p>
+</li>
+<li><p><a href="https://github.com/pryv/app-java-examples/tree/master/BackupApp">Java Backup app: backup one&#39;s Pryv data locally to CSV format</a><br></p>
+</li>
+<li><p><a href="https://github.com/pryv/app-android-example">Android App example: authenticate, create note Events and retrieve them, with integration guide</a><br></p>
+</li>
 </ul>
 <h3 id="install-the-library">Install the library</h3>
-<p>Install <a href="http://books.sonatype.com/mvnref-book/reference/installation-sect-maven-install.html">Maven</a> and add the dependency in your project&#39;s pom.xml file:</p>
-<pre><code class="lang-xml">&lt;dependency&gt;
-        &lt;groupId&gt;com.pryv&lt;/groupId&gt;
-        &lt;artifactId&gt;lib&lt;/artifactId&gt;
-        &lt;version&gt;0.1.0&lt;/version&gt;
+<p>Since this library aims to be compatible with Java and Android environment, it contains a Java library and an Android library that both have a Commons library as dependency. Thus, please import the dependency depending on the platform you are targeting as follows :</p>
+<h4 id="gradle">Gradle</h4>
+<p>Java project:</p>
+<pre><code>compile &#39;com.pryv:java:1.0.2&#39;
+</code></pre><p>Android project:</p>
+<pre><code>compile &#39;com.pryv:android:1.0.2&#39;
+</code></pre><h4 id="maven">Maven</h4>
+<p>Java project:</p>
+<pre><code>&lt;dependency&gt;
+  &lt;groupId&gt;com.pryv&lt;/groupId&gt;
+  &lt;artifactId&gt;java&lt;/artifactId&gt;
+  &lt;version&gt;1.0.2&lt;/version&gt;
+  &lt;type&gt;pom&lt;/type&gt;
 &lt;/dependency&gt;
-</code></pre>
-<h3 id="authorize-your-app">Authorize your app</h3>
-<p>First choose an app identifier (min. length 6 chars), then in your client code:</p>
+</code></pre><p>Android project:</p>
+<pre><code>&lt;dependency&gt;
+  &lt;groupId&gt;com.pryv&lt;/groupId&gt;
+  &lt;artifactId&gt;android&lt;/artifactId&gt;
+  &lt;version&gt;1.0.2&lt;/version&gt;
+  &lt;type&gt;pom&lt;/type&gt;
+&lt;/dependency&gt;
+</code></pre><h4 id="ivy">Ivy</h4>
+<p>Java project:</p>
+<pre><code>&lt;dependency org=&#39;com.pryv&#39; name=&#39;java&#39; rev=&#39;1.0.2&#39;&gt;
+  &lt;artifact name=&#39;$AID&#39; ext=&#39;pom&#39;&gt;&lt;/artifact&gt;
+&lt;/dependency&gt;
+</code></pre><p>Android project:</p>
+<pre><code>&lt;dependency org=&#39;com.pryv&#39; name=&#39;android&#39; rev=&#39;1.0.2&#39;&gt;
+  &lt;artifact name=&#39;$AID&#39; ext=&#39;pom&#39;&gt;&lt;/artifact&gt;
+&lt;/dependency&gt;
+</code></pre><h3 id="authorize-your-app">Authorize your app</h3>
+<p>First choose an app identifier (REQUESTING_APP_ID, min. length 6 chars), then in your client code:</p>
 <pre><code class="lang-java">// Here we request full permissions on a custom stream;
 // in practice, scope and permission level will vary depending on your needs
 Permission permission = new Permission(&quot;example-app-id&quot;, Permission.Level.manage, &quot;Example App&quot;);
@@ -44,25 +71,25 @@ AuthView view = new AuthView() {
         ...
     }
 
-    public void displayLoginVew(String loginURL) {
+    public void displayLoginView(String loginURL) {
       // generate WebView to load URL to enter credentials
       ...
     }
 };
 
-AuthController authenticator = new AuthControllerImpl(REQUESTING_APP_ID, permissions, &quot;en&quot;, &quot;&quot;, view);
+AuthController authenticator = new AuthControllerImpl(REQUESTING_APP_ID, permissions, language, returnURL, view);
 authenticator.signIn();
 </code></pre>
 <p>See also: <a href="/reference/#authorizing-your-app">app authorization in the API reference</a></p>
 <h3 id="setup-connection">Setup connection</h3>
-<pre><code class="lang-java">connection = new Connection(&quot;bob&quot;, &quot;12345678qwertz&quot;, &quot;pryv.me&quot;, false, new DBinitCallback());
+<pre><code class="lang-java">Connection connection = new Connection(userID, accessToken, domain, true, new DBinitCallback());
 
-// define the scope of the cached data. Leave null to cache all Pryv data (including data from other apps)
-new Filter scope = new Filter();
-scope.addStream(myTrackedStream);
+// Define the scope of the cached data
+Filter scope = new Filter();
+scope.addStream(myTrackedStream); // Omit this to cache all Pryv data (including data from other apps)
 connection.setupCacheScope(scope);
 </code></pre>
-<h3 id="retrieve-manipulate-events">Retrieve &amp; manipulate events</h3>
+<h3 id="manage-events">Manage events</h3>
 <h4 id="retrieve">Retrieve</h4>
 <pre><code class="lang-java">Filter filter = new Filter();
 filter.setLimit(20);
@@ -162,7 +189,7 @@ connection.events.update(event, new EventsCallback() {
     }
 });
 </code></pre>
-<h3 id="retrieve-and-manipulate-streams">Retrieve and manipulate Streams</h3>
+<h3 id="manage-streams">Manage Streams</h3>
 <h4 id="retrieve">Retrieve</h4>
 <pre><code class="lang-java">connection.streams.get(null, new GetStreamsCallback() {
     @Override
@@ -259,6 +286,10 @@ connection.streams.update(stream, new StreamsCallback() {
     }
 });
 </code></pre>
+<h3 id="manage-accesses">Manage accesses</h3>
+<p>Coming soon!</p>
+<h3 id="batch-call">Batch call</h3>
+<p>Coming soon!</p>
 <h3 id="further-resources">Further resources</h3>
 <ul>
 <li><a href="/reference/">API reference</a></li>
