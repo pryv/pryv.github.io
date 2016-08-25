@@ -99,6 +99,24 @@ connection.events.create(event, function (err, eventCreated) {
   // ...
 });
 </code></pre>
+<h4 id="create-with-attachment">Create with attachment</h4>
+<pre><code class="lang-javascript">var fs = require(&#39;fs&#39;);
+
+var event = {
+  type: &#39;picture/attached&#39;,
+  streamId: &#39;valid-stream-id&#39;,
+  description: &#39;This is a description.&#39;
+};
+var pictureData = fs.readFileSync(&#39;pathToFile/image.jpg&#39;);
+var formData = pryv.utility.forgeFormData(&#39;attachment-id&#39;, pictureData, {
+  type: &#39;image/jpg&#39;,
+  filename: &#39;attachment&#39;
+});
+
+connection.events.createWithAttachment(event, formData, function (err, event) {
+  // ...
+});
+</code></pre>
 <p>See also: <a href="/event-types/">More about types</a></p>
 <h4 id="update">Update</h4>
 <pre><code class="lang-javascript">event.content = &#39;This is an update.&#39;;
