@@ -20,22 +20,22 @@
 <p>Since this library aims to be compatible with Java and Android environment, it contains a Java library and an Android library that both have a Commons library as dependency. Thus, please import the dependency depending on the platform you are targeting as follows :</p>
 <h4 id="gradle">Gradle</h4>
 <p>Java project:</p>
-<pre><code>compile &#39;com.pryv:java:1.0.4&#39;
+<pre><code>compile &#39;com.pryv:java:1.0.5&#39;
 </code></pre><p>Android project:</p>
-<pre><code>compile &#39;com.pryv:android:1.0.4&#39;
+<pre><code>compile &#39;com.pryv:android:1.0.5&#39;
 </code></pre><h4 id="maven">Maven</h4>
 <p>Java project:</p>
 <pre><code>&lt;dependency&gt;
   &lt;groupId&gt;com.pryv&lt;/groupId&gt;
   &lt;artifactId&gt;java&lt;/artifactId&gt;
-  &lt;version&gt;1.0.4&lt;/version&gt;
+  &lt;version&gt;1.0.5&lt;/version&gt;
   &lt;type&gt;pom&lt;/type&gt;
 &lt;/dependency&gt;
 </code></pre><p>Android project:</p>
 <pre><code>&lt;dependency&gt;
   &lt;groupId&gt;com.pryv&lt;/groupId&gt;
   &lt;artifactId&gt;android&lt;/artifactId&gt;
-  &lt;version&gt;1.0.4&lt;/version&gt;
+  &lt;version&gt;1.0.5&lt;/version&gt;
   &lt;type&gt;pom&lt;/type&gt;
 &lt;/dependency&gt;
 </code></pre><h3 id="authorize-your-app">Authorize your app</h3>
@@ -82,8 +82,10 @@ connection.setupCacheScope(scope);
 </code></pre>
 <h3 id="manage-events">Manage events</h3>
 <h4 id="retrieve">Retrieve</h4>
-<pre><code class="lang-java">Filter filter = new Filter();
-filter.setLimit(20);
+<pre><code class="lang-java">Filter filter = new Filter(Double from, Double to, Set&lt;Stream&gt; streams, Set&lt;String&gt; tags,
+    Set&lt;String&gt; types, Boolean running, Boolean sortAscending, Integer skip, Integer limit,
+    State state, Double modifiedSince, String parentId, Boolean includeDeletions, Boolean includeDeletionsSince);
+
 connection.events.get(filter, new GetEventsCallback() {
     @Override
     public void cacheCallback(List&lt;Event&gt; events, Map&lt;String, Double&gt; eventDeletions) {
@@ -182,7 +184,11 @@ connection.events.update(event, new EventsCallback() {
 </code></pre>
 <h3 id="manage-streams">Manage Streams</h3>
 <h4 id="retrieve">Retrieve</h4>
-<pre><code class="lang-java">connection.streams.get(null, new GetStreamsCallback() {
+<pre><code class="lang-java">Filter filter = new Filter(Double from, Double to, Set&lt;Stream&gt; streams, Set&lt;String&gt; tags,
+    Set&lt;String&gt; types, Boolean running, Boolean sortAscending, Integer skip, Integer limit,
+    State state, Double modifiedSince, String parentId, Boolean includeDeletions, Boolean includeDeletionsSince);
+
+connection.streams.get(filter, new GetStreamsCallback() {
     @Override
     public void cacheCallback(Map&lt;String, Stream&gt; streams, Map&lt;String, Double&gt; streamDeletions) {
         // do something            
