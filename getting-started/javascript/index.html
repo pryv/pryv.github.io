@@ -36,11 +36,11 @@
 &lt;span id=&quot;pryv-button&quot;&gt;&lt;/span&gt;
 </code></pre>
 <pre><code class="lang-javascript">var credentials = null;
-
+var pryvDomain = &#39;pryv.me&#39;;
 var requestedPermissions = [{
   // Here we request full permissions on a custom stream;
   // in practice, scope and permission level will vary depending on your needs
-  streamId: &#39;example-app&#39;,
+  streamId: &#39;example-app-id&#39;,
   defaultName: &#39;Example app&#39;,
   level: &#39;manage&#39;
 }];
@@ -50,8 +50,14 @@ var settings = {
   requestedPermissions: requestedPermissions,
   spanButtonID: &#39;pryv-button&#39;,
   callbacks: {
-    accepted: function (username, accessToken, languageCode) {
-      credentials = { username: username, auth: accessToken };
+    initialization: function () {
+      // ...
+    },
+    needSignin: function (popupUrl, pollUrl, pollRateMs) {
+      // ...
+    },
+    signedIn: function (authData) {
+      credentials = authData;
       // ...
     },
     refused: function (code) {
@@ -63,37 +69,248 @@ var settings = {
   }
 };
 
+pryv.Auth.config.registerURL.host = &#39;reg.&#39; + pryvDomain;
 pryv.Auth.setup(settings);
 </code></pre>
-<p>See also: <a href="/reference/#authorizing-your-app">app authorization in the API reference</a></p>
+<p>See also: <a href="/reference/#authorizing-your-app">App authorization</a></p>
 <h3 id="connect-to-the-account">Connect to the account</h3>
 <pre><code class="lang-javascript">var connection = new pryv.Connection(credentials);
 </code></pre>
-<h3 id="retrieve-manipulate-events">Retrieve &amp; manipulate events</h3>
+<h3 id="fetch-the-stream-structure">Fetch the stream structure</h3>
+<pre><code class="lang-javascript">// Required by the monitors
+connection.fetchStructure(function (err, streams) {
+  // ...
+})
+</code></pre>
+<h3 id="manage-events">Manage events</h3>
 <h4 id="retrieve">Retrieve</h4>
-<pre><code class="lang-javascript">var filter = new pryv.Filter({limit : 20});
+<pre><code class="lang-javascript">var filter = new pryv.Filter({limit : 10});
 connection.events.get(filter, function (err, events) {
   // ...
 });
 </code></pre>
 <h4 id="create">Create</h4>
-<pre><code class="lang-javascript">var eventData = {
-  streamId: &#39;diary&#39;,
+<pre><code class="lang-javascript">var event = {
+  streamId: &#39;valid-stream-id&#39;,
   type: &#39;note/txt&#39;,
-  content: &#39;I track, therefore I am.&#39;
+  content: &#39;This is an example.&#39;
 };
-connection.events.create(eventData, function (err, event) { 
+connection.events.create(event, function (err, eventCreated) { 
   // ...
 });
 </code></pre>
+<h4 id="create-with-attachment">Create with attachment</h4>
+<pre><code class="lang-javascript">var fs = require(&#39;fs&#39;);
+
+var event = {
+  type: &#39;picture/attached&#39;,
+  streamId: &#39;valid-stream-id&#39;,
+  description: &#39;This is a description.&#39;
+};
+var pictureData = fs.readFileSync(&#39;pathToFile/image.jpg&#39;);
+var formData = pryv.utility.forgeFormData(&#39;attachment-id&#39;, pictureData, {
+  type: &#39;image/jpg&#39;,
+  filename: &#39;attachment&#39;
+});
+
+connection.events.createWithAttachment(event, formData, function (err, event) {
+  // ...
+});
+</code></pre>
+<p>See also: <a href="/event-types/">More about types</a></p>
 <h4 id="update">Update</h4>
-<pre><code class="lang-javascript">event.content = &#39;Updated content.&#39;;
-event.update(function (err, updatedEvent) {
+<pre><code class="lang-javascript">event.content = &#39;This is an update.&#39;;
+connection.events.update(event, function (err, eventUpdated) {
   // ...
 });
 </code></pre>
 <h4 id="delete">Delete</h4>
-<pre><code class="lang-javascript">event.delete(function (err, trashedEventOrNull) {
+<pre><code class="lang-javascript">connection.events.delete(event, function (err, eventDeleted) {
+  // ...
+});
+</code></pre>
+<h3 id="manage-streams">Manage streams</h3>
+<h4 id="retrieve">Retrieve</h4>
+<pre><code class="lang-javascript">var options;
+
+// Here we will get all streams (including root and trashed streams)
+options = {
+    // If null, retrieve active streams only
+    state: &#39;all&#39;
+};
+
+// Same as above but in a selected stream
+options = {
+    parentId: &#39;valid-stream-id&#39;,
+    state: &#39;all&#39;
+};
+
+connection.streams.get(options, function (err, streams) {
+  // ...
+});
+</code></pre>
+<h4 id="create">Create</h4>
+<pre><code class="lang-javascript">// If no id is set, one is generated;
+// If parentId is null, the stream is created at the root
+var stream = {
+  name: &#39;A Stream&#39;,
+  id: &#39;a-stream-id&#39;,
+  parentId: &#39;valid-stream-id&#39;
+};
+
+connection.streams.create(stream, function (err, streamCreated) { 
+  // ...
+});
+</code></pre>
+<h4 id="update">Update</h4>
+<pre><code class="lang-javascript">stream.name: &#39;An Updated Stream&#39;;
+connection.streams.update(stream, function (err, streamUpdated) {
+  // ...
+});
+</code></pre>
+<h4 id="delete">Delete</h4>
+<pre><code class="lang-javascript">connection.streams.delete(stream, function (err, streamDeleted) {
+  // ...
+});
+</code></pre>
+<h3 id="manage-accesses">Manage accesses</h3>
+<h4 id="retrieve">Retrieve</h4>
+<pre><code class="lang-javascript">connection.accesses.get(function (err, accesses) {
+  // ...
+});
+</code></pre>
+<h4 id="create">Create</h4>
+<pre><code class="lang-javascript">var access = {
+  name: &#39;An Access&#39;,
+  permissions: [
+    {
+      streamId: &#39;valid-stream-id&#39;,
+      level: &#39;manage&#39;
+    }
+  ]
+};
+
+connection.accesses.create(access, function (err, accessCreated) { 
+  // ...
+});
+</code></pre>
+<h4 id="update">Update</h4>
+<pre><code class="lang-javascript">access.name: &#39;An Updated Access&#39;;
+access.permissions[0].level: &#39;contribute&#39;;
+connection.accesses.update(access, function (err, accessUpdated) {
+  // ...
+});
+</code></pre>
+<h4 id="delete">Delete</h4>
+<pre><code class="lang-javascript">connection.accesses.delete(access, function (err, accessDeletion) {
+  // ...
+});
+</code></pre>
+<h3 id="batch-call">Batch call</h3>
+<pre><code class="lang-javascript">var methodsData = [
+  {
+    &#39;method&#39;: &#39;streams.create&#39;,
+    &#39;params&#39;: {
+      &#39;id&#39;: &#39;a-new-stream&#39;,
+      &#39;name&#39;: &#39;A New Stream&#39;
+    }
+  },
+  {
+    &#39;method&#39;: &#39;events.create&#39;,
+    &#39;params&#39;: {
+      &#39;streamId&#39;: &#39;a-new-stream&#39;,
+      &#39;type&#39;: &#39;note/txt&#39;,
+      &#39;content&#39;: &#39;This is a new event.&#39;
+    }
+  },
+  {
+    &#39;method&#39;: &#39;accesses.create&#39;,
+    &#39;params&#39;: {
+      &#39;name&#39;: &#39;A New Access&#39;,
+      &#39;permissions&#39;: [
+        {
+          &#39;streamId&#39;: &#39;a-new-stream&#39;,
+          &#39;level&#39;: &#39;read&#39;
+        }
+      ]
+    }
+  }
+];
+
+connection.batchCall(methodsData, function (err, results) {
+  //...
+});
+</code></pre>
+<h3 id="monitors">Monitors</h3>
+<p>Monitors watch the changes to selected data structures (i.e: Errors, Events, Streams or Filters). They are used to fetch the current state of all the elements in an app upon loading. Therefore it allows to manage data in a user account at runtime.</p>
+<p>To use monitors you will need to:</p>
+<ul>
+<li>Setup a monitor variable.</li>
+<li>Add the requested event listener(s).</li>
+<li>Call the <code>monitor.start</code>.</li>
+</ul>
+<h4 id="setup-monitors">Setup Monitors</h4>
+<pre><code class="lang-javascript">var filter = new pryv.Filter({limit: 5});
+var monitor = connection.monitor(filter);
+
+
+//This will use the local cache before fetching data online, default is true
+monitor.useCacheForEventsGetAllAndCompare = false;
+// This will fetch all events on start up, default is true
+monitor.ensureFullCache = false;
+// This will optimize start up by prefecthing some events, default is 100
+monitor.initWithPrefetch = 0;
+</code></pre>
+<h4 id="load">Load</h4>
+<pre><code class="lang-javascript">// Will fetch events depending on the filter set in &#39;Setup Monitors&#39; above
+var onLoad = pryv.MESSAGES.MONITOR.ON_LOAD;
+monitor.addEventListener(onLoad, function (events) {
+  // ...
+});
+</code></pre>
+<h4 id="error">Error</h4>
+<pre><code class="lang-javascript">var onError = pryv.MESSAGES.MONITOR.ON_ERROR;
+monitor.addEventListener(onError, function (error) {
+  // ...
+});
+</code></pre>
+<h4 id="event-change">Event change</h4>
+<pre><code class="lang-javascript">// Will trigger if any event is created, updated or trashed;
+// the array index is used to distinguish which type of change was made
+var onEventChange = pryv.MESSAGES.MONITOR.ON_EVENT_CHANGE;
+monitor.addEventListener(onEventChange, function (changes) {
+  [ &#39;created&#39;, &#39;modified&#39;, &#39;trashed&#39;  ].forEach(function (action) {
+  changes[action].forEach(function (event) {
+    // ...
+  });
+});
+</code></pre>
+<h4 id="structure-change">Structure change</h4>
+<pre><code class="lang-javascript">// Will trigger if any stream is created, updated, trashed or deleted;
+// the array index is used to distinguish which type of change was made
+var onStructureChange = pryv.MESSAGES.MONITOR.ON_STRUCTURE_CHANGE;
+monitor.addEventListener(onStructureChange, function (changes) {
+  [ &#39;created&#39;, &#39;modified&#39;, &#39;trashed&#39;, &#39;deleted&#39; ].forEach(function (action) {
+    changes[action].forEach(function (stream) {
+      // ...
+    });
+
+});
+</code></pre>
+<h4 id="filter-change">Filter change</h4>
+<pre><code class="lang-javascript">// Will trigger if any filter is updated ;
+// the array index gives informations about the new filter (&#39;enter&#39;),
+// and the old filter (&#39;leave&#39;)
+var onFilterChange = pryv.MESSAGES.MONITOR.ON_FILTER_CHANGE;
+monitor.addEventListener(onFilterChange, function (changes) {
+  [ &#39;enter&#39;, &#39;leave&#39; ].forEach(function (action) {
+    changes[action].forEach(function (filter) {
+      // ...
+    });
+});
+</code></pre>
+<h4 id="start">Start</h4>
+<pre><code class="lang-javascript">monitor.start(function (err) {
   // ...
 });
 </code></pre>
@@ -136,4 +353,4 @@ _gaq.push(['_trackPageview']);
   ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
   var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
 })();
-</script><!-- Sales-Wings--><script src="https://gunslingers.eu01.aws.af.cm/cdn/js/sw.js"></script><script>window.ch.saleswings.start(null, "b05f9a01-cc65-4b59-a727-d3d9b97bddfd");</script></body></html>
+</script><!-- Sales-Wings--><script src="//go.saleswingsapp.com/assets/javascripts/sw2.js"></script><script>window.ch.saleswings.start(null, "b05f9a01-cc65-4b59-a727-d3d9b97bddfd");</script></body></html>
