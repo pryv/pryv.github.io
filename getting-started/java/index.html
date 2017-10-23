@@ -17,28 +17,8 @@
 </li>
 </ul>
 <h3 id="install-the-library">Install the library</h3>
-<p>Since this library aims to be compatible with Java and Android environment, it contains a Java library and an Android library that both have a Commons library as dependency. Thus, please import the dependency depending on the platform you are targeting as follows :</p>
-<h4 id="gradle">Gradle</h4>
-<p>Java project:</p>
-<pre><code>compile &#39;com.pryv:java:1.0.5&#39;
-</code></pre><p>Android project:</p>
-<pre><code>compile &#39;com.pryv:android:1.0.5&#39;
-</code></pre><h4 id="maven">Maven</h4>
-<p>Java project:</p>
-<pre><code>&lt;dependency&gt;
-  &lt;groupId&gt;com.pryv&lt;/groupId&gt;
-  &lt;artifactId&gt;java&lt;/artifactId&gt;
-  &lt;version&gt;1.0.5&lt;/version&gt;
-  &lt;type&gt;pom&lt;/type&gt;
-&lt;/dependency&gt;
-</code></pre><p>Android project:</p>
-<pre><code>&lt;dependency&gt;
-  &lt;groupId&gt;com.pryv&lt;/groupId&gt;
-  &lt;artifactId&gt;android&lt;/artifactId&gt;
-  &lt;version&gt;1.0.5&lt;/version&gt;
-  &lt;type&gt;pom&lt;/type&gt;
-&lt;/dependency&gt;
-</code></pre><h3 id="authorize-your-app">Authorize your app</h3>
+<p>In order to import the library in your project, please follow <a href="https://github.com/pryv/lib-java/blob/master/README.md#import">these instructions</a>.</p>
+<h3 id="authorize-your-app">Authorize your app</h3>
 <p>First choose an app identifier (REQUESTING_APP_ID, min. length 6 chars), then in your client code:</p>
 <pre><code class="lang-java">// Here we request full permissions on a custom stream;
 // in practice, scope and permission level will vary depending on your needs
@@ -284,7 +264,62 @@ connection.streams.update(stream, new StreamsCallback() {
 });
 </code></pre>
 <h3 id="manage-accesses">Manage accesses</h3>
-<p>Coming soon!</p>
+<h4 id="retrieve">Retrieve</h4>
+<pre><code class="lang-java">connection.accesses.get(new GetCallback&lt;Access&gt;() {
+  @Override
+  public void onSuccess(String successMessage, List&lt;Access&gt; accesses, Double serverTime) {
+    // do something
+  }
+
+  @Override
+  public void onError(String errorMessage, Double serverTime) {
+    // do something
+  }
+});
+</code></pre>
+<h4 id="create">Create</h4>
+<pre><code class="lang-java">Access newAccess = new Access();
+newAccess.setName(&quot;forMyDoctor&quot;);
+newAccess.addPermission(new Permission(&quot;heartRate&quot;, Permission.Level.read, null));
+connection.accesses.create(newAccess, new CreateCallback&lt;Access&gt;() {
+  @Override
+  public void onSuccess(String successMessage, Access access, Double serverTime) {
+    // do something
+  }
+
+  @Override
+  public void onError(String errorMessage, Double serverTime) {
+    // do something
+  }
+});
+</code></pre>
+<h4 id="update">Update</h4>
+<pre><code class="lang-java">access.setName(&quot;forMyFamily&quot;);
+connection.accesses.update(access.getId(), access ,new UpdateCallback&lt;Access&gt;() {
+  @Override
+  public void onSuccess(String successMessage, Access access, Double serverTime) {
+    // do something
+  }
+
+  @Override
+  public void onError(String errorMessage, Double serverTime) {
+    // do something
+  }
+});
+</code></pre>
+<h4 id="delete">Delete</h4>
+<pre><code class="lang-java">connection.accesses.delete(access.getId(), new DeleteCallback&lt;Access&gt;() {
+  @Override
+  public void onSuccess(String successMessage, String id, Double serverTime) {
+    // do something
+  }
+
+  @Override
+  public void onError(String errorMessage, Double serverTime) {
+    // do something
+  }
+});
+</code></pre>
 <h3 id="batch-call">Batch call</h3>
 <p>Coming soon!</p>
 <h3 id="further-resources">Further resources</h3>
