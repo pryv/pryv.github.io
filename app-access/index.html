@@ -95,7 +95,42 @@ from <a href="https://sw.pryv.li/access/test.html">https://sw.pryv.li/access/tes
   &quot;message&quot;: &quot;access refused by user&quot;,
   &quot;code&quot;: 403
 }
-</code></pre></section><section id="undefined"><h1 id="web-app-javascript-">Web app (Javascript)</h1>
+</code></pre></section><section id="undefined"><h1 id="introduction">Introduction</h1>
+<p>Get an access token.</p>
+<p>TODO what is an access token and why do I need it?</p>
+<h2 id="-a-id-intro-initial-requirements-a-initial-requirements"><a id="intro-initial-requirements"></a>Initial requirements</h2>
+<h3 id="1-get-a-pryv-app-id-for-your-app">1. Get a Pryv app id for your app</h3>
+<p>A Pryv app id is a string uniquely identifying your app. For the moment, just <a href="mailto:developers@pryv.com">ask us</a> to obtain your app id.</p>
+<h3 id="2-define-the-access-permissions-you-need">2. Define the access permissions you need</h3>
+<p>See the examples below, as well as the <code>permissions</code> property in the <a href="reference/#data-structure-access">access data structure reference</a>.</p>
+<h4 id="example-app-permissions">Example app permissions</h4>
+<p>A &quot;contribute&quot; access on the &quot;diary&quot; stream:</p>
+<pre><code class="lang-json">[{
+  &quot;streamId&quot; : &quot;diary&quot;,
+  &quot;defaultName&quot; : &quot;Journal&quot;,
+  &quot;level&quot; : &quot;contribute&quot;
+}]
+</code></pre>
+<p>A &quot;manage&quot; access to the &quot;notes&quot; and &quot;mood&quot; folders of the &quot;diary&quot; channel:</p>
+<pre><code class="lang-json">[{
+   &quot;streamId&quot; : &quot;diary&quot;,
+   &quot;defaultName&quot; : &quot;Journal&quot;,
+   &quot;level&quot; : &quot;read&quot;,
+  },
+  {
+   &quot;streamId&quot; : &quot;notes&quot;,
+   &quot;level&quot; : &quot;manage&quot;,
+   &quot;defaultName&quot; : &quot;Notes&quot;
+   },
+   {
+    &quot;streamId&quot; : &quot;mood&quot;,
+    &quot;level&quot; : &quot;manage&quot;,
+    &quot;defaultName&quot; : &quot;Mood&quot;
+   }
+}]
+</code></pre>
+<p><strong>About the <code>defaultName</code> property</strong>: <code>defaultName</code> is the name you&#39;d like the stream to be created with if it does not exist, and should be in the language of the user. The property is mandatory.</p>
+</section><section id="undefined"><h1 id="web-app-javascript-">Web app (Javascript)</h1>
 <p>Obtaining an access token for your web app.</p>
 <h2 id="what-you-need">What you need</h2>
 <ul>
@@ -261,41 +296,6 @@ Note: Trigger it from a user-click event.</p>
 <p>If a user refused to grant access, restart the setup process with the same settings.</p>
 <h2 id="other-examples">Other Examples</h2>
 <h3 id="full">Full</h3>
-</section><section id="undefined"><h1 id="introduction">Introduction</h1>
-<p>Get an access token.</p>
-<p>TODO what is an access token and why do I need it?</p>
-<h2 id="-a-id-intro-initial-requirements-a-initial-requirements"><a id="intro-initial-requirements"></a>Initial requirements</h2>
-<h3 id="1-get-a-pryv-app-id-for-your-app">1. Get a Pryv app id for your app</h3>
-<p>A Pryv app id is a string uniquely identifying your app. For the moment, just <a href="mailto:developers@pryv.com">ask us</a> to obtain your app id.</p>
-<h3 id="2-define-the-access-permissions-you-need">2. Define the access permissions you need</h3>
-<p>See the examples below, as well as the <code>permissions</code> property in the <a href="reference/#data-structure-access">access data structure reference</a>.</p>
-<h4 id="example-app-permissions">Example app permissions</h4>
-<p>A &quot;contribute&quot; access on the &quot;diary&quot; stream:</p>
-<pre><code class="lang-json">[{
-  &quot;streamId&quot; : &quot;diary&quot;,
-  &quot;defaultName&quot; : &quot;Journal&quot;,
-  &quot;level&quot; : &quot;contribute&quot;
-}]
-</code></pre>
-<p>A &quot;manage&quot; access to the &quot;notes&quot; and &quot;mood&quot; folders of the &quot;diary&quot; channel:</p>
-<pre><code class="lang-json">[{
-   &quot;streamId&quot; : &quot;diary&quot;,
-   &quot;defaultName&quot; : &quot;Journal&quot;,
-   &quot;level&quot; : &quot;read&quot;,
-  },
-  {
-   &quot;streamId&quot; : &quot;notes&quot;,
-   &quot;level&quot; : &quot;manage&quot;,
-   &quot;defaultName&quot; : &quot;Notes&quot;
-   },
-   {
-    &quot;streamId&quot; : &quot;mood&quot;,
-    &quot;level&quot; : &quot;manage&quot;,
-    &quot;defaultName&quot; : &quot;Mood&quot;
-   }
-}]
-</code></pre>
-<p><strong>About the <code>defaultName</code> property</strong>: <code>defaultName</code> is the name you&#39;d like the stream to be created with if it does not exist, and should be in the language of the user. The property is mandatory.</p>
 </section></div><nav id="toc"></nav></div><footer id="page-footer"><nav class="navbar navbar-default"><div class="container-fluid"><div id="footer-nav"><ul class="nav navbar-nav"><li><a href="mailto:developers@pryv.com">Send a message</a></li><li><a href="https://github.com/pryv">GitHub</a></li><li><a href="https://pryv.com">pryv.com</a></li></ul></div></div></nav></footer><script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script><script src="/assets/bootstrap.min.js"></script><script src="/assets/js/toc.min.js"></script><!-- TOC generation--><script>jQuery(document).ready(function($) {
   var offset = 50;
 
