@@ -56,115 +56,87 @@ authenticator.signIn();
 <h3 id="manage-events">Manage events</h3>
 <h4 id="retrieve">Retrieve</h4>
 <pre><code class="lang-java">Filter filter = new Filter().addStream(&#39;diary&#39;);
-try {
-    List&lt;Event&gt; retrievedEvents = connection.events.get(filter);
-    // Do something with the retrieved Events
-} catch (IOException e) {
-    // Handle the error
-}
+List&lt;Event&gt; retrievedEvents = connection.events.get(filter);
 </code></pre>
 <h4 id="create">Create</h4>
 <pre><code class="lang-java">Event newEvent = new Event()
     .setStreamId(&quot;diary&quot;)
     .setType(&quot;note/txt&quot;)
     .setContent(&quot;I track, therefore I am.&quot;);
-try {
-    newEvent = connection.events.create(newEvent);
-    // Do something with the created Event
-} catch (IOException e) {
-    // Handle the error
-}
+newEvent = connection.events.create(newEvent);
 </code></pre>
 <h4 id="update">Update</h4>
 <pre><code class="lang-java">newEvent.setContent(&quot;updated content&quot;);
-try {
-    Event updatedEvent = connection.events.update(newEvent);
-    // Do something with the updated Event
-} catch (IOException e) {
-    // Handle the error
-}
+Event updatedEvent = connection.events.update(newEvent);
 </code></pre>
 <h4 id="delete">Delete</h4>
-<pre><code class="lang-java">try {
-    String eventDeletionId = connection.events.delete(newEvent.getId());
-    // Do something with the id of the deleted Event
-} catch (IOException e) {
-    // Handle the error
-}
+<pre><code class="lang-java">// The first delete will only trash the event
+Event trashedEvent = connection.events.delete(newEvent);
+trashedEvent.isTrashed(); // true
+// The second delete will actually delete the event
+Event deletedEvent = connection.events.delete(trashedEvent);
+deletedEvent.isDeleted(); // true
 </code></pre>
 <h3 id="manage-streams">Manage Streams</h3>
 <h4 id="retrieve">Retrieve</h4>
 <pre><code class="lang-java">Filter filter = new Filter().setParentId(&quot;myRootStreamId&quot;);
-try {
-    Map&lt;String, Stream&gt; retrievedStreams = connection.streams.get(filter);
-    // Do something with the retrieved Streams
-} catch (IOException e) {
-    // Handle the error
-}
+Map&lt;String, Stream&gt; retrievedStreams = connection.streams.get(filter);
 </code></pre>
 <h4 id="create">Create</h4>
 <pre><code class="lang-java">Stream newStream = new Stream()
     .setId(&quot;heartRate&quot;)
     .setName(&quot;Heart rate&quot;);
-try {
-    newStream = connection.streams.create(newStream);
-    // Do something with the created Stream
-} catch (IOException e) {
-    // Handle the error
-}
+newStream = connection.streams.create(newStream);
 </code></pre>
 <h4 id="update">Update</h4>
 <pre><code class="lang-java">newStream.setName(&quot;New name&quot;);
-try {
-    Stream updatedStream = connection.streams.update(newStream);
-    // Do something with the updated Stream
-} catch (IOException e) {
-    // Handle the error
-}
+Stream updatedStream = connection.streams.update(newStream);
 </code></pre>
 <h4 id="delete">Delete</h4>
-<pre><code class="lang-java">try {
-    String eventDeletionId = connection.streams.delete(newStream.getId(), false);
-    // Do something with the id of the deleted Stream
-} catch (IOException e) {
-    // Handle the error
-}
+<pre><code class="lang-java">// The first delete will only trash the stream
+Stream trashedStream = connection.streams.delete(newStream, false);
+trashedStream.isTrashed(); // true
+// The second delete will actually delete the stream
+// If mergeEventsWithParent is true, merge the events in the parent stream
+// If mergeEventsWithParent is false, also delete the events
+Stream deletedStream = connection.streams.delete(trashedStream, mergeEventsWithParent);
+deletedStream.isDeleted(); // true
 </code></pre>
 <h3 id="manage-accesses">Manage accesses</h3>
 <h4 id="retrieve">Retrieve</h4>
-<pre><code class="lang-java">try {
-    List&lt;Access&gt; retrievedAccesses = connection.accesses.get();
-    // Do something with the retrieved accesses
-} catch (IOException e) {
-    // Handle the error
-}
+<pre><code class="lang-java">List&lt;Access&gt; retrievedAccesses = connection.accesses.get();
 </code></pre>
 <h4 id="create">Create</h4>
 <pre><code class="lang-java">Access newAccess = new Access()
     .setName(&quot;forMyDoctor&quot;)
     .addPermission(new Permission(&quot;heartRate&quot;, Permission.Level.read, null));
-try {
-    newAccess = connection.accesses.create(newAccess);
-    // Do something with the created access
-} catch (IOException e) {
-    // Handle the error
-}
+newAccess = connection.accesses.create(newAccess);
 </code></pre>
 <h4 id="update">Update</h4>
 <pre><code class="lang-java">newAccess.setName(&quot;forMyFamily&quot;);
-try {
-    Access updatedAccess = connection.accesses.update(newAccess);
-    // Do something with the updated access
-} catch (IOException e) {
-    // Handle the error
-}
+Access updatedAccess = connection.accesses.update(newAccess);
 </code></pre>
 <h4 id="delete">Delete</h4>
+<pre><code class="lang-java">Access deletedAccess = connection.accesses.delete(newAccess);
+deletedAccess.isDeleted(); // true
+</code></pre>
+<h3 id="handle-exceptions">Handle exceptions</h3>
+<p>Each of the above calls (get, create, update, delete) may throw IOExceptions or
+ApiExceptions that you may want to catch and handle in your code:</p>
 <pre><code class="lang-java">try {
-    String deletionId = connection.accesses.delete(newAccess.getId());
-    // Do something with the id of the deleted access
-} catch (IOException e) {
-    // Handle the error
+    connection.events.create(newEvent);
+} 
+
+catch (IOException e) {
+    // Handle standard I/O exceptions
+}
+
+catch (ApiException e) {
+    // Handle exceptions originated from Pryv API
+    String errorId = e.getId();
+    String errorMsg = e.getMsg();
+    String errorData = e.getData();
+    ArrayList&lt;String&gt; subErrors = e.getSubErrors();
 }
 </code></pre>
 <h3 id="batch-call">Batch call</h3>
