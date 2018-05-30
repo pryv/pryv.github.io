@@ -101,28 +101,24 @@ default name (EN): "Parties"<br/>Ideal to keep pictures of your crazy parties. T
   &quot;description&quot;: &quot;Report for Mr A.&quot;,
   &quot;duration&quot;: 123712
 }</pre></div><div class="channel"><h2><code>health</code> channel</h2><p class="info"><strong>Standard</strong> channel. Default name (EN): "Health".</p><p class="description">This channel is dedicated to the user and her close family's health. The goal here is to save all the data related to one's health: weight, medication, doctor visits, etc.</p><h3>Folders</h3><ul><li>"Feeling": <strong>example</strong><br/>This is an example of folder you could create in this channel. Why not store here how the user feels every day?</li><li>"Medication": <strong>example</strong><br/>Example of folder where you could keep track of what medication has been taken when.</li></ul></div><h3><a onclick="javascript:$(&quot;#events-health&quot;).toggle()">Event examples</a></h3><div id="events-health" style="display:none;">No examples... yet.</div><div class="channel"><h2><code>position</code> channel</h2><p class="info"><strong>Standard</strong> channel. Default name (EN): "Position".</p><p class="description">This channel is especially suited for all events automatically saved by the user's devices. Imagine an iphone app recording the user's position every 10 minutes. Here is the perfect place to save this data.</p><h3>Folders</h3><ul><li>"Mobile": <strong>example</strong><br/>This is an example of folder where you could record geolocation information coming from the user's mobile phone.</li><li>"Laptop": <strong>example</strong><br/>This is an example of folder where you could record geolocation information coming from the user's computer.</li></ul></div><h3><a onclick="javascript:$(&quot;#events-position&quot;).toggle()">Event examples</a></h3><div id="events-position" style="display:none;">No examples... yet.</div><div class="channel"><h2><code>finance</code> channel</h2><p class="info"><strong>Standard</strong> channel. Default name (EN): "Finance".</p><p class="description">A channel to save all financial aspects of the user's life.</p><h3>Folders</h3><ul><li>"Bank ABC": <strong>example</strong><br/>This is an example of folder you could create in this channel. A subfolder could be created for each bank account of the user for instance.</li></ul></div><h3><a onclick="javascript:$(&quot;#events-finance&quot;).toggle()">Event examples</a></h3><div id="events-finance" style="display:none;">No examples... yet.</div><div class="channel"><h2><code>householding</code> channel</h2><p class="info"><strong>Standard</strong> channel. Default name (EN): "Householding".</p><p class="description">A place to save all the user's data related to householding: shopping lists, bills, the plumber's visits, etc.</p><h3>Folders</h3><ul><li>"Shopping": <strong>example</strong><br/>This is an example of folder you could create in this channel to save all household shopping-related data.</li><li>"Facilities": <strong>example</strong><br/>This is an example of folder you could create in this channel.</li></ul></div><h3><a onclick="javascript:$(&quot;#events-householding&quot;).toggle()">Event examples</a></h3><div id="events-householding" style="display:none;">No examples... yet.</div><div class="channel"><h2><code>kids</code> channel</h2><p class="info"><strong>Standard</strong> channel. Default name (EN): "Kids".</p><p class="description">A channel for the user to save all her children pictures.</p><h3>Folders</h3><ul><li>"John": <strong>example</strong><br/>This is an example of folder you could create in this channel. The idea here is to create one folder for each child of the user.</li></ul></div><h3><a onclick="javascript:$(&quot;#events-kids&quot;).toggle()">Event examples</a></h3><div id="events-kids" style="display:none;">No examples... yet.</div></section></div><nav id="toc"></nav></div><footer id="page-footer"><nav class="navbar navbar-default"><div class="container-fluid"><div id="footer-nav"><ul class="nav navbar-nav"><li><a href="mailto:developers@pryv.com">Send a message</a></li><li><a href="https://github.com/pryv">GitHub</a></li><li><a href="https://pryv.com">pryv.com</a></li></ul></div></div></nav></footer><script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script><script src="/assets/bootstrap.min.js"></script><script src="/assets/js/toc.min.js"></script><!-- TOC generation--><script>jQuery(document).ready(function($) {
-  var offset = 50;
+  // Header is about 51 pixels. This equals to 'header + fuzz', fuzz was
+  // determined experimentally. 
+  var offset = 100;
 
+  // Display TOC on the left side of the page.
   $('#toc').toc({
     selector: '#main h1:not(.page-title),#main h2,#main h3',
     ulClass: 'nav'
   });
 
-  $('body').scrollspy({
-    target: '#toc',
-    offset: offset
-  });
-
-  // fix offset when navigating
-  $('#toc li a, a.toc-anchor').click(function (e) {
-    e.preventDefault();
-    var target = $(this).attr('href');
-    window.location.hash = target;
-    $(target)[0].scrollIntoView();
-    if ($(window).scrollTop() + $(window).height() !== $(document).height()) {
-      // only adjust when not at bottom
-      scrollBy(0, -offset + 1);
-    }
+  // Synchronise scroll/click motion with TOC display.
+  $(document).ready(function() {
+    // NOTE This is done at onLoad since we need to wait for all CSS 
+    // to appear. 
+    $('body').scrollspy({
+      target: '#toc',
+      offset: offset
+    });
   });
 });
 </script><!-- Code blocks highlighting--><script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/highlight.min.js"></script><script>hljs.initHighlightingOnLoad();

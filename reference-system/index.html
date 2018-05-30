@@ -37,28 +37,24 @@
 <span class="http"><span class="label">HTTP</span><span class="label-value"><code>200 OK</code></span></span><table class="definitions"><tr><th><code>username</code></th><td><div class="header"><span class="type">string</span></div><div class="description"><p>A confirmation of the user&#39;s username.</p>
 </div></td></tr><tr><th><code>server</code></th><td><div class="header"><span class="type">string</span></div><div class="description"><p>The hostname of the core server hosting the new account.</p>
 </div></td></tr></table></div><aside></aside></section></section></section></div><nav id="toc"></nav></div><footer id="page-footer"><nav class="navbar navbar-default"><div class="container-fluid"><div id="footer-nav"><ul class="nav navbar-nav"><li><a href="mailto:developers@pryv.com">Send a message</a></li><li><a href="https://github.com/pryv">GitHub</a></li><li><a href="https://pryv.com">pryv.com</a></li></ul></div></div></nav></footer><script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script><script src="/assets/bootstrap.min.js"></script><script src="/assets/js/toc.min.js"></script><!-- TOC generation--><script>jQuery(document).ready(function($) {
-  var offset = 50;
+  // Header is about 51 pixels. This equals to 'header + fuzz', fuzz was
+  // determined experimentally. 
+  var offset = 100;
 
+  // Display TOC on the left side of the page.
   $('#toc').toc({
     selector: '#main h1:not(.page-title),#main h2,#main h3',
     ulClass: 'nav'
   });
 
-  $('body').scrollspy({
-    target: '#toc',
-    offset: offset
-  });
-
-  // fix offset when navigating
-  $('#toc li a, a.toc-anchor').click(function (e) {
-    e.preventDefault();
-    var target = $(this).attr('href');
-    window.location.hash = target;
-    $(target)[0].scrollIntoView();
-    if ($(window).scrollTop() + $(window).height() !== $(document).height()) {
-      // only adjust when not at bottom
-      scrollBy(0, -offset + 1);
-    }
+  // Synchronise scroll/click motion with TOC display.
+  $(document).ready(function() {
+    // NOTE This is done at onLoad since we need to wait for all CSS 
+    // to appear. 
+    $('body').scrollspy({
+      target: '#toc',
+      offset: offset
+    });
   });
 });
 </script><!-- Code blocks highlighting--><script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/highlight.min.js"></script><script>hljs.initHighlightingOnLoad();
