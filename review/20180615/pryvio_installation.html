@@ -1,0 +1,229 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, minimal-ui">
+    <title>Get started with Pryv.IO</title>
+    <link type="text/css" rel="stylesheet" href="assets/css/github-markdown.css">
+    <link type="text/css" rel="stylesheet" href="assets/css/pilcrow.css">
+    <link type="text/css" rel="stylesheet" href="assets/css/hljs-github.min.css"/>
+    <link type="text/css" rel="stylesheet" href="assets/css/pryv.css"/>
+  </head>
+  <body>
+    <article class="markdown-body"><h1 id="get-started-with-pryv.io"><a class="header-link" href="#get-started-with-pryv.io"></a>Get started with Pryv.IO</h1>
+<p>This tutorial will help you to deploy Pryv.IO in your environment.</p>
+<p>We will guide you through:</p>
+<ol class="list">
+<li><a href="#pryv-io-components">PryvIO Components</a></li>
+<li><a href="#deployment-methods">Deployment methods</a></li>
+<li><a href="#rerequisites">Prerequisites</a></li>
+<li><a href="#installation">Installation</a></li>
+</ol>
+<h2 id="pryv.io-components"><a class="header-link" href="#pryv.io-components"></a>Pryv.IO Components</h2>
+<p>Pryv.IO is composed of three main components :</p>
+<ul class="list">
+<li><p><code>Static-web</code>: It serves static content (icons, login web page, web applications).</p>
+</li>
+<li><p><code>Service-Register</code>: Holds the mapping between usernames and the core server storing the data (service-core). It can be replicated in a high-availability context with one master and multiple slaves. Requests are made by DNS or HTTPS protocols.</p>
+</li>
+<li><p><code>Service-Core</code>: Stores data and regulates access to the data. The core service is the most privacy-sensitive component of the system. It can be distributed for load balancing and can be replicated for High Availability.</p>
+</li>
+</ul>
+<h2 id="deployment-methods"><a class="header-link" href="#deployment-methods"></a>Deployment methods</h2>
+<p>Pryv.IO can be deployed in various ways, depending on your use cases. It can be deployed in a single node for tests or development and can be deployed through mutliple machines accross the globe for production environment taking advantage from High Availability, scalability and data locality.</p>
+<p>We propose below a representation of the two deployment methods.</p>
+<h4 id="1.-single-node"><a class="header-link" href="#1.-single-node"></a>1. Single node</h4>
+<p>With the single node model, all roles are installed on the same virtual machine either on-premise or in the cloud.</p>
+<p class="img-container"><img src="images/singlenode.png" alt="single_node"></p>
+<p>This can be ideal for development purposes or for testing and simple proof of concept projects.</p>
+<p>We don&#39;t recommend this model for production. For such environment, you should instead use cluster deployment scaled on your need and data load.</p>
+<h4 id="2.-cluster"><a class="header-link" href="#2.-cluster"></a>2. Cluster</h4>
+<p>With the cluster model, all roles are installed on separate machines. This model can be adapted to your needs, as depicted in the following deployment cases.</p>
+<h5 id="proof-of-concept"><a class="header-link" href="#proof-of-concept"></a>Proof of Concept</h5>
+<p>Here is the minimal cluster deployment for demonstrating Pryv in a first phase. It is adapted for testing proof of concept.</p>
+<p class="img-container"><img src="images/poc.png" alt="single_node"></p>
+<h5 id="partioning-for-load"><a class="header-link" href="#partioning-for-load"></a>Partioning for load</h5>
+<p>Partitioning for load can be use for production enviroment. The goal is to spread the data through multiple core servers. In this case, user accounts are split among core servers in a round-robin fashion.</p>
+<p>We recommend the creation of one or more follower nodes for the registry node. This avoids creating a single point of failure.</p>
+<p class="img-container"><img src="images/partitionning_load.png" alt="partioning_load"></p>
+<h5 id="partioning-for-privacy"><a class="header-link" href="#partioning-for-privacy"></a>Partioning for privacy</h5>
+<p>The diagram below shows a model that benefits from one of the key advantage of Pryv.io, namely the partitioning of data among multiple privacy zones.</p>
+<p>In practice, privacy zones will often correspond to countries (legislations) or smaller entities that handle data and data privacy differently.</p>
+<p class="img-container"><img src="images/partitionning_privacy.png" alt="partioning_privacy"></p>
+<h2 id="prerequisites"><a class="header-link" href="#prerequisites"></a>Prerequisites</h2>
+<h3 id="system-requierements"><a class="header-link" href="#system-requierements"></a>System requierements</h3>
+<p>In this chapter, we present a list of minimal system requirements for single node and cluster deployments.</p>
+<h4 id="single-node"><a class="header-link" href="#single-node"></a>Single node</h4>
+<table>
+<thead>
+<tr>
+<th>Aspect</th>
+<th>Minimal</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>RAM</td>
+<td>4GB</td>
+</tr>
+<tr>
+<td>CPU Cores</td>
+<td>2</td>
+</tr>
+<tr>
+<td>Data Disk</td>
+<td>Depending on storage needs</td>
+</tr>
+<tr>
+<td>Base OS</td>
+<td>Linux  / Ubuntu 16.04</td>
+</tr>
+<tr>
+<td>Docker</td>
+<td>&gt;=1.13.0</td>
+</tr>
+<tr>
+<td>Docker-Compose</td>
+<td>Latest as of Nov 17</td>
+</tr>
+<tr>
+<td>Service ports</td>
+<td>tcp/443, tcp/80, udp/53</td>
+</tr>
+<tr>
+<td>Administrative ports</td>
+<td>tcp/22</td>
+</tr>
+</tbody>
+</table>
+<h4 id="cluster"><a class="header-link" href="#cluster"></a>Cluster</h4>
+<table>
+<thead>
+<tr>
+<th>Aspect</th>
+<th>Minimal</th>
+<th>Minimal</th>
+<th>Minimal</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td></td>
+<td><code>Web role</code></td>
+<td><code>Registry role</code></td>
+<td><code>Core role</code></td>
+</tr>
+<tr>
+<td>RAM</td>
+<td>1GB</td>
+<td>2GB</td>
+<td>2GB</td>
+</tr>
+<tr>
+<td>CPU Cores</td>
+<td>1</td>
+<td>2</td>
+<td>2</td>
+</tr>
+<tr>
+<td>OS Disk</td>
+<td>15GB</td>
+<td>15GB</td>
+<td>15GB</td>
+</tr>
+<tr>
+<td>Data Disk</td>
+<td>not needed</td>
+<td>15GB</td>
+<td>15GB</td>
+</tr>
+<tr>
+<td>Base OS</td>
+<td>Linux / Ubuntu 16.04</td>
+<td>Linux / Ubuntu 16.04</td>
+<td>Linux / Ubuntu 16.04</td>
+</tr>
+<tr>
+<td>Docker</td>
+<td>&gt;=1.13.0</td>
+<td>&gt;=1.13.0</td>
+<td>&gt;=1.13.0</td>
+</tr>
+<tr>
+<td>Docker-Compose</td>
+<td>Latest as of Nov 17</td>
+<td>Latest as of Nov 17</td>
+<td>Latest as of Nov 17</td>
+</tr>
+<tr>
+<td>Service ports</td>
+<td>tcp/443</td>
+<td>tcp/443, udp/53</td>
+<td>tcp/443, udp/53</td>
+</tr>
+<tr>
+<td>Administrative ports</td>
+<td>tcp/22</td>
+<td>tcp/22</td>
+<td>tcp/22</td>
+</tr>
+</tbody>
+</table>
+<h3 id="docker"><a class="header-link" href="#docker"></a>Docker</h3>
+<p>Pryv.IO is packaged in Docker containers, with each role running in a separated container. Docker-compose is used for running all containers as a single application.</p>
+<p>You can compare your docker and docker-compose versions against the ones we recommand using the following commands :</p>
+<pre class="hljs"><code>    $ docker -v
+    Docker version 1.13.1, build 092cba3
+
+    $ docker-compose -v
+    docker-compose version 1.11.2, build dfed245</code></pre><h3 id="wildcarde-certificate"><a class="header-link" href="#wildcarde-certificate"></a>Wildcarde Certificate</h3>
+<p>All three Pryv.IO roles use Nginx to terminate inbound HTTPS connections. Thus, a wildcard certificate for your domain is required to that effect.</p>
+<p>To deploy a free SSL certificate, please follow this <a href="https://letsencrypt.org/getting-started/">link</a>.</p>
+<p>You will need to store that certificate along with the CA chain into the appropriate locations.</p>
+<p>Please follow this <a href="https://www.digicert.com/ssl-certificate-installation-nginx.htm">link</a> to find instructions on how to convert a certificate for nginx.</p>
+<h3 id="dns"><a class="header-link" href="#dns"></a>DNS</h3>
+<p> If your DNS is set up correctly, the following command should yield the fully qualified domain name of the machine you intend to use as a central Pryv.IO registry server:</p>
+<pre class="hljs"><code>   $ dig NS MYPRYVDOMAIN</code></pre><p>Normally, your NS records should resolve to the names you gave to the registry server you intend to set up. Please check if your A records exist and point to the same machine.</p>
+<h2 id="installation"><a class="header-link" href="#installation"></a>Installation</h2>
+<p>This section will describe the installation steps for a single node deployment.</p>
+<p>To obtain the tarballs for the installation, please contact the <a href="https://pryv.com/contact/">Pryv Sales team</a></p>
+<ol class="list">
+<li><p>Let&#39;s first create the <code>${PRYV_CONF_ROOT}</code> directory where all your Pryv data should live. We suggest something like <code>/var/pryv</code></p>
+<pre class="hljs"><code>$ mkdir /var/pryv</code></pre></li>
+<li><p>Copy the configuration tarball to ${PRYV_CONF_ROOT} directory</p>
+<pre class="hljs"><code>cp single_node.zip /var/pryv/</code></pre></li>
+<li><p>Untar the configuration in place</p>
+<pre class="hljs"><code>$ unzip /var/pryv/single_node.zip</code></pre><p>You should have the three following entries now:</p>
+<ul class="list">
+<li>A file called <code>run-${ROLE}</code>. This is your startup script.</li>
+<li>A file called <code>${ROLE}.yml</code> . This is the docker-compose script that is used to launch the service.</li>
+<li>A directory called <code>${ROLE}</code>. This contains configuration and data directories that will be mapped as volumes in the various docker containers.</li>
+</ul>
+<p>Where <code>${ROLE}</code> is <code>pryv</code> for a single node deployment.</p>
+</li>
+<li><p>Then, place the certificate files generated previously in the following locations for each respective role :</p>
+<ul class="list">
+<li><p>core: <code>core/nginx/conf/secret/MYPRYVDOMAIN-bundle.crt</code> and <code>core/nginx/conf/secret/MYPRYVDOMAIN-key.pem</code></p>
+</li>
+<li><p>static: <code>static/nginx/conf/secret/MYPRYVDOMAIN-bundle.crt</code> and <code>static/nginx/conf/secret/MYPRYVDOMAIN-key.pem</code></p>
+</li>
+<li><p>reg: <code>reg/nginx/conf/secret/MYPRYVDOMAIN-bundle.crt</code> and <code>reg/nginx/conf/secret/MYPRYVDOMAIN-key.pem</code></p>
+</li>
+</ul>
+<p>Edit the nginx server configuration file in <code>${ROLE}/nginx/conf/nginx.conf</code> to point to the certificate files.</p>
+</li>
+<li><p>Launching the installation</p>
+</li>
+</ol>
+<p>Log in using the docker credentials, it allows to gain pull access to Pryv.IO docker images.</p>
+<p>To obtain theses credentials, please contact <a href="https://pryv.com/contact/">Pryv Sales team</a>.</p>
+<pre class="hljs"><code> $ sudo docker login -u <span class="hljs-variable">${USER_ID}</span> -p <span class="hljs-variable">${SECRET}</span> pryvsa-docker-release.bintray.io</code></pre><p>Replace the <code>${USER_ID}</code> and <code>${SECRET}</code> with credentials received by Pryv team.</p>
+<p>You can finally launch the installation by typing the following command :</p>
+<pre class="hljs"><code> $ sudo ./run-<span class="hljs-variable">${ROLE}</span></code></pre><p>In order to check which Docker containers are running, you can type :</p>
+<pre class="hljs"><code> $ sudo docker ps <span class="hljs-_">-a</span></code></pre><ol start="6">
+<li>You have now a working Pryv.IO installation.</li>
+</ol>
+<p>You can test this by directing a browser at <code>https://sw.${MYPRYVDOMAIN}/access/register.html</code> and filling in the form.</p>
+    </article>
+  </body>
+</html>
