@@ -61,6 +61,11 @@ subdomain    TTL_SECONDS IN NS ns2-domain
       }
 }
 </code></pre><h2 id="system-administrators">System administrators</h2>
+<h3 id="docker-login-x11-error">docker login X11 error</h3>
+<p>On a Pryv install using Ubuntu 18.X when running <code>docker login</code>: Ubuntu refuses to let you enter the password because it wants you to use a secure means of password entry. The error reads something like &#39;Cannot autolaunch D-Bus without X11 $DISPLAY&#39; (<a href="https://github.com/docker/compose/issues/6023">docker-compose issue #6023</a>).<br>Our workaround is:  </p>
+<pre><code>sudo apt-get remove golang-docker-credential-helpers
+sudo apt install docker-compose
+</code></pre><p>The second line is needed because the first removes docker-compose as well.</p>
 <h3 id="are-my-containers-running-">Are my containers running?</h3>
 <p>Show running containers: &quot;docker ps&quot;, if the container exited, you can use &quot;docker ps -a&quot;. This will allow to find the name of the container.</p>
 <h3 id="why-is-container-xyz-not-running-">Why is container XYZ not running?</h3>
