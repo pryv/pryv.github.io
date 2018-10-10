@@ -1,0 +1,410 @@
+<h2 id="greppin-various">greppin various</h2>
+<pre><code>Hello,
+
+Merci j’ai pu créer mon compte. Par contre y’a plusieurs soucis qui ressortent
+Quand je crée un stream depuis l’interface pour tester, j’obtiens l’erreur : Ahem... something went wrong. We&#39;ve been automatically notified, but you can always help us improve your experience by posting an error report.
+L’onglet « Connect apps » est blanc et vide. Que puis-je faire ?
+Le « Request help » pointe sur rien
+Et quand je vais dans les settings et que je clique sur le bouton « Connect more apps » il se passe rien n’en plus.
+Peux-tu alors m’expliquer quelle est la procédure afin que je puisse utiliser votre application? Il faudrait des events personnalisés. Comment puis-je faire cela ? Faut-il que je définisse un « schéma » pour la validation de mes events ?
+Sinon j’avais encore une question technique…Est-ce possible de rendre la page d’inscription visible uniquement en « local » ?  L’idée serait que l’inscription ne soit pas disponible à n’importe qui.
+Merci d’avance de tes réponses.
+</code></pre><p>Salut Christophe,</p>
+<p>L&#39;app dashboard (servie par un browser quand on ouvre http(s)://USERNAME.happy-kinntek.com) qu&#39;on a livrée avec le produit n&#39;a pour but que comme outil de debug, nous ne la maintenons plus depuis 2015. Elle a donc quelques incompatibilités avec le backend.</p>
+<ol>
+<li>Le payload des appels POST que fait l&#39;app contient des champs en trop. Par défaut Pryv IO ne les tolère plus, il est possible de les tolèrer en modifiant le champ updates.ignoreProtectedFields de la configuration de core dans pryv/core/conf/core.json. Il faut mettre la valeur de ce champ à true. Cela est déconseillé, mais des anciennes apps telles que le dashboard en ont besoin pour fonctionner.</li>
+<li>L&#39;onglet connect apps charge les apps qui sont intégrées avec la plateforme de demo pryv.me. Il est vide sur la plateforme happy-kinntek.com, car nous ne distribuons pas ces intégrations avec Pryv IO.</li>
+<li>Similaire à 2.</li>
+<li>Similaire à 2.</li>
+</ol>
+<p>Pour utiliser Pryv IO, il faut commencer par définir la structure des données (arbre de streams + types des events) que tu souhaite utiliser.</p>
+<p>Je te propose de relire la partie Events and Stream structure du document &quot;Pryv IO patterns and examples&quot; que j&#39;ai envoyé à Elisa, tu le trouveras ci-joint.</p>
+<p>Je te conseille de créer une liste aussi exhaustive que possible des types de données que tu souhaite stocker. Avec cela, tu pourras construire l&#39;arbre de streams et event types de ton application. Je te propose de le revoir avec toi dès que tu as défini les données que tu souhaites stocker.</p>
+<p>Pour ce qui est des events spécifiques à hAPPy ou ceux qui ne sont pas dans la liste des types par défaut (<a href="https://api.pryv.com/event-types">https://api.pryv.com/event-types</a>), leur champ content n&#39;est validé contre aucun schema. Je reviens vers toi avec plus d&#39;informations sur comment définir son propre schéma ou étendre celui existant.</p>
+<p>Dès que tu auras défini les données que tu souhaites stocker, je te propose de tester les calls API pour les créer. Pour développer contre l&#39;API, je te propose d&#39;utiliser un token de type app à cette URL: <a href="https://api.pryv.com/app-web-access/?pryv-reg=reg.happy-kinntek.com">https://api.pryv.com/app-web-access/?pryv-reg=reg.happy-kinntek.com</a>. Check l&#39;option &quot;master token&quot;, il crée un access à toutes les données Streams et Events.</p>
+<p>Pour ce qui est de limiter l&#39;inscription à la plateforme, il n&#39;est actuellement pas possible de la limiter à une utilisation locale. </p>
+<p>Le call pour créer un utilisateur contient un secret qui est actuellement envoyé par défaut dans l&#39;app, de création de user: <a href="https://sw.happy-kinntek.com/access/register.html">https://sw.happy-kinntek.com/access/register.html</a>. dans le payload de la requête POST, il y a un champ invitationtoken. Il est possible de l&#39;enlever de la page par défaut et d&#39;obliger l&#39;utilisateur à le fournir.</p>
+<p>On peut s&#39;appeler si tu as besoin de plus d&#39;informations.</p>
+<h2 id="download-your-own-data">download your own data</h2>
+<p>how do you download all your data?</p>
+<p>perki&#39;s guide: <a href="https://obpm-riva.github.io/app-web-auth2/obpmprod.ch/downloadProc/">https://obpm-riva.github.io/app-web-auth2/obpmprod.ch/downloadProc/</a></p>
+<h2 id="prerequisites-for-pryv-io-installation-probably-add-to-deployment-design-doc-">prerequisites for Pryv IO installation -&gt; probably add to deployment design doc?</h2>
+<h3 id="covers-domain-name-ns-ssl-cert">covers: domain name, NS, SSL cert</h3>
+<p>Tu trouveras ci-attaché le document de deployment design. Dès la page 8, tu as la partie &quot;system requirements&quot; qui définit les spécifications machines.</p>
+<p>En dehors de ça, il faut prévoir un nom de domaine pour la plateforme, par exemple <a href="http://sempryv-hes.io/">sempryv-hes.io</a>, auquel les apps s&#39;adresseront. </p>
+<p>Le provider auprès duquel tu achètes le nom de domaine doit pouvoir modifier les name servers, le composant &quot;Registry&quot; contient un serveur DNS qui devra être définit comme name server.</p>
+<p>Il faudra obtenir un certificat SSL wildcard pour le domaine: <em>.DOMAIN, eg. </em>.<a href="http://sempryv-hes.io/">sempryv-hes.io</a></p>
+<h3 id="part2">part2</h3>
+<p>Le service informatique de la HES est en train de regarder pour la faisabilité du wildcard DNS. Juste pour être sûr, il s&#39;agit bien de mettre en place une entrée <strong>NS</strong> pour <em>.<a href="http://pryv.hevs.ch/">pryv.hevs.ch</a> dans leur DNS ? Parce que eux l&#39;ont compris pour l&#39;instant comme étant que n&#39;importe quel sous domaine de <a href="http://pryv.hevs.ch/">pryv.hevs.ch</a> est <strong>résolu</strong> sur l&#39;adresse IP de la VM registry, avec un CNAME A. Or, si j&#39;ai bien compris, il s&#39;agit de <em>*rediriger</em></em> la requête DNS avec un NS.</p>
+<p>C&#39;est bien juste, pas que je leur demande quelque chose de faux :) ?</p>
+<pre><code>
+Tu l&#39;as bien compris. La VM register est bien le name server du domaine *.pryv.hevs.ch. Les requêtes DNS pour ce domaine doivent être dirigées vers la VM register.
+Je crois juste qu&#39;il faut définir une entrée A pour la machine register car les entrées NS ne peuvent pas pointer directement vers une IP. 
+
+Le but étant que le DNS qui tourne sur register serve toutes les requêtes DNS du domain pryv.hevs.ch.
+
+Nous aurions donc dans le DNS hevs.ch:
+pryv.hevs.ch TTL_SECONDS IN NS NAME_SERVER_HEVS_CH_1
+pryv.hevs.ch TTL_SECONDS IN NS NAME_SERVER_HEVS_CH_2
+...
+pryv.hevs.ch TTL_SECONDS IN NS NAME_SERVER_HEVS_CH_N
+
+ns-pryv-hevs-ch TTL_SECONDS IN A IP_ADDRESS_REGISTER_MACHINE
+
+Je viens de me relire et ait constaté des erreurs concernant la zone DNS de hevs.ch (celle qu&#39;ils doivent modifier). Il faut ajouter les entrées suivantes:
+
+ns1-pryv-hevs-ch TTL_SECONDS IN A IP_ADRESS_REGISTER_MACHINE_1
+ns2-pryv-hevs-ch TTL_SECONDS IN A IP_ADRESS_REGISTER_MACHINE_2
+
+pryv.hevs.ch TTL_SECONDS IN NS ns1-pryv-hevs-ch
+pryv.hevs.ch TTL_SECONDS IN NS ns2-pryv-hevs-ch
+
+Si on ne déploie qu&#39;une seule VM register, il faut que les 2 entrées A pointent vers la même IP, mais il faut toutefois avoir 2 entrées NS pointant vers des alias différents.
+Cela ressemblerait donc à ça (la 2e entrée A pointe vers la même adresse IP que la 1ere):
+
+ns1-pryv-hevs-ch TTL_SECONDS IN A IP_ADRESS_REGISTER_MACHINE_1
+ns2-pryv-hevs-ch TTL_SECONDS IN A IP_ADRESS_REGISTER_MACHINE_1
+
+pryv.hevs.ch TTL_SECONDS IN NS ns1-pryv-hevs-ch
+pryv.hevs.ch TTL_SECONDS IN NS ns2-pryv-hevs-ch
+</code></pre><h2 id="account-per-customer-or-per-doctor-institution">account per customer or per doctor/institution</h2>
+<p>J&#39;ai discuté avec Pierre-Mikael au sujet de la question que tu m&#39;avais posée concernant le cas où un chercheur/médecin doit collecter les données de plusieurs patients une seule fois.</p>
+<p>Pour des questions de compliance, il faut utiliser un compte Pryv IO par patient. Stocker les patients sous un même compte ignore le méchanisme de consentement présent dans Pryv, le processus de création d&#39;Access oAuth-like. S&#39;il n&#39;y a pas besoin du consentement du patient, il n&#39;y a pas de raison d&#39;utiliser Pryv IO pour stocker ces données.</p>
+<h2 id="cors-related-issues">CORS related issues</h2>
+<p>there should be some stuff</p>
+<h2 id="various-issues-user-account-creation-access-sharing-data-model">various issues: user account creation, access sharing, data model</h2>
+<p>Pryv-io-patterns.pdf</p>
+<h2 id="docker-login-seems-to-be-a-docker-issue">docker login - seems to be a docker issue</h2>
+<p># docker login <a href="http://pryvsa-docker-release.bintray.io/">pryvsa-docker-release.bintray.io</a></p>
+<p>error getting credentials - err: exit status 1, out: <code>Cannot autolaunch D-Bus without X11 $DISPLAY</code></p>
+<p>Pour info :</p>
+<p># docker -v</p>
+<p>Docker version 17.12.1-ce, build 7390fc6</p>
+<p># docker-compose -v</p>
+<p>docker-compose version 1.18.0, build 8dd22a9</p>
+<blockquote>
+<p><a href="https://github.com/docker/docker-credential-helpers/issues/102">https://github.com/docker/docker-credential-helpers/issues/102</a></p>
+</blockquote>
+<h2 id="how-to-customise-registration-login-password-reset-pages">how to customise registration, login, password reset pages</h2>
+<p>Forker le repository <a href="https://github.com/pryv/app-web-auth2/">https://github.com/pryv/app-web-auth2/</a>, créer un symlink nommé <a href="http://happy-kinntek.com/">happy-kinntek.com</a> qui pointe vers le dossier v2/ comme tu peux le voir ici <a href="https://github.com/pryv/app-web-auth2/tree/gh-pages">https://github.com/pryv/app-web-auth2/tree/gh-pages</a> et modifier la config NGINX (pryv/nginx/conf/site.conf):</p>
+<p>changer la ligne 62 de:</p>
+<p>​      proxy_pass        <a href="https://pryv.github.io/app-web-auth2/happy-kinntek.com/">https://pryv.github.io/app-web-auth2/happy-kinntek.com/</a>;</p>
+<p>en </p>
+<p>​      proxy_pass        <a href="https://customer-account.github.io/app-web-auth2/happy-kinntek.com/">https://CUSTOMER-ACCOUNT.github.io/app-web-auth2/happy-kinntek.com/</a>;</p>
+<h2 id="registration-call">registration call</h2>
+<p>J’ai une petite question. Je teste la création de compte en méthode post sur <a href="https://reg.happy-kinntek.com/user">https://reg.happy-kinntek.com/user</a></p>
+<p>Que dois-je mettre dans le paramètre « hosting » ? Car j’ai l’erreur suivante : INVALID_HOSTING</p>
+<pre><code>Le hosting que tu dois fournir est disponible sur https://reg.happy-kinntek.com/hostings
+
+Par défaut, on le nomme &quot;pilot&quot;. Ton payload aura le format suivant:
+
+curl -i -X POST -H &#39;Content-Type: application/json&#39; -d &#39;{&quot;hosting&quot;:&quot;pilot&quot;,&quot;username&quot;: &quot;testuser1&quot;,&quot;password&quot;: &quot;testuser1&quot;, &quot;email&quot;: &quot;testuser1@bogus.tk&quot;,&quot;appid&quot;:&quot;pryv-standalone&quot;,&quot;invitationtoken&quot;:&quot;enjoy&quot;}&#39; &quot;https://reg.happy-kinntek.com/user/&quot;
+
+Donc, édite les champs username, password et email à ta convenance.
+</code></pre><h2 id="-auth-login-call">/auth/login call</h2>
+<h3 id="part1">part1</h3>
+<p>J’essaie de faire un POST à <a href="https://happy.happy-kinntek.com/auth/login">https://happy.happy-kinntek.com/auth/login</a></p>
+<p>Ce json :</p>
+<p>{&quot;username&quot;: &quot;happy&quot;,&quot;password&quot;: &quot;happy123&quot;, &quot;appId&quot;: &quot;happy-web-app-access&quot;}</p>
+<p>Et j’optiens ceci :</p>
+<p>{</p>
+<p>​    &quot;error&quot;: {</p>
+<p>​        &quot;id&quot;: &quot;invalid-credentials&quot;,</p>
+<p>​        &quot;message&quot;: &quot;The app id (\&quot;appId\&quot;) is either missing or not trusted.&quot;</p>
+<p>​    },</p>
+<p>​    &quot;meta&quot;: {</p>
+<p>​        &quot;apiVersion&quot;: &quot;1.2.18&quot;,</p>
+<p>​        &quot;serverTime&quot;: 1531830525.911</p>
+<p>​    }</p>
+<p>}</p>
+<p>Tu arrives me dire ce qu’il y a de faux ?</p>
+<pre><code>Les méthodes flaggées &quot;trusted apps only&quot; font un check sur le header &quot;origin&quot; contre le champ auth:trustedApps de la config de core.
+Il faut donc mettre un header origin de la forme https://quimporte.happy-kinntek.com:
+
+curl -i -X POST -H &#39;Origin: https://quimporte.happy-kinntek.com&#39; -H &#39;Content-Type: application/json&#39; -d &#39;{&quot;username&quot;: &quot;happy&quot;,&quot;password&quot;: &quot;happy123&quot;, &quot;appId&quot;: &quot;happy-web-app-access&quot;}&#39; &quot;https://happy.happy-kinntek.com/auth/login&quot;
+</code></pre><h3 id="part2">part2</h3>
+<p>J’ai testé depuis CURL et en effet pas de soucis. Par contre au niveau du client Angular, la librairie http.js m’empêche de setter le header « Origin » car c’est considéré comme unsafe. Y’a-t-il possibilité de désactivé ce paramètre pour que j’aie pas de soucis pour le dév ?</p>
+<pre><code>Ce header ne peut être manipulé depuis le browser, c&#39;est principalement pour éviter des attaques phishing que cette limitation existe.
+Pour développer vers une API Pryv, tu peux soit ajouter &quot;*@http://localhost*, *@https://localhost*&quot; à la config de core, dans le champ auth:trustedApps, puis redémarrer le container core:
+- docker stop CORE_CONTAINER_NAME
+- ./run-pryv
+
+Soit si tu souhaites tester le HTTPS, utiliser notre certificate SSL rec.la (https://yarnpkg.com/en/package/rec-la).
+</code></pre><h2 id="should-i-use-auth-login-on-a-mobile-app">should i use /auth/login on a mobile app</h2>
+<pre><code>Dans une situation &quot;normale&quot; il ne faut pas directement faire de &quot;login&quot; depuis une app mobile. En effet le &quot;token&quot; obtenu est de type &quot;personal&quot; et équivaut a être &quot;root&quot; sur un compte utilisateur. De plus les token de type &quot;personal&quot; expirent  contrairement a ceux de type &quot;app&quot; qui conviennent aux Applications mobiles.
+
+Il faut utiliser un token personal, de manière temporaire et lorsqu’on a besoin de manipuler d’autres types d’accès, comme par exemple donner son consentement pour un partage ou le retirer.  
+
+Meme si  ce n’est pas recommandé, il est possible d&#39;effectuer un &quot;login&quot; depuis une app mobile, il suffit de manipuler le header &quot;Origin:&quot; 
+
+Pour les App, il faut suivre le process suivant: 
+http://pryv.github.io/reference/#authentication
+Avec un exemple ici:
+http://pryv.github.io/getting-started/pryvme/#use-your-own-implementation
+
+
+Dans ce process, on ouvre une fenêtre qui elle obtient un token personal et se charge d’effectuer la demande de création d’accès pour l’App.
+
+Le code source de cette petite App Web se trouve https://github.com/pryv/app-web-auth2 et est fait pour être ajusté au besoin. 
+
+Je suis à votre disposition si vous avez des questions. 
+
+#####
+
+J’attire votre attention, sur deux points essentiels.
+- Les &quot;personal token&quot; doivent être utilisés de manière transitoire dans un environnement contrôlé 
+- Les &quot;app token&quot; sont le résultat de l’expression du consentement de l’utilisateur et constituent un contrat 
+
+Ce sont ces étapes qui permettent par la suite d’établir des relations 1-1 entre acteurs et de fournir un audit des interactions.
+</code></pre><h2 id="why-should-i-use-auth-request">why should i use auth request</h2>
+<pre><code>La différence entre ce que vous désirez faire et ce qui se passe dans l’app web auth est le &quot;flow&quot; ci-dessous.
+
+1- LOGIN http://pryv.github.io/reference-full/#login-user -&gt; obtention d’un personal token
+2- Verification de l’autorisation de l’APP http://pryv.github.io/reference-full/#check-app-authorization (en utilisant, le personal token)
+3- Affichage du contenu du résultat de &quot;check-app-access&quot; à l’utilisateur et obtention de son accord ou non.
+4- Creation d’un app access http://pryv.github.io/reference-full/#create-access (en utilisant le personal token)
+5- Retour à l’application en fournissant un App token
+
+Ce sont ces étapes qui permettent ensuite d’insérer un message lié aux &quot;streams&quot; partagés. Lors de cette étape, les actions de l’utilisateur sont gardées pour fournir un audit sur la phase de consentement. C’est pourquoi elle ne peut être &quot;shuntée&quot;. 
+
+Afin de vous éviter de développer ces étapes à chaque fois, elles sont préparées dans app-web-auth2 pour être adaptées à chaque plateforme.
+(Dans un premier temps, cela peut se simplifier au simple changement de logo et de titre)
+
+Si d’un premier abord, utiliser &quot;LOGIN&quot; et obtenir un personal token permettant de &quot;tout faire&quot; parais plus simple, vous pouvez le voir comme un accès &quot;root&quot; dans un environnement UNIX. Il permet aussi de tout faire et semble plus simple et rapide, mais la bonne pratique est de maximiser l’utilisation en &quot;espace utilisateur&quot;.
+
+Afin de vous accompagner dans et vous permettre de tirer le meilleur parti de Pryv.io vous pouvez compter sur moi pour vous fournir les informations nécessaires. Néanmoins et c’est le cas sur c’est le cas sur ce point de vous mettre en garde sur une utilisation dégradée du système.
+
+Nous avons 3 options, à disposition pour obtenir un &quot;App token&quot;
+1- utiliser un des SDK Pryv, javascript, ios ou android (java) 
+     (je ne connais pas assez bien cordova)
+2- implémenter vous-même ce qui se fait dans les SDK (ce qui est relativement simple)
+     en suivant http://pryv.github.io/getting-started/pryvme/#use-your-own-implementation
+     en 2 étapes (POST, OPEN WEB PAGE, LOOP)
+3- en utilisant  LOGIN puis les autres étapes décrites au début de ce mail
+
+Pour les deux premières, je vous ai donné les indications détaillées dans mes mails précédents.
+
+Si vous désirez implémenter la solution 3, je rajouterai file://   dans les headers acceptés par Pryv.io  (ce sont ceux émis par Cordova) et vous enverrait l’ensemble détaillé du &quot;flow&quot; a reproduire.
+</code></pre><h2 id="how-to-host-web-pages-apps-under-the-same-domain-as-the-platform">how to host web pages/apps under the same domain as the platform</h2>
+<pre><code>En effet, nous avons plusieurs fois utilisé NGINX pour servir une app web en proxy.
+
+Il faut cependant faire attention à une chose:
+- Si vous définissez un sous-domaine pour cela, je vous conseille de choisir un nom de moins de 5 charactères, car sinon cela pourrait entrer en conflit avec un nom d&#39;utilisateur.
+- Sinon, utiliser un path sous le sous-domaine sw.happy-kinntek.com
+
+####
+
+J’appuie la recommandation d’Ilia, par défaut les installations de pryv.io utilise &quot;sw.{domain}&quot; pour le contenu &quot;Static Web&quot; 
+
+####
+
+Il faut ajouter ce bout de config dans pryv/nginx/conf/site.conf dans la partie server de static web:
+location /MON_SITE/ {
+    proxy_pass            URL_DE_MON_SITE_AVEC_PROTOCOLE;
+    proxy_set_header      X-Real-IP $remote_addr;
+    proxy_set_header      X-Forwarded-For $proxy_add_x_forwarded_for;
+    proxy_buffering       off;
+  }
+Comme exemple, vous pouvez regarder comment est défini le proxy pour app-web-auth2:
+
+# Static Web
+server {
+  listen               443;
+  server_name          sw.DOMAIN;
+
+  //...
+
+  location /access/ {
+      proxy_pass        https://pryv.github.io/app-web-auth2/DOMAIN/;
+      proxy_set_header  X-Real-IP $remote_addr;
+      proxy_set_header  X-Forwarded-For   $proxy_add_x_forwarded_for;
+      proxy_buffering   off;
+  }
+}
+</code></pre><h2 id="kinntek-batch">kinntek batch</h2>
+<p>Ma question pour vous serait la suivante: serait-il possible de générer un ID patient ou de le copier du dossier afin de créer par exemple dans un champ vide du dossier médical un lien sur le RMS de Kinntek ? Ainsi ça ne prendrait que 2 secondes au médecin pour créer un ID et donc pour vous un nouvel utilisateur (droits d&#39;accès, id, mot de passe, infos etc) pour chaque patient dans le RMS et un lien web qui permettrait de consulter le dossier Kinntek du patient et d&#39;y entrer des infos en temps réel. De plus dès qu&#39;un  lien serait créé pour un nouveau patient le physio ou ergo traitant pourrait également consulter le RMS et y partager des infos avec le médecin et/ou le patient. Finalement comme le médecin a très souvent le dossier médical informatisé sous les yeux il pourrait accéder en un click sur le RMS pour consulter le rapport de progression ou commencer à prendre des mesures automatisées.</p>
+<pre><code>Tout d’abord, oui, il est possible de créer un utilisateur de façon automatique depuis un autre applicatif. L’implémentation est a discuter avec le concepteur de l’applicatif. (exemple mediway) Nous pouvons aussi partager avec toi un démonstrateur que tu pourras customiser. 
+
+Pour le deuxième point, si j’ai bien compris, tu nous demandes comment permettre un accès en 1 clic sur le RMS de Kinntek par un médecin ou physio depuis un logiciel de type Mediway?
+
+Sur Pryv cela se matérialise par le fait de connaitre le &quot;UserID&quot; et d’avoir un &quot;token&quot; qui permet d’accéder à la donnée. Il faut aussi une application capable d’utiliser ces deux éléments pour faire une requête et obtenir les données.
+
+La technique d’intégration avec des outils extérieure est bien maitrisée. Cela permet d’insérer ou donner accès aux données &quot;en temps&quot; réel au  moyen d’un lien ou d’une interface.
+
+Il faut noter que les droits et l’audit sur les données se fait en fonction du &quot;token&quot;. C à d que dans un cas idéal, il existe un token par relation &quot;patient &lt;-&gt; professionnel&quot;. Cela permet de contrôler de façon &quot;fine&quot; les accès en permettant de les donner ou le retirer par dossier patient pour chaque professionnel individuellement. 
+
+Les &quot;token&quot; peuvent être créés de 2 façons (obtention des droits d’accès)
+1. Lorsque le patient donne sont consentement à travers une interface graphique ou une app
+2. Lorsqu’un système automatique génère un &quot;token&quot; selon des règles. Par exemple en vérifiant que le docteur a bien les droits nécessaires.
+
+Nous avons quelques démos pour montrer des exemples de ces deux variantes. Certaines pouvant même être réutilisées et complétées. 
+
+Pour te proposer des solutions plus précises, j’aurai besoin de bien comprendre le &quot;flow&quot; qui permet à un docteur d’obtenir le droit d’accès. Est-ce que l’on pourrait organiser un petit workshop sur le sujet?
+</code></pre><h2 id="how-is-pryv-io-installed">how is Pryv IO installed</h2>
+<ol>
+<li>Create a suitable configuration on the machine. This is a series of folders and configuration files. </li>
+<li>Launch the chosen Pryv release by running a docker-compose file provided by Pryv. This will install several docker images and run them in concert.</li>
+</ol>
+<h2 id="on-what-cloud-offerings-can-pryv-io-be-installed">on what cloud offerings can Pryv IO be installed</h2>
+<p>Pryv can be installed on any cloud offering that runs at least Docker 1.12.6. The real consideration here is compliance and the security of the data storage. </p>
+<h2 id="pryv-requires-ssl-certificates-do-they-need-to-be-signed-by-publicly-trusted-ca-or-can-we-use-swiss-re-s-internal-pki-so-kind-of-self-signed-certificates-">PrYv requires SSL certificates. Do they need to be signed by publicly trusted CA or can we use Swiss Re&#39;s internal PKI (so kind of self-signed certificates)?</h2>
+<p>All devices that interact with the Pryv installation must be able to verify the certificates and thus see/trust the CA, even if it is internal. In this project, that would involve: the mobile application, all machines that perform analytics and display of the data collected, ... </p>
+<p>So yes with a caveat. </p>
+<h2 id="ssl-certificates-are-mentioned-to-be-wildcard-ones-are-we-able-to-define-all-the-subdomains-beforehand-and-rather-create-ssl-with-sans-">SSL certificates are mentioned to be wildcard ones. Are we able to define all the subdomains beforehand and rather create SSL with SANs?</h2>
+<p>Pryv uses a subdomain per user account that is created. So no, you cannot use SAN certificates unless you&#39;re able to know the possible user base ahead of time.</p>
+<h2 id="what-are-the-security-measures-you-took-in-order-to-harden-nodejs-">what are the security measures you took in order to harden NodeJS?</h2>
+<p>Security is part of our development process, since one of our primary concerns is user privacy. That said, some of the measures we&#39;ve implemented: </p>
+<ul>
+<li>No nodejs processes are exposed to WAN directly; instead we proxy through nginx. </li>
+<li>Development is driven by writing tests. </li>
+<li>All code is reviewed before becoming part of a release candidate. </li>
+<li>We have performed external security audits of our product. </li>
+</ul>
+<p>@Ilia: Maybe we should point to some document here? </p>
+<h2 id="what-constraints-should-be-considered-when-choosing-a-host">What constraints should be considered when choosing a host</h2>
+<p>where (in what countries legislation) the data is stored. should be HIPPA/EU DPD compliant…</p>
+<h2 id="how-do-you-address-encryption-of-the-data-at-rest-as-medical-records-will-be-stored-in-the-mongodb-are-you-using-db-encryption-or-some-other-application-specific-encryption-">How do you address encryption of the data at rest? As medical records will be stored in the MongoDB, are you using DB encryption or some other application specific encryption?</h2>
+<p>Pryv offers three options here:</p>
+<ul>
+<li>Application-level end-to-end encryption: The application(s) that access Pryv encrypt the data that is stored in Pryv on creation and decrypt it after reading it back. Pryv provides a data type for this usage. See: <a href="http://api.pryv.com/event-types/#encrypted">http://api.pryv.com/event-types/#encrypted</a></li>
+<li>MongoDB encryption: We can provide you with a recent release of MongoDB that will allow you to set up EAR: <a href="https://docs.mongodb.com/manual/core/security-encryption-at-rest/">https://docs.mongodb.com/manual/core/security-encryption-at-rest/</a></li>
+<li>Disk encryption: Linux has a solid story of disk encryption. If stored on such a disk, Pryv data is encrypted at rest as well.</li>
+</ul>
+<p>My take on this is that the last option will probably the easiest to implement for you. It offers good protection against disks being stolen from the datacenter, while not increasing overall system complexity by much.</p>
+<h2 id="how-to-debug-issues">how to debug issues</h2>
+<p>- Show running containers: &quot;docker ps&quot;, if the container exited, you can use &quot;docker ps -a&quot;. This will allow to find the name of the container.</p>
+<p>- Display logs for a container using &quot;docker logs CONTAINER_NAME&quot;, you can use the &quot;-f&quot; option which works similarly as for &quot;tail&quot;, displaying the newly written logs. It might be useful to keep a screen or tmux process with logs of each container running in different tabs.</p>
+<p>The issue is most probably with NGINX, which crashes if it cannot find the SSL certificate files. You can see this if its container doesn&#39;t appear when running &quot;docker ps&quot; and shows the file path related error when running &quot;docker logs NGINX_CONTAINER_NAME&quot;.</p>
+<p>If your configuration files (folder &quot;core&quot; and files &quot;core.yml&quot;, &quot;run-core&quot; and &quot;restart-core&quot;) have been unarchived into /var/pryv/<a href="http://biovotion.swissre.com/">biovotion.swissre.com</a>, then $PRYV_CONF_ROOT should point there.</p>
+<p>We can look into this together if you wish, I will be available tomorrow from 13:00 until 18:00 or Friday between 10:00 and 18:00.</p>
+<p>Regarding logs, they are enabled by default, displaying REST API call information such as route, HTTP response status, and request processing time.</p>
+<p>For MongoDB, we display the logs generated by the mongod process.</p>
+<h2 id="what-access-to-use-when-and-how-to-obtain-them">what access to use when and how to obtain them</h2>
+<h3 id="user-creation">User creation</h3>
+<p>Users repositories can be either generated manually by the user or a supervisor through a form such as sw.biovotion.swissre.com/access/register.html, or dynamically by sending data into a data bridge such as the one we are currently working.
+We have a use case with a customer who creates its user repositories by sending data from a device with specific credentials, if those are new the user repository is created and the credentials can be transmitted to the user through another communication channel.</p>
+<h3 id="accesses">Accesses</h3>
+<p>Overview of Accesses: <a href="http://api.pryv.com/concepts/#accesses">http://api.pryv.com/concepts/#accesses</a></p>
+<p>Please note that these access generation can be extended with additional authentication steps such as SMS, email, LDAP, ... </p>
+<h4 id="personnal-access-">Personnal access:</h4>
+<p>This is the 1st party authentication with a direct call containing the username/password pair.</p>
+<ul>
+<li>How to obtain: <a href="https://api.pryv.com/reference-full/#login-user">https://api.pryv.com/reference-full/#login-user</a></li>
+<li>Scope: full: streams, events, accesses, followedSlices (<a href="https://api.pryv.com/reference-full/#followed-slices">https://api.pryv.com/reference-full/#followed-slices</a>), account, profile</li>
+<li>Accessible by: authorized apps list provided in the configuration files of core</li>
+</ul>
+<h4 id="use-cases-">Use cases:</h4>
+<ul>
+<li>Account supervisor uses this type of token to manage a user&#39;s account or else.</li>
+<li>User logs into 1st party app to manage his data and account details</li>
+</ul>
+<h4 id="app-access">App access</h4>
+<p>This is used by 3rd party apps to obtain a token with specific requirements. This is implemented with the OAuth2-three-legged-style process, but classic OAuth2 (2-legged style) will be available in the short term.</p>
+<ul>
+<li>How to obtain: <a href="https://api.pryv.com/reference-full/#authorizing-your-app">https://api.pryv.com/reference-full/#authorizing-your-app</a></li>
+<li>Detailed flow description: <a href="https://api.pryv.com/app-access/">https://api.pryv.com/app-access/</a></li>
+<li>Scope: to define in the &quot;requestedPermissions&quot; object (<a href="http://pryv.github.io/reference-full/#auth-request">http://pryv.github.io/reference-full/#auth-request</a>)</li>
+<li>Accessible by: authorized app-ids in register&#39;s configuration file.</li>
+</ul>
+<h4 id="use-cases">Use cases</h4>
+<ul>
+<li>Research institute makes a request to access a subset of data, provides an URL to its users where they enter username/password which provides them with an access token for the requested subset of data.</li>
+<li>Users wish to plug in a new device or web service to their repository. They enter their credentials which gives the 3P device or service right to contribute data to the user&#39;s repository</li>
+<li>Most used access token for developers: <a href="https://api.pryv.com/app-web-access/?pryv-reg=reg.biovotion.swissre.com">https://api.pryv.com/app-web-access/?pryv-reg=reg.biovotion.swissre.com</a></li>
+</ul>
+<h4 id="shared-access">Shared access</h4>
+<p>Access generated by personal or app tokens (limited to this token&#39;s scope) by API call. Transferred to the recipient by the channel of his choice.</p>
+<ul>
+<li>How to obtain: <a href="http://api.pryv.com/reference/#create-access">http://api.pryv.com/reference/#create-access</a></li>
+<li>When used: key generated with personal or app access, provided to recipient over different communication channel depending on use case.</li>
+<li>Scope: defined by &quot;permissions&quot; array during creation/update: <a href="http://pryv.github.io/reference-full/#data-structure-access">http://pryv.github.io/reference-full/#data-structure-access</a></li>
+<li>Accessible by: personal and app tokens: dynamic</li>
+</ul>
+<h4 id="use-cases-">Use cases:</h4>
+<ul>
+<li>User wishes to share his data with an external person</li>
+<li>User wishes to include his data in someone else&#39;s repository using the &quot;Follwed slices&quot; mechanism</li>
+</ul>
+<h4 id="followed-slices-">Followed slices:</h4>
+<p>This is a way to save shared accessses from other repositories into a user&#39;s account.</p>
+<ul>
+<li>Structure: <a href="http://pryv.github.io/reference-full/#data-structure-followed-slice">http://pryv.github.io/reference-full/#data-structure-followed-slice</a></li>
+<li>API methods: <a href="http://pryv.github.io/reference-full/#followed-slices">http://pryv.github.io/reference-full/#followed-slices</a></li>
+</ul>
+<h2 id="various-by-karlen">various by Karlen</h2>
+<p>From what I understand is pryv data mainly organized by user. How are users grouped to specific studies or organizations? How can researchers and clinicians access other peoples data, i.e study participants?</p>
+<p>Finally do you have a test setup where this could be tested?</p>
+<pre><code>Pryv IO platforms are user centric, each account accessible through the https://USERNAME.DOMAIN (eg.: https://iliakebets.pryv.me) URL endpoint, the username doesn&#39;t have to be identifying. These can be stored in different locations depending on the number of core machines that are deployed in the platform, core machines are the ones actually storing the data.
+
+Access to people&#39;s data is done in multiple ways. When authentifying with username/email &amp; password on a trusted app (the owner of the platform defines this), using the obtained token the user can create accesses to any subset of his/her data depending on a streams/tags matrix.
+It is possible to develop &quot;3rd party&quot; apps whose authentification process is oAuth-like, which prompts the user with the request to give access to the said app for the requested streams. The obtained access token can be used to create accesses whose scope are subsets of itself.
+For either way, to give access to people&#39;s data to researchers and clinicians, the created tokens need to be stored by a service accessible to them.
+
+Accesses definition
+
+The information regarding a user&#39;s study or organization belonging can be accessible through such a service as well, with each user&#39;s organization(s) &amp; study(ies) stored either there or on the user&#39;s Pryv IO account.
+
+You can try out Pryv IO, using our demo platform pryv.me: https://pryv.com/pryvlab/
+</code></pre><h3 id="yband">Yband</h3>
+<pre><code>wir haben die Entwicklung unserer Algorithmen Applikation bereits gestartet und haben ein paar Fragen in Zusammenhang mit pryv.io. Wir hoffen du hast ein paar best practices für uns. Gerne können wir auch skypen, wenn es per Mail zu kompliziert wird.
+
+Das Szenario bei uns sieht ungefähr so aus:
+Die Mobil-Applikation registriert einen neuen Nutzer (name, password, email). Der Nutzer würde direkt etwas bestätigen, dass seine Daten auf dem Server verarbeitet werden dürfen (damit gibt er rechtlich dem AlgoServer das OK). Im UI sollten keine weiteren popups über access requests kommen.
+
+Wie bekommt der AlgoServer nun mit, welchen neuen Stream er abonnieren muss?
+Und wie kommt der AlgoServer an das entsprechende Token?
+</code></pre><p>see answer in Kaspar&#39;s mail &quot;Re: Pryv.io Fragen zu authorisierung der Algo-application&quot; from October 3rd 2018</p>
+<h3 id="optional-email">Optional email</h3>
+<p>Hide field, use username@PryvDomain</p>
+<h3 id="can-t-read-nginx">can&#39;t read NGINX</h3>
+<pre><code>En effet &quot;docker ps&quot; n&#39;affiche pas le container nginx, ce qui implique qu&#39;il n&#39;est pas en marche.
+Il est possible de regarder ses logs de la manière suivante:
+&quot;docker ps -a&quot; affiche tous les containers sur la machine, cela permet de récupérer le CONTAINER ID du nginx, qui devrait s&#39;appeler pryvio_nginx_1.
+Puis il est possible d&#39;afficher ses logs avec &quot;docker logs pryvio_nginx_1&quot;.
+</code></pre><p>2018/02/07 14:13:08 [emerg] 1#1: open() &quot;/app/conf/nginx.conf&quot; failed (13: Permission denied) in /etc/nginx/nginx.conf:5
+nginx: [emerg] open() &quot;/app/conf/nginx.conf&quot; failed (13: Permission denied) in /etc/nginx/nginx.conf:5</p>
+<blockquote>
+<p>Un quickfix serait de changer ces droits avec &quot;chown -R 9999:9999 pryv/nginx/log&quot;. Le user avec l&#39;id 9999 est celui qu&#39;on utilise pour lancer les process dans nos containers.</p>
+</blockquote>
+<h3 id="utilisation-de-certificat-self-signed">utilisation de certificat self-signed</h3>
+<p>doesn&#39;t work. Buy it (~100.-/year) or use let&#39;s encrypt - automatic renewal coming soon</p>
+<h3 id="probl-mes-avec-attachment">Problèmes avec attachment</h3>
+<ul>
+<li>formattage avec client JMeter, faire le call avec <code>curl -v</code> qui imprime le contenu de la requête.</li>
+</ul>
+<h3 id="reset-data">Reset data</h3>
+<p>Avant de commencer le test de charge, est-ce que vous avez une procédure pour revenir à l&#39;état initial, au cas où il y aurait un problème durant le test et que nous devrions recommencer ?</p>
+<pre><code>pour réinitialiser les données sur la plateforme, il suffit d&#39;arrêter les services et effacer les bases de données, elles seront initialisées au redémarrage des services.
+</code></pre><p>Sur la machine reg-master (register01):</p>
+<ul>
+<li><p><code>cd /var/pryv</code></p>
+</li>
+<li><p><code>./stop-containers</code></p>
+</li>
+<li><code>rm -rf /var/pryv/reg-master/redis/data/*</code></li>
+<li><code>./run-reg-master</code></li>
+</ul>
+<p>Sur la machine core01:</p>
+<ul>
+<li><p><code>cd /var/pryv</code></p>
+</li>
+<li><p><code>./stop-containers</code></p>
+</li>
+<li><code>rm -rf /var/pryv/core-v1.3/core/data/*</code></li>
+<li><code>rm -rf /var/pryv/core-v1.3/mongodb/data/*</code></li>
+<li><code>./run-core-v1.3</code></li>
+</ul>
+<p>Sur la machine queue01:</p>
+<ul>
+<li><p><code>cd /var/pryv</code></p>
+</li>
+<li><p><code>./stop-containers</code></p>
+</li>
+<li><code>rm -rf /var/pryv/hook/api/data/*</code></li>
+<li><code>./run-hook</code></li>
+</ul>
+<h3 id="user-creation-bug">User creation bug</h3>
+<p>User can&#39;t be created although username.DOMAIN replies name not resolved.</p>
+<p>-&gt; use other username</p>
+<h3 id="utilisateurs-existants">Utilisateurs existants</h3>
+<p><a href="https://reg.pryv-n4a.ch/admin/users?auth=REG_ADMIN_KEY_1">https://reg.pryv-n4a.ch/admin/users?auth=REG_ADMIN_KEY_1</a></p>

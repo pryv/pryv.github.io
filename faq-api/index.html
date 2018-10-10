@@ -1,0 +1,107 @@
+<!DOCTYPE html><html lang="en" class="no-js"><head><meta charset="UTF-8"><meta name="description" content="TODO"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1"><title>FAQ - API | Pryv API</title><link rel="icon" href="/assets/images/favicon-black.ico" type="image/x-icon"><link rel="apple-touch-icon" sizes="120x120" href="/assets/images/apple-touch-icon-120x120-black.png"><link rel="apple-touch-icon" sizes="152x152" href="/assets/images/apple-touch-icon-152x152-black.png"><link rel="apple-touch-icon" sizes="180x180" href="/assets/images/apple-touch-icon-180x180-black.png"><!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+<!--[if lt IE 9]>
+  <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+  <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+<![endif]--><link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Roboto:400,300,500,700,400italic|Roboto+Condensed:400,300,700"><link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/styles/docco.min.css"><link rel="stylesheet" type="text/css" href="/assets/fonts/ss-gizmo.min.css"><link rel="stylesheet" type="text/css" href="/assets/style.css"></head><body class="faq with-toc"><header id="page-header"><nav role="navigation" class="navbar navbar-default navbar-fixed-top"><div class="container-fluid"><div class="navbar-header"><a href="https://pryv.com" title="Pryv home" class="navbar-brand logo pryv-home"><img src="/assets/images/icon-home.svg" alt="Pryv home" height="50"></a><a href="/" title="Developers home" class="navbar-brand logo"><img src="/assets/images/logo-256-black.png" alt="Developers home"></a><button type="button" data-toggle="collapse" data-target="#main-nav" class="navbar-toggle"><span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button></div><div id="main-nav" class="collapse navbar-collapse"><ul class="nav navbar-nav"><li class="dropdown"><a href="#" data-toggle="dropdown" class="dropdown-toggle">Guides <b class="caret"></b></a><ul class="dropdown-menu"><li><a href="/getting-started/pryvme/">First Steps</a></li><li><a href="/getting-started/javascript/">Getting started: Javascript</a></li><li><a href="/getting-started/java/">Getting started: Java</a></li><li><a href="/concepts/">API concepts</a></li><!--+menuItem('data-modeling', 'Data modeling') —> into "Concepts"??--></ul></li><li class="dropdown"><a href="#" data-toggle="dropdown" class="dropdown-toggle">Reference <b class="caret"></b></a><ul class="dropdown-menu"><li><a href="/reference/">API reference</a></li><li><a href="/change-log/">API change log</a></li><li><a href="/event-types/">Event types</a></li><!--+menuItem('standardStructure')--></ul></li><li class="dropdown"><a href="#" data-toggle="dropdown" class="dropdown-toggle">Code <b class="caret"></b></a><ul class="dropdown-menu"><li><a href="/code-libraries/">Code libraries</a></li><li><a href="/apps-and-services/">Example apps</a></li></ul></li><!--lia(href='#') Blog--></ul><div class="navbar-right"><p class="navbar-text version"><a href="/change-log/" title="View change log">API version: <strong>1.2.11</strong></a></p></div></div></div></nav></header><div id="main-wrapper" class="container container-narrow"><div id="main"><h1 class="page-title">FAQ - API</h1><h2 id="event-types">Event types</h2>
+<h3 id="how-can-i-define-custom-event-types-">How can I define custom event types?</h3>
+<p>You can define any custom type as long as it follows <a href="http://api.pryv.com/event-types/#basics">this structure</a>. See <a href="http://api.pryv.com/getting-started/pryvme/#data-modelling-tips/">First steps - Date modeling tips</a> for more information.</p>
+<h3 id="are-my-events-content-validated-">Are my events content validated?</h3>
+<p>The default set of validated types is defined in <a href="http://api.pryv.com/event-types/">http://api.pryv.com/event-types</a>, they are validated upon creation and modification. To validate custom types, it is possible to provide a different source of event types, following the <a href="https://api.pryv.com/event-types/#format-specification">JSON schema format</a>.</p>
+<h2 id="api-methods">API methods</h2>
+<h3 id="what-is-the-exact-structure-of-the-create-attachment-call-">What is the exact structure of the create attachment call?</h3>
+<p>If you are having issues creating the package for the create attachment with the client/framework/library you are using. You can print the details of the call by using the <code>-v</code> verbose option.</p>
+<h2 id="user-creation">User creation</h2>
+<h3 id="can-we-limit-access-to-user-creation-">Can we limit access to user creation?</h3>
+<p>The user creation API call uses a token, this can be shared to select people.</p>
+<h3 id="is-there-an-api-call-for-user-creation-">Is there an API call for user creation?</h3>
+<p>The user register call is defined as:</p>
+<p>HTTP POST <a href="https://reg.${DOMAIN}/user">https://reg.${DOMAIN}/user</a></p>
+<pre><code class="lang-json">{
+    &quot;username&quot;: &quot;&quot;,
+    &quot;password&quot;: &quot;&quot;,
+    &quot;email&quot;: &quot;&quot;,
+    &quot;appId&quot;: &quot;&quot;,
+    &quot;invitationToken&quot;: &quot;&quot;,
+    &quot;hosting&quot;: &quot;&quot;
+}
+</code></pre>
+<p>The <code>hosting</code> field must be chosen from <a href="https://reg.${DOMAIN}/hostings">https://reg.${DOMAIN}/hostings</a>, defined in the registry configuration.</p>
+<h3 id="what-if-i-don-t-want-to-store-an-email-the-account-">What if I don&#39;t want to store an email the account?</h3>
+<p>If you do not wish to store an email, we suggest to fill this field with <code>${USERNAME}@${DOMAIN}</code>.</p>
+<h3 id="how-can-i-programmatically-create-user-accounts-">How can I programmatically create user accounts?</h3>
+<p>It is possible to create users with the aforementioned API call, without having to fill the fields manually.</p>
+<h2 id="authentication">Authentication</h2>
+<h3 id="i-m-getting-the-invalid-credentials-error-although-my-fields-are-correct">I&#39;m getting the &quot;invalid credentials&quot; error although my fields are correct</h3>
+<p>I&#39;m getting the following error on the <a href="https://api.pryv.com/reference-full/#login-user">login call</a> although the payload is correct.</p>
+<pre><code class="lang-json">{
+    &quot;error&quot;: {
+        &quot;id&quot;: &quot;invalid-credentials&quot;,
+        &quot;message&quot;: &quot;The app id (&quot;appId&quot;) is either missing or not trusted.&quot;
+    },
+    &quot;meta&quot;: {
+        &quot;apiVersion&quot;: &quot;1.2.18&quot;,
+        &quot;serverTime&quot;: 1531830525.911
+    }
+}
+</code></pre>
+<p>API methods marked as <em>TRUSTED APPS ONLY</em> on <a href="https://api.pryv.com/reference-full/">https://api.pryv.com/reference-full/</a> require to have the <code>Origin</code> or <code>Referer</code> headers matching the domain or one defined in the configuration. This field is not changeable in browser as it is a security measure. We use this to prevent phishing attacks that would allow attackers to impersonate Pryv.IO connected apps to steal user credentials.</p>
+<p>In order for this to work, the web app must be running on the domain specified by the configuration. By default, this contains: <code>*.${DOMAIN}*, *.rec.la*, *.pryv.github.io*</code>.</p>
+<p>In mobile apps, this header can be set manually in the HTTP request:</p>
+<pre><code class="lang-json">Origin: &quot;something.${DOMAIN}&quot;
+
+or
+
+Referer: &quot;something.${DOMAIN}&quot;
+</code></pre>
+<h3 id="should-i-use-auth-login-or-auth-request-">Should I use /auth/login or auth request?</h3>
+<p>The token obtained after a login request is similar to being <code>root</code> on an account. It returns an expirable token that allows to manipulate resources such as the password.</p>
+<p>Tokens obtained after an auth request are similar to authorization steps in an oAuth process. They are used to request data access consents and do not expire unless they are cancelled or deleted. They are therefore recommended for mobile apps and external services.</p>
+<h2 id="account-granularity">Account granularity</h2>
+<h3 id="should-i-store-multiple-user-data-in-a-single-account-">Should I store multiple user data in a single account?</h3>
+<p>For compliance reasons, Pryv.IO accounts are per-user. Storing multiple people data under the same account bypasses the authorization step which is the technical equivalent of consent.</p>
+<h3 id="how-can-researchers-and-clinicians-access-other-peoples-data-i-e-study-participants-">How can researchers and clinicians access other peoples data, i.e study participants?</h3>
+<p>Access to people&#39;s data is done in multiple ways. When authentifying with username/email &amp; password on a trusted app (the owner of the platform defines this), using the obtained token the user can create accesses to any subset of his/her data depending on a streams/tags matrix.
+It is possible to develop &quot;3rd party&quot; apps whose authentification process is oAuth-like, which prompts the user with the request to give access to the said app for the requested streams. The obtained access token can be used to create accesses whose scope are subsets of itself.
+For either way, to give access to people&#39;s data to researchers and clinicians, the created tokens need to be stored by a service accessible to them.
+Accesses definition
+The information regarding a user&#39;s study or organization belonging can be accessible through such a service as well, with each user&#39;s organization(s) &amp; study(ies) stored either there or on the user&#39;s Pryv IO account.</p>
+<h2 id="cross-app-access">Cross app access</h2>
+<h3 id="how-can-i-access-pryv-io-resources-from-another-app-">How can I access Pryv.IO resources from another app?</h3>
+<p>This can be done by using the auth request through a consent step or by generating a token directly through an API call using a token obtained previously.</p>
+<h2 id="do-you-have-a-test-setup-where-this-could-be-tested-">Do you have a test setup where this could be tested?</h2>
+<p>You can try out Pryv IO, using our demo platform pryv.me: <a href="https://pryv.com/pryvlab/">https://pryv.com/pryvlab/</a></p>
+</div><nav id="toc"></nav></div><footer id="page-footer"><nav class="navbar navbar-default"><div class="container-fluid"><div id="footer-nav"><ul class="nav navbar-nav"><li><a href="mailto:developers@pryv.com">Send a message</a></li><li><a href="https://github.com/pryv">GitHub</a></li><li><a href="https://pryv.com">pryv.com</a></li></ul></div></div></nav></footer><script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script><script src="/assets/bootstrap.min.js"></script><script src="/assets/js/toc.min.js"></script><!-- TOC generation--><script>jQuery(document).ready(function($) {
+  // Header is about 51 pixels. This equals to 'header + fuzz', fuzz was
+  // determined experimentally. 
+  var offset = 100;
+
+  // Display TOC on the left side of the page.
+  $('#toc').toc({
+    selector: '#main h1:not(.page-title),#main h2,#main h3',
+    ulClass: 'nav'
+  });
+
+  // Synchronise scroll/click motion with TOC display.
+  $(document).ready(function() {
+    // NOTE This is done at onLoad since we need to wait for all CSS 
+    // to appear. 
+    $('body').scrollspy({
+      target: '#toc',
+      offset: offset
+    });
+  });
+});
+</script><!-- Code blocks highlighting--><script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/highlight.min.js"></script><script>hljs.initHighlightingOnLoad();
+</script><!-- Google Analytics--><script>var _gaq = _gaq || [];
+_gaq.push(['_setAccount', 'UA-36589447-2']);
+_gaq.push(['_trackPageview']);
+(function() {
+  var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+  ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+  var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+})();
+</script><!-- Sales-Wings--><script type="text/javascript" id="SW-fd71dffa-76e8-479e-a37b-6e915b97b023"></script><script>!function(){function a(){var a=document.createElement("script");
+a.type="text/javascript",a.async=1,a.src="//go.saleswingsapp.com/assets/javascripts/sw/fd71dffa-76e8-479e-a37b-6e915b97b023";
+var b=document.getElementById("SW-fd71dffa-76e8-479e-a37b-6e915b97b023");
+b.parentNode.insertBefore(a,b)}window.attachEvent?window.attachEvent("onload",a):window.addEventListener("load",a,0)}();</script></body></html>
