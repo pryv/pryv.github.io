@@ -10,9 +10,9 @@
 <h3 id="do-ssl-certificates-need-to-be-signed-by-publicly-trusted-ca-or-can-we-use-self-signed-certificates-">Do SSL certificates need to be signed by publicly trusted CA or can we use self-signed certificates?</h3>
 <p>All devices that interact with the Pryv.IO platform must be able to verify the certificates and thus see/trust the CA, even if it is internal. That would involve: the mobile application, all machines that perform analytics and display of the data collected.</p>
 <h3 id="ssl-certificates-are-mentioned-to-be-wildcard-ones-are-we-able-to-define-all-the-subdomains-beforehand-and-rather-create-ssl-with-sans-">SSL certificates are mentioned to be wildcard ones. Are we able to define all the subdomains beforehand and rather create SSL with SANs?</h3>
-<p>Pryv uses a subdomain per user account that is created. So no, you cannot use SAN certificates unless you&#39;re able to know the possible user base ahead of time.</p>
+<p>Pryv.IO uses a subdomain per user account that is created. So no, you cannot use SAN certificates unless you&#39;re able to know the possible user base ahead of time.</p>
 <h3 id="on-what-cloud-offerings-can-pryv-io-be-installed-">On what cloud offerings can Pryv.IO be installed?</h3>
-<p>Pryv can be installed on any cloud offering that runs at least Docker 1.12.6. The real consideration here is compliance and the security of the data storage.</p>
+<p>Pryv.IO can be installed on any cloud offering that runs at least Docker 1.12.6. The real consideration here is compliance and the security of the data storage.</p>
 <p>We have run Pryv.IO on the following public clouds: AWS, Microsoft Azure, Gandi.net, Exoscale.ch, Joyent, Fengqi.asia.</p>
 <h3 id="what-constraints-should-be-considered-when-choosing-a-host-">What constraints should be considered when choosing a host?</h3>
 <p>You must take into account the legislation covering the people whose data will be stored in the Pryv.IO platform, such as US HIPAA, EU GDPR, Swiss DPA. This often includes requirements on the geographic location where the data is stored.</p>
@@ -49,7 +49,7 @@ ${DOMAIN}        ${TTL_SECONDS}    IN        NS        ns2-${DOMAIN}.${TOP_DOMAI
 </code></pre><h2 id="how-to-host-apps-resources-on-the-same-domain-reuse-the-ssl-certificate">How to host apps, resources on the same domain / reuse the SSL certificate</h2>
 <p>The web role is meant for this. It contains a proxy server that can be configured to serve apps from different sources such as GitHub pages under the same domain, thus allowing </p>
 <p>Using the web role, apps can be served on any path from <a href="https://sw.${DOMAIN}/">https://sw.${DOMAIN}/</a>...</p>
-<p>This is done by addding the following <code>location</code> clause in the <code>pryv/nginx/conf/site.conf</code> file:</p>
+<p>This is done by adding the following <code>location</code> clause in the <code>pryv/nginx/conf/site.conf</code> file:</p>
 <pre><code>server {
      listen               443;
      server_name          sw.DOMAIN;
