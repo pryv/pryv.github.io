@@ -41,12 +41,18 @@ ${DOMAIN}    TTL_SECONDS IN NS ns2-${DOMAIN}
 <pre><code>${DOMAIN}        ${TTL_SECONDS}    IN        NS        ns1-${DOMAIN}.${TOP_DOMAIN}
 ${DOMAIN}        ${TTL_SECONDS}    IN        NS        ns2-${DOMAIN}.${TOP_DOMAIN}
 </code></pre><h2 id="customize-registration-login-password-reset-pages">Customize registration, login, password-reset pages</h2>
-<p>We deliver the platform with default web apps for registration, login, password-reset and auth request. The code is available on <a href="https://github.com/pryv/app-web-auth2">https://github.com/pryv/app-web-auth2</a>.</p>
-<p>To customize it, fork the repository, create a symlink <code>ln -s v2/ ${DOMAIN}</code> on the <code>gh-pages</code> branch as seen <a href="https://github.com/pryv/app-web-auth2/tree/gh-pages">here</a> and modify the NGINX configuration on the static-web machine <code>static/nginx/site.conf</code> (or <code>pryv/nginx/site.conf</code> for single node). Change line:</p>
-<pre><code>proxy_pass        https://pryv.github.io/app-web-auth2/${DOMAIN}/;
+<p>We deliver the platform with default web apps for registration, login, password-reset and auth request. The code is available on <a href="https://github.com/pryv/app-web-auth3">https://github.com/pryv/app-web-auth3</a>.</p>
+<p>To customize it, fork the repository, make stub commit on the <code>gh-pages</code> branch to activate the <a href="https://pages.github.com/">GitHub Pages</a>.<br>Modify the NGINX configuration on the static-web machine <code>static/nginx/site.conf</code> (or <code>pryv/nginx/site.conf</code> for single node). Change line:</p>
+<pre><code>proxy_pass        https://pryv.github.io/app-web-auth3/;
 </code></pre><p>to:</p>
-<pre><code>proxy_pass        https://${CUSTOMER_ACCOUNT}.github.io/app-web-auth2/${DOMAIN}/;
-</code></pre><h2 id="how-to-host-apps-resources-on-the-same-domain-reuse-the-ssl-certificate">How to host apps, resources on the same domain / reuse the SSL certificate</h2>
+<pre><code>proxy_pass        https://${CUSTOMER_ACCOUNT}.github.io/app-web-auth3/;
+</code></pre><p>The following pages will show the changes that you apply to this repository:</p>
+<ul>
+<li>Registration: <a href="https://sw.${DOMAIN}/access/register.html">https://sw.${DOMAIN}/access/register.html</a></li>
+<li>Reset password: <a href="https://sw.${DOMAIN}/access/reset-password.html">https://sw.${DOMAIN}/access/reset-password.html</a></li>
+<li>Consent authorization: <a href="https://sw.${DOMAIN}/access/access.html">https://sw.${DOMAIN}/access/access.html</a></li>
+</ul>
+<h2 id="how-to-host-apps-resources-on-the-same-domain-reuse-the-ssl-certificate">How to host apps, resources on the same domain / reuse the SSL certificate</h2>
 <p>The web role is meant for this. It contains a proxy server that can be configured to serve apps from different sources such as GitHub pages under the same domain, thus allowing </p>
 <p>Using the web role, apps can be served on any path from <a href="https://sw.${DOMAIN}/">https://sw.${DOMAIN}/</a>...</p>
 <p>This is done by adding the following <code>location</code> clause in the <code>pryv/nginx/conf/site.conf</code> file:</p>
