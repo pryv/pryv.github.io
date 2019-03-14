@@ -1,0 +1,443 @@
+<!DOCTYPE html><html lang="en" class="no-js"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="description" property="og:description" content="Pryv API reference and resources for developers"><meta name="author" content="Pryv SA"><meta property="og:type" content="website"><meta name="image" property="og:image" content="/assets/images/logo-256.png"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Getting started | Pryv API</title><link rel="icon" href="/assets/images/favicon-black.ico" type="image/x-icon"><link rel="apple-touch-icon" sizes="120x120" href="/assets/images/apple-touch-icon-120x120-black.png"><link rel="apple-touch-icon" sizes="152x152" href="/assets/images/apple-touch-icon-152x152-black.png"><link rel="apple-touch-icon" sizes="180x180" href="/assets/images/apple-touch-icon-180x180-black.png"><!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+<!--[if lt IE 9]>
+  <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+  <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+<![endif]--><link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Roboto:400,300,500,700,400italic|Roboto+Condensed:400,300,700"><link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/styles/docco.min.css"><link rel="stylesheet" type="text/css" href="/assets/fonts/ss-gizmo.min.css"><link rel="stylesheet" type="text/css" href="/assets/style.css"></head><body class="getting-started-customer with-toc"><header id="page-header"><nav role="navigation" class="navbar navbar-default navbar-fixed-top"><div class="container-fluid"><div class="navbar-header"><a href="https://pryv.com" title="Pryv home" class="navbar-brand logo pryv-home"><img src="/assets/images/icon-home.svg" alt="Pryv home" height="50"></a><a href="/" title="Developers home" class="navbar-brand logo"><img src="/assets/images/logo-256-black.png" alt="Developers home"></a><button type="button" data-toggle="collapse" data-target="#main-nav" class="navbar-toggle"><span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button></div><div id="main-nav" class="collapse navbar-collapse"><ul class="nav navbar-nav"><li class="dropdown"><a href="#" data-toggle="dropdown" class="dropdown-toggle">Guides <b class="caret"></b></a><ul class="dropdown-menu"><li><a href="/getting-started/">Getting started</a></li><li><a href="/concepts/">API concepts</a></li><li><a href="/external-resources/">External resources</a></li><!--+menuItem('data-modeling', 'Data modeling') —> into "Concepts"??--></ul></li><li class="dropdown"><a href="#" data-toggle="dropdown" class="dropdown-toggle">Reference <b class="caret"></b></a><ul class="dropdown-menu"><li><a href="/reference/">API reference</a></li><li><a href="/change-log/">API change log</a></li><li><a href="/event-types/">Event types</a></li><!--+menuItem('standardStructure')--></ul></li><li class="dropdown"><a href="#" data-toggle="dropdown" class="dropdown-toggle">FAQ <b class="caret"></b></a><ul class="dropdown-menu"><li><a href="/faq-api/">API</a></li><li><a href="/faq-infra/">Infrastructure</a></li></ul></li><!--lia(href='#') Blog--></ul><div class="navbar-right"><p class="navbar-text version"><a href="/change-log/" title="View change log">API version: <strong>1.3.41</strong></a></p></div></div></div></nav></header><div id="main-wrapper" class="container container-narrow"><div id="main"><h1 class="page-title">Getting started</h1><h2 id="prerequisites">Prerequisites</h2>
+<p>You&#39;ll need your own Pryv.io installation to try out its different features.
+If you don&#39;t have one yet, please get in contact with our <a href="mailto:sales@pryv.com">Sales Team</a>.</p>
+<p>Pryv.io is a middleware. As such, you will have to interact with the server through either a custom application or HTTP calls using your prefered method (e.g. cURL, Postman, etc.).</p>
+<p>The following tutorial is based on HTTP calls without using any application.</p>
+<h2 id="create-user">Create user</h2>
+<p>To create a new user, you will need 2 specific information:</p>
+<ul>
+<li>appId: this identifier is chosen by you and has to be unique for the application interacting with Pryv.io, be it a web application, a mobile application or anything else.</li>
+<li>hosting: this piece of information will tell Pryv.io on which storage system to create and link the user. More information is available at the <a href="http://api.pryv.com/concepts/#servers">API concepts</a> page.</li>
+</ul>
+<h3 id="get-existing-hostings">Get existing hostings</h3>
+<p>You can query Pryv.io to list the existings hostings know to the system.</p>
+<p>Execute the following cURL request to the register URL of your installation.</p>
+<pre><code class="lang-bash">curl -X GET \
+     https://reg.{domain}/hostings
+</code></pre>
+<p>An example of an answer follows:</p>
+<pre><code class="lang-json">{
+  &quot;regions&quot;: {
+    &quot;pilot&quot;: {
+      &quot;name&quot;: &quot;Pilot&quot;,
+      &quot;localizedName&quot;: { &quot;fr&quot;: &quot;Pilot&quot; },
+      &quot;zones&quot;: {
+        &quot;pilot&quot;: {
+          &quot;name&quot;: &quot;Pilot Core&quot;,
+          &quot;localizedName&quot;: { &quot;fr&quot;: &quot;Pilot Core&quot; },
+          &quot;hostings&quot;: {
+            &quot;pilot&quot;: {
+              &quot;url&quot;: &quot;http://{domain}&quot;,
+              &quot;name&quot;: &quot;Self-Contained Pilot Core&quot;,
+              &quot;description&quot;: &quot;Local core inside the pilot deployment&quot;,
+              &quot;localizedDescription&quot;: {},
+              &quot;available&quot;: true
+            }
+          }
+        }
+      }
+    }
+  }
+}
+</code></pre>
+<p>In the previous example, the <code>hostings</code> part contains only one hosting deployment which name is <code>pilot</code>.</p>
+<h3 id="user-creation">User creation</h3>
+<p>Using the previously obtained <code>pilot</code> hosting and a custom appid <code>my-own-app</code>, let&#39;s create a user by sending the following request to the register.</p>
+<pre><code class="lang-bash">curl -X POST \
+     -H &#39;Content-Type: application/json&#39; \
+     -d &#39;{
+         &quot;appid&quot;: &quot;my-own-app&quot;,
+         &quot;username&quot;: &quot;jsmith&quot;,
+         &quot;password&quot;: &quot;password&quot;,
+         &quot;email&quot;: &quot;jsmith@example.com&quot;,
+         &quot;hosting&quot;: &quot;pilot&quot;
+     }&#39; \
+     https://reg.{domain}/user
+</code></pre>
+<p>The returned answer will contain the username of the created account and its dedicated hostname.</p>
+<pre><code class="lang-json">{
+  &quot;username&quot;: &quot;jsmith&quot;,
+  &quot;server&quot;: &quot;jsmith.{domain}&quot;
+}
+</code></pre>
+<p>From this point onward, all queries to Pryv.io will be done using the hostname provided in the <code>server</code> field, indicating how to interact with a specific user&#39;s data.</p>
+<h2 id="login">Login</h2>
+<p>Once the user account has been created you&#39;ll be able to login and obtain a personal access token to manage data in this account.</p>
+<p>More information on the different access types can be found on the <a href="http://api.pryv.com/concepts/#accesses">API concepts</a> page.</p>
+<p>The login request will be done toward our John Smith account.</p>
+<p>In the following request, replace the variable <code>{trusted_origin}</code> by an <a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Origin">Origin</a> that is trusted in your Pryv.io configuration.</p>
+<p>Pryv.io default configuration allows all subdomains as trusted. Hence, you can use for example <code>https://sw.{domain}</code> as <code>Origin</code>.</p>
+<pre><code class="lang-bash">curl -X POST \
+     -H &#39;Content-Type: application/json&#39; \
+     -H &#39;Origin: {trusted_origin}&#39; \
+     -d &#39;{
+         &quot;appId&quot;: &quot;my-own-app&quot;,
+         &quot;username&quot;: &quot;jsmith&quot;,
+         &quot;password&quot;: &quot;password&quot;
+     }&#39; \
+     https://jsmith.{domain}/auth/login
+</code></pre>
+<p>The answer will contain a token which references a <a href="http://api.pryv.com/concepts/#accesses">personal access</a> allowing full data management for the account.</p>
+<pre><code class="lang-json">{
+  &quot;meta&quot;: {
+    &quot;apiVersion&quot;: &quot;1.3.38&quot;,
+    &quot;serverTime&quot;: 1550832564.509
+  },
+  &quot;token&quot;: &quot;cjsfxo173000111taf99gp3dv&quot;,
+  &quot;preferredLanguage&quot;: &quot;en&quot;
+}
+</code></pre>
+<p>From now on, to use the retrieved token and authorize each request made to Pryv.io, you&#39;ll need to add an <code>Authorization</code> header as shown in the following parts of the tutorial.</p>
+<h2 id="manage-data">Manage data</h2>
+<p>As you may already know, data in Pryv.io is modeled using notions of streams and events.</p>
+<p>You can find more information on the API concepts page in the <a href="http://api.pryv.com/concepts/#events">events section</a> or the <a href="http://api.pryv.com/concepts/#contexts">contexts section</a>.</p>
+<h3 id="creating-a-stream">Creating a stream</h3>
+<p>Data will be contextualized here using streams.</p>
+<p>You can find all available API methods on stream objects in the <a href="http://api.pryv.com/reference/#streams">API reference</a>.</p>
+<p>We will now create a new stream in which to place our data using the <a href="http://api.pryv.com/reference/#create-stream">creation stream action</a>.</p>
+<pre><code class="lang-bash">curl -X POST \
+     -H &#39;Content-Type: application/json&#39; \
+     -H &#39;Authorization: cjsfxo173000111taf99gp3dv&#39; \
+     -d &#39;{
+         &quot;name&quot;: &quot;My Stream&quot;
+     }&#39; \
+     https://jsmith.{domain}/streams
+</code></pre>
+<p>The most basic use of this action only requires a <code>name</code> parameter to provide a human-readable name for the new stream. A unique and random id will be created upon creation if not provided.</p>
+<p>The <code>Stream</code> object manipulated by Pryv.io is detailed in the <a href="http://pryv.github.io/reference/#data-structure-stream">data structure reference</a>.</p>
+<p>The returned answer will contain the newly created stream object.</p>
+<pre><code class="lang-json">{
+  &quot;meta&quot;: {
+    &quot;apiVersion&quot;: &quot;1.3.38&quot;,
+    &quot;serverTime&quot;: 1550833364.627
+  },
+  &quot;stream&quot;: {
+    &quot;name&quot;: &quot;My Stream&quot;,
+    &quot;parentId&quot;: null,
+    &quot;created&quot;: 1550833364.622,
+    &quot;createdBy&quot;: &quot;cjsfxo17f000211tair7v6atb&quot;,
+    &quot;modified&quot;: 1550833364.622,
+    &quot;modifiedBy&quot;: &quot;cjsfxo17f000211tair7v6atb&quot;,
+    &quot;id&quot;: &quot;cjsfy56kv000311ta9dy121ni&quot;
+  }
+}
+</code></pre>
+<h3 id="creating-an-event">Creating an event</h3>
+<p>The subject&#39;s data will be stored in events.</p>
+<p>You can find all available API methods on event objects in the <a href="http://api.pryv.com/reference/#events">API reference</a>.</p>
+<p>Data is stored in events and structured using event types. You can find a description of all default event types in Pryv.io in the <a href="http://api.pryv.com/event-types/">event types reference</a>. Note that you can also define your own custom types.</p>
+<p>Let&#39;s create an event with the <code>note/txt</code> type for which the content is a single text string.</p>
+<p>Apart from a content field which inner structure depends on the declared type, an event can contain a number of other fields acting as metadata around the data stored in Pryv.io.</p>
+<p>You can find all fields composing an event object in the <a href="http://api.pryv.com/reference/#data-structure-event">data structure reference</a>.</p>
+<p>To create a basic <code>note/txt</code> event, we only need to provide the <code>streamId</code>, <code>type</code> and the <code>content</code> fields. We will also use the optional <code>description</code> field to give meaning to the data stored in a human-readable way.</p>
+<p>The <code>streamId</code> will reference the previously created Stream object to contextualize the data.</p>
+<pre><code class="lang-bash">curl -X POST \
+     -H &#39;Content-Type: application/json&#39; \
+     -H &#39;Authorization: cjsfxo173000111taf99gp3dv&#39; \
+     -d &#39;{
+         &quot;streamId&quot;: &quot;cjsfy56kv000311ta9dy121ni&quot;,
+         &quot;type&quot;: &quot;note/txt&quot;,
+         &quot;description&quot;: &quot;My note event&quot;,
+         &quot;content&quot;: &quot;This is the content of our note&quot;
+     }&#39; \
+     https://jsmith.{domain}/events
+</code></pre>
+<p>The returned answer contains the created event with some additional fields filled in by the server.</p>
+<pre><code class="lang-json">{
+  &quot;meta&quot;: {
+    &quot;apiVersion&quot;: &quot;1.3.38&quot;,
+    &quot;serverTime&quot;: 1550841167.771
+  },
+  &quot;event&quot;: {
+    &quot;streamId&quot;: &quot;cjsfy56kv000311ta9dy121ni&quot;,
+    &quot;type&quot;: &quot;note/txt&quot;,
+    &quot;description&quot;: &quot;My note event&quot;,
+    &quot;content&quot;: &quot;This is the content of our note&quot;,
+    &quot;time&quot;: 1550841167.72,
+    &quot;tags&quot;: [],
+    &quot;created&quot;: 1550841167.72,
+    &quot;createdBy&quot;: &quot;cjsfxo17f000211tair7v6atb&quot;,
+    &quot;modified&quot;: 1550841167.721,
+    &quot;modifiedBy&quot;: &quot;cjsfxo17f000211tair7v6atb&quot;,
+    &quot;id&quot;: &quot;cjsg2sfhq000014taogk4y0gv&quot;
+  }
+}
+</code></pre>
+<h3 id="retrieve-existing-data">Retrieve existing data</h3>
+<p>Let&#39;s display the previously created note.</p>
+<pre><code class="lang-bash">curl -X GET \
+     -H &#39;Authorization: cjsfxo173000111taf99gp3dv&#39; \
+     https://jsmith.{domain}/events
+</code></pre>
+<p>The returned object is a list of existing events. We can find there the previously created event.</p>
+<pre><code class="lang-json">{
+  &quot;events&quot;: [
+    {
+      &quot;streamId&quot;: &quot;cjsfy56kv000311ta9dy121ni&quot;,
+      &quot;type&quot;: &quot;note/txt&quot;,
+      &quot;description&quot;: &quot;My note event&quot;,
+      &quot;content&quot;: &quot;This is the content of our note&quot;,
+      &quot;time&quot;: 1550841167.72,
+      &quot;tags&quot;: [],
+      &quot;created&quot;: 1550841167.72,
+      &quot;createdBy&quot;: &quot;cjsfxo17f000211tair7v6atb&quot;,
+      &quot;modified&quot;: 1550841167.721,
+      &quot;modifiedBy&quot;: &quot;cjsfxo17f000211tair7v6atb&quot;,
+      &quot;id&quot;: &quot;cjsg2sfhq000014taogk4y0gv&quot;
+    }
+  ],
+  &quot;meta&quot;: {
+    &quot;apiVersion&quot;: &quot;1.3.38&quot;,
+    &quot;serverTime&quot;: 1550841828.951
+  }
+}
+</code></pre>
+<p>Pryv.io comes with many operations and filtering possibilities which can be found described in the <a href="http://pryv.github.io/reference/">API reference</a>.</p>
+<p>Let&#39;s try an example of filtering by passing a parameter in our request to filter out all events which happened after the 01.01.2019 at 07:00:00 UTC by using the <code>toTime</code> parameter.</p>
+<p>This filtering applies to the <code>time</code> field which indicates when an event occurred. Note that this is different from the time when the data was stored in Pryv.io, which is encoded in the <code>created</code> field. Thus the <code>time</code> can be set at the event creation to store data that occurred in the past, or even in the future (e.g. a medical appointment).</p>
+<pre><code class="lang-bash">curl -X GET \
+     -H &#39;Authorization: cjsfxo173000111taf99gp3dv&#39; \
+     https://jsmith.{domain}/events?toTime=1546326000.000
+</code></pre>
+<p>As expected, our only event is filtered out:</p>
+<pre><code class="lang-json">{
+  &quot;events&quot;: [],
+  &quot;meta&quot;: {
+    &quot;apiVersion&quot;: &quot;1.3.38&quot;,
+    &quot;serverTime&quot;: 1550842585.342
+  }
+}
+</code></pre>
+<h2 id="manage-accesses">Manage accesses</h2>
+<p>One of the core aspects of Pryv.io is data access management. It is based on an active consent given by the data owner to others.</p>
+<p>You can find the accesses concepts in Pryv.io in the <a href="http://api.pryv.com/concepts/#accesses">API concepts</a> page.</p>
+<h3 id="access-creation">Access creation</h3>
+<p>To allow another party to access the data, a user has to deliver an token linked to an access object in Pryv.io.</p>
+<p>To do that, let&#39;s create our first access, using the methods provided by the API and described in the <a href="http://api.pryv.com/reference/#accesses">Access methods reference</a>.</p>
+<p>The object used as parameter contains some of the desired access fields. A list of all fields can be found in the <a href="http://api.pryv.com/reference/#data-structure-access">Access data structure reference</a>.</p>
+<p>We&#39;ll create a shared access which is the default type, giving access to the previously created stream with a <code>read</code> permissions.</p>
+<pre><code class="lang-bash">curl -X POST \
+     -H &#39;Content-Type: application/json&#39; \
+     -H &#39;Authorization: cjsfxo173000111taf99gp3dv&#39; \
+     -d &#39;{
+         &quot;name&quot;: &quot;My first access&quot;,
+         &quot;permissions&quot;: [
+           {
+            &quot;streamId&quot;: &quot;cjsfy56kv000311ta9dy121ni&quot;,
+            &quot;level&quot;: &quot;read&quot;
+           }
+         ]
+     }&#39; \
+     https://jsmith.{domain}/accesses
+</code></pre>
+<p>The server will return the created access information, containing the token that will be used by whoever we allow to access data using this access.</p>
+<pre><code class="lang-json">{
+  &quot;meta&quot;: {
+    &quot;apiVersion&quot;: &quot;1.3.38&quot;,
+    &quot;serverTime&quot;: 1550843240.685
+  },
+  &quot;access&quot;: {
+    &quot;name&quot;: &quot;My first access&quot;,
+    &quot;permissions&quot;: [
+      {
+        &quot;streamId&quot;: &quot;cjsfy56kv000311ta9dy121ni&quot;,
+        &quot;level&quot;: &quot;read&quot;
+      }
+    ],
+    &quot;type&quot;: &quot;shared&quot;,
+    &quot;token&quot;: &quot;cjsg40uzv000411ta8r4n7ax1&quot;,
+    &quot;created&quot;: 1550843240.683,
+    &quot;createdBy&quot;: &quot;cjsfxo17f000211tair7v6atb&quot;,
+    &quot;modified&quot;: 1550843240.683,
+    &quot;modifiedBy&quot;: &quot;cjsfxo17f000211tair7v6atb&quot;,
+    &quot;id&quot;: &quot;cjsg40uzv000511tazp8k74db&quot;
+  }
+}
+</code></pre>
+<p>Now whoever, whatever algorithm or application can query data accessible at <code>https://jsmith.{domain}</code> using this token (<code>cjsg40uzv000411ta8r4n7ax1</code>). It will have read access to all events linked to the stream named <code>My Stream</code> that we created at the beginning of this tutorial.</p>
+<p>Let&#39;s try that now.</p>
+<h3 id="creating-more-data">Creating more data</h3>
+<p>Before trying to use the shared access, let&#39;s add some more data in a different stream to visualize the access control functionality in action.</p>
+<pre><code class="lang-bash">curl -X POST \
+     -H &#39;Content-Type: application/json&#39; \
+     -H &#39;Authorization: cjsfxo173000111taf99gp3dv&#39; \
+     -d &#39;{
+         &quot;name&quot;: &quot;My second Stream&quot;
+     }&#39; \
+     https://jsmith.{domain}/streams
+</code></pre>
+<pre><code class="lang-json">{
+  &quot;meta&quot;: {
+    &quot;apiVersion&quot;: &quot;1.3.38&quot;,
+    &quot;serverTime&quot;: 1550843657.516
+  },
+  &quot;stream&quot;: {
+    &quot;name&quot;: &quot;My second Stream&quot;,
+    &quot;parentId&quot;: null,
+    &quot;created&quot;: 1550843657.513,
+    &quot;createdBy&quot;: &quot;cjsfxo17f000211tair7v6atb&quot;,
+    &quot;modified&quot;: 1550843657.513,
+    &quot;modifiedBy&quot;: &quot;cjsfxo17f000211tair7v6atb&quot;,
+    &quot;id&quot;: &quot;cjsg49smi000114tao2ritqsj&quot;
+  }
+}
+</code></pre>
+<p>The second stream is created. Note the <code>id</code> of this new stream that will be used in the following query.</p>
+<p>Using this new <code>streamId</code> let&#39;s create another event, this time with a more complex type such as the blood pressure type <code>blood-pressure/mmhg-bpm</code>.</p>
+<p>The reference for this default data type can be found <a href="http://pryv.github.io/event-types/#blood-pressure">here</a>.</p>
+<pre><code class="lang-bash">curl -X POST \
+     -H &#39;Content-Type: application/json&#39; \
+     -H &#39;Authorization: cjsfxo173000111taf99gp3dv&#39; \
+     -d &#39;{
+         &quot;streamId&quot;: &quot;cjsg49smi000114tao2ritqsj&quot;,
+         &quot;type&quot;: &quot;blood-pressure/mmhg-bpm&quot;,
+         &quot;description&quot;: &quot;My blood pressure&quot;,
+         &quot;time&quot;: 1549791135.052,
+         &quot;content&quot;: {
+               &quot;systolic&quot;: 141,
+               &quot;diastolic&quot;: 82
+           }
+     }&#39; \
+     https://jsmith.{domain}/events
+</code></pre>
+<p>The server returns the new event.</p>
+<pre><code class="lang-json">{
+  &quot;meta&quot;: {
+    &quot;apiVersion&quot;: &quot;1.3.38&quot;,
+    &quot;serverTime&quot;: 1550844023.884
+  },
+  &quot;event&quot;: {
+    &quot;streamId&quot;: &quot;cjsg49smi000114tao2ritqsj&quot;,
+    &quot;type&quot;: &quot;blood-pressure/mmhg-bpm&quot;,
+    &quot;description&quot;: &quot;My blood pressure&quot;,
+    &quot;time&quot;: 1549791135.052,
+    &quot;content&quot;: {
+      &quot;systolic&quot;: 141,
+      &quot;diastolic&quot;: 82
+    },
+    &quot;tags&quot;: [],
+    &quot;created&quot;: 1550844023.879,
+    &quot;createdBy&quot;: &quot;cjsfxo17f000211tair7v6atb&quot;,
+    &quot;modified&quot;: 1550844023.879,
+    &quot;modifiedBy&quot;: &quot;cjsfxo17f000211tair7v6atb&quot;,
+    &quot;id&quot;: &quot;cjsg4hnbe000611taaj2vmjua&quot;
+  }
+}
+</code></pre>
+<h3 id="getting-data-using-a-shared-access">Getting data using a shared access</h3>
+<p>It&#39;s now time to use the previously obtained shared access token (<code>cjsg40uzv000411ta8r4n7ax1</code>).</p>
+<p>Let&#39;s change the <code>Authorization</code> header in the HTTP query and see that only the note event is returned.</p>
+<pre><code class="lang-bash">curl -X GET \
+     -H &#39;Authorization: cjsg40uzv000411ta8r4n7ax1&#39; \
+     https://jsmith.{domain}/events
+</code></pre>
+<p>The server returns the following list of one event.</p>
+<pre><code class="lang-json">{
+  &quot;events&quot;: [
+    {
+      &quot;streamId&quot;: &quot;cjsfy56kv000311ta9dy121ni&quot;,
+      &quot;type&quot;: &quot;note/txt&quot;,
+      &quot;description&quot;: &quot;My note event&quot;,
+      &quot;content&quot;: &quot;This is the content of our note&quot;,
+      &quot;time&quot;: 1550841167.72,
+      &quot;tags&quot;: [],
+      &quot;created&quot;: 1550841167.72,
+      &quot;createdBy&quot;: &quot;cjsfxo17f000211tair7v6atb&quot;,
+      &quot;modified&quot;: 1550841167.721,
+      &quot;modifiedBy&quot;: &quot;cjsfxo17f000211tair7v6atb&quot;,
+      &quot;id&quot;: &quot;cjsg2sfhq000014taogk4y0gv&quot;
+    }
+  ],
+  &quot;meta&quot;: { &quot;apiVersion&quot;: &quot;1.3.38&quot;, &quot;serverTime&quot;: 1550844293.294 }
+}
+</code></pre>
+<p>The blood pressure event is not returned because it is not contained in the stream to which we have an access for.</p>
+<p>If we do the same query using the personal token of John Smith, we&#39;ll see all existing events.</p>
+<pre><code class="lang-bash">curl -X GET \
+     -H &#39;Authorization: cjsfxo173000111taf99gp3dv&#39; \
+     https://jsmith.{domain}/events
+</code></pre>
+<pre><code class="lang-json">{
+  &quot;events&quot;: [
+    {
+      &quot;streamId&quot;: &quot;cjsfy56kv000311ta9dy121ni&quot;,
+      &quot;type&quot;: &quot;note/txt&quot;,
+      &quot;description&quot;: &quot;My note event&quot;,
+      &quot;content&quot;: &quot;This is the content of our note&quot;,
+      &quot;time&quot;: 1550841167.72,
+      &quot;tags&quot;: [],
+      &quot;created&quot;: 1550841167.72,
+      &quot;createdBy&quot;: &quot;cjsfxo17f000211tair7v6atb&quot;,
+      &quot;modified&quot;: 1550841167.721,
+      &quot;modifiedBy&quot;: &quot;cjsfxo17f000211tair7v6atb&quot;,
+      &quot;id&quot;: &quot;cjsg2sfhq000014taogk4y0gv&quot;
+    },
+    {
+      &quot;streamId&quot;: &quot;cjsg49smi000114tao2ritqsj&quot;,
+      &quot;type&quot;: &quot;blood-pressure/mmhg-bpm&quot;,
+      &quot;description&quot;: &quot;My blood pressure&quot;,
+      &quot;time&quot;: 1549791135.052,
+      &quot;content&quot;: {
+        &quot;systolic&quot;: 141,
+        &quot;diastolic&quot;: 82
+      },
+      &quot;tags&quot;: [],
+      &quot;created&quot;: 1550844023.879,
+      &quot;createdBy&quot;: &quot;cjsfxo17f000211tair7v6atb&quot;,
+      &quot;modified&quot;: 1550844023.879,
+      &quot;modifiedBy&quot;: &quot;cjsfxo17f000211tair7v6atb&quot;,
+      &quot;id&quot;: &quot;cjsg4hnbe000611taaj2vmjua&quot;
+    }
+  ],
+  &quot;meta&quot;: { &quot;apiVersion&quot;: &quot;1.3.38&quot;, &quot;serverTime&quot;: 1550844424.979 }
+}
+</code></pre>
+<p>The event list contains the 2 events that were created during this tutorial, showing that the access control effectively filtered the events returned by the server based on the actual access rights given by the data owner.</p>
+<h2 id="to-conclude">To conclude</h2>
+<p>This achieves this small tutorial to get acquainted with the Pryv.io API.</p>
+<p>Most of the technical information can be found by following these links:</p>
+<ul>
+<li><a href="http://api.pryv.com/concepts/">API concepts</a></li>
+<li><a href="http://pryv.github.io/reference/">API reference</a></li>
+</ul>
+<p>More complete reference and further details is accessible for you if you have an active licence.</p>
+<p>For all further enquiries, please feel free to <a href="http://pryv.com/helpdesk/">contact us</a>.</p>
+</div><nav id="toc"></nav></div><footer id="page-footer"><nav class="navbar navbar-default"><div class="container-fluid"><div id="footer-nav"><ul class="nav navbar-nav"><li><a href="mailto:developers@pryv.com">Send a message</a></li><li><a href="https://github.com/pryv">GitHub</a></li><li><a href="https://pryv.com">pryv.com</a></li></ul></div></div></nav></footer><script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script><script src="/assets/bootstrap.min.js"></script><script src="/assets/js/toc.min.js"></script><!-- TOC generation--><script>jQuery(document).ready(function($) {
+  // Header is about 51 pixels. This equals to 'header + fuzz', fuzz was
+  // determined experimentally.
+  var offset = 100;
+
+  // Display TOC on the left side of the page.
+  $('#toc').toc({
+    selector: '#main h1:not(.page-title),#main h2,#main h3',
+    ulClass: 'nav'
+  });
+
+  // Synchronise scroll/click motion with TOC display.
+  $(document).ready(function() {
+    // NOTE This is done at onLoad since we need to wait for all CSS
+    // to appear.
+    $('body').scrollspy({
+      target: '#toc',
+      offset: offset
+    });
+  });
+});
+</script><!-- Code blocks highlighting--><script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/highlight.min.js"></script><script>hljs.initHighlightingOnLoad();
+</script><!-- Google Analytics--><script>var _gaq = _gaq || [];
+_gaq.push(['_setAccount', 'UA-36589447-2']);
+_gaq.push(['_trackPageview']);
+(function() {
+  var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+  ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+  var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+})();
+</script><!-- Sales-Wings--><script type="text/javascript" id="SW-fd71dffa-76e8-479e-a37b-6e915b97b023"></script><script>!function(){function a(){var a=document.createElement("script");
+a.type="text/javascript",a.async=1,a.src="//go.saleswingsapp.com/assets/javascripts/sw/fd71dffa-76e8-479e-a37b-6e915b97b023";
+var b=document.getElementById("SW-fd71dffa-76e8-479e-a37b-6e915b97b023");
+b.parentNode.insertBefore(a,b)}window.attachEvent?window.attachEvent("onload",a):window.addEventListener("load",a,0)}();</script></body></html>

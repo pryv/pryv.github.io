@@ -1,0 +1,126 @@
+<!DOCTYPE html><html lang="en" class="no-js"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="description" property="og:description" content="Pryv API reference and resources for developers"><meta name="author" content="Pryv SA"><meta property="og:type" content="website"><meta name="image" property="og:image" content="/assets/images/logo-256.png"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Manage events | Pryv API</title><link rel="icon" href="/assets/images/favicon-black.ico" type="image/x-icon"><link rel="apple-touch-icon" sizes="120x120" href="/assets/images/apple-touch-icon-120x120-black.png"><link rel="apple-touch-icon" sizes="152x152" href="/assets/images/apple-touch-icon-152x152-black.png"><link rel="apple-touch-icon" sizes="180x180" href="/assets/images/apple-touch-icon-180x180-black.png"><!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+<!--[if lt IE 9]>
+  <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+  <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+<![endif]--><link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Roboto:400,300,500,700,400italic|Roboto+Condensed:400,300,700"><link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/styles/docco.min.css"><link rel="stylesheet" type="text/css" href="/assets/fonts/ss-gizmo.min.css"><link rel="stylesheet" type="text/css" href="/assets/style.css"></head><body class="manage-events with-toc"><header id="page-header"><nav role="navigation" class="navbar navbar-default navbar-fixed-top"><div class="container-fluid"><div class="navbar-header"><a href="https://pryv.com" title="Pryv home" class="navbar-brand logo pryv-home"><img src="/assets/images/icon-home.svg" alt="Pryv home" height="50"></a><a href="/" title="Developers home" class="navbar-brand logo"><img src="/assets/images/logo-256-black.png" alt="Developers home"></a><button type="button" data-toggle="collapse" data-target="#main-nav" class="navbar-toggle"><span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button></div><div id="main-nav" class="collapse navbar-collapse"><ul class="nav navbar-nav"><li class="dropdown"><a href="#" data-toggle="dropdown" class="dropdown-toggle">Guides <b class="caret"></b></a><ul class="dropdown-menu"><li><a href="/getting-started/">Getting started</a></li><li><a href="/concepts/">API concepts</a></li><li><a href="/external-resources/">External resources</a></li><!--+menuItem('data-modeling', 'Data modeling') —> into "Concepts"??--></ul></li><li class="dropdown"><a href="#" data-toggle="dropdown" class="dropdown-toggle">Reference <b class="caret"></b></a><ul class="dropdown-menu"><li><a href="/reference/">API reference</a></li><li><a href="/change-log/">API change log</a></li><li><a href="/event-types/">Event types</a></li><!--+menuItem('standardStructure')--></ul></li><li class="dropdown"><a href="#" data-toggle="dropdown" class="dropdown-toggle">FAQ <b class="caret"></b></a><ul class="dropdown-menu"><li><a href="/faq-api/">API</a></li><li><a href="/faq-infra/">Infrastructure</a></li></ul></li><!--lia(href='#') Blog--></ul><div class="navbar-right"><p class="navbar-text version"><a href="/change-log/" title="View change log">API version: <strong>1.3.41</strong></a></p></div></div></div></nav></header><div id="main-wrapper" class="container container-narrow"><div id="main"><h1 class="page-title">Manage events</h1><p>Actual data will be stored in events.</p>
+<p>You can find all available REST actions on events in the <a href="http://pryv.github.io/reference/#events">API reference</a>.</p>
+<p>Data can be stored in events and can be structured using event types. You can find a description of all default event types in Pryv.io in the <a href="http://pryv.github.io/event-types/">event types reference</a>. Note that you can also use your own custom types.</p>
+<p>Let&#39;s create an event with the <code>note/txt</code> type which describes a content consisting of a single text content.</p>
+<p>Apart from a content field which inner structure can depend on the declared type, an event can contain a number of other fields acting as metadata around the data stored in Pryv.io.</p>
+<p>You can find all fields composing an event object in the <a href="http://pryv.github.io/reference/#data-structure-event">data structure reference</a>.</p>
+<p>To create a basic <code>note/txt</code> event, we only need the <code>streamId</code>, <code>type</code> and the <code>content</code> fields. We will also use the <code>description</code> to give meaning to the data stored in a human-readable way.</p>
+<p>The <code>streamId</code> will reference the previously created Stream object to contextualize the data.</p>
+<pre><code class="lang-bash">curl -X POST \
+     -H &#39;Content-Type: application/json&#39; \
+     -H &#39;Authorization: cjsfxo173000111taf99gp3dv&#39; \
+     -d &#39;{
+         &quot;streamId&quot;: &quot;cjsfy56kv000311ta9dy121ni&quot;,
+         &quot;type&quot;: &quot;note/txt&quot;,
+         &quot;description&quot;: &quot;My note event&quot;,
+         &quot;content&quot;: &quot;This is the content of our note&quot;
+     }&#39; \
+     https://jsmith.{domain}/events
+</code></pre>
+<p>The answer returned by the server contains the created event with all additional fields filled in by the server.</p>
+<pre><code class="lang-json">{
+  &quot;meta&quot;: {
+    &quot;apiVersion&quot;: &quot;1.3.38&quot;,
+    &quot;serverTime&quot;: 1550841167.771
+  },
+  &quot;event&quot;: {
+    &quot;streamId&quot;: &quot;cjsfy56kv000311ta9dy121ni&quot;,
+    &quot;type&quot;: &quot;note/txt&quot;,
+    &quot;description&quot;: &quot;My note event&quot;,
+    &quot;content&quot;: &quot;This is the content of our note&quot;,
+    &quot;time&quot;: 1550841167.72,
+    &quot;tags&quot;: [],
+    &quot;created&quot;: 1550841167.72,
+    &quot;createdBy&quot;: &quot;cjsfxo17f000211tair7v6atb&quot;,
+    &quot;modified&quot;: 1550841167.721,
+    &quot;modifiedBy&quot;: &quot;cjsfxo17f000211tair7v6atb&quot;,
+    &quot;id&quot;: &quot;cjsg2sfhq000014taogk4y0gv&quot;
+  }
+}
+</code></pre>
+<h2 id="get-existing-data">Get existing data</h2>
+<p>Pryv.io comes with many operations and filtering possibilities which can be found described in the <a href="http://pryv.github.io/reference/">API reference</a>.</p>
+<p>Let&#39;s display the previously created note.</p>
+<pre><code class="lang-bash">curl -X GET \
+     -H &#39;Content-Type: application/json&#39; \
+     -H &#39;Authorization: cjsfxo173000111taf99gp3dv&#39; \
+     https://jsmith.{domain}/events
+</code></pre>
+<p>The object returned is a list of existing events. In this tutorial we have only one even that can be found in this list.</p>
+<pre><code class="lang-json">{
+  &quot;events&quot;: [
+    {
+      &quot;streamId&quot;: &quot;cjsfy56kv000311ta9dy121ni&quot;,
+      &quot;type&quot;: &quot;note/txt&quot;,
+      &quot;description&quot;: &quot;My note event&quot;,
+      &quot;content&quot;: &quot;This is the content of our note&quot;,
+      &quot;time&quot;: 1550841167.72,
+      &quot;tags&quot;: [],
+      &quot;created&quot;: 1550841167.72,
+      &quot;createdBy&quot;: &quot;cjsfxo17f000211tair7v6atb&quot;,
+      &quot;modified&quot;: 1550841167.721,
+      &quot;modifiedBy&quot;: &quot;cjsfxo17f000211tair7v6atb&quot;,
+      &quot;id&quot;: &quot;cjsg2sfhq000014taogk4y0gv&quot;
+    }
+  ],
+  &quot;meta&quot;: {
+    &quot;apiVersion&quot;: &quot;1.3.38&quot;,
+    &quot;serverTime&quot;: 1550841828.951
+  }
+}
+</code></pre>
+<p>Let&#39;s try an example of filtering by passing a parameter in our request to filter out all events which happened after the 01.01.2019 at 07:00:00 UTC by using the <code>toTime</code> parameter.</p>
+<p>This filtering applies to the <code>time</code> field which indicates when an event occurred. Note that this is different from the time when the data was stored in Pryv.io, which is encoded in the <code>created</code> field. Thus the <code>time</code> can be set at the event creation to store data that occurred in the past, or even in the future (e.g. a medical appointment).</p>
+<pre><code class="lang-bash">curl -X GET \
+     -H &#39;Content-Type: application/json&#39; \
+     -H &#39;Authorization: cjsfxo173000111taf99gp3dv&#39; \
+     https://jsmith.{domain}/events?toTime=1546326000.000
+</code></pre>
+<p>As exepected, our only event is filtered out:</p>
+<pre><code class="lang-json">{
+  &quot;events&quot;: [],
+  &quot;meta&quot;: {
+    &quot;apiVersion&quot;: &quot;1.3.38&quot;,
+    &quot;serverTime&quot;: 1550842585.342
+  }
+}
+</code></pre>
+</div><nav id="toc"></nav></div><footer id="page-footer"><nav class="navbar navbar-default"><div class="container-fluid"><div id="footer-nav"><ul class="nav navbar-nav"><li><a href="mailto:developers@pryv.com">Send a message</a></li><li><a href="https://github.com/pryv">GitHub</a></li><li><a href="https://pryv.com">pryv.com</a></li></ul></div></div></nav></footer><script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script><script src="/assets/bootstrap.min.js"></script><script src="/assets/js/toc.min.js"></script><!-- TOC generation--><script>jQuery(document).ready(function($) {
+  // Header is about 51 pixels. This equals to 'header + fuzz', fuzz was
+  // determined experimentally.
+  var offset = 100;
+
+  // Display TOC on the left side of the page.
+  $('#toc').toc({
+    selector: '#main h1:not(.page-title),#main h2,#main h3',
+    ulClass: 'nav'
+  });
+
+  // Synchronise scroll/click motion with TOC display.
+  $(document).ready(function() {
+    // NOTE This is done at onLoad since we need to wait for all CSS
+    // to appear.
+    $('body').scrollspy({
+      target: '#toc',
+      offset: offset
+    });
+  });
+});
+</script><!-- Code blocks highlighting--><script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/highlight.min.js"></script><script>hljs.initHighlightingOnLoad();
+</script><!-- Google Analytics--><script>var _gaq = _gaq || [];
+_gaq.push(['_setAccount', 'UA-36589447-2']);
+_gaq.push(['_trackPageview']);
+(function() {
+  var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+  ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+  var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+})();
+</script><!-- Sales-Wings--><script type="text/javascript" id="SW-fd71dffa-76e8-479e-a37b-6e915b97b023"></script><script>!function(){function a(){var a=document.createElement("script");
+a.type="text/javascript",a.async=1,a.src="//go.saleswingsapp.com/assets/javascripts/sw/fd71dffa-76e8-479e-a37b-6e915b97b023";
+var b=document.getElementById("SW-fd71dffa-76e8-479e-a37b-6e915b97b023");
+b.parentNode.insertBefore(a,b)}window.attachEvent?window.attachEvent("onload",a):window.addEventListener("load",a,0)}();</script></body></html>
