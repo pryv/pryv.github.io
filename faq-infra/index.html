@@ -46,6 +46,10 @@ Modify the NGINX configuration on the static-web machine <code>static/nginx/site
 <pre><code>proxy_pass        https://pryv.github.io/app-web-auth3/;
 </code></pre><p>to:</p>
 <pre><code>proxy_pass        https://${CUSTOMER_ACCOUNT}.github.io/app-web-auth3/;
+</code></pre><p>and add the following in the sw.${DOMAIN} server scope:</p>
+<pre><code>if ($request_uri !~* &quot;^/access/static/.*$&quot;) {
+    rewrite ^.*$ /access/index.html;
+}
 </code></pre><p>The following pages will show the changes that you apply to this repository:</p>
 <ul>
 <li>Registration: <a href="https://sw.${DOMAIN}/access/register.html">https://sw.${DOMAIN}/access/register.html</a></li>
