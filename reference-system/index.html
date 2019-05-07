@@ -4,39 +4,147 @@
   <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
   <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
 <![endif]--><link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Roboto:400,300,500,700,400italic|Roboto+Condensed:400,300,700"><link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/styles/docco.min.css"><link rel="stylesheet" type="text/css" href="/assets/fonts/ss-gizmo.min.css"><link rel="stylesheet" type="text/css" href="/assets/style.css"></head><body class="reference-system with-toc with-examples"><header id="page-header"><nav role="navigation" class="navbar navbar-default navbar-fixed-top"><div class="container-fluid"><div class="navbar-header"><a href="https://pryv.com" title="Pryv home" class="navbar-brand logo pryv-home"><img src="/assets/images/icon-home.svg" alt="Pryv home" height="50"></a><a href="/" title="Developers home" class="navbar-brand logo"><img src="/assets/images/logo-256-black.png" alt="Developers home"></a><button type="button" data-toggle="collapse" data-target="#main-nav" class="navbar-toggle"><span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button></div><div id="main-nav" class="collapse navbar-collapse"><ul class="nav navbar-nav"><li class="dropdown"><a href="#" data-toggle="dropdown" class="dropdown-toggle">Guides <b class="caret"></b></a><ul class="dropdown-menu"><li><a href="/getting-started/">Getting started</a></li><li><a href="/concepts/">API concepts</a></li><li><a href="/external-resources/">External resources</a></li><!--+menuItem('data-modeling', 'Data modeling') —> into "Concepts"??--></ul></li><li class="dropdown"><a href="#" data-toggle="dropdown" class="dropdown-toggle">Reference <b class="caret"></b></a><ul class="dropdown-menu"><li><a href="/reference/">API reference</a></li><li><a href="/change-log/">API change log</a></li><li><a href="/event-types/">Event types</a></li><!--+menuItem('standardStructure')--></ul></li><li class="dropdown"><a href="#" data-toggle="dropdown" class="dropdown-toggle">FAQ <b class="caret"></b></a><ul class="dropdown-menu"><li><a href="/faq-api/">API</a></li><li><a href="/faq-infra/">Infrastructure</a></li></ul></li><!--lia(href='#') Blog--></ul><div class="navbar-right"><p class="navbar-text version"><a href="/change-log/" title="View change log">API version: <strong>1.3.41</strong></a></p></div><form class="navbar-form navbar-right"><div class="form-group"><label for="examples-format">Examples:&nbsp;</label><select id="examples-format" class="form-control"><option value="json" selected="selected">Raw JSON</option><option value="http">cURL</option><option value="sockets">Socket.IO</option></select></div></form></div></div></nav></header><div id="main-wrapper" class="container-fluid"><div id="main"><h1 class="page-title">User management reference</h1><section id="overview"><h1 id="overview">Overview</h1>
-<div class="intro"><p>This document describes Pryv.io&#39;s &quot;system-level&quot; API, allowing developers to control the creation of user accounts.</p>
+<div class="intro"><p>This document describes Pryv.io&#39;s <strong>system-level</strong> API, allowing developers to create and monitor user accounts.</p>
 </div><section id="overview-services-involved"><h2 id="services-involved">Services involved</h2>
-<div class="content"><div class="meta"></div><div class="intro"><p>Unlike user account data, which is fully managed by the core server hosting each account, managing the accounts themselves (e.g. retrieval, creation, deletion) is handled by the core servers <em>and</em> the central registration server (AKA user account directory).</p>
+<div class="content"><div class="meta"></div><div class="intro"><p>Unlike user account data, which is fully managed by the core server hosting each account, managing the accounts themselves (e.g. retrieval, creation, deletion) is handled by the core servers <em>and</em> the central registry server (AKA user account directory).</p>
 <ul>
-<li>The <strong>core servers</strong> own the account management processes, i.e. account creation and deletion</li>
-<li>The <strong>registration server</strong> maintains the list of account names and their hosting locations; it helps account management by providing checks (for creation) and is notified of all relevant changes by the core servers.</li>
+<li>The <strong>core servers</strong> own the account management processes, i.e. data creation and deletion</li>
+<li>The <strong>registry server</strong> maintains the list of account usernames and their hosting locations; it helps account management by providing checks (for creation) and is notified of all relevant changes by the core servers.</li>
 </ul>
 </div></div></section></section><section id="account-creation"><h1 id="creating-an-account">Creating an account</h1>
 <section id="account-creation-process-steps"><h2 id="process-steps">Process steps</h2>
 <div class="content"><div class="meta"></div><div class="intro"><ol>
-<li>Client calls the registration server to get a list of available hostings (core server locations)</li>
-<li>Client calls registration server with desired new account data (including which core server should host the account)</li>
-<li>Registration server verifies data, hands it over to specified core server if OK</li>
-<li>Core server verifies data, creates account if OK (sending welcome email to user), returns status (including created account id) to registration server</li>
-<li>Registration server updates directory if OK, returns status to client</li>
+<li>Client calls the registry server to get a list of available hostings (core server locations)</li>
+<li>Client calls registry server with desired new account data (including which core server should host the account)</li>
+<li>Registry server verifies data, hands it over to specified core server if OK</li>
+<li>Core server verifies data, creates account if OK (sending welcome email to user), returns status (including created account id) to registry server</li>
+<li>Registry server updates directory if OK, returns status to client</li>
 </ol>
 </div></div></section><section id="account-creation-api-methods"><h2 id="api-methods">API methods</h2>
-<div class="content"><div class="meta"></div><div class="intro"><p>The methods are called via HTTPS on the registration server: <code>https://reg.{domain}</code></p>
-</div></div><section id="account-creation-api-methods-users-create" class="method"> <h3 id="create-user">Create user</h3>
-<div class="content"><div class="meta"><span class="method-id"><span class="label">id</span><span class="label-value"><code>users.create</code></span></span><span class="http"><span class="label">HTTP</span><span class="label-value"><code>POST /users</code></span></span></div><div class="intro"><p>Creates a new user account on the specified core server.</p>
+<div class="content"><div class="meta"></div><div class="intro"><p>The methods are called via HTTPS on the registry server: <code>https://reg.{domain}</code></p>
+</div></div><section id="account-creation-api-methods-hostings-get" class="method"> <h3 id="get-hostings">Get hostings</h3>
+<div class="content"><div class="meta"><span class="method-id"><span class="label">id</span><span class="label-value"><code>hostings.get</code></span></span><span class="http"><span class="label">HTTP</span><span class="label-value"><code>GET /hostings</code></span></span></div><div class="intro"><p>Get the list of all available hostings for data storage locations.</p>
+</div><h4 id="parameters">Parameters</h4>
+<table class="definitions"></table><h4 id="result">Result</h4>
+<span class="http"><span class="label">HTTP</span><span class="label-value"><code>200 OK</code></span></span><table class="definitions"><tr><th><code>regions</code></th><td><div class="header"><span class="type">Object</span></div><div class="description"><p>Object containing multiple regions, containing themselves multiple zones, containing themselves multiple <strong>hostings</strong>.<br>The value you need to use as <code>hosting</code> parameter in the <code>users.create</code> method is a key of the <code>hostings</code> object.</p>
+</div></td></tr></table></div><aside><div class="example"><p>Fetching the hostings for a Pryv.io platform</p>
+<div class="tab-content"><div class="tab-pane json active"><pre><code>{}</code></pre><div class="step-marker">⬇</div><pre><code>{
+  "regions": {
+    "europe": {
+      "name": "Europe",
+      "localizedName": {
+        "fr": "Europe"
+      },
+      "zones": {
+        "switzerland": {
+          "name": "Switzerland",
+          "localizedName": {
+            "fr": "Suisse"
+          },
+          "hostings": {
+            "core1": {
+              "url": "https://my-hosting-provider.ch",
+              "name": "Pilot core server",
+              "description": "The single PoC core server",
+              "available": true
+            }
+          }
+        }
+      }
+    }
+  }
+}</code></pre></div><div class="tab-pane http"><pre><code>curl -i https://reg.pryv.me/hostings</code></pre><div class="step-marker">⬇</div><pre><code>HTTP/1.1 200 OK
+Content-Type: application/json; charset=utf-8
+API-Version: 1.3.41
+
+{
+  "regions": {
+    "europe": {
+      "name": "Europe",
+      "localizedName": {
+        "fr": "Europe"
+      },
+      "zones": {
+        "switzerland": {
+          "name": "Switzerland",
+          "localizedName": {
+            "fr": "Suisse"
+          },
+          "hostings": {
+            "core1": {
+              "url": "https://my-hosting-provider.ch",
+              "name": "Pilot core server",
+              "description": "The single PoC core server",
+              "available": true
+            }
+          }
+        }
+      }
+    }
+  }
+}</code></pre></div><div class="tab-pane sockets"><pre><code>socket.emit('hostings.get', {}, callback);</code></pre><div class="step-marker">⬇</div><pre><code>{
+  "regions": {
+    "europe": {
+      "name": "Europe",
+      "localizedName": {
+        "fr": "Europe"
+      },
+      "zones": {
+        "switzerland": {
+          "name": "Switzerland",
+          "localizedName": {
+            "fr": "Suisse"
+          },
+          "hostings": {
+            "core1": {
+              "url": "https://my-hosting-provider.ch",
+              "name": "Pilot core server",
+              "description": "The single PoC core server",
+              "available": true
+            }
+          }
+        }
+      }
+    }
+  }
+}</code></pre></div></div></div></aside></section><section id="account-creation-api-methods-users-create" class="method"> <h3 id="create-user">Create user</h3>
+<div class="content"><div class="meta"><span class="method-id"><span class="label">id</span><span class="label-value"><code>users.create</code></span></span><span class="http"><span class="label">HTTP</span><span class="label-value"><code>POST /user</code></span></span></div><div class="intro"><p>Creates a new user account on the specified core server.</p>
 </div><h4 id="parameters">Parameters</h4>
 <table class="definitions"><tr><th><code>appid</code></th><td><div class="header"><span class="type">string</span></div><div class="description"><p>Your app&#39;s unique identifier.</p>
-</div></td></tr><tr><th><code>hosting</code></th><td><div class="header"><span class="type">string</span></div><div class="description"><p>The name of the core server that should host the account.</p>
+</div></td></tr><tr><th><code>hosting</code></th><td><div class="header"><span class="type">string</span></div><div class="description"><p>The name of the core server that should host the account, see <a href="#system-account-creation-api-methods-get-hostings">Get Hostings</a>.</p>
 </div></td></tr><tr><th><code>username</code></th><td><div class="header"><span class="type">string</span></div><div class="description"><p>The user&#39;s username.</p>
 </div></td></tr><tr><th><code>password</code></th><td><div class="header"><span class="type">string</span></div><div class="description"><p>The user&#39;s password.</p>
 </div></td></tr><tr><th><code>email</code></th><td><div class="header"><span class="type">string</span></div><div class="description"><p>The user&#39;s e-mail address, used for password retrieval.</p>
-</div></td></tr><tr><th><code>invitationtoken</code></th><td><div class="header"><span class="type">string</span></div><div class="description"><p>An invitation token; used when limiting registration to a specific set of users.</p>
+</div></td></tr><tr><th><code>invitationtoken</code></th><td><div class="header"><span class="type">string</span></div><div class="description"><p>An invitation token, used when limiting registration to a specific set of users.</p>
 </div></td></tr><tr><th><code>languageCode</code></th><td><div class="header"><span class="type">string</span><span class="label label-default optional">optional</span></div><div class="description"><p>The user&#39;s preferred language as a 2-letter ISO language code.</p>
 </div></td></tr><tr><th><code>referer</code></th><td><div class="header"><span class="type">string</span><span class="label label-default optional">optional</span></div><div class="description"><p>A referer id potentially used for analytics.</p>
 </div></td></tr></table><h4 id="result">Result</h4>
 <span class="http"><span class="label">HTTP</span><span class="label-value"><code>200 OK</code></span></span><table class="definitions"><tr><th><code>username</code></th><td><div class="header"><span class="type">string</span></div><div class="description"><p>A confirmation of the user&#39;s username.</p>
 </div></td></tr><tr><th><code>server</code></th><td><div class="header"><span class="type">string</span></div><div class="description"><p>The hostname of the core server hosting the new account.</p>
-</div></td></tr></table></div><aside></aside></section></section></section></div><nav id="toc"></nav></div><footer id="page-footer"><nav class="navbar navbar-default"><div class="container-fluid"><div id="footer-nav"><ul class="nav navbar-nav"><li><a href="mailto:developers@pryv.com">Send a message</a></li><li><a href="https://github.com/pryv">GitHub</a></li><li><a href="https://pryv.com">pryv.com</a></li></ul></div></div></nav></footer><script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script><script src="/assets/bootstrap.min.js"></script><script src="/assets/js/toc.min.js"></script><!-- TOC generation--><script>jQuery(document).ready(function($) {
+</div></td></tr></table></div><aside><div class="example"><p>Creating a user</p>
+<div class="tab-content"><div class="tab-pane json active"><pre><code>{
+  "appid": "default",
+  "hosting": "core1",
+  "username": "jerome",
+  "password": "ChjUzDXwaTG2qdV",
+  "email": "jerome@pryv.me",
+  "invitationtoken": "o3in4o2",
+  "languageCode": "en",
+  "referer": "hospital-A"
+}</code></pre><div class="step-marker">⬇</div><pre><code>{
+  "username": "jerome",
+  "server": "jerome.pryv.me"
+}</code></pre></div><div class="tab-pane http"><pre><code>curl -i -X POST -H 'Content-Type: application/json' -d '{"appid":"default","hosting":"core1","username":"jerome","password":"ChjUzDXwaTG2qdV","email":"jerome@pryv.me","invitationtoken":"o3in4o2","languageCode":"en","referer":"hospital-A"}' https://reg.pryv.me/user</code></pre><div class="step-marker">⬇</div><pre><code>HTTP/1.1 200 OK
+Content-Type: application/json; charset=utf-8
+API-Version: 1.3.41
+
+{
+  "username": "jerome",
+  "server": "jerome.pryv.me"
+}</code></pre></div><div class="tab-pane sockets"><pre><code>socket.emit('users.create', {"appid":"default","hosting":"core1","username":"jerome","password":"ChjUzDXwaTG2qdV","email":"jerome@pryv.me","invitationtoken":"o3in4o2","languageCode":"en","referer":"hospital-A"}, callback);</code></pre><div class="step-marker">⬇</div><pre><code>{
+  "username": "jerome",
+  "server": "jerome.pryv.me"
+}</code></pre></div></div></div></aside></section></section></section></div><nav id="toc"></nav></div><footer id="page-footer"><nav class="navbar navbar-default"><div class="container-fluid"><div id="footer-nav"><ul class="nav navbar-nav"><li><a href="mailto:developers@pryv.com">Send a message</a></li><li><a href="https://github.com/pryv">GitHub</a></li><li><a href="https://pryv.com">pryv.com</a></li></ul></div></div></nav></footer><script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script><script src="/assets/bootstrap.min.js"></script><script src="/assets/js/toc.min.js"></script><!-- TOC generation--><script>jQuery(document).ready(function($) {
   // Header is about 51 pixels. This equals to 'header + fuzz', fuzz was
   // determined experimentally.
   var offset = 100;
