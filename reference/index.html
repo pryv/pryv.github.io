@@ -46,7 +46,7 @@ Authorization: {token}
 </code></pre></div></div><aside><div class="example"><p>In a web app</p>
 <pre><code class="lang-html">&lt;script src=&quot;https://chuangzi.pryv.me/socket.io/socket.io.js&quot;&gt;&lt;/script&gt;
 &lt;script&gt;
-var socket = io.connect(&quot;https://chuangzi.pryv.me:443/chuangzi?auth=cjvqple6o0003yziviljhgj9j&amp;resource=/chuangzi&quot;);
+var socket = io.connect(&quot;https://chuangzi.pryv.me:443/chuangzi?auth=cjvw6vuub0003b44ddabwyv99&amp;resource=/chuangzi&quot;);
 });
 &lt;/script&gt;
 </code></pre>
@@ -76,7 +76,7 @@ socket.emit(&#39;{method-id}&#39;, {/*parameters*/}, function (error, result) {
 <div class="content"><div class="meta"></div><div class="intro"><p>The API exchanges data with clients in JSON (MIME type <code>application/json</code>), except when uploading/downloading attached files.</p>
 </div></div><aside><div class="example"><p>Example event</p>
 <pre><code>{
-  "id": "cjvqple8i0011yzivapjja9fo",
+  "id": "cjvw6vuvz0011b44dpt7ckz86",
   "time": 1350373077.359,
   "streamId": "diary",
   "tags": [],
@@ -85,10 +85,10 @@ socket.emit(&#39;{method-id}&#39;, {/*parameters*/}, function (error, result) {
     "latitude": 40.714728,
     "longitude": -73.998672
   },
-  "created": 1558007279.442,
-  "createdBy": "cjvqple6n0000yzivpmfsdgtd",
-  "modified": 1558007279.442,
-  "modifiedBy": "cjvqple6n0000yzivpmfsdgtd"
+  "created": 1558338651.935,
+  "createdBy": "cjvw6vuub0000b44d0fg7nha1",
+  "modified": 1558338651.935,
+  "modifiedBy": "cjvw6vuub0000b44d0fg7nha1"
 }</code></pre></div></aside></section><section id="basics-authentication"><h2 id="authentication">Authentication</h2>
 <div class="content"><div class="meta"></div><div class="intro"><p>All requests for retrieving and manipulating activity data must carry a valid <a href="#data-structure-access">access token</a> in the HTTP <code>Authorization</code> header or, alternatively, in the query string&#39;s <code>auth</code> parameter. With Socket.IO the token is passed in the handshake.</p>
 <p>Access tokens are obtained via the <a href="#authorizing-your-app">app authorization</a> or from sharing.</p>
@@ -110,8 +110,12 @@ Host: {username}.pryv.me
 <ol>
 <li>Choose an app identifier (min. length 6 chars)</li>
 <li>Send an auth request from your app</li>
-<li>Open the auth page from the URL returned (e.g. as a popup); the auth page will prompt the user to sign in using her Pryv credentials (or to create an account if she doesn&#39;t have one)</li>
-<li>Handle the result by either polling the appropriate URL or directly from the return URL you&#39;ll have defined</li>
+<li>Open the <code>url</code> field of the HTTP response in a browser or webframe. The auth page will prompt the user to sign in using her Pryv credentials (or to create an account if she doesn&#39;t have one).</li>
+<li>The result of the sign in process: a valid Access token or a refusal can be obtained in two ways: <ul>
+<li>by polling the URL obtained in the <code>poll</code> field of the HTTP response to the auth request</li>
+<li>by being redirected to the <code>returnURL</code> provided in the auth request with the result in query parameters</li>
+</ul>
+</li>
 </ol>
 <p><strong>Note: this auth flow will very likely undergo some changes in the near future.</strong></p>
 </div></div><section id="basics-authorizing-your-app-auth-request" class="method"> <h3 id="auth-request">Auth request</h3>
@@ -122,11 +126,20 @@ Host: {username}.pryv.me
 </div></td></tr><tr><th><code>level</code></th><td><div class="header"><span class="type"><code>read</code>|<code>contribute</code>|<code>manage</code></span></div><div class="description"><p>The required permission level.</p>
 </div></td></tr><tr><th><code>defaultName</code></th><td><div class="header"><span class="type">string</span></div><div class="description"><p>The name to create the stream if needed (in the language of the user).</p>
 </div></td></tr></table></td></tr><tr><th><code>languageCode</code></th><td><div class="header"><span class="type">string</span><span class="label label-default optional">optional</span></div><div class="description"><p>The two-letter ISO (639-1) code of the language in which to display user instructions, if possible. Default: <code>en</code>.</p>
-</div></td></tr><tr><th><code>returnURL</code></th><td><div class="header"><span class="type">string</span><span class="label label-default optional">optional</span></div><div class="description"><p>The URL to redirect the user to after auth completes. If not set, your app must use polling to retrieve the auth result (see response below). Responses to polling requests are the same as those from the auth request.</p>
+</div></td></tr><tr><th><code>returnURL</code></th><td><div class="header"><span class="type">string</span><span class="label label-default optional">optional</span></div><div class="description"><p>The URL to redirect the user to after auth completes.
+Required if you are not using polling to retrieve the auth result (see Result below).</p>
+</div></td></tr><tr><th><code>clientData</code></th><td><div class="header"><span class="type"><a href="#data-structure-key-value">key-value</a></span><span class="label label-default optional">optional</span></div><div class="description"><p>Additional client data that will be transmitted alongside the auth request (see Result below).</p>
 </div></td></tr></table><h4 id="result-in-progress">Result: in progress</h4>
 <span class="http"><span class="label">HTTP</span><span class="label-value"><code>200</code></span></span><table class="definitions"><tr><th><code>status</code></th><td><div class="header"><span class="type"><code>NEED_SIGNIN</code></span></div><div class="description"><p>Auth in progress.</p>
-</div></td></tr><tr><th><code>url</code></th><td><div class="header"><span class="type">string</span></div><div class="description"><p>The URL of the auth page to show the user (e.g. as a popup) from your app.</p>
-</div></td></tr><tr><th><code>poll</code></th><td><div class="header"><span class="type">string</span></div><div class="description"><p>If using polling: the poll URL to use for retrieving the auth result via an HTTP GET request.</p>
+</div></td></tr><tr><th><code>url</code></th><td><div class="header"><span class="type">string</span></div><div class="description"><p>The URL of the auth page to show the user from your app as popup or webframe.</p>
+</div></td></tr><tr><th><code>key</code></th><td><div class="header"><span class="type">string</span></div><div class="description"><p>The key used to identify the auth request. It is also part of the poll URL described just below.</p>
+</div></td></tr><tr><th><code>poll</code></th><td><div class="header"><span class="type">string</span></div><div class="description"><p>The poll URL to use for retrieving the auth result via an HTTP GET request.<br>Responses to polling requests are the same as those from the auth request.</p>
+</div></td></tr><tr><th><code>poll_rate_ms</code></th><td><div class="header"><span class="type">number</span></div><div class="description"><p>The rate at which the poll URL can be polled, in milliseconds.</p>
+</div></td></tr><tr><th><code>requestingAppId</code></th><td><div class="header"><span class="type">string</span></div><div class="description"><p>The app identifier provided during the auth request.</p>
+</div></td></tr><tr><th><code>requestedPermissions</code></th><td><div class="header"><span class="type">string</span></div><div class="description"><p>The permissions provided during the auth request.</p>
+</div></td></tr><tr><th><code>lang</code></th><td><div class="header"><span class="type">string</span><span class="label label-default optional">optional</span></div><div class="description"><p>The language code provided during the auth request.</p>
+</div></td></tr><tr><th><code>returnURL</code></th><td><div class="header"><span class="type">string</span><span class="label label-default optional">optional</span></div><div class="description"><p>The return URL provided during the auth request.</p>
+</div></td></tr><tr><th><code>clientData</code></th><td><div class="header"><span class="type"><a href="#data-structure-key-value">key-value</a></span><span class="label label-default optional">optional</span></div><div class="description"><p>The client data provided during the auth request.</p>
 </div></td></tr></table><h4 id="result-accepted">Result: accepted</h4>
 <span class="http"><span class="label">HTTP</span><span class="label-value"><code>200</code></span></span><table class="definitions"><tr><th><code>status</code></th><td><div class="header"><span class="type"><code>ACCEPTED</code></span></div><div class="description"><p>Auth successful.</p>
 </div></td></tr><tr><th><code>username</code></th><td><div class="header"><span class="type">string</span></div><div class="description"><p>The authentified user&#39;s username.</p>
@@ -157,15 +170,32 @@ Host: reg.pryv.me
 }
 </code></pre>
 </div><div class="example"><p>&quot;In progress&quot; response</p>
-<pre><code class="lang-json">{
-  &quot;status&quot;: &quot;NEED_SIGNIN&quot;,
-  &quot;url&quot;: &quot;https://sw.pryv.me:2443/access/v1/access.html?lang=fr&amp;key=dXRqBezem8v3mNxf&amp;requestingAppId=test-app-id&amp;returnURL=false&amp;domain=pryv.me&amp;registerURL=https%3A%2F%2Freg.pryv.me%3A443&amp;requestedPermissions=%5B%7B%22streamId%22%3A%22diary%22%2C%22defaultName%22%3A%22Journal%22%2C%22level%22%3A%22read%22%2C%22folderPermissions%22%3A%5B%7B%22streamId%22%3A%22notes%22%2C%22level%22%3A%22manage%22%2C%22defaultName%22%3A%22Notes%22%7D%5D%7D%2C%7B%22streamId%22%3A%22position%22%2C%22defaultName%22%3A%22Position%22%2C%22level%22%3A%22read%22%2C%22folderPermissions%22%3A%5B%7B%22streamId%22%3A%22iphone%22%2C%22level%22%3A%22manage%22%2C%22defaultName%22%3A%22iPhone%22%7D%5D%7D%5D&quot;,
-  &quot;poll&quot;: &quot;https://reg.pryv.me/access/dXRqBezem8v3mNxf&quot;,
-  &quot;poll_rate_ms&quot;: 1000
+<pre><code class="lang-json"> {
+    &quot;status&quot;: &quot;NEED_SIGNIN&quot;,
+    &quot;code&quot;: 201,
+    &quot;key&quot;: &quot;6CInm4R2TLaoqtl4&quot;,
+    &quot;requestingAppId&quot;: &quot;test-app-id&quot;,
+    &quot;requestedPermissions&quot;: [
+        {
+            &quot;streamId&quot;: &quot;diary&quot;,
+            &quot;level&quot;: &quot;read&quot;,
+            &quot;defaultName&quot;: &quot;Journal&quot;
+        },
+        {
+            &quot;streamId&quot;: &quot;position&quot;,
+            &quot;level&quot;: &quot;contribute&quot;,
+            &quot;defaultName&quot;: &quot;Position&quot;
+        }
+    ],
+    &quot;url&quot;: &quot;https://sw.pryv.me/access/access.html?lang=fr&amp;key=6CInm4R2TLaoqtl4&amp;requestingAppId=test-app-id&amp;domain=pryv.io&amp;registerURL=https%3A%2F%2Freg.pryv.me&amp;poll=https%3A%2F%2Freg.pryv.me%2Faccess%2F6CInm4R2TLaoqtl4&quot;,
+    &quot;poll&quot;: &quot;https://reg.pryv.me/access/6CInm4R2TLaoqtl4&quot;,
+    &quot;oauthState&quot;: null,
+    &quot;poll_rate_ms&quot;: 1000,
+    &quot;lang&quot;: &quot;fr&quot;
 }
 </code></pre>
 </div><div class="example"><p>Polling request</p>
-<pre><code class="lang-http">GET /access/dXRqBezem8v3mNxf HTTP/1.1
+<pre><code class="lang-http">GET /access/6CInm4R2TLaoqtl4 HTTP/1.1
 Host: reg.pryv.me
 </code></pre>
 </div></aside></section></section><section id="basics-common-metadata"><h2 id="common-metadata">Common metadata</h2>
@@ -218,40 +248,40 @@ Host: reg.pryv.me
 <div class="tab-content"><div class="tab-pane json active"><pre><code>{}</code></pre><div class="step-marker">⬇</div><pre><code>{
   "events": [
     {
-      "id": "cjvqple8i000yyzivo6ig4v72",
-      "time": 1558010879.442,
+      "id": "cjvw6vuvz000yb44dxj63o689",
+      "time": 1558342251.935,
       "streamId": "diary",
       "tags": [],
       "type": "picture/attached",
       "content": null,
       "attachments": [
         {
-          "id": "cjvqple8i000zyziv9hhi70qq",
+          "id": "cjvw6vuvz000zb44djrxo2f8z",
           "fileName": "photo.jpg",
           "type": "image/jpeg",
           "size": 2561,
-          "readToken": "cjvqple8i0010yziv9szmyovp-sqpgfaqON8R5V8iLvyIgabrjoz4"
+          "readToken": "cjvw6vuvz0010b44djwzinhb8-UMajdlUAYOYbQMUBwiBYFd4GpiH"
         }
       ],
-      "created": 1558010879.442,
-      "createdBy": "cjvqple6o0004yzivzomcdwzy",
-      "modified": 1558010879.442,
-      "modifiedBy": "cjvqple6o0004yzivzomcdwzy"
+      "created": 1558342251.935,
+      "createdBy": "cjvw6vuuc0004b44dkswtbck4",
+      "modified": 1558342251.935,
+      "modifiedBy": "cjvw6vuuc0004b44dkswtbck4"
     },
     {
-      "id": "cjvqple8h000lyzivvylx4vqr",
-      "time": 1558014479.441,
+      "id": "cjvw6vuvy000lb44dhml6y2i9",
+      "time": 1558345851.934,
       "streamId": "jogging",
       "tags": [],
       "type": "activity/pryv",
       "content": null,
-      "created": 1558014479.441,
-      "createdBy": "cjvqple6o0001yzivdhjzd8v3",
-      "modified": 1558014479.441,
-      "modifiedBy": "cjvqple6o0001yzivdhjzd8v3"
+      "created": 1558345851.934,
+      "createdBy": "cjvw6vuub0001b44djqx2oqca",
+      "modified": 1558345851.934,
+      "modifiedBy": "cjvw6vuub0001b44djqx2oqca"
     },
     {
-      "id": "cjvqple8i0011yzivapjja9fo",
+      "id": "cjvw6vuvz0011b44dpt7ckz86",
       "time": 1350373077.359,
       "streamId": "diary",
       "tags": [],
@@ -260,10 +290,10 @@ Host: reg.pryv.me
         "latitude": 40.714728,
         "longitude": -73.998672
       },
-      "created": 1558007279.442,
-      "createdBy": "cjvqple6n0000yzivpmfsdgtd",
-      "modified": 1558007279.442,
-      "modifiedBy": "cjvqple6n0000yzivpmfsdgtd"
+      "created": 1558338651.935,
+      "createdBy": "cjvw6vuub0000b44d0fg7nha1",
+      "modified": 1558338651.935,
+      "modifiedBy": "cjvw6vuub0000b44d0fg7nha1"
     }
   ]
 }</code></pre></div><div class="tab-pane http"><pre><code>curl -i https://${username}.pryv.me/events?auth=${token}</code></pre><div class="step-marker">⬇</div><pre><code>HTTP/1.1 200 OK
@@ -273,40 +303,40 @@ API-Version: 1.3.41
 {
   "events": [
     {
-      "id": "cjvqple8i000yyzivo6ig4v72",
-      "time": 1558010879.442,
+      "id": "cjvw6vuvz000yb44dxj63o689",
+      "time": 1558342251.935,
       "streamId": "diary",
       "tags": [],
       "type": "picture/attached",
       "content": null,
       "attachments": [
         {
-          "id": "cjvqple8i000zyziv9hhi70qq",
+          "id": "cjvw6vuvz000zb44djrxo2f8z",
           "fileName": "photo.jpg",
           "type": "image/jpeg",
           "size": 2561,
-          "readToken": "cjvqple8i0010yziv9szmyovp-sqpgfaqON8R5V8iLvyIgabrjoz4"
+          "readToken": "cjvw6vuvz0010b44djwzinhb8-UMajdlUAYOYbQMUBwiBYFd4GpiH"
         }
       ],
-      "created": 1558010879.442,
-      "createdBy": "cjvqple6o0004yzivzomcdwzy",
-      "modified": 1558010879.442,
-      "modifiedBy": "cjvqple6o0004yzivzomcdwzy"
+      "created": 1558342251.935,
+      "createdBy": "cjvw6vuuc0004b44dkswtbck4",
+      "modified": 1558342251.935,
+      "modifiedBy": "cjvw6vuuc0004b44dkswtbck4"
     },
     {
-      "id": "cjvqple8h000lyzivvylx4vqr",
-      "time": 1558014479.441,
+      "id": "cjvw6vuvy000lb44dhml6y2i9",
+      "time": 1558345851.934,
       "streamId": "jogging",
       "tags": [],
       "type": "activity/pryv",
       "content": null,
-      "created": 1558014479.441,
-      "createdBy": "cjvqple6o0001yzivdhjzd8v3",
-      "modified": 1558014479.441,
-      "modifiedBy": "cjvqple6o0001yzivdhjzd8v3"
+      "created": 1558345851.934,
+      "createdBy": "cjvw6vuub0001b44djqx2oqca",
+      "modified": 1558345851.934,
+      "modifiedBy": "cjvw6vuub0001b44djqx2oqca"
     },
     {
-      "id": "cjvqple8i0011yzivapjja9fo",
+      "id": "cjvw6vuvz0011b44dpt7ckz86",
       "time": 1350373077.359,
       "streamId": "diary",
       "tags": [],
@@ -315,49 +345,49 @@ API-Version: 1.3.41
         "latitude": 40.714728,
         "longitude": -73.998672
       },
-      "created": 1558007279.442,
-      "createdBy": "cjvqple6n0000yzivpmfsdgtd",
-      "modified": 1558007279.442,
-      "modifiedBy": "cjvqple6n0000yzivpmfsdgtd"
+      "created": 1558338651.935,
+      "createdBy": "cjvw6vuub0000b44d0fg7nha1",
+      "modified": 1558338651.935,
+      "modifiedBy": "cjvw6vuub0000b44d0fg7nha1"
     }
   ]
 }</code></pre></div><div class="tab-pane sockets"><pre><code>socket.emit('events.get', {}, callback);</code></pre><div class="step-marker">⬇</div><pre><code>{
   "events": [
     {
-      "id": "cjvqple8i000yyzivo6ig4v72",
-      "time": 1558010879.442,
+      "id": "cjvw6vuvz000yb44dxj63o689",
+      "time": 1558342251.935,
       "streamId": "diary",
       "tags": [],
       "type": "picture/attached",
       "content": null,
       "attachments": [
         {
-          "id": "cjvqple8i000zyziv9hhi70qq",
+          "id": "cjvw6vuvz000zb44djrxo2f8z",
           "fileName": "photo.jpg",
           "type": "image/jpeg",
           "size": 2561,
-          "readToken": "cjvqple8i0010yziv9szmyovp-sqpgfaqON8R5V8iLvyIgabrjoz4"
+          "readToken": "cjvw6vuvz0010b44djwzinhb8-UMajdlUAYOYbQMUBwiBYFd4GpiH"
         }
       ],
-      "created": 1558010879.442,
-      "createdBy": "cjvqple6o0004yzivzomcdwzy",
-      "modified": 1558010879.442,
-      "modifiedBy": "cjvqple6o0004yzivzomcdwzy"
+      "created": 1558342251.935,
+      "createdBy": "cjvw6vuuc0004b44dkswtbck4",
+      "modified": 1558342251.935,
+      "modifiedBy": "cjvw6vuuc0004b44dkswtbck4"
     },
     {
-      "id": "cjvqple8h000lyzivvylx4vqr",
-      "time": 1558014479.441,
+      "id": "cjvw6vuvy000lb44dhml6y2i9",
+      "time": 1558345851.934,
       "streamId": "jogging",
       "tags": [],
       "type": "activity/pryv",
       "content": null,
-      "created": 1558014479.441,
-      "createdBy": "cjvqple6o0001yzivdhjzd8v3",
-      "modified": 1558014479.441,
-      "modifiedBy": "cjvqple6o0001yzivdhjzd8v3"
+      "created": 1558345851.934,
+      "createdBy": "cjvw6vuub0001b44djqx2oqca",
+      "modified": 1558345851.934,
+      "modifiedBy": "cjvw6vuub0001b44djqx2oqca"
     },
     {
-      "id": "cjvqple8i0011yzivapjja9fo",
+      "id": "cjvw6vuvz0011b44dpt7ckz86",
       "time": 1350373077.359,
       "streamId": "diary",
       "tags": [],
@@ -366,10 +396,10 @@ API-Version: 1.3.41
         "latitude": 40.714728,
         "longitude": -73.998672
       },
-      "created": 1558007279.442,
-      "createdBy": "cjvqple6n0000yzivpmfsdgtd",
-      "modified": 1558007279.442,
-      "modifiedBy": "cjvqple6n0000yzivpmfsdgtd"
+      "created": 1558338651.935,
+      "createdBy": "cjvw6vuub0000b44d0fg7nha1",
+      "modified": 1558338651.935,
+      "modifiedBy": "cjvw6vuub0000b44d0fg7nha1"
     }
   ]
 }</code></pre></div></div></div><div class="example"><p>cURL for multiple streams</p>
@@ -378,40 +408,40 @@ API-Version: 1.3.41
 <div class="step-marker">⬇</div><pre><code>{
   "events": [
     {
-      "id": "cjvqple8i000yyzivo6ig4v72",
-      "time": 1558010879.442,
+      "id": "cjvw6vuvz000yb44dxj63o689",
+      "time": 1558342251.935,
       "streamId": "diary",
       "tags": [],
       "type": "picture/attached",
       "content": null,
       "attachments": [
         {
-          "id": "cjvqple8i000zyziv9hhi70qq",
+          "id": "cjvw6vuvz000zb44djrxo2f8z",
           "fileName": "photo.jpg",
           "type": "image/jpeg",
           "size": 2561,
-          "readToken": "cjvqple8i0010yziv9szmyovp-sqpgfaqON8R5V8iLvyIgabrjoz4"
+          "readToken": "cjvw6vuvz0010b44djwzinhb8-UMajdlUAYOYbQMUBwiBYFd4GpiH"
         }
       ],
-      "created": 1558010879.442,
-      "createdBy": "cjvqple6o0004yzivzomcdwzy",
-      "modified": 1558010879.442,
-      "modifiedBy": "cjvqple6o0004yzivzomcdwzy"
+      "created": 1558342251.935,
+      "createdBy": "cjvw6vuuc0004b44dkswtbck4",
+      "modified": 1558342251.935,
+      "modifiedBy": "cjvw6vuuc0004b44dkswtbck4"
     },
     {
-      "id": "cjvqple8i000uyzivrhz5n630",
-      "time": 1558010879.442,
+      "id": "cjvw6vuvz000ub44d9f3yqujc",
+      "time": 1558342251.935,
       "streamId": "diary",
       "tags": [],
       "type": "note/text",
       "content": "道可道非常道。。。",
-      "created": 1558010879.442,
-      "createdBy": "cjvqple6o0001yzivdhjzd8v3",
-      "modified": 1558050479.442,
-      "modifiedBy": "cjvqple6o0001yzivdhjzd8v3"
+      "created": 1558342251.935,
+      "createdBy": "cjvw6vuub0001b44djqx2oqca",
+      "modified": 1558381851.935,
+      "modifiedBy": "cjvw6vuub0001b44djqx2oqca"
     },
     {
-      "id": "cjvqple8i0011yzivapjja9fo",
+      "id": "cjvw6vuvz0011b44dpt7ckz86",
       "time": 1350373077.359,
       "streamId": "diary",
       "tags": [],
@@ -420,52 +450,52 @@ API-Version: 1.3.41
         "latitude": 40.714728,
         "longitude": -73.998672
       },
-      "created": 1558007279.442,
-      "createdBy": "cjvqple6n0000yzivpmfsdgtd",
-      "modified": 1558007279.442,
-      "modifiedBy": "cjvqple6n0000yzivpmfsdgtd"
+      "created": 1558338651.935,
+      "createdBy": "cjvw6vuub0000b44d0fg7nha1",
+      "modified": 1558338651.935,
+      "modifiedBy": "cjvw6vuub0000b44d0fg7nha1"
     },
     {
-      "id": "cjvqple8i000tyzivag6zt4ow",
-      "time": 1558014479.442,
+      "id": "cjvw6vuvz000tb44d5yqdlcwc",
+      "time": 1558345851.935,
       "streamId": "weight",
       "tags": [],
       "type": "mass/kg",
       "content": 90,
-      "created": 1558014479.442,
-      "createdBy": "cjvqple6o0001yzivdhjzd8v3",
-      "modified": 1558014479.442,
-      "modifiedBy": "cjvqple6o0001yzivdhjzd8v3"
+      "created": 1558345851.935,
+      "createdBy": "cjvw6vuub0001b44djqx2oqca",
+      "modified": 1558345851.935,
+      "modifiedBy": "cjvw6vuub0001b44djqx2oqca"
     }
   ]
 }</code></pre></div><div class="example"><p>cURL with deletions</p>
-<pre><code class="lang-bash">curl -i https://${username}.pryv.me/events?auth=${token}&amp;includeDeletions=true&amp;modifiedSince=1557928079.666
+<pre><code class="lang-bash">curl -i https://${username}.pryv.me/events?auth=${token}&amp;includeDeletions=true&amp;modifiedSince=1558259452.153
 </code></pre>
 <div class="step-marker">⬇</div><pre><code>{
   "events": [
     {
-      "id": "cjvqple8i000tyzivag6zt4ow",
-      "time": 1558014479.442,
+      "id": "cjvw6vuvz000tb44d5yqdlcwc",
+      "time": 1558345851.935,
       "streamId": "weight",
       "tags": [],
       "type": "mass/kg",
       "content": 90,
-      "created": 1558014479.442,
-      "createdBy": "cjvqple6o0001yzivdhjzd8v3",
-      "modified": 1558014479.442,
-      "modifiedBy": "cjvqple6o0001yzivdhjzd8v3"
+      "created": 1558345851.935,
+      "createdBy": "cjvw6vuub0001b44djqx2oqca",
+      "modified": 1558345851.935,
+      "modifiedBy": "cjvw6vuub0001b44djqx2oqca"
     },
     {
-      "id": "cjvqple8x0014yzivs7i7xn5l",
-      "deleted": 1558010879.457
+      "id": "cjvw6vuwn0016b44dg35t1h7q",
+      "deleted": 1558342251.959
     },
     {
-      "id": "cjvqple8x0015yziv85xqedin",
-      "deleted": 1557978479.457
+      "id": "cjvw6vuwn0017b44dp2u8gdvy",
+      "deleted": 1558309851.959
     },
     {
-      "id": "cjvqple8x0016yzivwjntnirp",
-      "deleted": 1557942479.457
+      "id": "cjvw6vuwn0018b44dqnl122st",
+      "deleted": 1558273851.959
     }
   ]
 }</code></pre></div></aside></section><section id="methods-events-events-getOne" class="method"> <h3 id="get-one-event">Get one event</h3>
@@ -480,41 +510,41 @@ API-Version: 1.3.41
   "includeHistory": true
 }</code></pre><div class="step-marker">⬇</div><pre><code>{
   "event": {
-    "id": "cjvqple8i000vyziva1ufm73j",
-    "time": 1558010879.442,
+    "id": "cjvw6vuvz000vb44d064o776m",
+    "time": 1558342251.935,
     "streamId": "diary",
     "tags": [],
     "type": "note/text",
     "content": "Hi, I am the latest version of this event",
-    "created": 1558010879.442,
-    "createdBy": "cjvqple6o0001yzivdhjzd8v3",
-    "modified": 1558021679.442,
-    "modifiedBy": "cjvqple6o0001yzivdhjzd8v3"
+    "created": 1558342251.935,
+    "createdBy": "cjvw6vuub0001b44djqx2oqca",
+    "modified": 1558353051.935,
+    "modifiedBy": "cjvw6vuub0001b44djqx2oqca"
   },
   "history": [
     {
-      "id": "cjvqple8i000wyzivdjaqtzfj",
-      "time": 1558010879.442,
+      "id": "cjvw6vuvz000wb44dqsuy5r2e",
+      "time": 1558342251.935,
       "streamId": "diary",
       "tags": [],
       "type": "note/text",
       "content": "Hi, I am the first modification",
-      "created": 1558010879.442,
-      "createdBy": "cjvqple6o0001yzivdhjzd8v3",
-      "modified": 1558018079.442,
-      "modifiedBy": "cjvqple6o0001yzivdhjzd8v3"
+      "created": 1558342251.935,
+      "createdBy": "cjvw6vuub0001b44djqx2oqca",
+      "modified": 1558349451.935,
+      "modifiedBy": "cjvw6vuub0001b44djqx2oqca"
     },
     {
-      "id": "cjvqple8i000xyzivvxaq4qwq",
-      "time": 1558010879.442,
+      "id": "cjvw6vuvz000xb44d660zpgzi",
+      "time": 1558342251.935,
       "streamId": "diary",
       "tags": [],
       "type": "note/text",
       "content": "Hi, I was the initial event",
-      "created": 1558010879.442,
-      "createdBy": "cjvqple6o0001yzivdhjzd8v3",
-      "modified": 1558014479.442,
-      "modifiedBy": "cjvqple6o0001yzivdhjzd8v3"
+      "created": 1558342251.935,
+      "createdBy": "cjvw6vuub0001b44djqx2oqca",
+      "modified": 1558345851.935,
+      "modifiedBy": "cjvw6vuub0001b44djqx2oqca"
     }
   ]
 }</code></pre></div><div class="tab-pane http"><pre><code>curl -i https://${username}.pryv.me/events/${id}?auth=${token}&includeHistory=true</code></pre><div class="step-marker">⬇</div><pre><code>HTTP/1.1 200 OK
@@ -523,80 +553,80 @@ API-Version: 1.3.41
 
 {
   "event": {
-    "id": "cjvqple8i000vyziva1ufm73j",
-    "time": 1558010879.442,
+    "id": "cjvw6vuvz000vb44d064o776m",
+    "time": 1558342251.935,
     "streamId": "diary",
     "tags": [],
     "type": "note/text",
     "content": "Hi, I am the latest version of this event",
-    "created": 1558010879.442,
-    "createdBy": "cjvqple6o0001yzivdhjzd8v3",
-    "modified": 1558021679.442,
-    "modifiedBy": "cjvqple6o0001yzivdhjzd8v3"
+    "created": 1558342251.935,
+    "createdBy": "cjvw6vuub0001b44djqx2oqca",
+    "modified": 1558353051.935,
+    "modifiedBy": "cjvw6vuub0001b44djqx2oqca"
   },
   "history": [
     {
-      "id": "cjvqple8i000wyzivdjaqtzfj",
-      "time": 1558010879.442,
+      "id": "cjvw6vuvz000wb44dqsuy5r2e",
+      "time": 1558342251.935,
       "streamId": "diary",
       "tags": [],
       "type": "note/text",
       "content": "Hi, I am the first modification",
-      "created": 1558010879.442,
-      "createdBy": "cjvqple6o0001yzivdhjzd8v3",
-      "modified": 1558018079.442,
-      "modifiedBy": "cjvqple6o0001yzivdhjzd8v3"
+      "created": 1558342251.935,
+      "createdBy": "cjvw6vuub0001b44djqx2oqca",
+      "modified": 1558349451.935,
+      "modifiedBy": "cjvw6vuub0001b44djqx2oqca"
     },
     {
-      "id": "cjvqple8i000xyzivvxaq4qwq",
-      "time": 1558010879.442,
+      "id": "cjvw6vuvz000xb44d660zpgzi",
+      "time": 1558342251.935,
       "streamId": "diary",
       "tags": [],
       "type": "note/text",
       "content": "Hi, I was the initial event",
-      "created": 1558010879.442,
-      "createdBy": "cjvqple6o0001yzivdhjzd8v3",
-      "modified": 1558014479.442,
-      "modifiedBy": "cjvqple6o0001yzivdhjzd8v3"
+      "created": 1558342251.935,
+      "createdBy": "cjvw6vuub0001b44djqx2oqca",
+      "modified": 1558345851.935,
+      "modifiedBy": "cjvw6vuub0001b44djqx2oqca"
     }
   ]
 }</code></pre></div><div class="tab-pane sockets"><pre><code>socket.emit('events.getOne', {"includeHistory":true}, callback);</code></pre><div class="step-marker">⬇</div><pre><code>{
   "event": {
-    "id": "cjvqple8i000vyziva1ufm73j",
-    "time": 1558010879.442,
+    "id": "cjvw6vuvz000vb44d064o776m",
+    "time": 1558342251.935,
     "streamId": "diary",
     "tags": [],
     "type": "note/text",
     "content": "Hi, I am the latest version of this event",
-    "created": 1558010879.442,
-    "createdBy": "cjvqple6o0001yzivdhjzd8v3",
-    "modified": 1558021679.442,
-    "modifiedBy": "cjvqple6o0001yzivdhjzd8v3"
+    "created": 1558342251.935,
+    "createdBy": "cjvw6vuub0001b44djqx2oqca",
+    "modified": 1558353051.935,
+    "modifiedBy": "cjvw6vuub0001b44djqx2oqca"
   },
   "history": [
     {
-      "id": "cjvqple8i000wyzivdjaqtzfj",
-      "time": 1558010879.442,
+      "id": "cjvw6vuvz000wb44dqsuy5r2e",
+      "time": 1558342251.935,
       "streamId": "diary",
       "tags": [],
       "type": "note/text",
       "content": "Hi, I am the first modification",
-      "created": 1558010879.442,
-      "createdBy": "cjvqple6o0001yzivdhjzd8v3",
-      "modified": 1558018079.442,
-      "modifiedBy": "cjvqple6o0001yzivdhjzd8v3"
+      "created": 1558342251.935,
+      "createdBy": "cjvw6vuub0001b44djqx2oqca",
+      "modified": 1558349451.935,
+      "modifiedBy": "cjvw6vuub0001b44djqx2oqca"
     },
     {
-      "id": "cjvqple8i000xyzivvxaq4qwq",
-      "time": 1558010879.442,
+      "id": "cjvw6vuvz000xb44d660zpgzi",
+      "time": 1558342251.935,
       "streamId": "diary",
       "tags": [],
       "type": "note/text",
       "content": "Hi, I was the initial event",
-      "created": 1558010879.442,
-      "createdBy": "cjvqple6o0001yzivdhjzd8v3",
-      "modified": 1558014479.442,
-      "modifiedBy": "cjvqple6o0001yzivdhjzd8v3"
+      "created": 1558342251.935,
+      "createdBy": "cjvw6vuub0001b44djqx2oqca",
+      "modified": 1558345851.935,
+      "modifiedBy": "cjvw6vuub0001b44djqx2oqca"
     }
   ]
 }</code></pre></div></div></div></aside></section><section id="methods-events-events-create" class="method"> <h3 id="create-event">Create event</h3>
@@ -617,16 +647,16 @@ API-Version: 1.3.41
   "content": 90
 }</code></pre><div class="step-marker">⬇</div><pre><code>{
   "event": {
-    "id": "cjvqple8i000tyzivag6zt4ow",
-    "time": 1558014479.442,
+    "id": "cjvw6vuvz000tb44d5yqdlcwc",
+    "time": 1558345851.935,
     "streamId": "weight",
     "tags": [],
     "type": "mass/kg",
     "content": 90,
-    "created": 1558014479.442,
-    "createdBy": "cjvqple6o0001yzivdhjzd8v3",
-    "modified": 1558014479.442,
-    "modifiedBy": "cjvqple6o0001yzivdhjzd8v3"
+    "created": 1558345851.935,
+    "createdBy": "cjvw6vuub0001b44djqx2oqca",
+    "modified": 1558345851.935,
+    "modifiedBy": "cjvw6vuub0001b44djqx2oqca"
   }
 }</code></pre></div><div class="tab-pane http"><pre><code>curl -i -X POST -H 'Content-Type: application/json' -d '{"streamId":"weight","type":"mass/kg","content":90}' https://${username}.pryv.me/events?auth=${token}</code></pre><div class="step-marker">⬇</div><pre><code>HTTP/1.1 201 Created
 Content-Type: application/json; charset=utf-8
@@ -634,54 +664,54 @@ API-Version: 1.3.41
 
 {
   "event": {
-    "id": "cjvqple8i000tyzivag6zt4ow",
-    "time": 1558014479.442,
+    "id": "cjvw6vuvz000tb44d5yqdlcwc",
+    "time": 1558345851.935,
     "streamId": "weight",
     "tags": [],
     "type": "mass/kg",
     "content": 90,
-    "created": 1558014479.442,
-    "createdBy": "cjvqple6o0001yzivdhjzd8v3",
-    "modified": 1558014479.442,
-    "modifiedBy": "cjvqple6o0001yzivdhjzd8v3"
+    "created": 1558345851.935,
+    "createdBy": "cjvw6vuub0001b44djqx2oqca",
+    "modified": 1558345851.935,
+    "modifiedBy": "cjvw6vuub0001b44djqx2oqca"
   }
 }</code></pre></div><div class="tab-pane sockets"><pre><code>socket.emit('events.create', {"streamId":"weight","type":"mass/kg","content":90}, callback);</code></pre><div class="step-marker">⬇</div><pre><code>{
   "event": {
-    "id": "cjvqple8i000tyzivag6zt4ow",
-    "time": 1558014479.442,
+    "id": "cjvw6vuvz000tb44d5yqdlcwc",
+    "time": 1558345851.935,
     "streamId": "weight",
     "tags": [],
     "type": "mass/kg",
     "content": 90,
-    "created": 1558014479.442,
-    "createdBy": "cjvqple6o0001yzivdhjzd8v3",
-    "modified": 1558014479.442,
-    "modifiedBy": "cjvqple6o0001yzivdhjzd8v3"
+    "created": 1558345851.935,
+    "createdBy": "cjvw6vuub0001b44djqx2oqca",
+    "modified": 1558345851.935,
+    "modifiedBy": "cjvw6vuub0001b44djqx2oqca"
   }
 }</code></pre></div></div></div><div class="example"><p>cURL with attachment</p>
 <pre><code class="lang-bash">curl -i -F &#39;event={&quot;streamId&quot;:&quot;diary&quot;,&quot;type&quot;:&quot;picture/attached&quot;}&#39;  -F &quot;file=@photo.jpg&quot; https://${username}.pryv.me/events?auth=${token}
 </code></pre>
 <div class="step-marker">⬇</div><pre><code>{
   "event": {
-    "id": "cjvqple8i000yyzivo6ig4v72",
-    "time": 1558010879.442,
+    "id": "cjvw6vuvz000yb44dxj63o689",
+    "time": 1558342251.935,
     "streamId": "diary",
     "tags": [],
     "type": "picture/attached",
     "content": null,
     "attachments": [
       {
-        "id": "cjvqple8i000zyziv9hhi70qq",
+        "id": "cjvw6vuvz000zb44djrxo2f8z",
         "fileName": "photo.jpg",
         "type": "image/jpeg",
         "size": 2561,
-        "readToken": "cjvqple8i0010yziv9szmyovp-sqpgfaqON8R5V8iLvyIgabrjoz4"
+        "readToken": "cjvw6vuvz0010b44djwzinhb8-UMajdlUAYOYbQMUBwiBYFd4GpiH"
       }
     ],
-    "created": 1558010879.442,
-    "createdBy": "cjvqple6o0004yzivzomcdwzy",
-    "modified": 1558010879.442,
-    "modifiedBy": "cjvqple6o0004yzivzomcdwzy"
+    "created": 1558342251.935,
+    "createdBy": "cjvw6vuuc0004b44dkswtbck4",
+    "modified": 1558342251.935,
+    "modifiedBy": "cjvw6vuuc0004b44dkswtbck4"
   }
 }</code></pre></div></aside></section><section id="methods-events-events-start" class="method"> <h3 id="start-period">Start period</h3>
 <div class="content"><div class="meta"><span class="method-id"><span class="label">id</span><span class="label-value"><code>events.start</code></span></span><span class="http"><span class="label">HTTP</span><span class="label-value"><code>POST /events/start</code></span></span></div><div class="intro"><p>Starts a new period event. This is equivalent to starting an event with a null <code>duration</code>. In <code>singleActivity</code> streams, also stops the previously running period event if any.</p>
@@ -692,17 +722,17 @@ API-Version: 1.3.41
   "type": "activity/pryv"
 }</code></pre><div class="step-marker">⬇</div><pre><code>{
   "event": {
-    "id": "cjvqple8h000myziv5auki5h4",
-    "time": 1558014479.441,
+    "id": "cjvw6vuvy000mb44dlqt8ufbg",
+    "time": 1558345851.934,
     "duration": null,
     "streamId": "bicycling",
     "tags": [],
     "type": "activity/pryv",
     "content": null,
-    "created": 1558014479.441,
-    "createdBy": "cjvqple6o0001yzivdhjzd8v3",
-    "modified": 1558014479.441,
-    "modifiedBy": "cjvqple6o0001yzivdhjzd8v3"
+    "created": 1558345851.934,
+    "createdBy": "cjvw6vuub0001b44djqx2oqca",
+    "modified": 1558345851.934,
+    "modifiedBy": "cjvw6vuub0001b44djqx2oqca"
   }
 }</code></pre></div><div class="tab-pane http"><pre><code>curl -i -X POST -H 'Content-Type: application/json' -d '{"streamId":"bicycling","type":"activity/pryv"}' https://${username}.pryv.me/events/start?auth=${token}</code></pre><div class="step-marker">⬇</div><pre><code>HTTP/1.1 201 Created
 Content-Type: application/json; charset=utf-8
@@ -710,31 +740,31 @@ API-Version: 1.3.41
 
 {
   "event": {
-    "id": "cjvqple8h000myziv5auki5h4",
-    "time": 1558014479.441,
+    "id": "cjvw6vuvy000mb44dlqt8ufbg",
+    "time": 1558345851.934,
     "duration": null,
     "streamId": "bicycling",
     "tags": [],
     "type": "activity/pryv",
     "content": null,
-    "created": 1558014479.441,
-    "createdBy": "cjvqple6o0001yzivdhjzd8v3",
-    "modified": 1558014479.441,
-    "modifiedBy": "cjvqple6o0001yzivdhjzd8v3"
+    "created": 1558345851.934,
+    "createdBy": "cjvw6vuub0001b44djqx2oqca",
+    "modified": 1558345851.934,
+    "modifiedBy": "cjvw6vuub0001b44djqx2oqca"
   }
 }</code></pre></div><div class="tab-pane sockets"><pre><code>socket.emit('events.start', {"streamId":"bicycling","type":"activity/pryv"}, callback);</code></pre><div class="step-marker">⬇</div><pre><code>{
   "event": {
-    "id": "cjvqple8h000myziv5auki5h4",
-    "time": 1558014479.441,
+    "id": "cjvw6vuvy000mb44dlqt8ufbg",
+    "time": 1558345851.934,
     "duration": null,
     "streamId": "bicycling",
     "tags": [],
     "type": "activity/pryv",
     "content": null,
-    "created": 1558014479.441,
-    "createdBy": "cjvqple6o0001yzivdhjzd8v3",
-    "modified": 1558014479.441,
-    "modifiedBy": "cjvqple6o0001yzivdhjzd8v3"
+    "created": 1558345851.934,
+    "createdBy": "cjvw6vuub0001b44djqx2oqca",
+    "modified": 1558345851.934,
+    "modifiedBy": "cjvw6vuub0001b44djqx2oqca"
   }
 }</code></pre></div></div></div></aside></section><section id="methods-events-events-stop" class="method"> <h3 id="stop-period">Stop period</h3>
 <div class="content"><div class="meta"><span class="method-id"><span class="label">id</span><span class="label-value"><code>events.stop</code></span></span><span class="http"><span class="label">HTTP</span><span class="label-value"><code>POST /events/stop</code></span></span></div><div class="intro"><p>Stops a running period event. In <code>singleActivity</code> streams, which guarantee that only one event is running at any given time, that event is automatically determined; for regular streams, the event to stop (or its type) must be specified.</p>
@@ -749,17 +779,17 @@ API-Version: 1.3.41
 <table class="definitions"><tr><th><code>invalid-operation</code></th><td><div class="header"><span class="http"><span class="label">HTTP</span><span class="label-value"><code>400</code></span></span></div><div class="description"><p>The specified event is not a running period event.</p>
 </div></td></tr></table></div><aside><div class="example"><div class="tab-content"><div class="tab-pane json active"><pre><code>{
   "streamId": "bicycling",
-  "time": 1558014479.668
+  "time": 1558345852.154
 }</code></pre><div class="step-marker">⬇</div><pre><code>{
-  "stoppedId": "cjvqple8h000myziv5auki5h4"
-}</code></pre></div><div class="tab-pane http"><pre><code>curl -i -X POST -H 'Content-Type: application/json' -d '{"streamId":"bicycling","time":1558014479.668}' https://${username}.pryv.me/events/stop?auth=${token}</code></pre><div class="step-marker">⬇</div><pre><code>HTTP/1.1 200 OK
+  "stoppedId": "cjvw6vuvy000mb44dlqt8ufbg"
+}</code></pre></div><div class="tab-pane http"><pre><code>curl -i -X POST -H 'Content-Type: application/json' -d '{"streamId":"bicycling","time":1558345852.154}' https://${username}.pryv.me/events/stop?auth=${token}</code></pre><div class="step-marker">⬇</div><pre><code>HTTP/1.1 200 OK
 Content-Type: application/json; charset=utf-8
 API-Version: 1.3.41
 
 {
-  "stoppedId": "cjvqple8h000myziv5auki5h4"
-}</code></pre></div><div class="tab-pane sockets"><pre><code>socket.emit('events.stop', {"streamId":"bicycling","time":1558014479.668}, callback);</code></pre><div class="step-marker">⬇</div><pre><code>{
-  "stoppedId": "cjvqple8h000myziv5auki5h4"
+  "stoppedId": "cjvw6vuvy000mb44dlqt8ufbg"
+}</code></pre></div><div class="tab-pane sockets"><pre><code>socket.emit('events.stop', {"streamId":"bicycling","time":1558345852.154}, callback);</code></pre><div class="step-marker">⬇</div><pre><code>{
+  "stoppedId": "cjvw6vuvy000mb44dlqt8ufbg"
 }</code></pre></div></div></div></aside></section><section id="methods-events-events-update" class="method"> <h3 id="update-event">Update event</h3>
 <div class="content"><div class="meta"><span class="method-id"><span class="label">id</span><span class="label-value"><code>events.update</code></span></span><span class="http"><span class="label">HTTP</span><span class="label-value"><code>PUT /events/{id}</code></span></span></div><div class="intro"><p>Modifies the event.</p>
 </div><h4 id="parameters">Parameters</h4>
@@ -773,7 +803,7 @@ API-Version: 1.3.41
 </div></td></tr><tr><th><code>periods-overlap</code></th><td><div class="header"><span class="http"><span class="label">HTTP</span><span class="label-value"><code>400</code></span></span></div><div class="description"><p>Only in <code>singleActivity</code> streams. The time and/or duration of the period event cannot be set to overlap with other period events. The overlapping events&#39; ids are listed as an array in the error&#39;s <code>data.overlappedIds</code>.</p>
 </div></td></tr></table></div><aside><div class="example"><p>Adding a tag</p>
 <div class="tab-content"><div class="tab-pane json active"><pre><code>{
-  "id": "cjvqple8i0011yzivapjja9fo",
+  "id": "cjvw6vuvz0011b44dpt7ckz86",
   "tags": [
     "home"
   ]
@@ -782,9 +812,9 @@ API-Version: 1.3.41
     "tags": [
       "home"
     ],
-    "modified": 1558014479.668,
-    "modifiedBy": "cjvqple6o0001yzivdhjzd8v3",
-    "id": "cjvqple8i0011yzivapjja9fo",
+    "modified": 1558345852.154,
+    "modifiedBy": "cjvw6vuub0001b44djqx2oqca",
+    "id": "cjvw6vuvz0011b44dpt7ckz86",
     "time": 1350373077.359,
     "streamId": "diary",
     "type": "position/wgs84",
@@ -792,10 +822,10 @@ API-Version: 1.3.41
       "latitude": 40.714728,
       "longitude": -73.998672
     },
-    "created": 1558007279.442,
-    "createdBy": "cjvqple6n0000yzivpmfsdgtd"
+    "created": 1558338651.935,
+    "createdBy": "cjvw6vuub0000b44d0fg7nha1"
   }
-}</code></pre></div><div class="tab-pane http"><pre><code>curl -i -X PUT -H 'Content-Type: application/json' -d '{"tags":["home"]}' https://${username}.pryv.me/events/cjvqple8i0011yzivapjja9fo?auth=${token}</code></pre><div class="step-marker">⬇</div><pre><code>HTTP/1.1 200 OK
+}</code></pre></div><div class="tab-pane http"><pre><code>curl -i -X PUT -H 'Content-Type: application/json' -d '{"tags":["home"]}' https://${username}.pryv.me/events/cjvw6vuvz0011b44dpt7ckz86?auth=${token}</code></pre><div class="step-marker">⬇</div><pre><code>HTTP/1.1 200 OK
 Content-Type: application/json; charset=utf-8
 API-Version: 1.3.41
 
@@ -804,9 +834,9 @@ API-Version: 1.3.41
     "tags": [
       "home"
     ],
-    "modified": 1558014479.668,
-    "modifiedBy": "cjvqple6o0001yzivdhjzd8v3",
-    "id": "cjvqple8i0011yzivapjja9fo",
+    "modified": 1558345852.154,
+    "modifiedBy": "cjvw6vuub0001b44djqx2oqca",
+    "id": "cjvw6vuvz0011b44dpt7ckz86",
     "time": 1350373077.359,
     "streamId": "diary",
     "type": "position/wgs84",
@@ -814,17 +844,17 @@ API-Version: 1.3.41
       "latitude": 40.714728,
       "longitude": -73.998672
     },
-    "created": 1558007279.442,
-    "createdBy": "cjvqple6n0000yzivpmfsdgtd"
+    "created": 1558338651.935,
+    "createdBy": "cjvw6vuub0000b44d0fg7nha1"
   }
-}</code></pre></div><div class="tab-pane sockets"><pre><code>socket.emit('events.update', {"id":"cjvqple8i0011yzivapjja9fo","update":{"tags":["home"]}}, callback);</code></pre><div class="step-marker">⬇</div><pre><code>{
+}</code></pre></div><div class="tab-pane sockets"><pre><code>socket.emit('events.update', {"id":"cjvw6vuvz0011b44dpt7ckz86","update":{"tags":["home"]}}, callback);</code></pre><div class="step-marker">⬇</div><pre><code>{
   "event": {
     "tags": [
       "home"
     ],
-    "modified": 1558014479.668,
-    "modifiedBy": "cjvqple6o0001yzivdhjzd8v3",
-    "id": "cjvqple8i0011yzivapjja9fo",
+    "modified": 1558345852.154,
+    "modifiedBy": "cjvw6vuub0001b44djqx2oqca",
+    "id": "cjvw6vuvz0011b44dpt7ckz86",
     "time": 1350373077.359,
     "streamId": "diary",
     "type": "position/wgs84",
@@ -832,38 +862,38 @@ API-Version: 1.3.41
       "latitude": 40.714728,
       "longitude": -73.998672
     },
-    "created": 1558007279.442,
-    "createdBy": "cjvqple6n0000yzivpmfsdgtd"
+    "created": 1558338651.935,
+    "createdBy": "cjvw6vuub0000b44d0fg7nha1"
   }
 }</code></pre></div></div></div></aside></section><section id="methods-events-events-addAttachment" class="method"> <h3 id="add-attachment-s-">Add attachment(s)</h3>
 <div class="content"><div class="meta"><span class="http"><span class="label">HTTP-only</span><span class="label-value"><code>POST /events/{id}</code></span></span></div><div class="intro"><p>Adds one or more file attachments to the event. This request expects standard multipart/form-data content, with all content parts being the attached files.</p>
 </div><h4 id="result">Result</h4>
 <span class="http"><span class="label">HTTP</span><span class="label-value"><code>200 OK</code></span></span><table class="definitions"><tr><th><code>event</code></th><td><div class="header"><span class="type"><a href="#data-structure-event">event</a></span></div><div class="description"><p>The updated event.</p>
 </div></td></tr></table></div><aside><div class="example"><p>cURL</p>
-<pre><code class="lang-bash">curl -i -F &quot;file=@travel-expense.jpg&quot; https://${username}.pryv.me/events/cjvqple8h000nyziv41a9d0eb?auth=${token}
+<pre><code class="lang-bash">curl -i -F &quot;file=@travel-expense.jpg&quot; https://${username}.pryv.me/events/cjvw6vuvy000nb44dfqmtluep?auth=${token}
 </code></pre>
 <div class="step-marker">⬇</div><pre><code>{
   "event": {
-    "id": "cjvqple8h000nyziv41a9d0eb",
-    "time": 1558014479.442,
+    "id": "cjvw6vuvy000nb44dfqmtluep",
+    "time": 1558345851.934,
     "duration": null,
-    "streamId": "cjvqple8h000byziv4jb6xpug",
+    "streamId": "cjvw6vuvy000bb44dyc3jsm09",
     "tags": [],
     "type": "activity/pryv",
     "content": null,
     "attachments": [
       {
-        "id": "cjvqple8i000oyzivfmpg14in",
+        "id": "cjvw6vuvy000ob44dk2ed2d5t",
         "fileName": "travel-expense.jpg",
         "type": "image/jpeg",
         "size": 1111,
-        "readToken": "cjvqple8i000pyzivc26vo190-sxJrKgK3F5eZHuXXv0WWdh1Ecea"
+        "readToken": "cjvw6vuvz000pb44dwvl88osj-lJPT5giQqwRBsW75g9IsoWsuuYa"
       }
     ],
-    "created": 1558014479.442,
-    "createdBy": "cjvqple6o0001yzivdhjzd8v3",
-    "modified": 1558014479.442,
-    "modifiedBy": "cjvqple6o0001yzivdhjzd8v3"
+    "created": 1558345851.935,
+    "createdBy": "cjvw6vuub0001b44djqx2oqca",
+    "modified": 1558345851.935,
+    "modifiedBy": "cjvw6vuub0001b44djqx2oqca"
   }
 }</code></pre></div></aside></section><section id="methods-events-events-getAttachment" class="method"> <h3 id="get-attachment">Get attachment</h3>
 <div class="content"><div class="meta"><span class="http"><span class="label">HTTP-only</span><span class="label-value"><code>GET /events/{id}/{fileId}[/{fileName}]</code></span></span></div><div class="intro"><p>Gets the attached file. Accepts an arbitrary filename path suffix (ignored) for easier link readability.
@@ -880,53 +910,53 @@ For this function using the <code>auth</code> query parameter is not accepted. Y
 </div></td></tr></table><h4 id="result">Result</h4>
 <span class="http"><span class="label">HTTP</span><span class="label-value"><code>200 OK</code></span></span><table class="definitions"><tr><th><code>event</code></th><td><div class="header"><span class="type"><a href="#data-structure-event">event</a></span></div><div class="description"><p>The updated event.</p>
 </div></td></tr></table></div><aside><div class="example"><div class="tab-content"><div class="tab-pane json active"><pre><code>{
-  "id": "cjvqple8h000nyziv41a9d0eb",
-  "fileId": "cjvqple8i000oyzivfmpg14in"
+  "id": "cjvw6vuvy000nb44dfqmtluep",
+  "fileId": "cjvw6vuvy000ob44dk2ed2d5t"
 }</code></pre><div class="step-marker">⬇</div><pre><code>{
   "event": {
-    "id": "cjvqple8h000nyziv41a9d0eb",
-    "time": 1558014479.442,
+    "id": "cjvw6vuvy000nb44dfqmtluep",
+    "time": 1558345851.934,
     "duration": null,
-    "streamId": "cjvqple8h000byziv4jb6xpug",
+    "streamId": "cjvw6vuvy000bb44dyc3jsm09",
     "tags": [],
     "type": "activity/pryv",
     "content": null,
-    "created": 1558014479.442,
-    "createdBy": "cjvqple6o0001yzivdhjzd8v3",
-    "modified": 1558014479.442,
-    "modifiedBy": "cjvqple6o0001yzivdhjzd8v3"
+    "created": 1558345851.935,
+    "createdBy": "cjvw6vuub0001b44djqx2oqca",
+    "modified": 1558345851.935,
+    "modifiedBy": "cjvw6vuub0001b44djqx2oqca"
   }
-}</code></pre></div><div class="tab-pane http"><pre><code>curl -i -X DELETE https://${username}.pryv.me/events/cjvqple8h000nyziv41a9d0eb/cjvqple8i000oyzivfmpg14in?auth=${token}</code></pre><div class="step-marker">⬇</div><pre><code>HTTP/1.1 200 OK
+}</code></pre></div><div class="tab-pane http"><pre><code>curl -i -X DELETE https://${username}.pryv.me/events/cjvw6vuvy000nb44dfqmtluep/cjvw6vuvy000ob44dk2ed2d5t?auth=${token}</code></pre><div class="step-marker">⬇</div><pre><code>HTTP/1.1 200 OK
 Content-Type: application/json; charset=utf-8
 API-Version: 1.3.41
 
 {
   "event": {
-    "id": "cjvqple8h000nyziv41a9d0eb",
-    "time": 1558014479.442,
+    "id": "cjvw6vuvy000nb44dfqmtluep",
+    "time": 1558345851.934,
     "duration": null,
-    "streamId": "cjvqple8h000byziv4jb6xpug",
+    "streamId": "cjvw6vuvy000bb44dyc3jsm09",
     "tags": [],
     "type": "activity/pryv",
     "content": null,
-    "created": 1558014479.442,
-    "createdBy": "cjvqple6o0001yzivdhjzd8v3",
-    "modified": 1558014479.442,
-    "modifiedBy": "cjvqple6o0001yzivdhjzd8v3"
+    "created": 1558345851.935,
+    "createdBy": "cjvw6vuub0001b44djqx2oqca",
+    "modified": 1558345851.935,
+    "modifiedBy": "cjvw6vuub0001b44djqx2oqca"
   }
-}</code></pre></div><div class="tab-pane sockets"><pre><code>socket.emit('events.deleteAttachment', {"id":"cjvqple8h000nyziv41a9d0eb","fileId":"cjvqple8i000oyzivfmpg14in"}, callback);</code></pre><div class="step-marker">⬇</div><pre><code>{
+}</code></pre></div><div class="tab-pane sockets"><pre><code>socket.emit('events.deleteAttachment', {"id":"cjvw6vuvy000nb44dfqmtluep","fileId":"cjvw6vuvy000ob44dk2ed2d5t"}, callback);</code></pre><div class="step-marker">⬇</div><pre><code>{
   "event": {
-    "id": "cjvqple8h000nyziv41a9d0eb",
-    "time": 1558014479.442,
+    "id": "cjvw6vuvy000nb44dfqmtluep",
+    "time": 1558345851.934,
     "duration": null,
-    "streamId": "cjvqple8h000byziv4jb6xpug",
+    "streamId": "cjvw6vuvy000bb44dyc3jsm09",
     "tags": [],
     "type": "activity/pryv",
     "content": null,
-    "created": 1558014479.442,
-    "createdBy": "cjvqple6o0001yzivdhjzd8v3",
-    "modified": 1558014479.442,
-    "modifiedBy": "cjvqple6o0001yzivdhjzd8v3"
+    "created": 1558345851.935,
+    "createdBy": "cjvw6vuub0001b44djqx2oqca",
+    "modified": 1558345851.935,
+    "modifiedBy": "cjvw6vuub0001b44djqx2oqca"
   }
 }</code></pre></div></div></div></aside></section><section id="methods-events-events-delete" class="method"> <h3 id="delete-event">Delete event</h3>
 <div class="content"><div class="meta"><span class="method-id"><span class="label">id</span><span class="label-value"><code>events.delete</code></span></span><span class="http"><span class="label">HTTP</span><span class="label-value"><code>DELETE /events/{id}</code></span></span></div><div class="intro"><p>Trashes or deletes the specified event, depending on its current state:</p>
@@ -942,71 +972,71 @@ API-Version: 1.3.41
 <span class="http"><span class="label">HTTP</span><span class="label-value"><code>200 OK</code></span></span><table class="definitions"><tr><th><code>eventDeletion</code></th><td><div class="header"><span class="type"><a href="#data-structure-item-deletion">item deletion</a></span></div><div class="description"><p>The event deletion record.</p>
 </div></td></tr></table></div><aside><div class="example"><p>Trashing</p>
 <div class="tab-content"><div class="tab-pane json active"><pre><code>{
-  "id": "cjvqple8i000uyzivrhz5n630"
+  "id": "cjvw6vuvz000ub44d9f3yqujc"
 }</code></pre><div class="step-marker">⬇</div><pre><code>{
   "event": {
     "trashed": true,
-    "modified": 1558014479.668,
-    "modifiedBy": "cjvqple6o0001yzivdhjzd8v3",
-    "id": "cjvqple8i000uyzivrhz5n630",
-    "time": 1558010879.442,
+    "modified": 1558345852.155,
+    "modifiedBy": "cjvw6vuub0001b44djqx2oqca",
+    "id": "cjvw6vuvz000ub44d9f3yqujc",
+    "time": 1558342251.935,
     "streamId": "diary",
     "tags": [],
     "type": "note/text",
     "content": "道可道非常道。。。",
-    "created": 1558010879.442,
-    "createdBy": "cjvqple6o0001yzivdhjzd8v3"
+    "created": 1558342251.935,
+    "createdBy": "cjvw6vuub0001b44djqx2oqca"
   }
-}</code></pre></div><div class="tab-pane http"><pre><code>curl -i -X DELETE https://${username}.pryv.me/events/cjvqple8i000uyzivrhz5n630?auth=${token}</code></pre><div class="step-marker">⬇</div><pre><code>HTTP/1.1 200 OK
+}</code></pre></div><div class="tab-pane http"><pre><code>curl -i -X DELETE https://${username}.pryv.me/events/cjvw6vuvz000ub44d9f3yqujc?auth=${token}</code></pre><div class="step-marker">⬇</div><pre><code>HTTP/1.1 200 OK
 Content-Type: application/json; charset=utf-8
 API-Version: 1.3.41
 
 {
   "event": {
     "trashed": true,
-    "modified": 1558014479.668,
-    "modifiedBy": "cjvqple6o0001yzivdhjzd8v3",
-    "id": "cjvqple8i000uyzivrhz5n630",
-    "time": 1558010879.442,
+    "modified": 1558345852.155,
+    "modifiedBy": "cjvw6vuub0001b44djqx2oqca",
+    "id": "cjvw6vuvz000ub44d9f3yqujc",
+    "time": 1558342251.935,
     "streamId": "diary",
     "tags": [],
     "type": "note/text",
     "content": "道可道非常道。。。",
-    "created": 1558010879.442,
-    "createdBy": "cjvqple6o0001yzivdhjzd8v3"
+    "created": 1558342251.935,
+    "createdBy": "cjvw6vuub0001b44djqx2oqca"
   }
-}</code></pre></div><div class="tab-pane sockets"><pre><code>socket.emit('events.delete', {"id":"cjvqple8i000uyzivrhz5n630"}, callback);</code></pre><div class="step-marker">⬇</div><pre><code>{
+}</code></pre></div><div class="tab-pane sockets"><pre><code>socket.emit('events.delete', {"id":"cjvw6vuvz000ub44d9f3yqujc"}, callback);</code></pre><div class="step-marker">⬇</div><pre><code>{
   "event": {
     "trashed": true,
-    "modified": 1558014479.668,
-    "modifiedBy": "cjvqple6o0001yzivdhjzd8v3",
-    "id": "cjvqple8i000uyzivrhz5n630",
-    "time": 1558010879.442,
+    "modified": 1558345852.155,
+    "modifiedBy": "cjvw6vuub0001b44djqx2oqca",
+    "id": "cjvw6vuvz000ub44d9f3yqujc",
+    "time": 1558342251.935,
     "streamId": "diary",
     "tags": [],
     "type": "note/text",
     "content": "道可道非常道。。。",
-    "created": 1558010879.442,
-    "createdBy": "cjvqple6o0001yzivdhjzd8v3"
+    "created": 1558342251.935,
+    "createdBy": "cjvw6vuub0001b44djqx2oqca"
   }
 }</code></pre></div></div></div><div class="example"><p>Deleting</p>
 <div class="tab-content"><div class="tab-pane json active"><pre><code>{
-  "id": "cjvqple8i000uyzivrhz5n630"
+  "id": "cjvw6vuvz000ub44d9f3yqujc"
 }</code></pre><div class="step-marker">⬇</div><pre><code>{
   "eventDeletion": {
-    "id": "cjvqple8i000uyzivrhz5n630"
+    "id": "cjvw6vuvz000ub44d9f3yqujc"
   }
-}</code></pre></div><div class="tab-pane http"><pre><code>curl -i -X DELETE https://${username}.pryv.me/events/cjvqple8i000uyzivrhz5n630?auth=${token}</code></pre><div class="step-marker">⬇</div><pre><code>HTTP/1.1 200 OK
+}</code></pre></div><div class="tab-pane http"><pre><code>curl -i -X DELETE https://${username}.pryv.me/events/cjvw6vuvz000ub44d9f3yqujc?auth=${token}</code></pre><div class="step-marker">⬇</div><pre><code>HTTP/1.1 200 OK
 Content-Type: application/json; charset=utf-8
 API-Version: 1.3.41
 
 {
   "eventDeletion": {
-    "id": "cjvqple8i000uyzivrhz5n630"
+    "id": "cjvw6vuvz000ub44d9f3yqujc"
   }
-}</code></pre></div><div class="tab-pane sockets"><pre><code>socket.emit('events.delete', {"id":"cjvqple8i000uyzivrhz5n630"}, callback);</code></pre><div class="step-marker">⬇</div><pre><code>{
+}</code></pre></div><div class="tab-pane sockets"><pre><code>socket.emit('events.delete', {"id":"cjvw6vuvz000ub44d9f3yqujc"}, callback);</code></pre><div class="step-marker">⬇</div><pre><code>{
   "eventDeletion": {
-    "id": "cjvqple8i000uyzivrhz5n630"
+    "id": "cjvw6vuvz000ub44d9f3yqujc"
   }
 }</code></pre></div></div></div></aside></section></section><section id="methods-streams"><h2 id="streams">Streams</h2>
 <div class="content"><div class="meta"></div><div class="intro"><p>Methods to retrieve and manipulate <a href="#data-structure-stream">streams</a>.</p>
@@ -1022,76 +1052,76 @@ API-Version: 1.3.41
 <div class="tab-content"><div class="tab-pane json active"><pre><code>{}</code></pre><div class="step-marker">⬇</div><pre><code>{
   "streams": [
     {
-      "id": "cjvqple8h000ayzivd050ql95",
+      "id": "cjvw6vuvy000ab44dujmjf6nh",
       "name": "Noble Works Co.",
       "parentId": "work",
       "children": [
         {
-          "id": "cjvqple8h000cyzivkc2pj1mm",
+          "id": "cjvw6vuvy000cb44dbn7n118k",
           "name": "Last Be First",
-          "parentId": "cjvqple8h000ayzivd050ql95",
+          "parentId": "cjvw6vuvy000ab44dujmjf6nh",
           "children": [],
-          "created": 1494900619.112173,
-          "createdBy": "cjvqple6n0000yzivpmfsdgtd",
-          "modified": 1494900943.1289055,
-          "modifiedBy": "cjvqple6n0000yzivpmfsdgtd"
+          "created": 1495231969.987736,
+          "createdBy": "cjvw6vuub0000b44d0fg7nha1",
+          "modified": 1495232024.626797,
+          "modifiedBy": "cjvw6vuub0000b44d0fg7nha1"
         },
         {
-          "id": "cjvqple8h000dyziv5j9bx8j4",
+          "id": "cjvw6vuvy000db44dijulzhnk",
           "name": "Big Tree",
-          "parentId": "cjvqple8h000ayzivd050ql95",
+          "parentId": "cjvw6vuvy000ab44dujmjf6nh",
           "children": [],
-          "created": 1494900619.112173,
-          "createdBy": "cjvqple6n0000yzivpmfsdgtd",
-          "modified": 1494900937.4573903,
-          "modifiedBy": "cjvqple6n0000yzivpmfsdgtd"
+          "created": 1495231969.987736,
+          "createdBy": "cjvw6vuub0000b44d0fg7nha1",
+          "modified": 1495232111.4956267,
+          "modifiedBy": "cjvw6vuub0000b44d0fg7nha1"
         },
         {
-          "id": "cjvqple8h000eyzivei894nir",
+          "id": "cjvw6vuvy000eb44da2nqo761",
           "name": "Inner Light",
-          "parentId": "cjvqple8h000ayzivd050ql95",
+          "parentId": "cjvw6vuvy000ab44dujmjf6nh",
           "children": [],
-          "created": 1494900619.112173,
-          "createdBy": "cjvqple6n0000yzivpmfsdgtd",
-          "modified": 1494900902.9670658,
-          "modifiedBy": "cjvqple6n0000yzivpmfsdgtd"
+          "created": 1495231969.987736,
+          "createdBy": "cjvw6vuub0000b44d0fg7nha1",
+          "modified": 1495232297.2670171,
+          "modifiedBy": "cjvw6vuub0000b44d0fg7nha1"
         }
       ],
-      "created": 1494900595.31678,
-      "createdBy": "cjvqple6n0000yzivpmfsdgtd",
-      "modified": 1494900730.3742204,
-      "modifiedBy": "cjvqple6n0000yzivpmfsdgtd"
+      "created": 1495231957.6087785,
+      "createdBy": "cjvw6vuub0000b44d0fg7nha1",
+      "modified": 1495232080.9721122,
+      "modifiedBy": "cjvw6vuub0000b44d0fg7nha1"
     },
     {
-      "id": "cjvqple8h000byziv4jb6xpug",
+      "id": "cjvw6vuvy000bb44dyc3jsm09",
       "name": "Freelancing",
       "parentId": "work",
       "children": [
         {
-          "id": "cjvqple8h000fyzivncshtjxp",
+          "id": "cjvw6vuvy000fb44d6bulx3os",
           "name": "Funky Veggies",
-          "parentId": "cjvqple8h000byziv4jb6xpug",
+          "parentId": "cjvw6vuvy000bb44dyc3jsm09",
           "children": [],
-          "created": 1494900603.200373,
-          "createdBy": "cjvqple6n0000yzivpmfsdgtd",
-          "modified": 1494900764.1569664,
-          "modifiedBy": "cjvqple6n0000yzivpmfsdgtd"
+          "created": 1495231968.8658273,
+          "createdBy": "cjvw6vuub0000b44d0fg7nha1",
+          "modified": 1495232061.9815226,
+          "modifiedBy": "cjvw6vuub0000b44d0fg7nha1"
         },
         {
-          "id": "cjvqple8h000gyzivpt9bopem",
+          "id": "cjvw6vuvy000gb44d45bu8f9v",
           "name": "Jojo Lapin & sons",
-          "parentId": "cjvqple8h000byziv4jb6xpug",
+          "parentId": "cjvw6vuvy000bb44dyc3jsm09",
           "children": [],
-          "created": 1494900603.200373,
-          "createdBy": "cjvqple6n0000yzivpmfsdgtd",
-          "modified": 1494900721.1128387,
-          "modifiedBy": "cjvqple6n0000yzivpmfsdgtd"
+          "created": 1495231968.8658273,
+          "createdBy": "cjvw6vuub0000b44d0fg7nha1",
+          "modified": 1495232050.1259031,
+          "modifiedBy": "cjvw6vuub0000b44d0fg7nha1"
         }
       ],
-      "created": 1494900595.31678,
-      "createdBy": "cjvqple6n0000yzivpmfsdgtd",
-      "modified": 1494900907.5662115,
-      "modifiedBy": "cjvqple6n0000yzivpmfsdgtd"
+      "created": 1495231957.6087785,
+      "createdBy": "cjvw6vuub0000b44d0fg7nha1",
+      "modified": 1495232161.783113,
+      "modifiedBy": "cjvw6vuub0000b44d0fg7nha1"
     }
   ]
 }</code></pre></div><div class="tab-pane http"><pre><code>curl -i https://${username}.pryv.me/streams?auth=${token}</code></pre><div class="step-marker">⬇</div><pre><code>HTTP/1.1 200 OK
@@ -1101,151 +1131,151 @@ API-Version: 1.3.41
 {
   "streams": [
     {
-      "id": "cjvqple8h000ayzivd050ql95",
+      "id": "cjvw6vuvy000ab44dujmjf6nh",
       "name": "Noble Works Co.",
       "parentId": "work",
       "children": [
         {
-          "id": "cjvqple8h000cyzivkc2pj1mm",
+          "id": "cjvw6vuvy000cb44dbn7n118k",
           "name": "Last Be First",
-          "parentId": "cjvqple8h000ayzivd050ql95",
+          "parentId": "cjvw6vuvy000ab44dujmjf6nh",
           "children": [],
-          "created": 1494900619.112173,
-          "createdBy": "cjvqple6n0000yzivpmfsdgtd",
-          "modified": 1494900943.1289055,
-          "modifiedBy": "cjvqple6n0000yzivpmfsdgtd"
+          "created": 1495231969.987736,
+          "createdBy": "cjvw6vuub0000b44d0fg7nha1",
+          "modified": 1495232024.626797,
+          "modifiedBy": "cjvw6vuub0000b44d0fg7nha1"
         },
         {
-          "id": "cjvqple8h000dyziv5j9bx8j4",
+          "id": "cjvw6vuvy000db44dijulzhnk",
           "name": "Big Tree",
-          "parentId": "cjvqple8h000ayzivd050ql95",
+          "parentId": "cjvw6vuvy000ab44dujmjf6nh",
           "children": [],
-          "created": 1494900619.112173,
-          "createdBy": "cjvqple6n0000yzivpmfsdgtd",
-          "modified": 1494900937.4573903,
-          "modifiedBy": "cjvqple6n0000yzivpmfsdgtd"
+          "created": 1495231969.987736,
+          "createdBy": "cjvw6vuub0000b44d0fg7nha1",
+          "modified": 1495232111.4956267,
+          "modifiedBy": "cjvw6vuub0000b44d0fg7nha1"
         },
         {
-          "id": "cjvqple8h000eyzivei894nir",
+          "id": "cjvw6vuvy000eb44da2nqo761",
           "name": "Inner Light",
-          "parentId": "cjvqple8h000ayzivd050ql95",
+          "parentId": "cjvw6vuvy000ab44dujmjf6nh",
           "children": [],
-          "created": 1494900619.112173,
-          "createdBy": "cjvqple6n0000yzivpmfsdgtd",
-          "modified": 1494900902.9670658,
-          "modifiedBy": "cjvqple6n0000yzivpmfsdgtd"
+          "created": 1495231969.987736,
+          "createdBy": "cjvw6vuub0000b44d0fg7nha1",
+          "modified": 1495232297.2670171,
+          "modifiedBy": "cjvw6vuub0000b44d0fg7nha1"
         }
       ],
-      "created": 1494900595.31678,
-      "createdBy": "cjvqple6n0000yzivpmfsdgtd",
-      "modified": 1494900730.3742204,
-      "modifiedBy": "cjvqple6n0000yzivpmfsdgtd"
+      "created": 1495231957.6087785,
+      "createdBy": "cjvw6vuub0000b44d0fg7nha1",
+      "modified": 1495232080.9721122,
+      "modifiedBy": "cjvw6vuub0000b44d0fg7nha1"
     },
     {
-      "id": "cjvqple8h000byziv4jb6xpug",
+      "id": "cjvw6vuvy000bb44dyc3jsm09",
       "name": "Freelancing",
       "parentId": "work",
       "children": [
         {
-          "id": "cjvqple8h000fyzivncshtjxp",
+          "id": "cjvw6vuvy000fb44d6bulx3os",
           "name": "Funky Veggies",
-          "parentId": "cjvqple8h000byziv4jb6xpug",
+          "parentId": "cjvw6vuvy000bb44dyc3jsm09",
           "children": [],
-          "created": 1494900603.200373,
-          "createdBy": "cjvqple6n0000yzivpmfsdgtd",
-          "modified": 1494900764.1569664,
-          "modifiedBy": "cjvqple6n0000yzivpmfsdgtd"
+          "created": 1495231968.8658273,
+          "createdBy": "cjvw6vuub0000b44d0fg7nha1",
+          "modified": 1495232061.9815226,
+          "modifiedBy": "cjvw6vuub0000b44d0fg7nha1"
         },
         {
-          "id": "cjvqple8h000gyzivpt9bopem",
+          "id": "cjvw6vuvy000gb44d45bu8f9v",
           "name": "Jojo Lapin & sons",
-          "parentId": "cjvqple8h000byziv4jb6xpug",
+          "parentId": "cjvw6vuvy000bb44dyc3jsm09",
           "children": [],
-          "created": 1494900603.200373,
-          "createdBy": "cjvqple6n0000yzivpmfsdgtd",
-          "modified": 1494900721.1128387,
-          "modifiedBy": "cjvqple6n0000yzivpmfsdgtd"
+          "created": 1495231968.8658273,
+          "createdBy": "cjvw6vuub0000b44d0fg7nha1",
+          "modified": 1495232050.1259031,
+          "modifiedBy": "cjvw6vuub0000b44d0fg7nha1"
         }
       ],
-      "created": 1494900595.31678,
-      "createdBy": "cjvqple6n0000yzivpmfsdgtd",
-      "modified": 1494900907.5662115,
-      "modifiedBy": "cjvqple6n0000yzivpmfsdgtd"
+      "created": 1495231957.6087785,
+      "createdBy": "cjvw6vuub0000b44d0fg7nha1",
+      "modified": 1495232161.783113,
+      "modifiedBy": "cjvw6vuub0000b44d0fg7nha1"
     }
   ]
 }</code></pre></div><div class="tab-pane sockets"><pre><code>socket.emit('streams.get', {}, callback);</code></pre><div class="step-marker">⬇</div><pre><code>{
   "streams": [
     {
-      "id": "cjvqple8h000ayzivd050ql95",
+      "id": "cjvw6vuvy000ab44dujmjf6nh",
       "name": "Noble Works Co.",
       "parentId": "work",
       "children": [
         {
-          "id": "cjvqple8h000cyzivkc2pj1mm",
+          "id": "cjvw6vuvy000cb44dbn7n118k",
           "name": "Last Be First",
-          "parentId": "cjvqple8h000ayzivd050ql95",
+          "parentId": "cjvw6vuvy000ab44dujmjf6nh",
           "children": [],
-          "created": 1494900619.112173,
-          "createdBy": "cjvqple6n0000yzivpmfsdgtd",
-          "modified": 1494900943.1289055,
-          "modifiedBy": "cjvqple6n0000yzivpmfsdgtd"
+          "created": 1495231969.987736,
+          "createdBy": "cjvw6vuub0000b44d0fg7nha1",
+          "modified": 1495232024.626797,
+          "modifiedBy": "cjvw6vuub0000b44d0fg7nha1"
         },
         {
-          "id": "cjvqple8h000dyziv5j9bx8j4",
+          "id": "cjvw6vuvy000db44dijulzhnk",
           "name": "Big Tree",
-          "parentId": "cjvqple8h000ayzivd050ql95",
+          "parentId": "cjvw6vuvy000ab44dujmjf6nh",
           "children": [],
-          "created": 1494900619.112173,
-          "createdBy": "cjvqple6n0000yzivpmfsdgtd",
-          "modified": 1494900937.4573903,
-          "modifiedBy": "cjvqple6n0000yzivpmfsdgtd"
+          "created": 1495231969.987736,
+          "createdBy": "cjvw6vuub0000b44d0fg7nha1",
+          "modified": 1495232111.4956267,
+          "modifiedBy": "cjvw6vuub0000b44d0fg7nha1"
         },
         {
-          "id": "cjvqple8h000eyzivei894nir",
+          "id": "cjvw6vuvy000eb44da2nqo761",
           "name": "Inner Light",
-          "parentId": "cjvqple8h000ayzivd050ql95",
+          "parentId": "cjvw6vuvy000ab44dujmjf6nh",
           "children": [],
-          "created": 1494900619.112173,
-          "createdBy": "cjvqple6n0000yzivpmfsdgtd",
-          "modified": 1494900902.9670658,
-          "modifiedBy": "cjvqple6n0000yzivpmfsdgtd"
+          "created": 1495231969.987736,
+          "createdBy": "cjvw6vuub0000b44d0fg7nha1",
+          "modified": 1495232297.2670171,
+          "modifiedBy": "cjvw6vuub0000b44d0fg7nha1"
         }
       ],
-      "created": 1494900595.31678,
-      "createdBy": "cjvqple6n0000yzivpmfsdgtd",
-      "modified": 1494900730.3742204,
-      "modifiedBy": "cjvqple6n0000yzivpmfsdgtd"
+      "created": 1495231957.6087785,
+      "createdBy": "cjvw6vuub0000b44d0fg7nha1",
+      "modified": 1495232080.9721122,
+      "modifiedBy": "cjvw6vuub0000b44d0fg7nha1"
     },
     {
-      "id": "cjvqple8h000byziv4jb6xpug",
+      "id": "cjvw6vuvy000bb44dyc3jsm09",
       "name": "Freelancing",
       "parentId": "work",
       "children": [
         {
-          "id": "cjvqple8h000fyzivncshtjxp",
+          "id": "cjvw6vuvy000fb44d6bulx3os",
           "name": "Funky Veggies",
-          "parentId": "cjvqple8h000byziv4jb6xpug",
+          "parentId": "cjvw6vuvy000bb44dyc3jsm09",
           "children": [],
-          "created": 1494900603.200373,
-          "createdBy": "cjvqple6n0000yzivpmfsdgtd",
-          "modified": 1494900764.1569664,
-          "modifiedBy": "cjvqple6n0000yzivpmfsdgtd"
+          "created": 1495231968.8658273,
+          "createdBy": "cjvw6vuub0000b44d0fg7nha1",
+          "modified": 1495232061.9815226,
+          "modifiedBy": "cjvw6vuub0000b44d0fg7nha1"
         },
         {
-          "id": "cjvqple8h000gyzivpt9bopem",
+          "id": "cjvw6vuvy000gb44d45bu8f9v",
           "name": "Jojo Lapin & sons",
-          "parentId": "cjvqple8h000byziv4jb6xpug",
+          "parentId": "cjvw6vuvy000bb44dyc3jsm09",
           "children": [],
-          "created": 1494900603.200373,
-          "createdBy": "cjvqple6n0000yzivpmfsdgtd",
-          "modified": 1494900721.1128387,
-          "modifiedBy": "cjvqple6n0000yzivpmfsdgtd"
+          "created": 1495231968.8658273,
+          "createdBy": "cjvw6vuub0000b44d0fg7nha1",
+          "modified": 1495232050.1259031,
+          "modifiedBy": "cjvw6vuub0000b44d0fg7nha1"
         }
       ],
-      "created": 1494900595.31678,
-      "createdBy": "cjvqple6n0000yzivpmfsdgtd",
-      "modified": 1494900907.5662115,
-      "modifiedBy": "cjvqple6n0000yzivpmfsdgtd"
+      "created": 1495231957.6087785,
+      "createdBy": "cjvw6vuub0000b44d0fg7nha1",
+      "modified": 1495232161.783113,
+      "modifiedBy": "cjvw6vuub0000b44d0fg7nha1"
     }
   ]
 }</code></pre></div></div></div></aside></section><section id="methods-streams-streams-create" class="method"> <h3 id="create-stream">Create stream</h3>
@@ -1268,10 +1298,10 @@ API-Version: 1.3.41
     "name": "Diastolic pressure",
     "parentId": "heart",
     "children": [],
-    "created": 1558014479.441,
-    "createdBy": "cjvqple6o0001yzivdhjzd8v3",
-    "modified": 1558014479.441,
-    "modifiedBy": "cjvqple6o0001yzivdhjzd8v3"
+    "created": 1558345851.934,
+    "createdBy": "cjvw6vuub0001b44djqx2oqca",
+    "modified": 1558345851.934,
+    "modifiedBy": "cjvw6vuub0001b44djqx2oqca"
   }
 }</code></pre></div><div class="tab-pane http"><pre><code>curl -i -X POST -H 'Content-Type: application/json' -d '{"id":"diastolic","name":"Diastolic pressure","parentId":"heart"}' https://${username}.pryv.me/streams?auth=${token}</code></pre><div class="step-marker">⬇</div><pre><code>HTTP/1.1 201 Created
 Content-Type: application/json; charset=utf-8
@@ -1283,10 +1313,10 @@ API-Version: 1.3.41
     "name": "Diastolic pressure",
     "parentId": "heart",
     "children": [],
-    "created": 1558014479.441,
-    "createdBy": "cjvqple6o0001yzivdhjzd8v3",
-    "modified": 1558014479.441,
-    "modifiedBy": "cjvqple6o0001yzivdhjzd8v3"
+    "created": 1558345851.934,
+    "createdBy": "cjvw6vuub0001b44djqx2oqca",
+    "modified": 1558345851.934,
+    "modifiedBy": "cjvw6vuub0001b44djqx2oqca"
   }
 }</code></pre></div><div class="tab-pane sockets"><pre><code>socket.emit('streams.create', {"id":"diastolic","name":"Diastolic pressure","parentId":"heart"}, callback);</code></pre><div class="step-marker">⬇</div><pre><code>{
   "stream": {
@@ -1294,10 +1324,10 @@ API-Version: 1.3.41
     "name": "Diastolic pressure",
     "parentId": "heart",
     "children": [],
-    "created": 1558014479.441,
-    "createdBy": "cjvqple6o0001yzivdhjzd8v3",
-    "modified": 1558014479.441,
-    "modifiedBy": "cjvqple6o0001yzivdhjzd8v3"
+    "created": 1558345851.934,
+    "createdBy": "cjvw6vuub0001b44djqx2oqca",
+    "modified": 1558345851.934,
+    "modifiedBy": "cjvw6vuub0001b44djqx2oqca"
   }
 }</code></pre></div></div></div></aside></section><section id="methods-streams-streams-update" class="method"> <h3 id="update-stream">Update stream</h3>
 <div class="content"><div class="meta"><span class="method-id"><span class="label">id</span><span class="label-value"><code>streams.update</code></span></span><span class="http"><span class="label">HTTP</span><span class="label-value"><code>PUT /streams/{id}</code></span></span></div><div class="intro"><p>Modifies the stream.</p>
@@ -1315,12 +1345,12 @@ API-Version: 1.3.41
 }</code></pre><div class="step-marker">⬇</div><pre><code>{
   "stream": {
     "name": "Slothing",
-    "modified": 1558014479.669,
-    "modifiedBy": "cjvqple6o0001yzivdhjzd8v3",
+    "modified": 1558345852.155,
+    "modifiedBy": "cjvw6vuub0001b44djqx2oqca",
     "id": "sport",
     "parentId": null,
-    "created": 1494900575.441,
-    "createdBy": "cjvqple6n0000yzivpmfsdgtd"
+    "created": 1495231947.934,
+    "createdBy": "cjvw6vuub0000b44d0fg7nha1"
   }
 }</code></pre></div><div class="tab-pane http"><pre><code>curl -i -X PUT -H 'Content-Type: application/json' -d '{"name":"Slothing"}' https://${username}.pryv.me/streams/sport?auth=${token}</code></pre><div class="step-marker">⬇</div><pre><code>HTTP/1.1 200 OK
 Content-Type: application/json; charset=utf-8
@@ -1329,22 +1359,22 @@ API-Version: 1.3.41
 {
   "stream": {
     "name": "Slothing",
-    "modified": 1558014479.669,
-    "modifiedBy": "cjvqple6o0001yzivdhjzd8v3",
+    "modified": 1558345852.155,
+    "modifiedBy": "cjvw6vuub0001b44djqx2oqca",
     "id": "sport",
     "parentId": null,
-    "created": 1494900575.441,
-    "createdBy": "cjvqple6n0000yzivpmfsdgtd"
+    "created": 1495231947.934,
+    "createdBy": "cjvw6vuub0000b44d0fg7nha1"
   }
 }</code></pre></div><div class="tab-pane sockets"><pre><code>socket.emit('streams.update', {"id":"sport","update":{"name":"Slothing"}}, callback);</code></pre><div class="step-marker">⬇</div><pre><code>{
   "stream": {
     "name": "Slothing",
-    "modified": 1558014479.669,
-    "modifiedBy": "cjvqple6o0001yzivdhjzd8v3",
+    "modified": 1558345852.155,
+    "modifiedBy": "cjvw6vuub0001b44djqx2oqca",
     "id": "sport",
     "parentId": null,
-    "created": 1494900575.441,
-    "createdBy": "cjvqple6n0000yzivpmfsdgtd"
+    "created": 1495231947.934,
+    "createdBy": "cjvw6vuub0000b44d0fg7nha1"
   }
 }</code></pre></div></div></div></aside></section><section id="methods-streams-streams-delete" class="method"> <h3 id="delete-stream">Delete stream</h3>
 <div class="content"><div class="meta"><span class="method-id"><span class="label">id</span><span class="label-value"><code>streams.delete</code></span></span><span class="http"><span class="label">HTTP</span><span class="label-value"><code>DELETE /streams/{id}</code></span></span></div><div class="intro"><p>Trashes or deletes the specified stream, depending on its current state:</p>
@@ -1365,14 +1395,14 @@ API-Version: 1.3.41
 }</code></pre><div class="step-marker">⬇</div><pre><code>{
   "event": {
     "trashed": true,
-    "modified": 1558014479.669,
-    "modifiedBy": "cjvqple6o0001yzivdhjzd8v3",
+    "modified": 1558345852.156,
+    "modifiedBy": "cjvw6vuub0001b44djqx2oqca",
     "id": "weight",
     "name": "Weight",
     "parentId": "health",
     "children": [],
-    "created": 1494900577.457688,
-    "createdBy": "cjvqple6n0000yzivpmfsdgtd"
+    "created": 1495231953.4383173,
+    "createdBy": "cjvw6vuub0000b44d0fg7nha1"
   }
 }</code></pre></div><div class="tab-pane http"><pre><code>curl -i -X DELETE https://${username}.pryv.me/streams/weight?auth=${token}</code></pre><div class="step-marker">⬇</div><pre><code>HTTP/1.1 200 OK
 Content-Type: application/json; charset=utf-8
@@ -1381,26 +1411,26 @@ API-Version: 1.3.41
 {
   "event": {
     "trashed": true,
-    "modified": 1558014479.669,
-    "modifiedBy": "cjvqple6o0001yzivdhjzd8v3",
+    "modified": 1558345852.156,
+    "modifiedBy": "cjvw6vuub0001b44djqx2oqca",
     "id": "weight",
     "name": "Weight",
     "parentId": "health",
     "children": [],
-    "created": 1494900577.457688,
-    "createdBy": "cjvqple6n0000yzivpmfsdgtd"
+    "created": 1495231953.4383173,
+    "createdBy": "cjvw6vuub0000b44d0fg7nha1"
   }
 }</code></pre></div><div class="tab-pane sockets"><pre><code>socket.emit('streams.delete', {"id":"weight"}, callback);</code></pre><div class="step-marker">⬇</div><pre><code>{
   "event": {
     "trashed": true,
-    "modified": 1558014479.669,
-    "modifiedBy": "cjvqple6o0001yzivdhjzd8v3",
+    "modified": 1558345852.156,
+    "modifiedBy": "cjvw6vuub0001b44djqx2oqca",
     "id": "weight",
     "name": "Weight",
     "parentId": "health",
     "children": [],
-    "created": 1494900577.457688,
-    "createdBy": "cjvqple6n0000yzivpmfsdgtd"
+    "created": 1495231953.4383173,
+    "createdBy": "cjvw6vuub0000b44d0fg7nha1"
   }
 }</code></pre></div></div></div><div class="example"><p>Deleting</p>
 <div class="tab-content"><div class="tab-pane json active"><pre><code>{
@@ -1438,8 +1468,8 @@ the <code>includeExpired</code> parameter.</p>
 </div></td></tr></table></div><aside><div class="example"><div class="tab-content"><div class="tab-pane json active"><pre><code>{}</code></pre><div class="step-marker">⬇</div><pre><code>{
   "accesses": [
     {
-      "id": "cjvqple6o0004yzivzomcdwzy",
-      "token": "cjvqple6o0005yzivk47m735i",
+      "id": "cjvw6vuuc0004b44dkswtbck4",
+      "token": "cjvw6vuuc0005b44dyakwt6x0",
       "type": "shared",
       "name": "Arthur",
       "permissions": [
@@ -1448,10 +1478,10 @@ the <code>includeExpired</code> parameter.</p>
           "level": "contribute"
         }
       ],
-      "created": 1557971279.376,
-      "createdBy": "cjvqple6o0001yzivdhjzd8v3",
-      "modified": 1557971279.376,
-      "modifiedBy": "cjvqple6o0001yzivdhjzd8v3"
+      "created": 1558302651.876,
+      "createdBy": "cjvw6vuub0001b44djqx2oqca",
+      "modified": 1558302651.876,
+      "modifiedBy": "cjvw6vuub0001b44djqx2oqca"
     }
   ]
 }</code></pre></div><div class="tab-pane http"><pre><code>curl -i https://${username}.pryv.me/accesses?auth=${token}</code></pre><div class="step-marker">⬇</div><pre><code>HTTP/1.1 200 OK
@@ -1461,8 +1491,8 @@ API-Version: 1.3.41
 {
   "accesses": [
     {
-      "id": "cjvqple6o0004yzivzomcdwzy",
-      "token": "cjvqple6o0005yzivk47m735i",
+      "id": "cjvw6vuuc0004b44dkswtbck4",
+      "token": "cjvw6vuuc0005b44dyakwt6x0",
       "type": "shared",
       "name": "Arthur",
       "permissions": [
@@ -1471,17 +1501,17 @@ API-Version: 1.3.41
           "level": "contribute"
         }
       ],
-      "created": 1557971279.376,
-      "createdBy": "cjvqple6o0001yzivdhjzd8v3",
-      "modified": 1557971279.376,
-      "modifiedBy": "cjvqple6o0001yzivdhjzd8v3"
+      "created": 1558302651.876,
+      "createdBy": "cjvw6vuub0001b44djqx2oqca",
+      "modified": 1558302651.876,
+      "modifiedBy": "cjvw6vuub0001b44djqx2oqca"
     }
   ]
 }</code></pre></div><div class="tab-pane sockets"><pre><code>socket.emit('accesses.get', {}, callback);</code></pre><div class="step-marker">⬇</div><pre><code>{
   "accesses": [
     {
-      "id": "cjvqple6o0004yzivzomcdwzy",
-      "token": "cjvqple6o0005yzivk47m735i",
+      "id": "cjvw6vuuc0004b44dkswtbck4",
+      "token": "cjvw6vuuc0005b44dyakwt6x0",
       "type": "shared",
       "name": "Arthur",
       "permissions": [
@@ -1490,10 +1520,10 @@ API-Version: 1.3.41
           "level": "contribute"
         }
       ],
-      "created": 1557971279.376,
-      "createdBy": "cjvqple6o0001yzivdhjzd8v3",
-      "modified": 1557971279.376,
-      "modifiedBy": "cjvqple6o0001yzivdhjzd8v3"
+      "created": 1558302651.876,
+      "createdBy": "cjvw6vuub0001b44djqx2oqca",
+      "modified": 1558302651.876,
+      "modifiedBy": "cjvw6vuub0001b44djqx2oqca"
     }
   ]
 }</code></pre></div></div></div><div class="example"><p>cURL with deletions</p>
@@ -1502,8 +1532,8 @@ API-Version: 1.3.41
 <div class="step-marker">⬇</div><pre><code>{
   "accesses": [
     {
-      "id": "cjvqple6o0004yzivzomcdwzy",
-      "token": "cjvqple6o0005yzivk47m735i",
+      "id": "cjvw6vuuc0004b44dkswtbck4",
+      "token": "cjvw6vuuc0005b44dyakwt6x0",
       "type": "shared",
       "name": "Arthur",
       "permissions": [
@@ -1512,16 +1542,16 @@ API-Version: 1.3.41
           "level": "contribute"
         }
       ],
-      "created": 1557971279.376,
-      "createdBy": "cjvqple6o0001yzivdhjzd8v3",
-      "modified": 1557971279.376,
-      "modifiedBy": "cjvqple6o0001yzivdhjzd8v3"
+      "created": 1558302651.876,
+      "createdBy": "cjvw6vuub0001b44djqx2oqca",
+      "modified": 1558302651.876,
+      "modifiedBy": "cjvw6vuub0001b44djqx2oqca"
     }
   ],
   "accessDeletions": [
     {
-      "id": "cjvqple6p0008yzivah5sfe4f",
-      "token": "cjvqple6p0009yzivz93gefte",
+      "id": "cjvw6vuuc0008b44dvqqcs5qv",
+      "token": "cjvw6vuuc0009b44djauhlx54",
       "type": "shared",
       "name": "Health parameters survey",
       "permissions": [
@@ -1530,11 +1560,11 @@ API-Version: 1.3.41
           "level": "read"
         }
       ],
-      "created": 1558014359.377,
-      "createdBy": "cjvqple6o0001yzivdhjzd8v3",
-      "modified": 1558014359.377,
-      "modifiedBy": "cjvqple6o0001yzivdhjzd8v3",
-      "deleted": 1558014419.377
+      "created": 1558345731.876,
+      "createdBy": "cjvw6vuub0001b44djqx2oqca",
+      "modified": 1558345731.876,
+      "modifiedBy": "cjvw6vuub0001b44djqx2oqca",
+      "deleted": 1558345791.876
     }
   ]
 }</code></pre></div></aside></section><section id="methods-accesses-accesses-create" class="method"> <h3 id="create-access">Create access</h3>
@@ -1555,8 +1585,8 @@ API-Version: 1.3.41
   ]
 }</code></pre><div class="step-marker">⬇</div><pre><code>{
   "access": {
-    "id": "cjvqple6o0006yzivst3c2l22",
-    "token": "cjvqple6o0007yziv8j69mf17",
+    "id": "cjvw6vuuc0006b44dxi65s97r",
+    "token": "cjvw6vuuc0007b44dskvxg62k",
     "type": "shared",
     "name": "For colleagues",
     "permissions": [
@@ -1565,10 +1595,10 @@ API-Version: 1.3.41
         "level": "read"
       }
     ],
-    "created": 1558014479.376,
-    "createdBy": "cjvqple6o0001yzivdhjzd8v3",
-    "modified": 1558014479.377,
-    "modifiedBy": "cjvqple6o0001yzivdhjzd8v3"
+    "created": 1558345851.876,
+    "createdBy": "cjvw6vuub0001b44djqx2oqca",
+    "modified": 1558345851.876,
+    "modifiedBy": "cjvw6vuub0001b44djqx2oqca"
   }
 }</code></pre></div><div class="tab-pane http"><pre><code>curl -i -X POST -H 'Content-Type: application/json' -d '{"name":"For colleagues","permissions":[{"streamId":"work","level":"read"}]}' https://${username}.pryv.me/accesses?auth=${token}</code></pre><div class="step-marker">⬇</div><pre><code>HTTP/1.1 201 Created
 Content-Type: application/json; charset=utf-8
@@ -1576,8 +1606,8 @@ API-Version: 1.3.41
 
 {
   "access": {
-    "id": "cjvqple6o0006yzivst3c2l22",
-    "token": "cjvqple6o0007yziv8j69mf17",
+    "id": "cjvw6vuuc0006b44dxi65s97r",
+    "token": "cjvw6vuuc0007b44dskvxg62k",
     "type": "shared",
     "name": "For colleagues",
     "permissions": [
@@ -1586,15 +1616,15 @@ API-Version: 1.3.41
         "level": "read"
       }
     ],
-    "created": 1558014479.376,
-    "createdBy": "cjvqple6o0001yzivdhjzd8v3",
-    "modified": 1558014479.377,
-    "modifiedBy": "cjvqple6o0001yzivdhjzd8v3"
+    "created": 1558345851.876,
+    "createdBy": "cjvw6vuub0001b44djqx2oqca",
+    "modified": 1558345851.876,
+    "modifiedBy": "cjvw6vuub0001b44djqx2oqca"
   }
 }</code></pre></div><div class="tab-pane sockets"><pre><code>socket.emit('accesses.create', {"name":"For colleagues","permissions":[{"streamId":"work","level":"read"}]}, callback);</code></pre><div class="step-marker">⬇</div><pre><code>{
   "access": {
-    "id": "cjvqple6o0006yzivst3c2l22",
-    "token": "cjvqple6o0007yziv8j69mf17",
+    "id": "cjvw6vuuc0006b44dxi65s97r",
+    "token": "cjvw6vuuc0007b44dskvxg62k",
     "type": "shared",
     "name": "For colleagues",
     "permissions": [
@@ -1603,10 +1633,10 @@ API-Version: 1.3.41
         "level": "read"
       }
     ],
-    "created": 1558014479.376,
-    "createdBy": "cjvqple6o0001yzivdhjzd8v3",
-    "modified": 1558014479.377,
-    "modifiedBy": "cjvqple6o0001yzivdhjzd8v3"
+    "created": 1558345851.876,
+    "createdBy": "cjvw6vuub0001b44djqx2oqca",
+    "modified": 1558345851.876,
+    "modifiedBy": "cjvw6vuub0001b44djqx2oqca"
   }
 }</code></pre></div></div></div></aside></section><section id="methods-accesses-accesses-delete" class="method"> <h3 id="delete-access">Delete access</h3>
 <div class="content"><div class="meta"><span class="method-id"><span class="label">id</span><span class="label-value"><code>accesses.delete</code></span></span><span class="http"><span class="label">HTTP</span><span class="label-value"><code>DELETE /accesses/{id}</code></span></span></div><div class="intro"><p>Deletes the specified access. You can only delete accesses whose permissions are a subset of those granted to your own access token.</p>
@@ -1615,22 +1645,22 @@ API-Version: 1.3.41
 </div></td></tr></table><h4 id="result">Result</h4>
 <span class="http"><span class="label">HTTP</span><span class="label-value"><code>200 OK</code></span></span><table class="definitions"><tr><th><code>accessDeletion</code></th><td><div class="header"><span class="type"><a href="#data-structure-item-deletion">item deletion</a></span></div><div class="description"><p>The deletion record.</p>
 </div></td></tr></table></div><aside><div class="example"><div class="tab-content"><div class="tab-pane json active"><pre><code>{
-  "id": "cjvqple6o0004yzivzomcdwzy"
+  "id": "cjvw6vuuc0004b44dkswtbck4"
 }</code></pre><div class="step-marker">⬇</div><pre><code>{
   "accessDeletion": {
-    "id": "cjvqple6o0004yzivzomcdwzy"
+    "id": "cjvw6vuuc0004b44dkswtbck4"
   }
-}</code></pre></div><div class="tab-pane http"><pre><code>curl -i -X DELETE https://${username}.pryv.me/accesses/cjvqple6o0004yzivzomcdwzy?auth=${token}</code></pre><div class="step-marker">⬇</div><pre><code>HTTP/1.1 200 OK
+}</code></pre></div><div class="tab-pane http"><pre><code>curl -i -X DELETE https://${username}.pryv.me/accesses/cjvw6vuuc0004b44dkswtbck4?auth=${token}</code></pre><div class="step-marker">⬇</div><pre><code>HTTP/1.1 200 OK
 Content-Type: application/json; charset=utf-8
 API-Version: 1.3.41
 
 {
   "accessDeletion": {
-    "id": "cjvqple6o0004yzivzomcdwzy"
+    "id": "cjvw6vuuc0004b44dkswtbck4"
   }
-}</code></pre></div><div class="tab-pane sockets"><pre><code>socket.emit('accesses.delete', {"id":"cjvqple6o0004yzivzomcdwzy"}, callback);</code></pre><div class="step-marker">⬇</div><pre><code>{
+}</code></pre></div><div class="tab-pane sockets"><pre><code>socket.emit('accesses.delete', {"id":"cjvw6vuuc0004b44dkswtbck4"}, callback);</code></pre><div class="step-marker">⬇</div><pre><code>{
   "accessDeletion": {
-    "id": "cjvqple6o0004yzivzomcdwzy"
+    "id": "cjvw6vuuc0004b44dkswtbck4"
   }
 }</code></pre></div></div></div></aside></section></section><section id="methods-profile"><h2 id="profile-sets">Profile sets</h2>
 <div class="content"><div class="meta"></div><div class="intro"><p>Methods to read and write profile sets. Profile sets are plain key-value stores of user-level settings.</p>
@@ -1793,44 +1823,44 @@ API-Version: 1.3.41
   "results": [
     {
       "event": {
-        "id": "cjvqple8i000qyzivk1lfnowl",
+        "id": "cjvw6vuvz000qb44d3hknyu6e",
         "time": 1385046854.282,
         "streamId": "heart",
         "tags": [],
         "type": "frequency/bpm",
         "content": 90,
-        "created": 1558014479.442,
-        "createdBy": "cjvqple6o0001yzivdhjzd8v3",
-        "modified": 1558014479.442,
-        "modifiedBy": "cjvqple6o0001yzivdhjzd8v3"
+        "created": 1558345851.935,
+        "createdBy": "cjvw6vuub0001b44djqx2oqca",
+        "modified": 1558345851.935,
+        "modifiedBy": "cjvw6vuub0001b44djqx2oqca"
       }
     },
     {
       "event": {
-        "id": "cjvqple8i000ryzivofdhct5u",
+        "id": "cjvw6vuvz000rb44do3txozio",
         "time": 1385046854.282,
         "streamId": "systolic",
         "tags": [],
         "type": "pressure/mmhg",
         "content": 120,
-        "created": 1558014479.442,
-        "createdBy": "cjvqple6o0001yzivdhjzd8v3",
-        "modified": 1558014479.442,
-        "modifiedBy": "cjvqple6o0001yzivdhjzd8v3"
+        "created": 1558345851.935,
+        "createdBy": "cjvw6vuub0001b44djqx2oqca",
+        "modified": 1558345851.935,
+        "modifiedBy": "cjvw6vuub0001b44djqx2oqca"
       }
     },
     {
       "event": {
-        "id": "cjvqple8i000syziv5p1taaxd",
+        "id": "cjvw6vuvz000sb44dflu1laqp",
         "time": 1385046854.282,
         "streamId": "diastolic",
         "tags": [],
         "type": "pressure/mmhg",
         "content": 80,
-        "created": 1558014479.442,
-        "createdBy": "cjvqple6o0001yzivdhjzd8v3",
-        "modified": 1558014479.442,
-        "modifiedBy": "cjvqple6o0001yzivdhjzd8v3"
+        "created": 1558345851.935,
+        "createdBy": "cjvw6vuub0001b44djqx2oqca",
+        "modified": 1558345851.935,
+        "modifiedBy": "cjvw6vuub0001b44djqx2oqca"
       }
     }
   ]
@@ -1842,44 +1872,44 @@ API-Version: 1.3.41
   "results": [
     {
       "event": {
-        "id": "cjvqple8i000qyzivk1lfnowl",
+        "id": "cjvw6vuvz000qb44d3hknyu6e",
         "time": 1385046854.282,
         "streamId": "heart",
         "tags": [],
         "type": "frequency/bpm",
         "content": 90,
-        "created": 1558014479.442,
-        "createdBy": "cjvqple6o0001yzivdhjzd8v3",
-        "modified": 1558014479.442,
-        "modifiedBy": "cjvqple6o0001yzivdhjzd8v3"
+        "created": 1558345851.935,
+        "createdBy": "cjvw6vuub0001b44djqx2oqca",
+        "modified": 1558345851.935,
+        "modifiedBy": "cjvw6vuub0001b44djqx2oqca"
       }
     },
     {
       "event": {
-        "id": "cjvqple8i000ryzivofdhct5u",
+        "id": "cjvw6vuvz000rb44do3txozio",
         "time": 1385046854.282,
         "streamId": "systolic",
         "tags": [],
         "type": "pressure/mmhg",
         "content": 120,
-        "created": 1558014479.442,
-        "createdBy": "cjvqple6o0001yzivdhjzd8v3",
-        "modified": 1558014479.442,
-        "modifiedBy": "cjvqple6o0001yzivdhjzd8v3"
+        "created": 1558345851.935,
+        "createdBy": "cjvw6vuub0001b44djqx2oqca",
+        "modified": 1558345851.935,
+        "modifiedBy": "cjvw6vuub0001b44djqx2oqca"
       }
     },
     {
       "event": {
-        "id": "cjvqple8i000syziv5p1taaxd",
+        "id": "cjvw6vuvz000sb44dflu1laqp",
         "time": 1385046854.282,
         "streamId": "diastolic",
         "tags": [],
         "type": "pressure/mmhg",
         "content": 80,
-        "created": 1558014479.442,
-        "createdBy": "cjvqple6o0001yzivdhjzd8v3",
-        "modified": 1558014479.442,
-        "modifiedBy": "cjvqple6o0001yzivdhjzd8v3"
+        "created": 1558345851.935,
+        "createdBy": "cjvw6vuub0001b44djqx2oqca",
+        "modified": 1558345851.935,
+        "modifiedBy": "cjvw6vuub0001b44djqx2oqca"
       }
     }
   ]
@@ -1887,44 +1917,44 @@ API-Version: 1.3.41
   "results": [
     {
       "event": {
-        "id": "cjvqple8i000qyzivk1lfnowl",
+        "id": "cjvw6vuvz000qb44d3hknyu6e",
         "time": 1385046854.282,
         "streamId": "heart",
         "tags": [],
         "type": "frequency/bpm",
         "content": 90,
-        "created": 1558014479.442,
-        "createdBy": "cjvqple6o0001yzivdhjzd8v3",
-        "modified": 1558014479.442,
-        "modifiedBy": "cjvqple6o0001yzivdhjzd8v3"
+        "created": 1558345851.935,
+        "createdBy": "cjvw6vuub0001b44djqx2oqca",
+        "modified": 1558345851.935,
+        "modifiedBy": "cjvw6vuub0001b44djqx2oqca"
       }
     },
     {
       "event": {
-        "id": "cjvqple8i000ryzivofdhct5u",
+        "id": "cjvw6vuvz000rb44do3txozio",
         "time": 1385046854.282,
         "streamId": "systolic",
         "tags": [],
         "type": "pressure/mmhg",
         "content": 120,
-        "created": 1558014479.442,
-        "createdBy": "cjvqple6o0001yzivdhjzd8v3",
-        "modified": 1558014479.442,
-        "modifiedBy": "cjvqple6o0001yzivdhjzd8v3"
+        "created": 1558345851.935,
+        "createdBy": "cjvw6vuub0001b44djqx2oqca",
+        "modified": 1558345851.935,
+        "modifiedBy": "cjvw6vuub0001b44djqx2oqca"
       }
     },
     {
       "event": {
-        "id": "cjvqple8i000syziv5p1taaxd",
+        "id": "cjvw6vuvz000sb44dflu1laqp",
         "time": 1385046854.282,
         "streamId": "diastolic",
         "tags": [],
         "type": "pressure/mmhg",
         "content": 80,
-        "created": 1558014479.442,
-        "createdBy": "cjvqple6o0001yzivdhjzd8v3",
-        "modified": 1558014479.442,
-        "modifiedBy": "cjvqple6o0001yzivdhjzd8v3"
+        "created": 1558345851.935,
+        "createdBy": "cjvw6vuub0001b44djqx2oqca",
+        "modified": 1558345851.935,
+        "modifiedBy": "cjvw6vuub0001b44djqx2oqca"
       }
     }
   ]
@@ -1953,40 +1983,40 @@ API-Version: 1.3.41
 </div></td></tr><tr><th><code>modifiedBy</code></th><td><div class="header"><span class="type"><a href="#data-structure-identifier">identifier</a></span><span class="label label-default read-only">read-only</span></div><div class="description"><p>The id of the last access used to modify the event.</p>
 </div></td></tr></table></div><aside><div class="example"><p>A picture</p>
 <pre><code>{
-  "id": "cjvqple8i000yyzivo6ig4v72",
-  "time": 1558010879.442,
+  "id": "cjvw6vuvz000yb44dxj63o689",
+  "time": 1558342251.935,
   "streamId": "diary",
   "tags": [],
   "type": "picture/attached",
   "content": null,
   "attachments": [
     {
-      "id": "cjvqple8i000zyziv9hhi70qq",
+      "id": "cjvw6vuvz000zb44djrxo2f8z",
       "fileName": "photo.jpg",
       "type": "image/jpeg",
       "size": 2561,
-      "readToken": "cjvqple8i0010yziv9szmyovp-sqpgfaqON8R5V8iLvyIgabrjoz4"
+      "readToken": "cjvw6vuvz0010b44djwzinhb8-UMajdlUAYOYbQMUBwiBYFd4GpiH"
     }
   ],
-  "created": 1558010879.442,
-  "createdBy": "cjvqple6o0004yzivzomcdwzy",
-  "modified": 1558010879.442,
-  "modifiedBy": "cjvqple6o0004yzivzomcdwzy"
+  "created": 1558342251.935,
+  "createdBy": "cjvw6vuuc0004b44dkswtbck4",
+  "modified": 1558342251.935,
+  "modifiedBy": "cjvw6vuuc0004b44dkswtbck4"
 }</code></pre></div><div class="example"><p>An activity</p>
 <pre><code>{
-  "id": "cjvqple8h000lyzivvylx4vqr",
-  "time": 1558014479.441,
+  "id": "cjvw6vuvy000lb44dhml6y2i9",
+  "time": 1558345851.934,
   "streamId": "jogging",
   "tags": [],
   "type": "activity/pryv",
   "content": null,
-  "created": 1558014479.441,
-  "createdBy": "cjvqple6o0001yzivdhjzd8v3",
-  "modified": 1558014479.441,
-  "modifiedBy": "cjvqple6o0001yzivdhjzd8v3"
+  "created": 1558345851.934,
+  "createdBy": "cjvw6vuub0001b44djqx2oqca",
+  "modified": 1558345851.934,
+  "modifiedBy": "cjvw6vuub0001b44djqx2oqca"
 }</code></pre></div><div class="example"><p>A position</p>
 <pre><code>{
-  "id": "cjvqple8i0011yzivapjja9fo",
+  "id": "cjvw6vuvz0011b44dpt7ckz86",
   "time": 1350373077.359,
   "streamId": "diary",
   "tags": [],
@@ -1995,10 +2025,10 @@ API-Version: 1.3.41
     "latitude": 40.714728,
     "longitude": -73.998672
   },
-  "created": 1558007279.442,
-  "createdBy": "cjvqple6n0000yzivpmfsdgtd",
-  "modified": 1558007279.442,
-  "modifiedBy": "cjvqple6n0000yzivpmfsdgtd"
+  "created": 1558338651.935,
+  "createdBy": "cjvw6vuub0000b44d0fg7nha1",
+  "modified": 1558338651.935,
+  "modifiedBy": "cjvw6vuub0000b44d0fg7nha1"
 }</code></pre></div></aside></section><section id="data-structure-stream"><h2 id="stream">Stream</h2>
 <div class="content"><div class="meta"></div><div class="intro"><p>See also: <a href="/concepts/#streams">core concepts</a>.</p>
 </div><table class="definitions"><tr><th><code>id</code></th><td><div class="header"><span class="type"><a href="#data-structure-identifier">identifier</a></span><span class="label label-default unique">unique</span><span class="label label-default read-only">read-only (except at creation)</span></div><div class="description"><p>The identifier for the stream. Automatically generated if not set when creating the stream; <strong>slugified if necessary</strong>.</p>
@@ -2024,26 +2054,26 @@ API-Version: 1.3.41
         "name": "Jogging",
         "parentId": "sport",
         "children": [],
-        "created": 1494900599.645737,
-        "createdBy": "cjvqple6n0000yzivpmfsdgtd",
-        "modified": 1494900825.0698783,
-        "modifiedBy": "cjvqple6n0000yzivpmfsdgtd"
+        "created": 1495231971.1519148,
+        "createdBy": "cjvw6vuub0000b44d0fg7nha1",
+        "modified": 1495232123.887794,
+        "modifiedBy": "cjvw6vuub0000b44d0fg7nha1"
       },
       {
         "id": "bicycling",
         "name": "Bicycling",
         "parentId": "sport",
         "children": [],
-        "created": 1494900599.645737,
-        "createdBy": "cjvqple6n0000yzivpmfsdgtd",
-        "modified": 1494900769.5894413,
-        "modifiedBy": "cjvqple6n0000yzivpmfsdgtd"
+        "created": 1495231971.1519148,
+        "createdBy": "cjvw6vuub0000b44d0fg7nha1",
+        "modified": 1495231995.3144586,
+        "modifiedBy": "cjvw6vuub0000b44d0fg7nha1"
       }
     ],
-    "created": 1494900575.441,
-    "createdBy": "cjvqple6n0000yzivpmfsdgtd",
-    "modified": 1494900579.6245441,
-    "modifiedBy": "cjvqple6n0000yzivpmfsdgtd"
+    "created": 1495231947.934,
+    "createdBy": "cjvw6vuub0000b44d0fg7nha1",
+    "modified": 1495232251.584665,
+    "modifiedBy": "cjvw6vuub0000b44d0fg7nha1"
   },
   {
     "id": "work",
@@ -2052,82 +2082,82 @@ API-Version: 1.3.41
     "singleActivity": true,
     "children": [
       {
-        "id": "cjvqple8h000ayzivd050ql95",
+        "id": "cjvw6vuvy000ab44dujmjf6nh",
         "name": "Noble Works Co.",
         "parentId": "work",
         "children": [
           {
-            "id": "cjvqple8h000cyzivkc2pj1mm",
+            "id": "cjvw6vuvy000cb44dbn7n118k",
             "name": "Last Be First",
-            "parentId": "cjvqple8h000ayzivd050ql95",
+            "parentId": "cjvw6vuvy000ab44dujmjf6nh",
             "children": [],
-            "created": 1494900619.112173,
-            "createdBy": "cjvqple6n0000yzivpmfsdgtd",
-            "modified": 1494900943.1289055,
-            "modifiedBy": "cjvqple6n0000yzivpmfsdgtd"
+            "created": 1495231969.987736,
+            "createdBy": "cjvw6vuub0000b44d0fg7nha1",
+            "modified": 1495232024.626797,
+            "modifiedBy": "cjvw6vuub0000b44d0fg7nha1"
           },
           {
-            "id": "cjvqple8h000dyziv5j9bx8j4",
+            "id": "cjvw6vuvy000db44dijulzhnk",
             "name": "Big Tree",
-            "parentId": "cjvqple8h000ayzivd050ql95",
+            "parentId": "cjvw6vuvy000ab44dujmjf6nh",
             "children": [],
-            "created": 1494900619.112173,
-            "createdBy": "cjvqple6n0000yzivpmfsdgtd",
-            "modified": 1494900937.4573903,
-            "modifiedBy": "cjvqple6n0000yzivpmfsdgtd"
+            "created": 1495231969.987736,
+            "createdBy": "cjvw6vuub0000b44d0fg7nha1",
+            "modified": 1495232111.4956267,
+            "modifiedBy": "cjvw6vuub0000b44d0fg7nha1"
           },
           {
-            "id": "cjvqple8h000eyzivei894nir",
+            "id": "cjvw6vuvy000eb44da2nqo761",
             "name": "Inner Light",
-            "parentId": "cjvqple8h000ayzivd050ql95",
+            "parentId": "cjvw6vuvy000ab44dujmjf6nh",
             "children": [],
-            "created": 1494900619.112173,
-            "createdBy": "cjvqple6n0000yzivpmfsdgtd",
-            "modified": 1494900902.9670658,
-            "modifiedBy": "cjvqple6n0000yzivpmfsdgtd"
+            "created": 1495231969.987736,
+            "createdBy": "cjvw6vuub0000b44d0fg7nha1",
+            "modified": 1495232297.2670171,
+            "modifiedBy": "cjvw6vuub0000b44d0fg7nha1"
           }
         ],
-        "created": 1494900595.31678,
-        "createdBy": "cjvqple6n0000yzivpmfsdgtd",
-        "modified": 1494900730.3742204,
-        "modifiedBy": "cjvqple6n0000yzivpmfsdgtd"
+        "created": 1495231957.6087785,
+        "createdBy": "cjvw6vuub0000b44d0fg7nha1",
+        "modified": 1495232080.9721122,
+        "modifiedBy": "cjvw6vuub0000b44d0fg7nha1"
       },
       {
-        "id": "cjvqple8h000byziv4jb6xpug",
+        "id": "cjvw6vuvy000bb44dyc3jsm09",
         "name": "Freelancing",
         "parentId": "work",
         "children": [
           {
-            "id": "cjvqple8h000fyzivncshtjxp",
+            "id": "cjvw6vuvy000fb44d6bulx3os",
             "name": "Funky Veggies",
-            "parentId": "cjvqple8h000byziv4jb6xpug",
+            "parentId": "cjvw6vuvy000bb44dyc3jsm09",
             "children": [],
-            "created": 1494900603.200373,
-            "createdBy": "cjvqple6n0000yzivpmfsdgtd",
-            "modified": 1494900764.1569664,
-            "modifiedBy": "cjvqple6n0000yzivpmfsdgtd"
+            "created": 1495231968.8658273,
+            "createdBy": "cjvw6vuub0000b44d0fg7nha1",
+            "modified": 1495232061.9815226,
+            "modifiedBy": "cjvw6vuub0000b44d0fg7nha1"
           },
           {
-            "id": "cjvqple8h000gyzivpt9bopem",
+            "id": "cjvw6vuvy000gb44d45bu8f9v",
             "name": "Jojo Lapin & sons",
-            "parentId": "cjvqple8h000byziv4jb6xpug",
+            "parentId": "cjvw6vuvy000bb44dyc3jsm09",
             "children": [],
-            "created": 1494900603.200373,
-            "createdBy": "cjvqple6n0000yzivpmfsdgtd",
-            "modified": 1494900721.1128387,
-            "modifiedBy": "cjvqple6n0000yzivpmfsdgtd"
+            "created": 1495231968.8658273,
+            "createdBy": "cjvw6vuub0000b44d0fg7nha1",
+            "modified": 1495232050.1259031,
+            "modifiedBy": "cjvw6vuub0000b44d0fg7nha1"
           }
         ],
-        "created": 1494900595.31678,
-        "createdBy": "cjvqple6n0000yzivpmfsdgtd",
-        "modified": 1494900907.5662115,
-        "modifiedBy": "cjvqple6n0000yzivpmfsdgtd"
+        "created": 1495231957.6087785,
+        "createdBy": "cjvw6vuub0000b44d0fg7nha1",
+        "modified": 1495232161.783113,
+        "modifiedBy": "cjvw6vuub0000b44d0fg7nha1"
       }
     ],
-    "created": 1494900575.441,
-    "createdBy": "cjvqple6n0000yzivpmfsdgtd",
-    "modified": 1494900757.6114078,
-    "modifiedBy": "cjvqple6n0000yzivpmfsdgtd"
+    "created": 1495231947.934,
+    "createdBy": "cjvw6vuub0000b44d0fg7nha1",
+    "modified": 1495232206.5462348,
+    "modifiedBy": "cjvw6vuub0000b44d0fg7nha1"
   }
 ]</code></pre></div></aside></section><section id="data-structure-access"><h2 id="access">Access</h2>
 <div class="content"><div class="meta"></div><div class="intro"><p>See also: <a href="/concepts/#accesses">core concepts</a>.</p>
@@ -2148,14 +2178,15 @@ seconds.</p>
 </div></td></tr><tr><th><code>expires</code></th><td><div class="header"><span class="type"><a href="#data-structure-timestamp">timestamp</a></span><span class="label label-default optional">optional</span><span class="label label-default read-only">read-only</span></div><div class="description"><p>If the access was set to expire: The timestamp after which the access
 will be deactivated.</p>
 </div></td></tr><tr><th><code>deleted</code></th><td><div class="header"><span class="type"><a href="#data-structure-timestamp">timestamp</a></span><span class="label label-default optional">optional</span><span class="label label-default read-only">read-only</span></div><div class="description"><p>If the access has been deleted: The timestamp of the deletion.</p>
+</div></td></tr><tr><th><code>clientData</code></th><td><div class="header"><span class="type"><a href="#data-structure-key-value">key-value</a></span><span class="label label-default optional">optional</span></div><div class="description"><p>Additional client data for the access.</p>
 </div></td></tr><tr><th><code>created</code></th><td><div class="header"><span class="type"><a href="#data-structure-timestamp">timestamp</a></span><span class="label label-default read-only">read-only</span></div><div class="description"><p>The time the access was created.</p>
 </div></td></tr><tr><th><code>createdBy</code></th><td><div class="header"><span class="type"><a href="#data-structure-identifier">identifier</a></span><span class="label label-default read-only">read-only</span></div><div class="description"><p>The id of the access used to create the access.</p>
 </div></td></tr><tr><th><code>modified</code></th><td><div class="header"><span class="type"><a href="#data-structure-timestamp">timestamp</a></span><span class="label label-default read-only">read-only</span></div><div class="description"><p>The time the access was last modified.</p>
 </div></td></tr><tr><th><code>modifiedBy</code></th><td><div class="header"><span class="type"><a href="#data-structure-identifier">identifier</a></span><span class="label label-default read-only">read-only</span></div><div class="description"><p>The id of the last access used to modify the access.</p>
 </div></td></tr></table></div><aside><div class="example"><p>An app access</p>
 <pre><code>{
-  "id": "cjvqple6o0001yzivdhjzd8v3",
-  "token": "cjvqple6o0003yziviljhgj9j",
+  "id": "cjvw6vuub0001b44djqx2oqca",
+  "token": "cjvw6vuub0003b44ddabwyv99",
   "type": "app",
   "name": "my-app-id",
   "permissions": [
@@ -2164,10 +2195,10 @@ will be deactivated.</p>
       "level": "contribute"
     }
   ],
-  "created": 1557928079.376,
-  "createdBy": "cjvqple6n0000yzivpmfsdgtd",
-  "modified": 1557928079.376,
-  "modifiedBy": "cjvqple6n0000yzivpmfsdgtd"
+  "created": 1558259451.876,
+  "createdBy": "cjvw6vuub0000b44d0fg7nha1",
+  "modified": 1558259451.876,
+  "modifiedBy": "cjvw6vuub0000b44d0fg7nha1"
 }</code></pre></div></aside></section><section id="data-structure-item-deletion"><h2 id="item-deletion">Item deletion</h2>
 <div class="content"><div class="meta"></div><div class="intro"><p>A record of a deleted item for sync purposes.</p>
 </div><table class="definitions"><tr><th><code>id</code></th><td><div class="header"><span class="type"><a href="#data-structure-identifier">identifier</a></span></div><div class="description"><p>The identifier of the deleted item.</p>
