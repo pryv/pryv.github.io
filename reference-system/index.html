@@ -5,13 +5,13 @@
   <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
 <![endif]--><link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Roboto:400,300,500,700,400italic|Roboto+Condensed:400,300,700"><link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/styles/docco.min.css"><link rel="stylesheet" type="text/css" href="/assets/fonts/ss-gizmo.min.css"><link rel="stylesheet" type="text/css" href="/assets/style.css"></head><body class="reference-system with-toc with-examples"><header id="page-header"><nav role="navigation" class="navbar navbar-default navbar-fixed-top"><div class="container-fluid"><div class="navbar-header"><a href="https://pryv.com" title="Pryv home" class="navbar-brand logo pryv-home"><img src="/assets/images/icon-home.svg" alt="Pryv home" height="50"></a><a href="/" title="Developers home" class="navbar-brand logo"><img src="/assets/images/logo-256-black.png" alt="Developers home"></a><button type="button" data-toggle="collapse" data-target="#main-nav" class="navbar-toggle"><span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button></div><div id="main-nav" class="collapse navbar-collapse"><ul class="nav navbar-nav"><li class="dropdown"><a href="#" data-toggle="dropdown" class="dropdown-toggle">Guides <b class="caret"></b></a><ul class="dropdown-menu"><li><a href="/getting-started/">Getting started</a></li><li><a href="/concepts/">API concepts</a></li><li><a href="/external-resources/">External resources</a></li><!--+menuItem('data-modeling', 'Data modeling') —> into "Concepts"??--></ul></li><li class="dropdown"><a href="#" data-toggle="dropdown" class="dropdown-toggle">Reference <b class="caret"></b></a><ul class="dropdown-menu"><li><a href="/reference/">API reference</a></li><li><a href="/change-log/">API change log</a></li><li><a href="/event-types/">Event types</a></li><!--+menuItem('standardStructure')--></ul></li><li class="dropdown"><a href="#" data-toggle="dropdown" class="dropdown-toggle">FAQ <b class="caret"></b></a><ul class="dropdown-menu"><li><a href="/faq-api/">API</a></li><li><a href="/faq-infra/">Infrastructure</a></li></ul></li><!--lia(href='#') Blog--></ul><div class="navbar-right"><p class="navbar-text version"><a href="/change-log/" title="View change log">API version: <strong>1.3.41</strong></a></p></div><form class="navbar-form navbar-right"><div class="form-group"><label for="examples-format">Examples:&nbsp;</label><select id="examples-format" class="form-control"><option value="json" selected="selected">Raw JSON</option><option value="http">cURL</option><option value="sockets">Socket.IO</option></select></div></form></div></div></nav></header><div id="main-wrapper" class="container-fluid"><div id="main"><h1 class="page-title">System reference</h1><section id="basics"><h1 id="basics">Basics</h1>
 <div class="intro"><p>This document describes Pryv.io&#39;s <strong>system-level</strong> API, allowing developers to create and manage user accounts.</p>
-</div><section id="basics-services-involved"><h2 id="services-involved">Services involved</h2>
+</div><!-- it's either:--><!-- !trusted & !preview--><!-- !preview & -full--><!-- -preview--><section id="basics-services-involved"><h2 id="services-involved">Services involved</h2>
 <div class="content"><div class="meta"></div><div class="intro"><p>Unlike user account data, which is fully managed by the core server hosting each account, managing the accounts themselves (e.g. retrieval, creation, deletion) is handled by the core servers <em>and</em> the central registry server (AKA user account directory).</p>
 <ul>
 <li>The <strong>core servers</strong> own the account management processes, i.e. data creation and deletion</li>
 <li>The <strong>registry server</strong> maintains the list of account usernames and their hosting locations; it helps account management by providing checks (for creation) and is notified of all relevant changes by the core servers.</li>
 </ul>
-</div></div></section><section id="basics-account-creation"><h2 id="account-creation">Account creation</h2>
+</div></div></section><!-- it's either:--><!-- !trusted & !preview--><!-- !preview & -full--><!-- -preview--><section id="basics-account-creation"><h2 id="account-creation">Account creation</h2>
 <div class="content"><div class="meta"></div><div class="intro"><p>The steps for creating a new Pryv.io account are the following:</p>
 <ol>
 <li>Client calls the registry server to get a list of available hostings (core server locations), see <a href="#get-hostings">Get Hostings</a>.</li>
@@ -22,12 +22,12 @@
 </ol>
 </div></div></section></section><section id="api-methods"><h1 id="api-methods">API methods</h1>
 <div class="intro"><p>The methods are called via HTTPS on the registry server: <code>https://reg.{domain}</code></p>
-</div><section id="api-methods-admin"><h2 id="admin">Admin</h2>
+</div><!-- it's either:--><!-- !trusted & !preview--><!-- !preview & -full--><!-- -preview--><section id="api-methods-admin"><h2 id="admin">Admin</h2>
 <div class="content"><div class="meta"></div><div class="intro"><p>Methods for platform administration.</p>
 <p>These calls are limited to accredited persons and are flagged as <code>Admin only</code>.</p>
 <p>They must carry an admin key in the HTTP <code>Authorization</code> header.
 Such keys are defined within the registry configuration (auth:authorizedKeys).</p>
-</div></div><section id="api-methods-admin-users-get" class="method"> <h3 id="get-users">Get users</h3>
+</div></div><!-- it's either:--><!-- !trusted & !preview--><!-- !preview & -full--><!-- -preview--><section id="api-methods-admin-users-get" class="method"> <h3 id="get-users">Get users</h3>
 <div class="content"><div class="meta"><span class="method-id"><span class="label">id</span><span class="label-value"><code>users.get</code></span></span><span class="http"><span class="label">HTTP</span><span class="label-value"><code>GET /admin/users</code></span></span><span class="label trusted-only">Admin only</span></div><div class="intro"><p>Get the list of all users registered on the platform.</p>
 </div><h4 id="parameters">Parameters</h4>
 <table class="definitions"><tr><th><code>toHTML</code></th><td><div class="header"><span class="type">boolean</span><span class="label label-default optional">optional</span></div><div class="description"><p>If <code>true</code>, format the resulting users list as HTML tables.</p>
@@ -38,11 +38,11 @@ Such keys are defined within the registry configuration (auth:authorizedKeys).</
   "users": [
     {
       "username": "user1",
-      "email": "user1@gmail.com",
+      "email": "red.miller@mail.ch",
       "language": "en",
       "invitationToken": "enjoy",
       "referer": "null",
-      "id": "cjx36oi7h0014ddpv703vozik",
+      "id": "cjxai3wli00145mpvx37uwqdm",
       "registeredTimestamp": "1557743399558",
       "server": "core1.pryv.me",
       "registeredDate": "Mon, 13 May 2019 10:29:59 GMT"
@@ -53,7 +53,7 @@ Such keys are defined within the registry configuration (auth:authorizedKeys).</
       "language": "fr",
       "invitationToken": "enjoy",
       "referer": "null",
-      "id": "cjx36oi7h0015ddpvwvoxdxoe",
+      "id": "cjxai3wli00155mpvvq77tl4q",
       "registeredTimestamp": "1536930239805",
       "server": "core2.pryv.me",
       "registeredDate": "Fri, 14 Sep 2018 13:03:59 GMT"
@@ -67,11 +67,11 @@ API-Version: 1.3.41
   "users": [
     {
       "username": "user1",
-      "email": "user1@gmail.com",
+      "email": "red.miller@mail.ch",
       "language": "en",
       "invitationToken": "enjoy",
       "referer": "null",
-      "id": "cjx36oi7h0014ddpv703vozik",
+      "id": "cjxai3wli00145mpvx37uwqdm",
       "registeredTimestamp": "1557743399558",
       "server": "core1.pryv.me",
       "registeredDate": "Mon, 13 May 2019 10:29:59 GMT"
@@ -82,7 +82,7 @@ API-Version: 1.3.41
       "language": "fr",
       "invitationToken": "enjoy",
       "referer": "null",
-      "id": "cjx36oi7h0015ddpvwvoxdxoe",
+      "id": "cjxai3wli00155mpvvq77tl4q",
       "registeredTimestamp": "1536930239805",
       "server": "core2.pryv.me",
       "registeredDate": "Fri, 14 Sep 2018 13:03:59 GMT"
@@ -92,11 +92,11 @@ API-Version: 1.3.41
   "users": [
     {
       "username": "user1",
-      "email": "user1@gmail.com",
+      "email": "red.miller@mail.ch",
       "language": "en",
       "invitationToken": "enjoy",
       "referer": "null",
-      "id": "cjx36oi7h0014ddpv703vozik",
+      "id": "cjxai3wli00145mpvx37uwqdm",
       "registeredTimestamp": "1557743399558",
       "server": "core1.pryv.me",
       "registeredDate": "Mon, 13 May 2019 10:29:59 GMT"
@@ -107,13 +107,13 @@ API-Version: 1.3.41
       "language": "fr",
       "invitationToken": "enjoy",
       "referer": "null",
-      "id": "cjx36oi7h0015ddpvwvoxdxoe",
+      "id": "cjxai3wli00155mpvvq77tl4q",
       "registeredTimestamp": "1536930239805",
       "server": "core2.pryv.me",
       "registeredDate": "Fri, 14 Sep 2018 13:03:59 GMT"
     }
   ]
-}</code></pre></div></div></div></aside></section><section id="api-methods-admin-servers-get" class="method"> <h3 id="get-core-servers">Get core servers</h3>
+}</code></pre></div></div></div></aside></section><!-- it's either:--><!-- !trusted & !preview--><!-- !preview & -full--><!-- -preview--><section id="api-methods-admin-servers-get" class="method"> <h3 id="get-core-servers">Get core servers</h3>
 <div class="content"><div class="meta"><span class="method-id"><span class="label">id</span><span class="label-value"><code>servers.get</code></span></span><span class="http"><span class="label">HTTP</span><span class="label-value"><code>GET /admin/servers</code></span></span><span class="label trusted-only">Admin only</span></div><div class="intro"><p>Get the list of all core servers with the number of users on them.</p>
 </div><h4 id="parameters">Parameters</h4>
 <table class="definitions"></table><h4 id="result">Result</h4>
@@ -138,7 +138,7 @@ API-Version: 1.3.41
     "core1.pryv.me": 1337,
     "core2.pryv.me": 42
   }
-}</code></pre></div></div></div></aside></section><section id="api-methods-admin-servers-users.get" class="method"> <h3 id="get-users-on-core-server">Get users on core server</h3>
+}</code></pre></div></div></div></aside></section><!-- it's either:--><!-- !trusted & !preview--><!-- !preview & -full--><!-- -preview--><section id="api-methods-admin-servers-users.get" class="method"> <h3 id="get-users-on-core-server">Get users on core server</h3>
 <div class="content"><div class="meta"><span class="method-id"><span class="label">id</span><span class="label-value"><code>servers.users.get</code></span></span><span class="http"><span class="label">HTTP</span><span class="label-value"><code>GET /admin/servers/{serverName}/users</code></span></span><span class="label trusted-only">Admin only</span></div><div class="intro"><p>Get the list of all users registered on a specific core server.</p>
 </div><h4 id="parameters">Parameters</h4>
 <table class="definitions"><tr><th><code>serverName</code></th><td><div class="header"><span class="type">string</span><span class="http"><span class="label">HTTP</span><span class="label-value"><span>set in request path</span></span></span></div><div class="description"><p>The name of the core server.</p>
@@ -151,11 +151,11 @@ API-Version: 1.3.41
   "users": [
     {
       "username": "user1",
-      "email": "user1@gmail.com",
+      "email": "red.miller@mail.ch",
       "language": "en",
       "invitationToken": "enjoy",
       "referer": "null",
-      "id": "cjx36oi7h0014ddpv703vozik",
+      "id": "cjxai3wli00145mpvx37uwqdm",
       "registeredTimestamp": "1557743399558",
       "server": "core1.pryv.me",
       "registeredDate": "Mon, 13 May 2019 10:29:59 GMT"
@@ -169,11 +169,11 @@ API-Version: 1.3.41
   "users": [
     {
       "username": "user1",
-      "email": "user1@gmail.com",
+      "email": "red.miller@mail.ch",
       "language": "en",
       "invitationToken": "enjoy",
       "referer": "null",
-      "id": "cjx36oi7h0014ddpv703vozik",
+      "id": "cjxai3wli00145mpvx37uwqdm",
       "registeredTimestamp": "1557743399558",
       "server": "core1.pryv.me",
       "registeredDate": "Mon, 13 May 2019 10:29:59 GMT"
@@ -183,17 +183,17 @@ API-Version: 1.3.41
   "users": [
     {
       "username": "user1",
-      "email": "user1@gmail.com",
+      "email": "red.miller@mail.ch",
       "language": "en",
       "invitationToken": "enjoy",
       "referer": "null",
-      "id": "cjx36oi7h0014ddpv703vozik",
+      "id": "cjxai3wli00145mpvx37uwqdm",
       "registeredTimestamp": "1557743399558",
       "server": "core1.pryv.me",
       "registeredDate": "Mon, 13 May 2019 10:29:59 GMT"
     }
   ]
-}</code></pre></div></div></div></aside></section><section id="api-methods-admin-servers-rename" class="method"> <h3 id="rename-core-server">Rename core server</h3>
+}</code></pre></div></div></div></aside></section><!-- it's either:--><!-- !trusted & !preview--><!-- !preview & -full--><!-- -preview--><section id="api-methods-admin-servers-rename" class="method"> <h3 id="rename-core-server">Rename core server</h3>
 <div class="content"><div class="meta"><span class="method-id"><span class="label">id</span><span class="label-value"><code>servers.rename</code></span></span><span class="http"><span class="label">HTTP</span><span class="label-value"><code>GET /admin/servers/{srcServerName}/rename/{dstServerName}</code></span></span><span class="label trusted-only">Admin only</span></div><div class="intro"><p>Rename a core server, thus reassigning the users from srcServer to dstServer.</p>
 </div><h4 id="parameters">Parameters</h4>
 <table class="definitions"><tr><th><code>srcServerName</code></th><td><div class="header"><span class="type">string</span><span class="http"><span class="label">HTTP</span><span class="label-value"><span>set in request path</span></span></span></div><div class="description"><p>The current name of the core server to rename.</p>
@@ -217,9 +217,9 @@ API-Version: 1.3.41
   "count": 1
 }</code></pre></div><div class="tab-pane sockets"><pre><code>socket.emit('servers.rename', {"srcServerName":"core1.pryv.me","dstServerName":"core2.pryv.me"}, callback);</code></pre><div class="step-marker">⬇</div><pre><code>{
   "count": 1
-}</code></pre></div></div></div></aside></section></section><section id="api-methods-service"><h2 id="service">Service</h2>
+}</code></pre></div></div></div></aside></section></section><!-- it's either:--><!-- !trusted & !preview--><!-- !preview & -full--><!-- -preview--><section id="api-methods-service"><h2 id="service">Service</h2>
 <div class="content"><div class="meta"></div><div class="intro"><p>Methods for collecting service information such as details about the platform and the API, connected apps or hostings (core server locations).</p>
-</div></div><section id="api-methods-service-service-infos.get" class="method"> <h3 id="get-service-infos">Get service infos</h3>
+</div></div><!-- it's either:--><!-- !trusted & !preview--><!-- !preview & -full--><!-- -preview--><section id="api-methods-service-service-infos.get" class="method"> <h3 id="get-service-infos">Get service infos</h3>
 <div class="content"><div class="meta"><span class="method-id"><span class="label">id</span><span class="label-value"><code>service.infos.get</code></span></span><span class="http"><span class="label">HTTP</span><span class="label-value"><code>GET /service/infos</code></span></span></div><div class="intro"><p>Retrieve service information such as details about the platform and the API, as well as various useful URLs.</p>
 </div><h4 id="parameters">Parameters</h4>
 <table class="definitions"></table><h4 id="result">Result</h4>
@@ -263,7 +263,7 @@ API-Version: 1.3.41
   "home": "https://sw.pryv.me",
   "support": "http://pryv.com/helpdesk",
   "terms": "http://pryv.com/pryv-lab-terms-of-use/"
-}</code></pre></div></div></div></aside></section><section id="api-methods-service-hostings-get" class="method"> <h3 id="get-hostings">Get hostings</h3>
+}</code></pre></div></div></div></aside></section><!-- it's either:--><!-- !trusted & !preview--><!-- !preview & -full--><!-- -preview--><section id="api-methods-service-hostings-get" class="method"> <h3 id="get-hostings">Get hostings</h3>
 <div class="content"><div class="meta"><span class="method-id"><span class="label">id</span><span class="label-value"><code>hostings.get</code></span></span><span class="http"><span class="label">HTTP</span><span class="label-value"><code>GET /hostings</code></span></span></div><div class="intro"><p>Get the list of all available hostings for data storage locations.</p>
 </div><h4 id="parameters">Parameters</h4>
 <table class="definitions"></table><h4 id="result">Result</h4>
@@ -348,7 +348,7 @@ API-Version: 1.3.41
       }
     }
   }
-}</code></pre></div></div></div></aside></section><section id="api-methods-service-apps-get" class="method"> <h3 id="get-apps">Get apps</h3>
+}</code></pre></div></div></div></aside></section><!-- it's either:--><!-- !trusted & !preview--><!-- !preview & -full--><!-- -preview--><section id="api-methods-service-apps-get" class="method"> <h3 id="get-apps">Get apps</h3>
 <div class="content"><div class="meta"><span class="method-id"><span class="label">id</span><span class="label-value"><code>apps.get</code></span></span><span class="http"><span class="label">HTTP</span><span class="label-value"><code>GET /apps</code></span></span></div><div class="intro"><p>Retrieve the list of applications connected to the platform.</p>
 </div><h4 id="parameters">Parameters</h4>
 <table class="definitions"></table><h4 id="result">Result</h4>
@@ -463,7 +463,7 @@ API-Version: 1.3.41
       "settingsPageURL": "https://ifttt.com/pryv"
     }
   ]
-}</code></pre></div></div></div></aside></section><section id="api-methods-service-apps-getOne" class="method"> <h3 id="get-app">Get app</h3>
+}</code></pre></div></div></div></aside></section><!-- it's either:--><!-- !trusted & !preview--><!-- !preview & -full--><!-- -preview--><section id="api-methods-service-apps-getOne" class="method"> <h3 id="get-app">Get app</h3>
 <div class="content"><div class="meta"><span class="method-id"><span class="label">id</span><span class="label-value"><code>apps.getOne</code></span></span><span class="http"><span class="label">HTTP</span><span class="label-value"><code>GET /apps/{appid}</code></span></span></div><div class="intro"><p>Retrieve information about a given application.</p>
 </div><h4 id="parameters">Parameters</h4>
 <table class="definitions"><tr><th><code>appid</code></th><td><div class="header"><span class="type">string</span><span class="http"><span class="label">HTTP</span><span class="label-value"><span>set in request path</span></span></span></div><div class="description"><p>The id of the application to look for.</p>
@@ -525,9 +525,9 @@ API-Version: 1.3.41
     ],
     "settingsPageURL": "http://pryv.github.io/dev-tools/csv-importer"
   }
-}</code></pre></div></div></div></aside></section></section><section id="api-methods-users"><h2 id="users">Users</h2>
+}</code></pre></div></div></div></aside></section></section><!-- it's either:--><!-- !trusted & !preview--><!-- !preview & -full--><!-- -preview--><section id="api-methods-users"><h2 id="users">Users</h2>
 <div class="content"><div class="meta"></div><div class="intro"><p>Methods for managing users.</p>
-</div></div><section id="api-methods-users-users-create" class="method"> <h3 id="create-user">Create user</h3>
+</div></div><!-- it's either:--><!-- !trusted & !preview--><!-- !preview & -full--><!-- -preview--><section id="api-methods-users-users-create" class="method"> <h3 id="create-user">Create user</h3>
 <div class="content"><div class="meta"><span class="method-id"><span class="label">id</span><span class="label-value"><code>users.create</code></span></span><span class="http"><span class="label">HTTP</span><span class="label-value"><code>POST /user</code></span></span></div><div class="intro"><p>Creates a new user account on the specified core server.</p>
 </div><h4 id="parameters">Parameters</h4>
 <table class="definitions"><tr><th><code>appid</code></th><td><div class="header"><span class="type">string</span></div><div class="description"><p>Your app&#39;s unique identifier.</p>
@@ -545,26 +545,26 @@ API-Version: 1.3.41
 <div class="tab-content"><div class="tab-pane json active"><pre><code>{
   "appid": "default",
   "hosting": "core1",
-  "username": "jerome",
+  "username": "user-123-abc",
   "password": "ChjUzDXwaTG2qdV",
-  "email": "jerome@pryv.me",
+  "email": "joseph-brenner@pryv.me",
   "invitationtoken": "o3in4o2",
   "languageCode": "en",
   "referer": "hospital-A"
 }</code></pre><div class="step-marker">⬇</div><pre><code>{
-  "username": "jerome",
-  "server": "jerome.pryv.me"
-}</code></pre></div><div class="tab-pane http"><pre><code>curl -i -X POST -H 'Content-Type: application/json' -d '{"appid":"default","hosting":"core1","username":"jerome","password":"ChjUzDXwaTG2qdV","email":"jerome@pryv.me","invitationtoken":"o3in4o2","languageCode":"en","referer":"hospital-A"}' https://reg.pryv.me/user</code></pre><div class="step-marker">⬇</div><pre><code>HTTP/1.1 200 OK
+  "username": "user-123-abc",
+  "server": "user-123-abc.pryv.me"
+}</code></pre></div><div class="tab-pane http"><pre><code>curl -i -X POST -H 'Content-Type: application/json' -d '{"appid":"default","hosting":"core1","username":"user-123-abc","password":"ChjUzDXwaTG2qdV","email":"joseph-brenner@pryv.me","invitationtoken":"o3in4o2","languageCode":"en","referer":"hospital-A"}' https://reg.pryv.me/user</code></pre><div class="step-marker">⬇</div><pre><code>HTTP/1.1 200 OK
 Content-Type: application/json; charset=utf-8
 API-Version: 1.3.41
 
 {
-  "username": "jerome",
-  "server": "jerome.pryv.me"
-}</code></pre></div><div class="tab-pane sockets"><pre><code>socket.emit('users.create', {"appid":"default","hosting":"core1","username":"jerome","password":"ChjUzDXwaTG2qdV","email":"jerome@pryv.me","invitationtoken":"o3in4o2","languageCode":"en","referer":"hospital-A"}, callback);</code></pre><div class="step-marker">⬇</div><pre><code>{
-  "username": "jerome",
-  "server": "jerome.pryv.me"
-}</code></pre></div></div></div></aside></section><section id="api-methods-users-username-check" class="method"> <h3 id="check-username">Check username</h3>
+  "username": "user-123-abc",
+  "server": "user-123-abc.pryv.me"
+}</code></pre></div><div class="tab-pane sockets"><pre><code>socket.emit('users.create', {"appid":"default","hosting":"core1","username":"user-123-abc","password":"ChjUzDXwaTG2qdV","email":"joseph-brenner@pryv.me","invitationtoken":"o3in4o2","languageCode":"en","referer":"hospital-A"}, callback);</code></pre><div class="step-marker">⬇</div><pre><code>{
+  "username": "user-123-abc",
+  "server": "user-123-abc.pryv.me"
+}</code></pre></div></div></div></aside></section><!-- it's either:--><!-- !trusted & !preview--><!-- !preview & -full--><!-- -preview--><section id="api-methods-users-username-check" class="method"> <h3 id="check-username">Check username</h3>
 <div class="content"><div class="meta"><span class="method-id"><span class="label">id</span><span class="label-value"><code>username.check</code></span></span><span class="http"><span class="label">HTTP</span><span class="label-value"><code>GET /{username}/check_username</code></span></span></div><div class="intro"><p>Check the availability and validity of a given username.</p>
 </div><h4 id="parameters">Parameters</h4>
 <table class="definitions"><tr><th><code>username</code></th><td><div class="header"><span class="type">string</span><span class="http"><span class="label">HTTP</span><span class="label-value"><span>set in request path</span></span></span></div><div class="description"><p>The username to check.</p>
@@ -577,16 +577,16 @@ the reserved usernames list configured within the registry service.</p>
 <table class="definitions"><tr><th><code>INVALID_USERNAME</code></th><td><div class="header"><span class="http"><span class="label">HTTP</span><span class="label-value"><code>400</code></span></span></div><div class="description"><p>The given username is invalid because of an unrecognized format.</p>
 </div></td></tr></table></div><aside><div class="example"><p>Checking availability and validity of a given username</p>
 <div class="tab-content"><div class="tab-pane json active"><pre><code>{
-  "username": "jerome"
+  "username": "user-123-abc"
 }</code></pre><div class="step-marker">⬇</div><pre><code>{
   "reserved": false
-}</code></pre></div><div class="tab-pane http"><pre><code>curl -i https://reg.pryv.me/jerome/check_username</code></pre><div class="step-marker">⬇</div><pre><code>HTTP/1.1 200 OK
+}</code></pre></div><div class="tab-pane http"><pre><code>curl -i https://reg.pryv.me/user-123-abc/check_username</code></pre><div class="step-marker">⬇</div><pre><code>HTTP/1.1 200 OK
 Content-Type: application/json; charset=utf-8
 API-Version: 1.3.41
 
 {
   "reserved": false
-}</code></pre></div><div class="tab-pane sockets"><pre><code>socket.emit('username.check', {"username":"jerome"}, callback);</code></pre><div class="step-marker">⬇</div><pre><code>{
+}</code></pre></div><div class="tab-pane sockets"><pre><code>socket.emit('username.check', {"username":"user-123-abc"}, callback);</code></pre><div class="step-marker">⬇</div><pre><code>{
   "reserved": false
 }</code></pre></div></div></div><div class="example"><p>Special case where the username is part of the reserved list.</p>
 <div class="tab-content"><div class="tab-pane json active"><pre><code>{
@@ -604,7 +604,7 @@ API-Version: 1.3.41
 }</code></pre></div><div class="tab-pane sockets"><pre><code>socket.emit('username.check', {"username":"pryvpryv"}, callback);</code></pre><div class="step-marker">⬇</div><pre><code>{
   "reserved": true,
   "reason": "RESERVED_USER_NAME"
-}</code></pre></div></div></div></aside></section><section id="api-methods-users-emails-check" class="method"> <h3 id="check-email-existence">Check email existence</h3>
+}</code></pre></div></div></div></aside></section><!-- it's either:--><!-- !trusted & !preview--><!-- !preview & -full--><!-- -preview--><section id="api-methods-users-emails-check" class="method"> <h3 id="check-email-existence">Check email existence</h3>
 <div class="content"><div class="meta"><span class="method-id"><span class="label">id</span><span class="label-value"><code>emails.check</code></span></span><span class="http"><span class="label">HTTP</span><span class="label-value"><code>GET /{email}/check_email</code></span></span></div><div class="intro"><p>Check the existence of an account&#39;s email.</p>
 </div><h4 id="parameters">Parameters</h4>
 <table class="definitions"><tr><th><code>email</code></th><td><div class="header"><span class="type">string</span><span class="http"><span class="label">HTTP</span><span class="label-value"><span>set in request path</span></span></span></div><div class="description"><p>The email address to check.</p>
@@ -614,18 +614,18 @@ API-Version: 1.3.41
 <table class="definitions"><tr><th><code>INVALID_EMAIL</code></th><td><div class="header"><span class="http"><span class="label">HTTP</span><span class="label-value"><code>400</code></span></span></div><div class="description"><p>The email address is invalid because of an unrecognized format.</p>
 </div></td></tr></table></div><aside><div class="example"><p>Checking the existence of an account&#39;s email address.</p>
 <div class="tab-content"><div class="tab-pane json active"><pre><code>{
-  "email": "jerome@pryv.me"
+  "email": "joseph-brenner@pryv.me"
 }</code></pre><div class="step-marker">⬇</div><pre><code>{
   "exists": false
-}</code></pre></div><div class="tab-pane http"><pre><code>curl -i https://reg.pryv.me/jerome@pryv.me/check_email</code></pre><div class="step-marker">⬇</div><pre><code>HTTP/1.1 200 OK
+}</code></pre></div><div class="tab-pane http"><pre><code>curl -i https://reg.pryv.me/joseph-brenner@pryv.me/check_email</code></pre><div class="step-marker">⬇</div><pre><code>HTTP/1.1 200 OK
 Content-Type: application/json; charset=utf-8
 API-Version: 1.3.41
 
 {
   "exists": false
-}</code></pre></div><div class="tab-pane sockets"><pre><code>socket.emit('emails.check', {"email":"jerome@pryv.me"}, callback);</code></pre><div class="step-marker">⬇</div><pre><code>{
+}</code></pre></div><div class="tab-pane sockets"><pre><code>socket.emit('emails.check', {"email":"joseph-brenner@pryv.me"}, callback);</code></pre><div class="step-marker">⬇</div><pre><code>{
   "exists": false
-}</code></pre></div></div></div></aside></section><section id="api-methods-users-email-username.get" class="method"> <h3 id="get-username-from-email">Get username from email</h3>
+}</code></pre></div></div></div></aside></section><!-- it's either:--><!-- !trusted & !preview--><!-- !preview & -full--><!-- -preview--><section id="api-methods-users-email-username.get" class="method"> <h3 id="get-username-from-email">Get username from email</h3>
 <div class="content"><div class="meta"><span class="method-id"><span class="label">id</span><span class="label-value"><code>email.username.get</code></span></span><span class="http"><span class="label">HTTP</span><span class="label-value"><code>GET /{email}/username</code></span></span></div><div class="intro"><p>Get the username of a Pryv.io account according to the given email.</p>
 </div><h4 id="parameters">Parameters</h4>
 <table class="definitions"><tr><th><code>email</code></th><td><div class="header"><span class="type">string</span><span class="http"><span class="label">HTTP</span><span class="label-value"><span>set in request path</span></span></span></div><div class="description"><p>The email address to look for.</p>
@@ -635,17 +635,17 @@ API-Version: 1.3.41
 <table class="definitions"><tr><th><code>UNKNOWN_EMAIL</code></th><td><div class="header"><span class="http"><span class="label">HTTP</span><span class="label-value"><code>404</code></span></span></div><div class="description"><p>The given email address is unknown (unregistered).</p>
 </div></td></tr></table></div><aside><div class="example"><p>Retrieving a username from a given email.</p>
 <div class="tab-content"><div class="tab-pane json active"><pre><code>{
-  "email": "jerome@pryv.me"
+  "email": "joseph-brenner@pryv.me"
 }</code></pre><div class="step-marker">⬇</div><pre><code>{
-  "username": "jerome"
-}</code></pre></div><div class="tab-pane http"><pre><code>curl -i https://reg.pryv.me/jerome@pryv.me/username</code></pre><div class="step-marker">⬇</div><pre><code>HTTP/1.1 200 OK
+  "username": "user-123-abc"
+}</code></pre></div><div class="tab-pane http"><pre><code>curl -i https://reg.pryv.me/joseph-brenner@pryv.me/username</code></pre><div class="step-marker">⬇</div><pre><code>HTTP/1.1 200 OK
 Content-Type: application/json; charset=utf-8
 API-Version: 1.3.41
 
 {
-  "username": "jerome"
-}</code></pre></div><div class="tab-pane sockets"><pre><code>socket.emit('email.username.get', {"email":"jerome@pryv.me"}, callback);</code></pre><div class="step-marker">⬇</div><pre><code>{
-  "username": "jerome"
+  "username": "user-123-abc"
+}</code></pre></div><div class="tab-pane sockets"><pre><code>socket.emit('email.username.get', {"email":"joseph-brenner@pryv.me"}, callback);</code></pre><div class="step-marker">⬇</div><pre><code>{
+  "username": "user-123-abc"
 }</code></pre></div></div></div></aside></section></section></section></div><nav id="toc"></nav></div><footer id="page-footer"><nav class="navbar navbar-default"><div class="container-fluid"><div id="footer-nav"><ul class="nav navbar-nav"><li><a href="mailto:developers@pryv.com">Send a message</a></li><li><a href="https://github.com/pryv">GitHub</a></li><li><a href="https://pryv.com">pryv.com</a></li></ul></div></div></nav></footer><script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script><script src="/assets/bootstrap.min.js"></script><script src="/assets/js/toc.min.js"></script><!-- TOC generation--><script>jQuery(document).ready(function($) {
   // Header is about 51 pixels. This equals to 'header + fuzz', fuzz was
   // determined experimentally.
