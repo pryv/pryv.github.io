@@ -1722,7 +1722,706 @@ API-Version: 1.3.41
 A updated copy of the <code>requestedPermissions</code> parameter, with the <code>defaultName</code> property of stream permissions replaced by <code>name</code> for each existing stream (set to the actual name of the item). (For missing streams the <code>defaultName</code> property is left untouched.) If streams already exist with the same name but a different <code>id</code>, <code>defaultName</code> is updated with a valid alternative proposal (in such cases the result also has an <code>error</code> property to signal the issue).</p>
 </div></td></tr><tr><th><code>mismatchingAccess</code></th><td><div class="header"><span class="type"><a href="#data-structure-access">access</a></span></div><div class="description"><p>Set if an access already exists for the requesting app, but with different permissions than those requested.</p>
 </div></td></tr><tr><th><code>matchingAccess</code></th><td><div class="header"><span class="type"><a href="#data-structure-access">access</a></span></div><div class="description"><p>Set if an access already exists for the requesting app with matching permissions. The existing <a href="#data-structure-access">access</a>.</p>
-</div></td></tr></table></div><aside></aside></section></section><!-- it's either:--><!-- !trusted & !preview--><!-- !preview & -full--><!-- -preview--><!-- it's either:--><!-- !trusted & !preview--><!-- !preview & -full--><!-- -preview--><section id="methods-followed-slices"><h2 id="followed-slices">Followed slices</h2>
+</div></td></tr></table></div><aside></aside></section></section><!-- it's either:--><!-- !trusted & !preview--><!-- !preview & -full--><!-- -preview--><section id="methods-webhooks"><h2 id="webhooks">Webhooks</h2>
+<div class="content"><div class="meta"><span class="label trusted-only">Preview </span></div><div class="intro"><p>Methods to retrieve and manipulate <a href="#data-structure-webhook">webhooks</a>. These methods are only allowed for app and personal accesses.</p>
+</div></div><!-- it's either:--><!-- !trusted & !preview--><!-- !preview & -full--><!-- -preview--><section id="methods-webhooks-webhooks-get" class="method"> <h3 id="get-webhooks">Get webhooks</h3>
+<div class="content"><div class="meta"><span class="method-id"><span class="label">id</span><span class="label-value"><code>webhooks.get</code></span></span><span class="http"><span class="label">HTTP</span><span class="label-value"><code>GET /webhooks</code></span></span></div><div class="intro"><p>Gets manageable webhooks. Only returns webhooks that were created by the access, unless you are using a personal access which returns all existing webhooks in the user&#39;s account.</p>
+</div><h4 id="parameters">Parameters</h4>
+<table class="definitions"></table><h4 id="result">Result</h4>
+<span class="http"><span class="label">HTTP</span><span class="label-value"><code>200 OK</code></span></span><table class="definitions"><tr><th><code>webhooks</code></th><td><div class="header"><span class="type">array of <a href="#data-structure-webhook">webhooks</a></span></div><div class="description"><p>All manageable webhooks by the given access, ordered by modified date.</p>
+</div></td></tr></table></div><aside><div class="example"><div class="tab-content"><div class="tab-pane json active"><pre><code>{}</code></pre><div class="step-marker">⬇</div><pre><code>{
+  "webhooks": [
+    {
+      "id": "cjxzsflu8001b0g562iooirua",
+      "accessId": "cjxzsflu800190g56tk2ip9cw",
+      "url": "https://notifications.service.com/pryv",
+      "minIntervalMs": 15000,
+      "maxRetries": 5,
+      "currentRetries": 0,
+      "state": "active",
+      "runCount": 2,
+      "failCount": 0,
+      "lastRun": {
+        "status": 200,
+        "timestamp": 1562913408.464
+      },
+      "runs": [
+        {
+          "status": 200,
+          "timestamp": 1562913408.464
+        },
+        {
+          "status": 200,
+          "timestamp": 1562909808.464
+        }
+      ],
+      "created": 1562830608.464,
+      "createdBy": "cjxzsflu800190g56tk2ip9cw",
+      "modified": 1562830608.464,
+      "modifiedBy": "cjxzsflu800190g56tk2ip9cw"
+    },
+    {
+      "id": "cjxzsflu8001c0g56chltpl17",
+      "accessId": "cjxzsflu800190g56tk2ip9cw",
+      "url": "https://notifications.pryv.io/webhooks",
+      "minIntervalMs": 5000,
+      "maxRetries": 10,
+      "currentRetries": 2,
+      "state": "active",
+      "runCount": 8,
+      "failCount": 2,
+      "lastRun": {
+        "status": 200,
+        "timestamp": 1562917003.464
+      },
+      "runs": [
+        {
+          "status": 500,
+          "timestamp": 1562917003.464
+        },
+        {
+          "status": 500,
+          "timestamp": 1562916998.464
+        },
+        {
+          "status": 200,
+          "timestamp": 1562916408.464
+        },
+        {
+          "status": 200,
+          "timestamp": 1562915808.464
+        },
+        {
+          "status": 200,
+          "timestamp": 1562915208.464
+        },
+        {
+          "status": 200,
+          "timestamp": 1562914608.464
+        },
+        {
+          "status": 200,
+          "timestamp": 1562914008.464
+        },
+        {
+          "status": 200,
+          "timestamp": 1562913408.464
+        }
+      ],
+      "created": 1562744208.464,
+      "createdBy": "cjxzsflu800190g56tk2ip9cw",
+      "modified": 1562744208.464,
+      "modifiedBy": "cjxzsflu800190g56tk2ip9cw"
+    }
+  ]
+}</code></pre></div><div class="tab-pane http"><pre><code>curl -i https://${username}.pryv.me/webhooks?auth=${token}</code></pre><div class="step-marker">⬇</div><pre><code>HTTP/1.1 200 OK
+Content-Type: application/json; charset=utf-8
+API-Version: 1.3.41
+
+{
+  "webhooks": [
+    {
+      "id": "cjxzsflu8001b0g562iooirua",
+      "accessId": "cjxzsflu800190g56tk2ip9cw",
+      "url": "https://notifications.service.com/pryv",
+      "minIntervalMs": 15000,
+      "maxRetries": 5,
+      "currentRetries": 0,
+      "state": "active",
+      "runCount": 2,
+      "failCount": 0,
+      "lastRun": {
+        "status": 200,
+        "timestamp": 1562913408.464
+      },
+      "runs": [
+        {
+          "status": 200,
+          "timestamp": 1562913408.464
+        },
+        {
+          "status": 200,
+          "timestamp": 1562909808.464
+        }
+      ],
+      "created": 1562830608.464,
+      "createdBy": "cjxzsflu800190g56tk2ip9cw",
+      "modified": 1562830608.464,
+      "modifiedBy": "cjxzsflu800190g56tk2ip9cw"
+    },
+    {
+      "id": "cjxzsflu8001c0g56chltpl17",
+      "accessId": "cjxzsflu800190g56tk2ip9cw",
+      "url": "https://notifications.pryv.io/webhooks",
+      "minIntervalMs": 5000,
+      "maxRetries": 10,
+      "currentRetries": 2,
+      "state": "active",
+      "runCount": 8,
+      "failCount": 2,
+      "lastRun": {
+        "status": 200,
+        "timestamp": 1562917003.464
+      },
+      "runs": [
+        {
+          "status": 500,
+          "timestamp": 1562917003.464
+        },
+        {
+          "status": 500,
+          "timestamp": 1562916998.464
+        },
+        {
+          "status": 200,
+          "timestamp": 1562916408.464
+        },
+        {
+          "status": 200,
+          "timestamp": 1562915808.464
+        },
+        {
+          "status": 200,
+          "timestamp": 1562915208.464
+        },
+        {
+          "status": 200,
+          "timestamp": 1562914608.464
+        },
+        {
+          "status": 200,
+          "timestamp": 1562914008.464
+        },
+        {
+          "status": 200,
+          "timestamp": 1562913408.464
+        }
+      ],
+      "created": 1562744208.464,
+      "createdBy": "cjxzsflu800190g56tk2ip9cw",
+      "modified": 1562744208.464,
+      "modifiedBy": "cjxzsflu800190g56tk2ip9cw"
+    }
+  ]
+}</code></pre></div><div class="tab-pane sockets"><pre><code>socket.emit('webhooks.get', {}, callback);</code></pre><div class="step-marker">⬇</div><pre><code>{
+  "webhooks": [
+    {
+      "id": "cjxzsflu8001b0g562iooirua",
+      "accessId": "cjxzsflu800190g56tk2ip9cw",
+      "url": "https://notifications.service.com/pryv",
+      "minIntervalMs": 15000,
+      "maxRetries": 5,
+      "currentRetries": 0,
+      "state": "active",
+      "runCount": 2,
+      "failCount": 0,
+      "lastRun": {
+        "status": 200,
+        "timestamp": 1562913408.464
+      },
+      "runs": [
+        {
+          "status": 200,
+          "timestamp": 1562913408.464
+        },
+        {
+          "status": 200,
+          "timestamp": 1562909808.464
+        }
+      ],
+      "created": 1562830608.464,
+      "createdBy": "cjxzsflu800190g56tk2ip9cw",
+      "modified": 1562830608.464,
+      "modifiedBy": "cjxzsflu800190g56tk2ip9cw"
+    },
+    {
+      "id": "cjxzsflu8001c0g56chltpl17",
+      "accessId": "cjxzsflu800190g56tk2ip9cw",
+      "url": "https://notifications.pryv.io/webhooks",
+      "minIntervalMs": 5000,
+      "maxRetries": 10,
+      "currentRetries": 2,
+      "state": "active",
+      "runCount": 8,
+      "failCount": 2,
+      "lastRun": {
+        "status": 200,
+        "timestamp": 1562917003.464
+      },
+      "runs": [
+        {
+          "status": 500,
+          "timestamp": 1562917003.464
+        },
+        {
+          "status": 500,
+          "timestamp": 1562916998.464
+        },
+        {
+          "status": 200,
+          "timestamp": 1562916408.464
+        },
+        {
+          "status": 200,
+          "timestamp": 1562915808.464
+        },
+        {
+          "status": 200,
+          "timestamp": 1562915208.464
+        },
+        {
+          "status": 200,
+          "timestamp": 1562914608.464
+        },
+        {
+          "status": 200,
+          "timestamp": 1562914008.464
+        },
+        {
+          "status": 200,
+          "timestamp": 1562913408.464
+        }
+      ],
+      "created": 1562744208.464,
+      "createdBy": "cjxzsflu800190g56tk2ip9cw",
+      "modified": 1562744208.464,
+      "modifiedBy": "cjxzsflu800190g56tk2ip9cw"
+    }
+  ]
+}</code></pre></div></div></div></aside></section><!-- it's either:--><!-- !trusted & !preview--><!-- !preview & -full--><!-- -preview--><section id="methods-webhooks-webhooks-getOne" class="method"> <h3 id="get-one-webhook">Get one webhook</h3>
+<div class="content"><div class="meta"><span class="method-id"><span class="label">id</span><span class="label-value"><code>webhooks.getOne</code></span></span><span class="http"><span class="label">HTTP</span><span class="label-value"><code>GET /webhooks/{id}</code></span></span></div><div class="intro"><p>Fetches a specific webhook. Only returns a webhook if it was created by the access, unless you are using a personal access which is allowed to fetch any existing webhook in the user&#39;s account.</p>
+</div><h4 id="parameters">Parameters</h4>
+<table class="definitions"><tr><th><code>id</code></th><td><div class="header"><span class="type"><a href="#data-structure-identifier">identifier</a></span><span class="http"><span class="label">HTTP</span><span class="label-value"><span>set in request path</span></span></span></div><div class="description"><p>The id of the webhook.</p>
+</div></td></tr></table><h4 id="result">Result</h4>
+<span class="http"><span class="label">HTTP</span><span class="label-value"><code>200 OK</code></span></span><table class="definitions"><tr><th><code>webhook</code></th><td><div class="header"><span class="type"><a href="#data-structure-webhook">webhook</a></span></div><div class="description"><p>The webhook.</p>
+</div></td></tr></table></div><aside><div class="example"><div class="tab-content"><div class="tab-pane json active"><pre><code>{}</code></pre><div class="step-marker">⬇</div><pre><code>{
+  "webhook": {
+    "id": "cjxzsflu8001b0g562iooirua",
+    "accessId": "cjxzsflu800190g56tk2ip9cw",
+    "url": "https://notifications.service.com/pryv",
+    "minIntervalMs": 15000,
+    "maxRetries": 5,
+    "currentRetries": 0,
+    "state": "active",
+    "runCount": 2,
+    "failCount": 0,
+    "lastRun": {
+      "status": 200,
+      "timestamp": 1562913408.464
+    },
+    "runs": [
+      {
+        "status": 200,
+        "timestamp": 1562913408.464
+      },
+      {
+        "status": 200,
+        "timestamp": 1562909808.464
+      }
+    ],
+    "created": 1562830608.464,
+    "createdBy": "cjxzsflu800190g56tk2ip9cw",
+    "modified": 1562830608.464,
+    "modifiedBy": "cjxzsflu800190g56tk2ip9cw"
+  }
+}</code></pre></div><div class="tab-pane http"><pre><code>curl -i https://${username}.pryv.me/webhooks/${id}?auth=${token}</code></pre><div class="step-marker">⬇</div><pre><code>HTTP/1.1 200 OK
+Content-Type: application/json; charset=utf-8
+API-Version: 1.3.41
+
+{
+  "webhook": {
+    "id": "cjxzsflu8001b0g562iooirua",
+    "accessId": "cjxzsflu800190g56tk2ip9cw",
+    "url": "https://notifications.service.com/pryv",
+    "minIntervalMs": 15000,
+    "maxRetries": 5,
+    "currentRetries": 0,
+    "state": "active",
+    "runCount": 2,
+    "failCount": 0,
+    "lastRun": {
+      "status": 200,
+      "timestamp": 1562913408.464
+    },
+    "runs": [
+      {
+        "status": 200,
+        "timestamp": 1562913408.464
+      },
+      {
+        "status": 200,
+        "timestamp": 1562909808.464
+      }
+    ],
+    "created": 1562830608.464,
+    "createdBy": "cjxzsflu800190g56tk2ip9cw",
+    "modified": 1562830608.464,
+    "modifiedBy": "cjxzsflu800190g56tk2ip9cw"
+  }
+}</code></pre></div><div class="tab-pane sockets"><pre><code>socket.emit('webhooks.getOne', {}, callback);</code></pre><div class="step-marker">⬇</div><pre><code>{
+  "webhook": {
+    "id": "cjxzsflu8001b0g562iooirua",
+    "accessId": "cjxzsflu800190g56tk2ip9cw",
+    "url": "https://notifications.service.com/pryv",
+    "minIntervalMs": 15000,
+    "maxRetries": 5,
+    "currentRetries": 0,
+    "state": "active",
+    "runCount": 2,
+    "failCount": 0,
+    "lastRun": {
+      "status": 200,
+      "timestamp": 1562913408.464
+    },
+    "runs": [
+      {
+        "status": 200,
+        "timestamp": 1562913408.464
+      },
+      {
+        "status": 200,
+        "timestamp": 1562909808.464
+      }
+    ],
+    "created": 1562830608.464,
+    "createdBy": "cjxzsflu800190g56tk2ip9cw",
+    "modified": 1562830608.464,
+    "modifiedBy": "cjxzsflu800190g56tk2ip9cw"
+  }
+}</code></pre></div></div></div></aside></section><!-- it's either:--><!-- !trusted & !preview--><!-- !preview & -full--><!-- -preview--><section id="methods-webhooks-webhooks-create" class="method"> <h3 id="create-webhook">Create webhook</h3>
+<div class="content"><div class="meta"><span class="method-id"><span class="label">id</span><span class="label-value"><code>webhooks.create</code></span></span><span class="http"><span class="label">HTTP</span><span class="label-value"><code>POST /webhooks</code></span></span></div><div class="intro"><p>Creates a new webhook. You can only create webhooks with app accesses. Its permissions will always match the permissions of the access used to create it.</p>
+</div><h4 id="parameters">Parameters</h4>
+<p>An object with the new webhook&#39;s data: see <a href="#data-structure-webhook">webhook</a>.</p>
+<h4 id="result">Result</h4>
+<span class="http"><span class="label">HTTP</span><span class="label-value"><code>201 Created</code></span></span><table class="definitions"><tr><th><code>webhook</code></th><td><div class="header"><span class="type"><a href="#data-structure-webhook">webhook</a></span></div><div class="description"><p>The created webhook.</p>
+</div></td></tr></table><h4 id="specific-errors">Specific errors</h4>
+<table class="definitions"><tr><th><code>item-already-exists</code></th><td><div class="header"><span class="http"><span class="label">HTTP</span><span class="label-value"><code>400</code></span></span></div><div class="description"><p>There is already a webhook for this URL created by the given access.</p>
+</div></td></tr></table></div><aside><div class="example"><div class="tab-content"><div class="tab-pane json active"><pre><code>{
+  "url": "https://sievey.io/webhooks"
+}</code></pre><div class="step-marker">⬇</div><pre><code>{
+  "webhook": {
+    "id": "cjxzsflu8001d0g567q6tyne1",
+    "accessId": "cjxzsflu8001a0g56mnr83dcn",
+    "url": "https://sievey.io/webhooks",
+    "minIntervalMs": 5000,
+    "maxRetries": 5,
+    "currentRetries": 0,
+    "state": "active",
+    "runCount": 0,
+    "failCount": 0,
+    "lastRun": {},
+    "runs": [],
+    "created": 1562917003.464,
+    "createdBy": "cjxzsflu8001a0g56mnr83dcn",
+    "modified": 1562917003.464,
+    "modifiedBy": "cjxzsflu8001a0g56mnr83dcn"
+  }
+}</code></pre></div><div class="tab-pane http"><pre><code>curl -i -X POST -H 'Content-Type: application/json' -d '{"url":"https://sievey.io/webhooks"}' https://${username}.pryv.me/webhooks?auth=${token}</code></pre><div class="step-marker">⬇</div><pre><code>HTTP/1.1 201 Created
+Content-Type: application/json; charset=utf-8
+API-Version: 1.3.41
+
+{
+  "webhook": {
+    "id": "cjxzsflu8001d0g567q6tyne1",
+    "accessId": "cjxzsflu8001a0g56mnr83dcn",
+    "url": "https://sievey.io/webhooks",
+    "minIntervalMs": 5000,
+    "maxRetries": 5,
+    "currentRetries": 0,
+    "state": "active",
+    "runCount": 0,
+    "failCount": 0,
+    "lastRun": {},
+    "runs": [],
+    "created": 1562917003.464,
+    "createdBy": "cjxzsflu8001a0g56mnr83dcn",
+    "modified": 1562917003.464,
+    "modifiedBy": "cjxzsflu8001a0g56mnr83dcn"
+  }
+}</code></pre></div><div class="tab-pane sockets"><pre><code>socket.emit('webhooks.create', {"url":"https://sievey.io/webhooks"}, callback);</code></pre><div class="step-marker">⬇</div><pre><code>{
+  "webhook": {
+    "id": "cjxzsflu8001d0g567q6tyne1",
+    "accessId": "cjxzsflu8001a0g56mnr83dcn",
+    "url": "https://sievey.io/webhooks",
+    "minIntervalMs": 5000,
+    "maxRetries": 5,
+    "currentRetries": 0,
+    "state": "active",
+    "runCount": 0,
+    "failCount": 0,
+    "lastRun": {},
+    "runs": [],
+    "created": 1562917003.464,
+    "createdBy": "cjxzsflu8001a0g56mnr83dcn",
+    "modified": 1562917003.464,
+    "modifiedBy": "cjxzsflu8001a0g56mnr83dcn"
+  }
+}</code></pre></div></div></div></aside></section><!-- it's either:--><!-- !trusted & !preview--><!-- !preview & -full--><!-- -preview--><section id="methods-webhooks-webhooks-update" class="method"> <h3 id="update-webhook">Update webhook</h3>
+<div class="content"><div class="meta"><span class="method-id"><span class="label">id</span><span class="label-value"><code>webhooks.update</code></span></span><span class="http"><span class="label">HTTP</span><span class="label-value"><code>PUT /webhooks/{id}</code></span></span></div><div class="intro"><p>Modifies the webhook. You can only modify webhooks with the app access that was used to create them, unless you are using a personal token.</p>
+</div><h4 id="parameters">Parameters</h4>
+<table class="definitions"><tr><th><code>id</code></th><td><div class="header"><span class="type"><a href="#data-structure-identifier">identifier</a></span><span class="http"><span class="label">HTTP</span><span class="label-value"><span>set in request path</span></span></span></div><div class="description"><p>The id of the webhook.</p>
+</div></td></tr><tr><th><code>update</code></th><td><div class="header"><span class="type">object</span><span class="http"><span class="label">HTTP</span><span class="label-value"><span>request body</span></span></span></div><div class="description"><p>New values for the webhook&#39;s fields: see <a href="#data-structure-webhook">webhook</a>. All fields are optional, and only modified values must be included.</p>
+</div></td></tr></table><h4 id="result">Result</h4>
+<span class="http"><span class="label">HTTP</span><span class="label-value"><code>200 Created</code></span></span><table class="definitions"><tr><th><code>webhook</code></th><td><div class="header"><span class="type"><a href="#data-structure-webhook">webhook</a></span></div><div class="description"><p>The created webhook.</p>
+</div></td></tr></table><h4 id="specific-errors">Specific errors</h4>
+<table class="definitions"><tr><th><code>item-already-exists</code></th><td><div class="header"><span class="http"><span class="label">HTTP</span><span class="label-value"><code>400</code></span></span></div><div class="description"><p>There is already a webhook for this URL created by the given access.</p>
+</div></td></tr></table></div><aside><div class="example"><div class="tab-content"><div class="tab-pane json active"><pre><code>{
+  "url": "https://notifications.pryv.io/webhooks"
+}</code></pre><div class="step-marker">⬇</div><pre><code>{
+  "webhook": {
+    "id": "cjxzsflu8001c0g56chltpl17",
+    "accessId": "cjxzsflu800190g56tk2ip9cw",
+    "url": "https://notifications.pryv.io/webhooks",
+    "minIntervalMs": 5000,
+    "maxRetries": 10,
+    "currentRetries": 2,
+    "state": "active",
+    "runCount": 8,
+    "failCount": 2,
+    "lastRun": {
+      "status": 200,
+      "timestamp": 1562917003.464
+    },
+    "runs": [
+      {
+        "status": 500,
+        "timestamp": 1562917003.464
+      },
+      {
+        "status": 500,
+        "timestamp": 1562916998.464
+      },
+      {
+        "status": 200,
+        "timestamp": 1562916408.464
+      },
+      {
+        "status": 200,
+        "timestamp": 1562915808.464
+      },
+      {
+        "status": 200,
+        "timestamp": 1562915208.464
+      },
+      {
+        "status": 200,
+        "timestamp": 1562914608.464
+      },
+      {
+        "status": 200,
+        "timestamp": 1562914008.464
+      },
+      {
+        "status": 200,
+        "timestamp": 1562913408.464
+      }
+    ],
+    "created": 1562744208.464,
+    "createdBy": "cjxzsflu800190g56tk2ip9cw",
+    "modified": 1562744208.464,
+    "modifiedBy": "cjxzsflu800190g56tk2ip9cw"
+  }
+}</code></pre></div><div class="tab-pane http"><pre><code>curl -i -X PUT -H 'Content-Type: application/json' -d '{"url":"https://notifications.pryv.io/webhooks"}' https://${username}.pryv.me/webhooks/${id}?auth=${token}</code></pre><div class="step-marker">⬇</div><pre><code>HTTP/1.1 200 Created
+Content-Type: application/json; charset=utf-8
+API-Version: 1.3.41
+
+{
+  "webhook": {
+    "id": "cjxzsflu8001c0g56chltpl17",
+    "accessId": "cjxzsflu800190g56tk2ip9cw",
+    "url": "https://notifications.pryv.io/webhooks",
+    "minIntervalMs": 5000,
+    "maxRetries": 10,
+    "currentRetries": 2,
+    "state": "active",
+    "runCount": 8,
+    "failCount": 2,
+    "lastRun": {
+      "status": 200,
+      "timestamp": 1562917003.464
+    },
+    "runs": [
+      {
+        "status": 500,
+        "timestamp": 1562917003.464
+      },
+      {
+        "status": 500,
+        "timestamp": 1562916998.464
+      },
+      {
+        "status": 200,
+        "timestamp": 1562916408.464
+      },
+      {
+        "status": 200,
+        "timestamp": 1562915808.464
+      },
+      {
+        "status": 200,
+        "timestamp": 1562915208.464
+      },
+      {
+        "status": 200,
+        "timestamp": 1562914608.464
+      },
+      {
+        "status": 200,
+        "timestamp": 1562914008.464
+      },
+      {
+        "status": 200,
+        "timestamp": 1562913408.464
+      }
+    ],
+    "created": 1562744208.464,
+    "createdBy": "cjxzsflu800190g56tk2ip9cw",
+    "modified": 1562744208.464,
+    "modifiedBy": "cjxzsflu800190g56tk2ip9cw"
+  }
+}</code></pre></div><div class="tab-pane sockets"><pre><code>socket.emit('webhooks.update', {"url":"https://notifications.pryv.io/webhooks"}, callback);</code></pre><div class="step-marker">⬇</div><pre><code>{
+  "webhook": {
+    "id": "cjxzsflu8001c0g56chltpl17",
+    "accessId": "cjxzsflu800190g56tk2ip9cw",
+    "url": "https://notifications.pryv.io/webhooks",
+    "minIntervalMs": 5000,
+    "maxRetries": 10,
+    "currentRetries": 2,
+    "state": "active",
+    "runCount": 8,
+    "failCount": 2,
+    "lastRun": {
+      "status": 200,
+      "timestamp": 1562917003.464
+    },
+    "runs": [
+      {
+        "status": 500,
+        "timestamp": 1562917003.464
+      },
+      {
+        "status": 500,
+        "timestamp": 1562916998.464
+      },
+      {
+        "status": 200,
+        "timestamp": 1562916408.464
+      },
+      {
+        "status": 200,
+        "timestamp": 1562915808.464
+      },
+      {
+        "status": 200,
+        "timestamp": 1562915208.464
+      },
+      {
+        "status": 200,
+        "timestamp": 1562914608.464
+      },
+      {
+        "status": 200,
+        "timestamp": 1562914008.464
+      },
+      {
+        "status": 200,
+        "timestamp": 1562913408.464
+      }
+    ],
+    "created": 1562744208.464,
+    "createdBy": "cjxzsflu800190g56tk2ip9cw",
+    "modified": 1562744208.464,
+    "modifiedBy": "cjxzsflu800190g56tk2ip9cw"
+  }
+}</code></pre></div></div></div></aside></section><!-- it's either:--><!-- !trusted & !preview--><!-- !preview & -full--><!-- -preview--><section id="methods-webhooks-webhooks-delete" class="method"> <h3 id="delete-webhook">Delete webhook</h3>
+<div class="content"><div class="meta"><span class="method-id"><span class="label">id</span><span class="label-value"><code>webhooks.delete</code></span></span><span class="http"><span class="label">HTTP</span><span class="label-value"><code>DELETE /webhooks/{id}</code></span></span></div><div class="intro"><p>Deletes the specified webhook. You can only delete webhooks with the app access that was used to create them, unless you are using a personal token.</p>
+</div><h4 id="parameters">Parameters</h4>
+<table class="definitions"><tr><th><code>id</code></th><td><div class="header"><span class="type"><a href="#data-structure-identifier">identifier</a></span><span class="http"><span class="label">HTTP</span><span class="label-value"><span>set in request path</span></span></span></div><div class="description"><p>The id of the webhook.</p>
+</div></td></tr></table><h4 id="result">Result</h4>
+<span class="http"><span class="label">HTTP</span><span class="label-value"><code>200 OK</code></span></span><table class="definitions"><tr><th><code>webhookDeletion</code></th><td><div class="header"><span class="type"><a href="#data-structure-item-deletion">item deletion</a></span></div><div class="description"><p>The deletion record.</p>
+</div></td></tr></table></div><aside><div class="example"><div class="tab-content"><div class="tab-pane json active"><pre><code>{
+  "id": "cjxzsflu8001d0g567q6tyne1"
+}</code></pre><div class="step-marker">⬇</div><pre><code>{
+  "webhookDeletion": {
+    "id": "cjxzsflu8001d0g567q6tyne1"
+  }
+}</code></pre></div><div class="tab-pane http"><pre><code>curl -i -X DELETE https://${username}.pryv.me/webhooks/cjxzsflu8001d0g567q6tyne1?auth=${token}</code></pre><div class="step-marker">⬇</div><pre><code>HTTP/1.1 200 OK
+Content-Type: application/json; charset=utf-8
+API-Version: 1.3.41
+
+{
+  "webhookDeletion": {
+    "id": "cjxzsflu8001d0g567q6tyne1"
+  }
+}</code></pre></div><div class="tab-pane sockets"><pre><code>socket.emit('webhooks.delete', {"id":"cjxzsflu8001d0g567q6tyne1"}, callback);</code></pre><div class="step-marker">⬇</div><pre><code>{
+  "webhookDeletion": {
+    "id": "cjxzsflu8001d0g567q6tyne1"
+  }
+}</code></pre></div></div></div></aside></section><!-- it's either:--><!-- !trusted & !preview--><!-- !preview & -full--><!-- -preview--><section id="methods-webhooks-webhooks-test" class="method"> <h3 id="test-webhook">Test webhook</h3>
+<div class="content"><div class="meta"><span class="method-id"><span class="label">id</span><span class="label-value"><code>webhooks.test</code></span></span><span class="http"><span class="label">HTTP</span><span class="label-value"><code>POST /webhooks/{id}/test</code></span></span></div><div class="intro"><p>Sends a post request to the URL of the specified webhook with a test message. You can only test webhooks with the app access that was used to create them, unless you are using a personal token.</p>
+</div><h4 id="parameters">Parameters</h4>
+<table class="definitions"><tr><th><code>id</code></th><td><div class="header"><span class="type"><a href="#data-structure-identifier">identifier</a></span><span class="http"><span class="label">HTTP</span><span class="label-value"><span>set in request path</span></span></span></div><div class="description"><p>The id of the webhook.</p>
+</div></td></tr></table><h4 id="result">Result</h4>
+<span class="http"><span class="label">HTTP</span><span class="label-value"><code>200 OK</code></span></span><table class="definitions"><tr><th><code>webhook</code></th><td><div class="header"><span class="type"><a href="#data-structure-webhook">webhook</a></span></div><div class="description"><p>The webhook.</p>
+</div></td></tr></table></div><aside><div class="example"><div class="tab-content"><div class="tab-pane json active"><pre><code>{}</code></pre><div class="step-marker">⬇</div><pre><code>{
+  "webhook": {
+    "id": "cjxzsflu8001d0g567q6tyne1",
+    "accessId": "cjxzsflu8001a0g56mnr83dcn",
+    "url": "https://sievey.io/webhooks",
+    "minIntervalMs": 5000,
+    "maxRetries": 5,
+    "currentRetries": 0,
+    "state": "active",
+    "runCount": 0,
+    "failCount": 0,
+    "lastRun": {},
+    "runs": [],
+    "created": 1562917003.464,
+    "createdBy": "cjxzsflu8001a0g56mnr83dcn",
+    "modified": 1562917003.464,
+    "modifiedBy": "cjxzsflu8001a0g56mnr83dcn"
+  }
+}</code></pre></div><div class="tab-pane http"><pre><code>curl -i -X POST -H 'Content-Type: application/json' -d '{}' https://${username}.pryv.me/webhooks/${id}/test?auth=${token}</code></pre><div class="step-marker">⬇</div><pre><code>HTTP/1.1 200 OK
+Content-Type: application/json; charset=utf-8
+API-Version: 1.3.41
+
+{
+  "webhook": {
+    "id": "cjxzsflu8001d0g567q6tyne1",
+    "accessId": "cjxzsflu8001a0g56mnr83dcn",
+    "url": "https://sievey.io/webhooks",
+    "minIntervalMs": 5000,
+    "maxRetries": 5,
+    "currentRetries": 0,
+    "state": "active",
+    "runCount": 0,
+    "failCount": 0,
+    "lastRun": {},
+    "runs": [],
+    "created": 1562917003.464,
+    "createdBy": "cjxzsflu8001a0g56mnr83dcn",
+    "modified": 1562917003.464,
+    "modifiedBy": "cjxzsflu8001a0g56mnr83dcn"
+  }
+}</code></pre></div><div class="tab-pane sockets"><pre><code>socket.emit('webhooks.test', {}, callback);</code></pre><div class="step-marker">⬇</div><pre><code>{
+  "webhook": {
+    "id": "cjxzsflu8001d0g567q6tyne1",
+    "accessId": "cjxzsflu8001a0g56mnr83dcn",
+    "url": "https://sievey.io/webhooks",
+    "minIntervalMs": 5000,
+    "maxRetries": 5,
+    "currentRetries": 0,
+    "state": "active",
+    "runCount": 0,
+    "failCount": 0,
+    "lastRun": {},
+    "runs": [],
+    "created": 1562917003.464,
+    "createdBy": "cjxzsflu8001a0g56mnr83dcn",
+    "modified": 1562917003.464,
+    "modifiedBy": "cjxzsflu8001a0g56mnr83dcn"
+  }
+}</code></pre></div></div></div></aside></section></section><!-- it's either:--><!-- !trusted & !preview--><!-- !preview & -full--><!-- -preview--><section id="methods-followed-slices"><h2 id="followed-slices">Followed slices</h2>
 <div class="content"><div class="meta"><span class="label trusted-only">Trusted apps only</span></div><div class="intro"><p>Methods to retrieve and manipulate <a href="#data-structure-followed-slice">followed slices</a>.</p>
 </div></div><!-- it's either:--><!-- !trusted & !preview--><!-- !preview & -full--><!-- -preview--><section id="methods-followed-slices-followedSlices-get" class="method"> <h3 id="get-followed-slices">Get followed slices</h3>
 <div class="content"><div class="meta"><span class="method-id"><span class="label">id</span><span class="label-value"><code>followedSlices.get</code></span></span><span class="http"><span class="label">HTTP</span><span class="label-value"><code>GET /followed-slices</code></span></span></div><div class="intro"><p>Gets followed slices.</p>
@@ -2391,7 +3090,58 @@ will be deactivated.</p>
 </div></td></tr><tr><th><code>storageUsed</code></th><td><div class="header"><span class="type">object</span></div><div class="description"><p>The current storage size used by the user account.</p>
 </div><table class="definitions"><tr><th><code>dbDocuments</code></th><td><div class="header"><span class="type">number</span></div><div class="description"><p>Bytes used by documents (records) in the database.</p>
 </div></td></tr><tr><th><code>attachedFiles</code></th><td><div class="header"><span class="type">number</span></div><div class="description"><p>Bytes used by attached files.</p>
-</div></td></tr></table></td></tr></table></div><aside></aside></section><!-- it's either:--><!-- !trusted & !preview--><!-- !preview & -full--><!-- -preview--><!-- it's either:--><!-- !trusted & !preview--><!-- !preview & -full--><!-- -preview--><section id="data-structure-item-deletion"><h2 id="item-deletion">Item deletion</h2>
+</div></td></tr></table></td></tr></table></div><aside></aside></section><!-- it's either:--><!-- !trusted & !preview--><!-- !preview & -full--><!-- -preview--><section id="data-structure-webhook"><h2 id="webhook">Webhook</h2>
+<div class="content"><div class="meta"><span class="label trusted-only">Preview </span></div><div class="intro"><p>Webhooks provide push notifications to servers using HTTP POST requests.  </p>
+<p>Webhooks can only be created by app accesses. Once created, they will run, executing a HTTP POST request to the provided URL for each data change in the user account. Currently, we support notifications for data changes, a subsequent API call is necessary to fetch the changes content.  </p>
+<p>In case of failure to send a request, the webhook will retry a defined number of times at a growing interval of time before becoming inactive after too many successive failures. The webhooks run rate is throttled by a minimum time between notifications, sending an array of events that occured during this period.  </p>
+<p>All runs are saved which allows to monitor a webhook&#39;s health. </p>
+</div><table class="definitions"><tr><th><code>id</code></th><td><div class="header"><span class="type"><a href="#data-structure-identifier">identifier</a></span><span class="label label-default read-only">read-only</span></div><div class="description"><p>The identifier of the Webhook. Automatically generated if not set when creating the stream.</p>
+</div></td></tr><tr><th><code>accessId</code></th><td><div class="header"><span class="type"><a href="#data-structure-identifier">identifier</a></span><span class="label label-default read-only">read-only</span></div><div class="description"><p>The identifier of the access that was used to create the Webhook.</p>
+</div></td></tr><tr><th><code>url</code></th><td><div class="header"><span class="type">string</span></div><div class="description"><p>The URL where the HTTP POST request will be made.</p>
+</div></td></tr><tr><th><code>minIntervalMs</code></th><td><div class="header"><span class="type">number</span></div><div class="description"><p>The minimum interval between subsequent HTTP calls in milliseconds. Defaults to the time set by the admin. </p>
+</div></td></tr><tr><th><code>maxRetries</code></th><td><div class="header"><span class="type">number</span></div><div class="description"><p>The maximum number of retries executed after a failed HTTP call. Defaults to the number set by the admin.</p>
+</div></td></tr><tr><th><code>currentRetries</code></th><td><div class="header"><span class="type">number</span><span class="label label-default read-only">read-only</span></div><div class="description"><p>The number of retries iterations since the last failed HTTP call. This number is 0 if the last HTTP call was successful.</p>
+</div></td></tr><tr><th><code>state</code></th><td><div class="header"><span class="type"><code>active</code>|<code>inactive</code></span></div><div class="description"><p>The current state of the Webhook. An inactive Webhook will not make any HTTP call when changes occur. It must be activated using the <a href="#methods-webhooks-webhooks-update">update webhook</a> method.</p>
+</div></td></tr><tr><th><code>runCount</code></th><td><div class="header"><span class="type">number</span><span class="label label-default read-only">read-only</span></div><div class="description"><p>The number of times the Webhooks has been run, including failures.</p>
+</div></td></tr><tr><th><code>failCount</code></th><td><div class="header"><span class="type">number</span><span class="label label-default read-only">read-only</span></div><div class="description"><p>The number of times the Webhook has failed making HTTP calls. Failed runs are HTTP requests that responded with a status outside of 200-299 range.</p>
+</div></td></tr><tr><th><code>lastRun</code></th><td><div class="header"><span class="type">Run object</span><span class="label label-default read-only">read-only</span></div><div class="description"><p>Represents the last Webhook call, comprised of HTTP response status and timestamp.</p>
+</div><table class="definitions"><tr><th><code>status</code></th><td><div class="header"><span class="type">number</span></div><div class="description"><p>The HTTP response status of the call.</p>
+</div></td></tr><tr><th><code>timestamp</code></th><td><div class="header"><span class="type"><a href="#data-structure-timestamp">timestamp</a></span></div><div class="description"><p>The time the call was started.</p>
+</div></td></tr></table></td></tr><tr><th><code>runs</code></th><td><div class="header"><span class="type">array of Run objects</span><span class="label label-default read-only">read-only</span></div><div class="description"><p>Array of Run objects in inverse chronological order (newest first).  </p>
+</div></td></tr><tr><th><code>created</code></th><td><div class="header"><span class="type"><a href="#data-structure-timestamp">timestamp</a></span><span class="label label-default read-only">read-only</span></div><div class="description"><p>The time the webhook was created.</p>
+</div></td></tr><tr><th><code>createdBy</code></th><td><div class="header"><span class="type"><a href="#data-structure-identifier">identifier</a></span><span class="label label-default read-only">read-only</span></div><div class="description"><p>The id of the access used to create the webhook.</p>
+</div></td></tr><tr><th><code>modified</code></th><td><div class="header"><span class="type"><a href="#data-structure-timestamp">timestamp</a></span><span class="label label-default read-only">read-only</span></div><div class="description"><p>The time the webhook was last modified.</p>
+</div></td></tr><tr><th><code>modifiedBy</code></th><td><div class="header"><span class="type"><a href="#data-structure-identifier">identifier</a></span><span class="label label-default read-only">read-only</span></div><div class="description"><p>The id of the last access used to modify the webhook.</p>
+</div></td></tr></table></div><aside><div class="example"><p>A simple Webhook</p>
+<pre><code>{
+  "id": "cjxzsflu8001b0g562iooirua",
+  "accessId": "cjxzsflu800190g56tk2ip9cw",
+  "url": "https://notifications.service.com/pryv",
+  "minIntervalMs": 15000,
+  "maxRetries": 5,
+  "currentRetries": 0,
+  "state": "active",
+  "runCount": 2,
+  "failCount": 0,
+  "lastRun": {
+    "status": 200,
+    "timestamp": 1562913408.464
+  },
+  "runs": [
+    {
+      "status": 200,
+      "timestamp": 1562913408.464
+    },
+    {
+      "status": 200,
+      "timestamp": 1562909808.464
+    }
+  ],
+  "created": 1562830608.464,
+  "createdBy": "cjxzsflu800190g56tk2ip9cw",
+  "modified": 1562830608.464,
+  "modifiedBy": "cjxzsflu800190g56tk2ip9cw"
+}</code></pre></div></aside></section><!-- it's either:--><!-- !trusted & !preview--><!-- !preview & -full--><!-- -preview--><section id="data-structure-item-deletion"><h2 id="item-deletion">Item deletion</h2>
 <div class="content"><div class="meta"></div><div class="intro"><p>A record of a deleted item for sync purposes.</p>
 </div><table class="definitions"><tr><th><code>id</code></th><td><div class="header"><span class="type"><a href="#data-structure-identifier">identifier</a></span></div><div class="description"><p>The identifier of the deleted item.</p>
 </div></td></tr><tr><th><code>deleted</code></th><td><div class="header"><span class="type"><a href="#data-structure-timestamp">timestamp</a></span><span class="label label-default optional">optional</span></div><div class="description"><p>The time the item was deleted.</p>
