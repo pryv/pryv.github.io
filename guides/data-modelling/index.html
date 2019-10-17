@@ -1,0 +1,275 @@
+<!DOCTYPE html><html lang="en" class="no-js"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="description" property="og:description" content="Pryv API reference and resources for developers"><meta name="author" content="Pryv SA"><meta property="og:type" content="website"><meta name="image" property="og:image" content="/assets/images/logo-256.png"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Data Modelling | Pryv API</title><link rel="icon" href="/assets/images/favicon-black.ico" type="image/x-icon"><link rel="apple-touch-icon" sizes="120x120" href="/assets/images/apple-touch-icon-120x120-black.png"><link rel="apple-touch-icon" sizes="152x152" href="/assets/images/apple-touch-icon-152x152-black.png"><link rel="apple-touch-icon" sizes="180x180" href="/assets/images/apple-touch-icon-180x180-black.png"><!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+<!--[if lt IE 9]>
+  <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+  <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+<![endif]--><link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Roboto:400,300,500,700,400italic|Roboto+Condensed:400,300,700"><link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/styles/docco.min.css"><link rel="stylesheet" type="text/css" href="/assets/fonts/ss-gizmo.min.css"><link rel="stylesheet" type="text/css" href="/assets/style.css"></head><body class="data-modelling with-toc"><header id="page-header"><nav role="navigation" class="navbar navbar-default navbar-fixed-top"><div class="container-fluid"><div class="navbar-header"><a href="https://pryv.com" title="Pryv home" class="navbar-brand logo pryv-home"><img src="/assets/images/icon-home.svg" alt="Pryv home" height="50"></a><a href="/" title="Developers home" class="navbar-brand logo"><img src="/assets/images/logo-256-black.png" alt="Developers home"></a><button type="button" data-toggle="collapse" data-target="#main-nav" class="navbar-toggle"><span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button></div><div id="main-nav" class="collapse navbar-collapse"><ul class="nav navbar-nav"><li class="dropdown"><a href="#" data-toggle="dropdown" class="dropdown-toggle">Guides <b class="caret"></b></a><ul class="dropdown-menu"><li><a href="/getting-started/">Getting started</a></li><li><a href="/concepts/">API concepts</a></li><li><a href="/external-resources/">External resources</a></li><!--+menuItem('data-modeling', 'Data modeling') —> into "Concepts"??--></ul></li><li class="dropdown"><a href="#" data-toggle="dropdown" class="dropdown-toggle">Reference <b class="caret"></b></a><ul class="dropdown-menu"><li><a href="/reference/">API reference</a></li><li><a href="/change-log/">API change log</a></li><li><a href="/event-types/">Event types</a></li><!--+menuItem('standardStructure')--></ul></li><li class="dropdown"><a href="#" data-toggle="dropdown" class="dropdown-toggle">FAQ <b class="caret"></b></a><ul class="dropdown-menu"><li><a href="/faq-api/">API</a></li><li><a href="/faq-infra/">Infrastructure</a></li></ul></li><!--lia(href='#') Blog--></ul><div class="navbar-right"><p class="navbar-text version"><a href="/change-log/" title="View change log">API version: <strong>1.4.17</strong></a></p></div></div></div></nav></header><div id="main-wrapper" class="container container-narrow"><div id="main"><h1 class="page-title">Data Modelling</h1><h1 id="guides">Guides</h1>
+<p>In the following mini-guides, you will find all the necessary information The first step in order to be able to manage entities such as events, streams and accesses on Pryv.com requires to login.</p>
+<h2 id="how-to-manage-streams-">How to manage streams ?</h2>
+<p>Streams represent the fundamental context in which events occur and are organized in a hierarchical way. </p>
+<p>They should reflect the user/app-specific organizational levels (e.g. life journal, blood pressure recording, etc.) or data sources (e.g. apps and/or devices). Different operations can be performed on streams, listed in the <a href="https://api.pryv.com/reference/#api-methods">API methods</a> : <code>GET</code>, <code>CREATE</code>, <code>UPDATE</code>and <code>DELETE</code>.</p>
+<p>Let&#39;s take the case of a patient John who is recording his heart rate on a daily basis using the <em>Pulse Oximeter</em> app, and his nutrition. He will therefore need a stream organization as below :</p>
+<p><img src="/Users/anastasiabouzdine/Desktop/john_streams.png" alt="john_streams"></p>
+<p>Using the login from the guide <a href="xxx">&quot;How to create login?&quot;</a>, John has created an account on Pryv.io with the username &#39;<em>john</em>&#39;, the domain &#39;<em>pryv.me</em>&#39; and the access token &#39;<em>ck1ge42ay6i411md3fua2lboq</em>&#39;.</p>
+<h3 id="create-a-stream">Create a stream</h3>
+<p>How does it work in practice to create a root stream &quot;heart&quot; or &quot;nutrition&quot;, and the corresponding sub-streams ?</p>
+<p>We need first to create the root stream &quot;heart&quot;.</p>
+<p>From the command line [Should we add more info ? About login, access, etc], we perform a a <code>POST</code> call to the streams route, providing the &#39;id&#39; and &#39;name&#39; of the root stream to create :</p>
+<pre><code class="lang-bash">curl -X POST \
+  -H &quot;Content-Type: application/json&quot; \
+  -H &quot;Authorization: ${token}&quot; \
+  -d &#39;{
+      &quot;id&quot;:&quot;heart&quot;,
+      &quot;name&quot;:&quot;Heart&quot;
+    }&#39; \
+  &#39;https://${username}.${domain}/streams&#39;
+</code></pre>
+<p>Now that the root stream &#39;heart&#39; has been created, it is possible to attach child streams such as &#39;heartRate&#39; to the root stream. This sub-stream will be hosting any event related to the heart rate measurement.</p>
+<p>Similarly, we perform a <code>POST</code> call to the streams route, providing the &#39;id&#39; and &#39;name&#39; of the stream to create and a &#39;parentId&#39;, the id of the parent stream &#39;heart&#39;:</p>
+<pre><code class="lang-bash">curl -X POST \
+  -H &quot;Content-Type: application/json&quot; \
+  -H &quot;Authorization: ${token}&quot; \
+  -d &#39;{
+      &quot;id&quot;:&quot;heartRate&quot;,
+      &quot;name&quot;:&quot;Heart Rate&quot;,
+      &quot;parentId&quot;:&quot;heart&quot;
+    }&#39; \
+  &#39;https://${username}.${domain}/streams&#39;
+</code></pre>
+<p>Any sub streams can be added to the parent stream.</p>
+<h3 id="get-a-stream">Get a stream</h3>
+<p>Now that the &#39;heart&#39; stream and its children were created for John, we can try to retrieve them. </p>
+<p>To do so, we use a <code>GET</code> call, replacing {token}, {username} and {domain} by John&#39;s profile variables.</p>
+<p>In the command line :</p>
+<pre><code class="lang-bash">curl -i -H &quot;Authorization: ${token}&quot; \
+    https://${username}.${domain}/streams
+</code></pre>
+<p>The response should look like the following :</p>
+<pre><code class="lang-json">{
+  &quot;streams&quot;: [
+    {
+      &quot;name&quot;: &quot;Heart&quot;,
+      &quot;created&quot;: 1528445539.785,
+      &quot;createdBy&quot;: &quot;cji5os3u11ntt0b40tg0xhfea&quot;,
+      &quot;modified&quot;: 1528445581.592,
+      &quot;modifiedBy&quot;: &quot;cjhagb5up1b950b40xsbeh5yj&quot;,
+      &quot;clientData&quot;: {
+        &quot;pryv-browser:bgColor&quot;: &quot;#e81034&quot;
+      },
+      &quot;id&quot;: &quot;heart&quot;,
+      &quot;children&quot;: [
+        {
+          &quot;name&quot;: &quot;Heart Rate&quot;,
+          &quot;parentId&quot;: &quot;heart&quot;,
+          &quot;created&quot;: 1528445684.508,
+          &quot;createdBy&quot;: &quot;cji5os3u11ntt0b40tg0xhfea&quot;,
+          &quot;modified&quot;: 1528445684.508,
+          &quot;modifiedBy&quot;: &quot;cji5os3u11ntt0b40tg0xhfea&quot;,
+          &quot;id&quot;: &quot;heartRate&quot;,
+          &quot;children&quot;: []
+        }
+      ]
+    }
+  ],
+  &quot;meta&quot;: {
+    &quot;apiVersion&quot;: &quot;1.2.18&quot;,
+    &quot;serverTime&quot;: 1528815903.187
+  }
+}
+</code></pre>
+<p>To get only one specific stream, replace &#39;streams&#39; in the command line by the specific stream id that you are wishing to retrieve, e.g. &#39;heartRate&#39; in the command line :</p>
+<pre><code class="lang-bash">curl -i -H &quot;Authorization: ${token}&quot; \
+    https://${username}.${domain}/heartRate
+</code></pre>
+<h3 id="update-a-stream">Update a stream</h3>
+<p>Let&#39;s imagine now that we want to update the stream &#39;heartRate&#39; by changing its name. We first retrieve the id of the stream we want to update, and we save the id of the concerned stream (&#39;heartRate&#39;) in the variable ${streamId} :</p>
+<pre><code class="lang-bash">${streamId} = heartRate
+</code></pre>
+<p>Then, we use a <code>PUT</code> call to update the name <code>heartRate</code> to <code>heart rate monitoring</code>.</p>
+<pre><code class="lang-bash">curl -X PUT \
+  -H &quot;Authorization: ${token}&quot; \
+  -H &quot;Content-Type: application/json&quot; \
+  -d &#39;{
+        &quot;name&quot;: &quot;heart rate monitoring&quot;
+    }&#39; \
+    &#39;https://${username}.${domain}/streams/${streamId}&#39;
+</code></pre>
+<h3 id="delete-a-stream">Delete a stream</h3>
+<p>The <code>delete</code> operation is divided into two phases : trash and delete. When deleting an event or a stream, it is first flagged as trashed (and can still be retrieved) and irreversibly deleted only when repeating the delete operation a second time. </p>
+<p>As an example, we will show how to delete the stream &#39;heartRate&#39;. </p>
+<pre><code class="lang-bash">${stream_id} = heartRate
+</code></pre>
+<p>We repeat the following command two times, one for trashing the stream and another for deleting it :</p>
+<pre><code class="lang-bash">curl -X DELETE \
+  -H &quot;Authorization: ${token}&quot; \
+  &#39;https://${username}.${domain}/streams/${stream_id}&#39;
+</code></pre>
+<p>When trying to delete the stream, you may encounter the following error message:</p>
+<pre><code class="lang-json">{
+  &quot;error&quot;: {
+    &quot;id&quot;: &quot;invalid-parameters-format&quot;,
+    &quot;message&quot;: &quot;There are events referring to the deleted items and the `mergeEventsWithParent` parameter is missing.&quot;
+  },
+  &quot;meta&quot;: {
+    &quot;apiVersion&quot;: &quot;1.2.18&quot;,
+    &quot;serverTime&quot;: 1528890640.148
+  }
+}
+</code></pre>
+<p>This means that the stream you are trying to delete still contains some events (<em>e.g.</em> previous heart rate measurements) and Pryv.io needs to know what to do with them. You can add the &#39;mergeEventsWithParent&#39; boolean as query parameter of your delete call. Set it to <em>true</em> if you want to merge the events into the parent stream (here &#39;heart&#39;) or to <em>false</em> if you want to delete them as well.</p>
+<p>Below is the command for deleting the stream and merging the events in the parent stream:</p>
+<pre><code class="lang-bash">curl -X DELETE \
+  -H &quot;Authorization: ${token}&quot; \
+  &#39;https://${username}.${domain}/streams/${streamId}?mergeEventsWithParent=true&#39;
+</code></pre>
+<p>Response:</p>
+<pre><code class="lang-json">{
+  &quot;streamDeletion&quot;: {
+    &quot;id&quot;: &quot;heartRate&quot;
+  },
+  &quot;meta&quot;: {
+    &quot;apiVersion&quot;: &quot;1.2.18&quot;,
+    &quot;serverTime&quot;: 1528890935.505
+  }
+}
+</code></pre>
+<h2 id="how-to-manage-events-">How to manage events ?</h2>
+<h3 id="create-an-event">Create an event</h3>
+<p>Let&#39;s suppose that the structure of streams is the one that has been described <a href="ref: john_streams">previously</a>.</p>
+<p>The stream &#39;heart&#39; contains a substream &#39;heartRate&#39; in which events related to heart rate measurements can be added :</p>
+<p><img src="/Users/anastasiabouzdine/Desktop/Capture d’écran 2019-10-10 à 15.43.12.png" alt="Capture d’écran 2019-10-10 à 15.43.12"></p>
+<p>To create an event of type &#39;frequency/bpm&#39; with a pulse rate (integer) as content in the stream &#39;heartRate&#39;, we use a <code>POST</code> call such as :</p>
+<pre><code class="lang-bash">curl -X POST \
+    -H &quot;Content-Type: application/json&quot; \
+    -H &quot;Authorization: ${token}&quot; \
+  -d &#39;{
+        &quot;streamId&quot;: &quot;heartRate&quot;,
+        &quot;type&quot;: &quot;frequency/bpm&quot;,
+        &quot;content&quot;: 90
+    }&#39; \
+    &#39;https://${username}.${domain}/events&#39;
+</code></pre>
+<p>Any sub streams can be added to the parent stream.</p>
+<h3 id="get-an-event">Get an event</h3>
+<p>The events from a stream can be easily retrieved using a <code>GET</code> call in the command line :</p>
+<pre><code class="lang-bash">curl     -H &quot;Authorization: ${token}&quot; \
+    -i https://${username}.${domain}/events
+</code></pre>
+<p>Response :</p>
+<pre><code class="lang-json">{
+  &quot;events&quot;: [
+    {
+      &quot;streamId&quot;: &quot;heartRate&quot;,
+      &quot;type&quot;: &quot;frequency/bpm&quot;,
+      &quot;content&quot;: 90,
+      &quot;time&quot;: 1528447710.816,
+      &quot;tags&quot;: [],
+      &quot;created&quot;: 1528447710.816,
+      &quot;createdBy&quot;: &quot;cji5os3u11ntt0b40tg0xhfea&quot;,
+      &quot;modified&quot;: 1528447710.816,
+      &quot;modifiedBy&quot;: &quot;cji5os3u11ntt0b40tg0xhfea&quot;,
+      &quot;id&quot;: &quot;cji5qaxk01nui0b40ec370p94&quot;
+    }
+  ],
+  &quot;meta&quot;: {
+    &quot;apiVersion&quot;: &quot;1.2.18&quot;,
+    &quot;serverTime&quot;: 1528467864.397
+  }
+}
+</code></pre>
+<h3 id="update-an-event">Update an event</h3>
+<p>Let&#39;s imagine now that we want to modify the heart rate measurement from the stream &#39;heartRate&#39;. </p>
+<p>We first retrieve the id of the event that we want to update, and we save the id of the concerned event  in the variable ${event_id}. To find this id, you can perform a <code>GET</code> call as above to save the event id from the response.</p>
+<pre><code class="lang-bash">${event_id} = cji5qaxk01nui0b40ec370p94
+</code></pre>
+<p>Then, use a <code>PUT</code> call to update the event with a new value, for instance a heart rate of &quot;80&quot;.</p>
+<pre><code class="lang-bash">curl -X PUT \
+  -H &quot;Authorization: ${token}&quot; \
+  -H &quot;Content-Type: application/json&quot; \
+  -d &#39;{
+        &quot;content&quot;: 80
+    }&#39; \
+    &#39;https://${username}.${domain}/events/${event_id}&#39;
+</code></pre>
+<h3 id="delete-an-event">Delete an event</h3>
+<p>The <code>delete</code> operation is divided into two phases : trash and delete. When deleting an event or a stream, it is first flagged as trashed (and can still be retrieved) and irreversibly deleted only when repeating the delete operation a second time. </p>
+<p>As an example, we will show how to delete a specific heart rate event from the stream &#39;heartRate&#39;.  We first retrieve the id of the event we want to delete (by doing a read operation) and we save it in the variable ${event_id}.</p>
+<pre><code class="lang-bash">${event_id} = cji5qaxk01nui0b40ec370p94
+</code></pre>
+<p>We will use a <code>DELETE</code> call to trash it first and a second <code>DELETE</code> call to delete it completely. </p>
+<pre><code class="lang-bash">curl -X DELETE \
+  -H &quot;Authorization: ${token}&quot; \
+  &#39;https://${username}.${domain}/events/${event_id}&#39;
+</code></pre>
+<p>Response:</p>
+<pre><code class="lang-json">{
+  &quot;event&quot;: {
+    &quot;streamId&quot;: &quot;pulseOximeterApp&quot;,
+    &quot;type&quot;: &quot;frequency/bpm&quot;,
+    &quot;content&quot;: 105,
+    &quot;time&quot;: 1528878365.385,
+    &quot;tags&quot;: [],
+    &quot;created&quot;: 1528878365.385,
+    &quot;createdBy&quot;: &quot;cji5os3u11ntt0b40tg0xhfea&quot;,
+    &quot;modified&quot;: 1528895740.264,
+    &quot;modifiedBy&quot;: &quot;cjicv106i1q580b40678kjb17&quot;,
+    &quot;trashed&quot;: true,
+    &quot;id&quot;: &quot;cjicupcqx1q530b40oao5ob02&quot;
+  },
+  &quot;meta&quot;: {
+    &quot;apiVersion&quot;: &quot;1.2.18&quot;,
+    &quot;serverTime&quot;: 1528895740.267
+  }
+}
+</code></pre>
+<p>As we trashed the event, the boolean response &quot;trashed&quot; is true.</p>
+<p>Finally, we delete the event completely by a second <code>DELETE</code> call. </p>
+<pre><code class="lang-bash">curl -X DELETE \
+  -H &quot;Authorization: ${token}&quot; \
+  &#39;https://${username}.${domain}/events/${event_id}&#39;
+</code></pre>
+<p>The API should return a list of deletion :</p>
+<pre><code class="lang-json">{
+  &quot;eventDeletion&quot;: {
+    &quot;id&quot;: &quot;cji5qaxk01nui0b40ec370p94&quot;
+  },
+  &quot;meta&quot;: {
+    &quot;apiVersion&quot;: &quot;1.2.18&quot;,
+    &quot;serverTime&quot;: 1528817673.092
+  }
+}
+</code></pre>
+</div><nav id="toc"></nav></div><footer id="page-footer"><nav class="navbar navbar-default"><div class="container-fluid"><div id="footer-nav"><ul class="nav navbar-nav"><li><a href="mailto:developers@pryv.com">Send a message</a></li><li><a href="https://github.com/pryv">GitHub</a></li><li><a href="https://pryv.com">pryv.com</a></li></ul></div></div></nav></footer><script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script><script src="/assets/bootstrap.min.js"></script><script src="/assets/js/toc.min.js"></script><!-- TOC generation--><script>jQuery(document).ready(function($) {
+  // Header is about 51 pixels. This equals to 'header + fuzz', fuzz was
+  // determined experimentally.
+  var offset = 100;
+
+  // Display TOC on the left side of the page.
+  $('#toc').toc({
+    selector: '#main h1:not(.page-title),#main h2,#main h3',
+    ulClass: 'nav'
+  });
+
+  // Synchronise scroll/click motion with TOC display.
+  $(document).ready(function() {
+    // NOTE This is done at onLoad since we need to wait for all CSS
+    // to appear.
+    $('body').scrollspy({
+      target: '#toc',
+      offset: offset
+    });
+  });
+});
+</script><!-- Code blocks highlighting--><script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/highlight.min.js"></script><script>hljs.initHighlightingOnLoad();
+</script><!-- Google Analytics--><script>var _gaq = _gaq || [];
+_gaq.push(['_setAccount', 'UA-36589447-2']);
+_gaq.push(['_trackPageview']);
+(function() {
+  var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+  ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+  var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+})();
+</script><!-- Sales-Wings--><script type="text/javascript" id="SW-fd71dffa-76e8-479e-a37b-6e915b97b023"></script><script>!function(){function a(){var a=document.createElement("script");
+a.type="text/javascript",a.async=1,a.src="//go.saleswingsapp.com/assets/javascripts/sw/fd71dffa-76e8-479e-a37b-6e915b97b023";
+var b=document.getElementById("SW-fd71dffa-76e8-479e-a37b-6e915b97b023");
+b.parentNode.insertBefore(a,b)}window.attachEvent?window.attachEvent("onload",a):window.addEventListener("load",a,0)}();</script></body></html>
