@@ -74,6 +74,11 @@ Modify the NGINX configuration on the static-web machine <code>static/nginx/site
       }
 }
 </code></pre><h2 id="system-administrators">System administrators</h2>
+<h3 id="port-53-is-already-in-use-by-docker-s-embedded-dns-">Port 53 is already in use (by Docker&#39;s embedded DNS)</h3>
+<p>On some installations, the DNS container cannot be started because docker-compose attempts to bind on the same network interface and port as Docker&#39;s embedded DNS.<br>To fix this, you must specify the machine&#39;s public IP address in the docker-compose port mapping section of the DNS service as following:</p>
+<pre><code class="lang-yaml">ports:
+    - &quot;EXTERNAL_INTERFACE_IP_ADDRESS:53:5353/udp&quot;
+</code></pre>
 <h3 id="docker-login-x11-error">docker login X11 error</h3>
 <p>On a Pryv install using Ubuntu 18.X when running <code>docker login</code>: Ubuntu refuses to let you enter the password because it wants you to use a secure means of password entry. The error reads something like &#39;Cannot autolaunch D-Bus without X11 \$DISPLAY&#39; (<a href="https://github.com/docker/compose/issues/6023">docker-compose issue #6023</a>).
 Our workaround is:</p>
