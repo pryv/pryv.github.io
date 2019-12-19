@@ -1,0 +1,291 @@
+<!DOCTYPE html><html lang="en" class="no-js"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="description" property="og:description" content="Pryv API reference and resources for developers"><meta name="author" content="Pryv SA"><meta property="og:type" content="website"><meta name="image" property="og:image" content="/assets/images/logo-256.png"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Data Modelling | Pryv API</title><link rel="icon" href="/assets/images/favicon-black.ico" type="image/x-icon"><link rel="apple-touch-icon" sizes="120x120" href="/assets/images/apple-touch-icon-120x120-black.png"><link rel="apple-touch-icon" sizes="152x152" href="/assets/images/apple-touch-icon-152x152-black.png"><link rel="apple-touch-icon" sizes="180x180" href="/assets/images/apple-touch-icon-180x180-black.png"><!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+<!--[if lt IE 9]>
+  <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+  <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+<![endif]--><link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Roboto:400,300,500,700,400italic|Roboto+Condensed:400,300,700"><link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/styles/docco.min.css"><link rel="stylesheet" type="text/css" href="/assets/fonts/ss-gizmo.min.css"><link rel="stylesheet" type="text/css" href="/assets/style.css"></head><body class="data-modelling with-toc"><header id="page-header"><nav role="navigation" class="navbar navbar-default navbar-fixed-top"><div class="container-fluid"><div class="navbar-header"><a href="https://pryv.com" title="Pryv home" class="navbar-brand logo pryv-home"><img src="/assets/images/icon-home.svg" alt="Pryv home" height="50"></a><a href="/" title="Developers home" class="navbar-brand logo"><img src="/assets/images/logo-256-black.png" alt="Developers home"></a><button type="button" data-toggle="collapse" data-target="#main-nav" class="navbar-toggle"><span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button></div><div id="main-nav" class="collapse navbar-collapse"><ul class="nav navbar-nav"><li class="dropdown"><a href="#" data-toggle="dropdown" class="dropdown-toggle">Guides <b class="caret"></b></a><ul class="dropdown-menu"><li><a href="/getting-started/">Getting started</a></li><li><a href="/concepts/">API concepts</a></li><li><a href="/guides/data-modelling/">Data modelling</a></li><li><a href="/external-resources/">External resources</a></li></ul></li><li class="dropdown"><a href="#" data-toggle="dropdown" class="dropdown-toggle">Reference <b class="caret"></b></a><ul class="dropdown-menu"><li><a href="/reference/">API reference</a></li><li><a href="/change-log/">API change log</a></li><li><a href="/event-types/">Event types</a></li><!--+menuItem('standardStructure')--></ul></li><li class="dropdown"><a href="#" data-toggle="dropdown" class="dropdown-toggle">FAQ <b class="caret"></b></a><ul class="dropdown-menu"><li><a href="/faq-api/">API</a></li><li><a href="/faq-infra/">Infrastructure</a></li></ul></li><!--lia(href='#') Blog--></ul><div class="navbar-right"><p class="navbar-text version"><a href="/change-log/" title="View change log">API version: <strong>1.4.23</strong></a></p></div></div></div></nav></header><div id="main-wrapper" class="container container-narrow"><div id="main"><h1 class="page-title">Data Modelling</h1><p>In the following section, you will find all the necessary information to design your own model and implement it under Pryv&#39;s conventions.</p>
+<p>We describe two fundamental use cases : <strong>data collection</strong> to store and aggregate data from multiple data sources for a subject and <strong>consent aggregation</strong> of multiple subjects that granted permission to access their data.</p>
+<h3 id="data-collection">Data collection</h3>
+<p>Let&#39;s take the case of an athlete who uses four applications to store data on Pryv.io. 
+All four applications store their data in a single account:</p>
+<ul>
+<li><strong>Nutrition Mobile App</strong>: Tracks the consumption of various types of food through pictures of meals.</li>
+<li><strong>Smartwatch A</strong>: Collects the GPS position of the athlete during the training (<code>position/wgs84</code>), which represents a high volume of data.</li>
+<li><strong>Smartwatch B</strong>: Linked to the same application but only used to monitor the <code>calories burned</code> and <code>heart rate</code> during the training.</li>
+<li><strong>Pulse Oximeter</strong>: Used at home to check the health of the heart (<code>pulse rate</code>, <code>blood oxygenation / SpO2</code>)</li>
+</ul>
+<p>Here is a list of data generated by the applications and their corresponding Pryv types :</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">Data</th>
+<th style="text-align:left">Type</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">Heart rate</td>
+<td style="text-align:left"><code>frequency/bpm</code></td>
+</tr>
+<tr>
+<td style="text-align:left">Blood oxygenation</td>
+<td style="text-align:left"><code>oxygen-rate/spo2</code></td>
+</tr>
+<tr>
+<td style="text-align:left">Nutrition</td>
+<td style="text-align:left"><code>picture/attached</code></td>
+</tr>
+<tr>
+<td style="text-align:left">Physical activity</td>
+<td style="text-align:left"><code>position/wgs84</code></td>
+</tr>
+<tr>
+<td style="text-align:left">Physical activity</td>
+<td style="text-align:left"><code>energy/calories</code></td>
+</tr>
+</tbody>
+</table>
+<p>One general advice is to use one stream or substream per device.
+Given this situation, we would recommend a stream structure similar to the following :</p>
+<p><img src="/assets/images/getting-started/streams_structure_v2.png" alt="Example Streams Structure"></p>
+<p>This stream structure has multiple benefits:</p>
+<ul>
+<li>Provides enough context to the data and thus avoids ambiguities:<ul>
+<li>between food consumption (<code>calories ingested</code>) and physical activity (<code>calories burned</code>)</li>
+<li>between consumption of different food (<code>foodA</code>, <code>foodB</code>)</li>
+</ul>
+</li>
+<li>Allows interoperability in the case of multiple devices that:<ul>
+<li>measure the same type of data through different apps (<code>heartRate</code> from <code>pulseOximeterApp</code> and <code>smartwatchB</code>)</li>
+<li>use the same app but measure different parameters (<code>smartwatchA</code> : <code>GPS position</code>, <code>smartwatchB</code> : <code>heartRate</code> and <code>calories burned</code>)</li>
+</ul>
+</li>
+</ul>
+<p>To implement it, you will first need to create the root streams <code>heart</code>, <code>blood</code>, etc and then the corresponding substreams, in which you will be able to insert the events. You can find out more on how to create streams <a href="/guides/manipulate-streams">here</a>.</p>
+<p>Alternatively, you can also do a <a href="http://api.pryv.com/reference/#call-batch">&quot;batch call&quot;</a> to create all the streams using a single API call. A batch call is recommended when you need to send a batch of API methods calls in one go (e.g. for syncing offline changes when resuming connectivity, for creating the streams structure, etc). In the property &quot;method&quot;, you define the API method that you want to call and the parameters you wish to provide it.</p>
+<p>In our case :</p>
+<pre><code class="lang-json">[
+  {
+    &quot;method&quot;: &quot;streams.create&quot;,
+    &quot;params&quot;: {
+      &quot;id&quot;: &quot;heart&quot;,
+      &quot;name&quot;: &quot;Heart&quot;
+    }
+  },
+    {
+    &quot;method&quot;: &quot;streams.create&quot;,
+    &quot;params&quot;: {
+      &quot;id&quot;: &quot;heartRate&quot;,
+      &quot;parentId&quot;: &quot;heart&quot;,
+      &quot;name&quot;: &quot;Heart Rate&quot;
+    }
+  },
+  {
+    &quot;method&quot;: &quot;streams.create&quot;,
+    &quot;params&quot;: {
+      &quot;id&quot;: &quot;pulseOximeterApp&quot;,
+      &quot;parentId&quot;: &quot;heartRate&quot;,
+      &quot;name&quot;: &quot;Pulse Oximeter Application&quot;
+    }
+  },
+  {
+    &quot;method&quot;: &quot;streams.create&quot;,
+    &quot;params&quot;: {
+      &quot;id&quot;: &quot;blood&quot;,
+      &quot;name&quot;: &quot;Blood&quot;
+    }
+  },
+  {
+    &quot;method&quot;: &quot;streams.create&quot;,
+    &quot;params&quot;: {
+      &quot;id&quot;: &quot;bloodOxygenation&quot;,
+      &quot;parentId&quot;: &quot;blood&quot;,
+      &quot;name&quot;: &quot;Blood Oxygenation&quot;
+    }
+  },
+  {
+    &quot;method&quot;: &quot;streams.create&quot;,
+    &quot;params&quot;: {
+      &quot;id&quot;: &quot;physicalActivity&quot;,
+      &quot;name&quot;: &quot;Physical Activity&quot;
+    }
+  },
+  {
+    &quot;method&quot;: &quot;streams.create&quot;,
+    &quot;params&quot;: {
+      &quot;id&quot;: &quot;smartwatchA&quot;,
+      &quot;parentId&quot;: &quot;physicalActivity&quot;,
+      &quot;name&quot;: &quot;Smart Watch A&quot;
+    }
+  },
+  {
+    &quot;method&quot;: &quot;streams.create&quot;,
+    &quot;params&quot;: {
+      &quot;id&quot;: &quot;smartwatchB&quot;,
+      &quot;parentId&quot;: &quot;physicalActivity&quot;,
+      &quot;name&quot;: &quot;Smart Watch B&quot;
+    }
+  },
+  {
+    &quot;method&quot;: &quot;streams.create&quot;,
+    &quot;params&quot;: {
+      &quot;id&quot;: &quot;foodConsumption&quot;,
+      &quot;name&quot;: &quot;Food Consumption&quot;
+    }
+  },
+  {
+    &quot;method&quot;: &quot;streams.create&quot;,
+    &quot;params&quot;: {
+      &quot;id&quot;: &quot;foodA&quot;,
+      &quot;parentId&quot;: &quot;foodConsumption&quot;,
+      &quot;name&quot;: &quot;Food A&quot;
+    }
+  },
+  {
+    &quot;method&quot;: &quot;streams.create&quot;,
+    &quot;params&quot;: {
+      &quot;id&quot;: &quot;nutritionApp&quot;,
+      &quot;parentId&quot;: &quot;foodA&quot;,
+      &quot;name&quot;: &quot;Nutrition App&quot;
+    }
+  },
+  {
+    &quot;method&quot;: &quot;streams.create&quot;,
+    &quot;params&quot;: {
+      &quot;id&quot;: &quot;foodB&quot;,
+      &quot;parentId&quot;: &quot;foodConsumption&quot;,
+      &quot;name&quot;: &quot;Food B&quot;
+    }
+  }
+]
+</code></pre>
+<h3 id="consent-aggregation">Consent aggregation</h3>
+<p>Now, let&#39;s imagine that you want to store the accesses of multiple subjects that gave you their consent.
+You will therefore need a &quot;campaign&quot; stream structure which allows you to store the accesses of these accounts in order to be able to retrieve data from these accounts.</p>
+<p><img src="/assets/images/getting-started/campaign.png" alt="Example Campaign Structure"></p>
+<p>The &quot;campaign&quot; data structure described below will contain the following streams :</p>
+<ul>
+<li>The stream <strong>&quot;Campaign description&quot;</strong>, where you will store the requested permissions (the <code>streamId</code> you want to access e.g. <code>heartRate</code>, the level of permission e.g. &quot;read&quot;/&quot;manage&quot;/…), the consent information, the app identifiers. </li>
+</ul>
+<pre><code class="lang-json">{
+  &quot;streamId&quot;: &quot;campaign-123-description&quot;,
+  &quot;type&quot;: &quot;campaign/sempryv&quot;,
+  &quot;name&quot;: &quot;Campaign description&quot;,
+  &quot;parentId&quot;: &quot;campaign-123&quot;,
+  &quot;content&quot;: {
+    &quot;requestedPermissions&quot;: {}, //...
+    &quot;consentText&quot;: &quot;&quot;, //...
+    &quot;appId&quot;: &quot;&quot;, //
+    } 
+}
+</code></pre>
+<ul>
+<li>The stream <strong>&quot;Patient accesses&quot;</strong> that will contain the <code>username</code> and <code>token</code> properties for every subject that granted access to their data.<pre><code class="lang-json">{
+    &quot;streamId&quot;: &quot;campaign-123-description&quot;,
+    &quot;type&quot;: &quot;access/pryv&quot;,
+    &quot;name&quot;: &quot;Patient accesses&quot;,
+    &quot;parentId&quot;: &quot;campaign-123&quot;,
+    &quot;content&quot;: {
+    &quot;username&quot;: &quot;subject01&quot;,
+    &quot;token&quot;: &quot;ck0qmnwo40007a8ivbxn12zt7&quot;,
+    } 
+}
+</code></pre>
+</li>
+</ul>
+<p>Similarly, you can create the streams one by one as explained <a href="/guides/manipulate-streams">here</a> or all in one by doing a &quot;batch call&quot; : </p>
+<pre><code class="lang-json">[
+  {
+    &quot;method&quot;: &quot;streams.create&quot;,
+    &quot;params&quot;: {
+      &quot;id&quot;: &quot;campaign-123&quot;,
+      &quot;name&quot;: &quot;Campaign name&quot;
+    }
+  },
+    {
+    &quot;method&quot;: &quot;streams.create&quot;,
+    &quot;params&quot;: {
+      &quot;id&quot;: &quot;campaign-123-description&quot;,
+      &quot;parentId&quot;: &quot;campaign-123&quot;,
+      &quot;name&quot;: &quot;Campaign description&quot;
+    }
+  },
+  {
+    &quot;method&quot;: &quot;streams.create&quot;,
+    &quot;params&quot;: {
+      &quot;id&quot;: &quot;campaign-123-patient-accesses&quot;,
+      &quot;parentId&quot;: &quot;campaign-123&quot;,
+      &quot;name&quot;: &quot;Patient accesses&quot;
+    }
+  }
+]
+</code></pre>
+<p>You can then add events to the different streams at once by doing an <a href="/reference/#create-event">events.create</a> call, and store the campaign data in one stream, and the username and token of the subject in another stream:</p>
+<pre><code class="lang-json">[
+  {
+    &quot;method&quot;: &quot;events.create&quot;,
+    &quot;params&quot;: {
+    &quot;time&quot;: 1385046854.282,
+    &quot;streamId&quot;: &quot;campaign-123-description&quot;,
+        &quot;type&quot;: &quot;campaign/pryv&quot;,
+    &quot;content&quot;: {
+      &quot;requestedPermissions&quot;: {}, //...
+      &quot;consentText&quot;: &quot;&quot;, //...
+      &quot;appId&quot;: &quot;&quot;, //
+    }
+    }
+  },
+  {
+    &quot;method&quot;: &quot;events.create&quot;,
+    &quot;params&quot;: {
+    &quot;time&quot;: 1385046854.282,
+    &quot;streamId&quot;: &quot;campaign-123-patient-accesses&quot;,
+    &quot;type&quot;: &quot;access/pryv&quot;,
+    &quot;content&quot;: {
+      &quot;access&quot;: {
+        &quot;id&quot;: &quot;ck0qmmwo40006a8ive8nkv9es&quot;,
+        &quot;username&quot;: &quot;subject01&quot;,
+        &quot;token&quot;: &quot;ck0qmmwo40007a8ivbxnl2zt7&quot;, 
+        &quot;urlEndpoint&quot;: &quot;${PATIENT_USERNAME}.${PATIENT_DOMAIN}&quot;,
+        &quot;type&quot;: &quot;shared&quot;,
+        } 
+      }
+    }
+  }
+]
+</code></pre>
+<p>If the stream already exists, the error <code>item-already-exists</code> will be displayed (See <a href="https://api.pryv.com/reference/#create-stream">streams.create</a> specific errors for more information).</p>
+</div><nav id="toc"></nav></div><footer id="page-footer"><nav class="navbar navbar-default"><div class="container-fluid"><div id="footer-nav"><ul class="nav navbar-nav"><li><a href="mailto:developers@pryv.com">Send a message</a></li><li><a href="https://github.com/pryv">GitHub</a></li><li><a href="https://pryv.com">pryv.com</a></li></ul></div></div></nav></footer><script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script><script src="/assets/bootstrap.min.js"></script><script src="/assets/js/toc.min.js"></script><!-- TOC generation--><script>jQuery(document).ready(function($) {
+  // Header is about 51 pixels. This equals to 'header + fuzz', fuzz was
+  // determined experimentally.
+  var offset = 100;
+
+  // Display TOC on the left side of the page.
+  $('#toc').toc({
+    selector: '#main h1:not(.page-title),#main h2,#main h3',
+    ulClass: 'nav'
+  });
+
+  // Synchronise scroll/click motion with TOC display.
+  $(document).ready(function() {
+    // NOTE This is done at onLoad since we need to wait for all CSS
+    // to appear.
+    $('body').scrollspy({
+      target: '#toc',
+      offset: offset
+    });
+  });
+});
+</script><!-- Code blocks highlighting--><script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/highlight.min.js"></script><script>hljs.initHighlightingOnLoad();
+</script><!-- Google Analytics--><script>var _gaq = _gaq || [];
+_gaq.push(['_setAccount', 'UA-36589447-2']);
+_gaq.push(['_trackPageview']);
+(function() {
+  var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+  ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+  var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+})();
+</script><!-- Sales-Wings--><script type="text/javascript" id="SW-fd71dffa-76e8-479e-a37b-6e915b97b023"></script><script>!function(){function a(){var a=document.createElement("script");
+a.type="text/javascript",a.async=1,a.src="//go.saleswingsapp.com/assets/javascripts/sw/fd71dffa-76e8-479e-a37b-6e915b97b023";
+var b=document.getElementById("SW-fd71dffa-76e8-479e-a37b-6e915b97b023");
+b.parentNode.insertBefore(a,b)}window.attachEvent?window.attachEvent("onload",a):window.addEventListener("load",a,0)}();</script></body></html>
