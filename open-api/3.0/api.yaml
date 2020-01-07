@@ -1,0 +1,1678 @@
+openapi: 3.0.0
+info:
+  description: Description of Pryv.io API in Open API 3.0 standard format
+  version: 1.0.0
+  title: Open API Pryv
+  contact:
+    email: hsupport@pryv.com
+  license:
+    name: MIT
+    url: https://opensource.org/licenses/MIT
+paths:
+  /auth/login:
+    post:
+      description: >-
+        Authenticates the user against the provided credentials, opening a
+        personal access session. This is one of the only API methods that do not
+        expect an [auth parameter](#basics-authentication).   
+
+        This method requires that the `appId` and `Origin` (or `Referer`) header comply with the [trusted app verification](#basics-trusted-apps-verification).
+      operationId: auth.login
+      parameters:
+        - in: header
+          name: Origin
+          schema:
+            type: string
+            default: "{{origin}}"
+            format: uri
+          required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                - type: string
+                - type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  description: The user's username.
+                  type: string
+                  default: "{{username}}"
+                password:
+                  description: The user's password.
+                  type: string
+                  default: "{{password}}"
+                appId:
+                  description: Your app's unique identifier.
+                  type: string
+                  default: "{{appId}}"
+  /auth/logout:
+    post:
+      description: Terminates a personal access session by invalidating its access token
+        (the user will have to login again).
+      operationId: auth.logout
+      responses:
+        "200": {}
+  /mfa/activate:
+    post:
+      description: >-
+        Initiates the MFA activation flow for a given Pryv.io user, triggering
+        the MFA challenge.
+
+
+        Requires a personal token as [authentication](#basics-authentication), which should be obtained during a prior [Login call](#methods-auth-auth-login).
+      operationId: mfa.activate
+      responses:
+        "302":
+          content:
+            application/json:
+              schema:
+                - type: string
+      requestBody:
+        description: The parameters depend entirely on the chosen MFA method and will be
+          forwarded to the service generating the challenge.
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/false"
+  /mfa/confirm:
+    post:
+      description: >-
+        Confirms the MFA activation by verifying the MFA challenge triggered by
+        a prior [MFA activation call](#methods-mfa-mfa-activate).
+
+
+        Requires a MFA session token as [authentication](#basics-authentication).
+      operationId: mfa.confirm
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                - type: array
+                  items: strings
+        "403":
+          description: forbidden
+      requestBody:
+        description: The parameters depend entirely on the chosen MFA method and will be
+          forwarded to the service verifying the challenge.
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/false"
+  /mfa/challenge:
+    post:
+      description: >-
+        Triggers the MFA challenge, depending on the chosen MFA method (e.g.
+        send a verification code by SMS).
+
+
+        Requires a MFA session token as [authentication](#basics-authentication).
+      operationId: mfa.challenge
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                - type: string
+        "403":
+          description: forbidden
+  /mfa/verify:
+    post:
+      description: >-
+        Verifies the MFA challenge triggered by a prior [MFA challenge
+        call](#methods-mfa-mfa-challenge).
+
+
+        Requires a MFA session token as [authentication](#basics-authentication).
+      operationId: mfa.verify
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                - type: string
+        "403":
+          description: forbidden
+      requestBody:
+        description: The parameters depend entirely on the chosen MFA method and will be
+          forwarded to the service verifying the challenge.
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/false"
+  /mfa/deactivate:
+    post:
+      description: |-
+        Deactivate MFA for a given Pryv.io user.
+
+        Requires a personal token as [authentication](#basics-authentication).
+      operationId: mfa.deactivate
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                - type: string
+  /mfa/recover:
+    post:
+      description: >-
+        Deactivate MFA for a given Pryv.io user using a MFA recovery code.
+
+
+        This is useful when [Deactivate MFA](#methods-mfa-mfa-deactivate) can not be used (in case of 2nd factor loss).
+
+        Instead, requires a MFA recovery code (obtained when [confirming the MFA activation](#methods-mfa-mfa-confirm)), as well as the usual [Login](#methods-auth-auth-login) parameters.
+      operationId: mfa.recover
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                - type: string
+        "400":
+          description: invalid-parameter
+      requestBody:
+        description: Similar to the usual [Login](#methods-auth-auth-login) parameters, as
+          well as
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/false"
+  /events:
+    get:
+      description: Queries accessible events.
+      operationId: events.get
+      parameters:
+        - name: fromTime
+          description: The start time of the timeframe you want to retrieve events for.
+            Default is 24 hours before `toTime` if the latter is set; otherwise
+            it is not taken into account.
+          required: false
+          in: query
+        - name: toTime
+          description: "The end time of the timeframe you want to retrieve events for.
+            Default is the current time. Note: events are considered to be
+            within a given timeframe based on their `time` only (`duration` is
+            not considered)."
+          required: false
+          in: query
+        - name: streams
+          description: If set, only events assigned to the specified streams and their
+            sub-streams will be returned. By default, all accessible events are
+            returned regardless of their stream.
+          required: false
+          in: query
+        - name: tags
+          description: If set, only events assigned to any of the listed tags will be
+            returned.
+          required: false
+          in: query
+        - name: types
+          description: If set, only events of any of the listed types will be returned.
+          required: false
+          in: query
+        - name: running
+          description: If `true`, only running period events will be returned.
+          required: false
+          in: query
+        - name: sortAscending
+          description: "If `true`, events will be sorted from oldest to newest. Default:
+            false (sort descending)."
+          required: false
+          in: query
+        - name: skip
+          description: The number of items to skip in the results.
+          required: false
+          in: query
+        - name: limit
+          description: The number of items to return in the results. A default value of 20
+            items is used if no other range limiting parameter is specified
+            (`fromTime`, `toTime`).
+          required: false
+          in: query
+        - name: state
+          description: Indicates what items to return depending on their state. By default,
+            only items that are not in the trash are returned; `trashed` returns
+            only items in the trash, while `all` return all items regardless of
+            their state.
+          required: false
+          in: query
+        - name: modifiedSince
+          description: If specified, only events modified since that time will be returned.
+          required: false
+          in: query
+        - name: includeDeletions
+          description: Whether to include event deletions since `modifiedSince` for sync
+            purposes (only applies when `modifiedSince` is set). Defaults to
+            `false`.
+          required: false
+          in: query
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                - type: array
+                  items: "[events](#data-structure-event)"
+                - type: array
+                  items: "[item deletions](#data-structure-item-deletion)"
+    post:
+      description: >-
+        Records a new event. It is recommended that events recorded this way are
+        completed events, i.e. either period events with a known duration or
+        mark events. To start a running period event, use [Start
+        period](#methods-events-events-start) instead.
+
+
+        In addition to JSON, this request accepts standard multipart/form-data content to support the creation of event with attached files in a single request. When sending a multipart request, one content part must hold the JSON for the new event and all other content parts must be the attached files.
+      operationId: events.create
+      responses:
+        "201":
+          content:
+            application/json:
+              schema:
+                - $ref: "#/components/schemas/event"
+                - $ref: "#/components/schemas/identifier"
+        "400":
+          description: periods-overlap
+      requestBody:
+        description: The new event's data
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/event"
+  "/events/{id}":
+    get:
+      description: Fetches a specific event. This request is mostly used to fetch an
+        event's version history, allowing to review all the modifications to an
+        event's data.
+      operationId: events.getOne
+      parameters:
+        - name: includeHistory
+          description: "If `true`, the event's history will be added to the response.
+            Default: false (don't include the history)."
+          required: false
+          in: query
+        - name: id
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                - $ref: "#/components/schemas/event"
+                - type: array
+                  items: "[events](#data-structure-event)"
+    put:
+      description: Modifies the event.
+      operationId: events.update
+      parameters:
+        - name: id
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                - $ref: "#/components/schemas/event"
+                - $ref: "#/components/schemas/identifier"
+        "400":
+          description: periods-overlap
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties: {}
+    post:
+      description: Adds one or more file attachments to the event. This request expects
+        standard multipart/form-data content, with all content parts being the
+        attached files.
+      operationId: events.addAttachment
+      parameters:
+        - name: id
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                - $ref: "#/components/schemas/event"
+    delete:
+      description: >-
+        Trashes or deletes the specified event, depending on its current state:
+
+
+        - If the event is not already in the trash, it will be moved to the trash (i.e. flagged as `trashed`)
+
+        - If the event is already in the trash, it will be irreversibly deleted (including all its attached files, if any).
+      operationId: events.delete
+      parameters:
+        - name: id
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                - $ref: "#/components/schemas/item-deletion"
+  /events/start:
+    post:
+      description: >-
+        Starts a new period event. This is equivalent to starting an event with
+        a null `duration`. In `singleActivity` streams, also stops the
+        previously running period event if any.
+
+
+        See [Create event](#methods-events-events-create) for details.
+      operationId: events.start
+      responses: {}
+  /events/stop:
+    post:
+      description: Stops a running period event. In `singleActivity` streams, which
+        guarantee that only one event is running at any given time, that event
+        is automatically determined; for regular streams, the event to stop (or
+        its type) must be specified.
+      operationId: events.stop
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                - $ref: "#/components/schemas/identifier"
+        "400":
+          description: invalid-operation
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                streamId:
+                  description: The id of the `singleActivity` stream in which to stop the
+                    running event. Either this or `id` must be specified.
+                  type: "[identifier](#data-structure-identifier)"
+                id:
+                  description: The id of the event to stop. Either this or `streamId` (and
+                    possibly `type`) must be specified.
+                  type: "[identifier](#data-structure-identifier)"
+                type:
+                  description: The type of the event to stop. `streamId` must be specified
+                    as well. If there are multiple running events matching, the
+                    closest one (by time) will be stopped.
+                  type: string
+                time:
+                  description: "The stop time. Default: now."
+                  type: "[timestamp](#data-structure-timestamp)"
+  "/events/{id}/{fileId}[/{fileName}]":
+    get:
+      description: >-
+        Gets the attached file. Accepts an arbitrary filename path suffix
+        (ignored) for easier link readability.
+
+        For this function using the `auth` query parameter is not accepted. You can either use the [access token](#data-structure-access) in the `Authorization` header or provide the `readToken` as query parameter.
+      operationId: events.getAttachment
+      parameters:
+        - name: readToken
+          description: Required if not using the `Authorization` HTTP header. The file read
+            token to authentify the request. See
+            [`event.attachments[].readToken`](#data-structure-event) for more
+            info.
+          required: true
+          in: query
+        - name: id
+        - name: fileId
+        - name: fileName
+      responses:
+        "200":
+          description: OK
+  "/events/{id}/{fileId}":
+    delete:
+      description: Irreversibly deletes the attached file.
+      operationId: events.deleteAttachment
+      parameters:
+        - name: fileId
+          description: The id of the attached file.
+          required: true
+          in: query
+        - name: id
+        - name: fileId
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                - $ref: "#/components/schemas/event"
+  "/events/{id}/series":
+    get:
+      description: >-
+        Retrieves HF series data points from a HF event.
+
+        Returns data in order of ascending deltaTime between "fromTime" and "toTime".
+
+        Data is returned as input, no sampling or aggregation is performed.
+      operationId: hfs.get
+      parameters:
+        - name: fromDeltaTime
+          description: Only returns data points later than this deltaTime. If no value is
+            given the query will return data starting at the earliest deltaTime
+            in the series.
+          required: false
+          in: query
+        - name: toDeltaTime
+          description: Only returns data points earlier than this deltaTime. If no value is
+            given the server will return only data that is in the past.
+          required: false
+          in: query
+        - name: id
+      responses:
+        "200":
+          description: OK
+    post:
+      description: >-
+        Adds new HF series data points to a HF event.
+
+
+        The HF series data will only store one set of values for any given deltaTime. This means you can update existing data points by 'adding' new data with the original deltaTime.  
+      operationId: hfs.add
+      parameters:
+        - name: id
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                - type: string
+        "400":
+          description: invalid-operation
+      requestBody:
+        description: The new HF series data point(s), see [HF
+          series](#data-structure-high-frequency-series).
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/high-frequency-series"
+  /series/batch:
+    post:
+      description: >-
+        Adds data to multiple HF series (stored in multiple HF events) in a
+        single atomic operation. This is the fastest way to append data to Pryv;
+        it allows transferring many data points in a single request.
+
+
+        For this operation to be successful, all of the following conditions must be fulfilled:
+
+          - The access token needs write permissions to all series identified by "eventId".
+          - All events referred to must be HF events (type starts with the string "series:").
+          - Fields identified in each individual message must match those specified by the type of the HF event; there must be no duplicates.
+          - All the values in every data point must conform to the type specification.
+
+        If any part of the batch message is invalid, the entire batch is aborted and the returned result body identifies the error.
+      operationId: hfs.addBatch
+      responses:
+        "201":
+          content:
+            application/json:
+              schema:
+                - type: string
+        "400":
+          description: invalid-request-structure
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                format:
+                  description: The format string "seriesBatch".
+                  type: string
+                data:
+                  description: "Array of batch entries. Each batch entry is defined as
+                    follows:"
+                  type: array
+  /streams:
+    get:
+      description: Gets the accessible streams hierarchy.
+      operationId: streams.get
+      parameters:
+        - name: parentId
+          description: "The id of the parent stream from which to retrieve streams.
+            Default: `null` (returns all accessible streams from the root
+            level)."
+          required: false
+          in: query
+        - name: state
+          description: By default, only items that are not in the trash are returned; `all`
+            return all items regardless of their state.
+          required: false
+          in: query
+        - name: includeDeletionsSince
+          description: Whether to include stream deletions since that time for sync
+            purposes.
+          required: false
+          in: query
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                - type: array
+                  items: "[streams](#data-structure-stream)"
+                - type: array
+                  items: "[item deletions](#data-structure-item-deletion)"
+    post:
+      description: Creates a new stream.
+      operationId: streams.create
+      responses:
+        "201":
+          content:
+            application/json:
+              schema:
+                - $ref: "#/components/schemas/stream"
+        "400":
+          description: invalid-item-id
+      requestBody:
+        description: The new stream's data
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/stream"
+  "/streams/{id}":
+    put:
+      description: Modifies the stream.
+      operationId: streams.update
+      parameters:
+        - name: id
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                - $ref: "#/components/schemas/stream"
+        "400":
+          description: item-already-exists
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties: {}
+    delete:
+      description: >-
+        Trashes or deletes the specified stream, depending on its current state:
+
+
+        - If the stream is not already in the trash, it will be moved to the trash (i.e. flagged as `trashed`)
+
+        - If the stream is already in the trash, it will be irreversibly deleted with its descendants (if any). If events exist that refer to the deleted item(s), you must indicate how to handle them with the parameter `mergeEventsWithParent`.
+      operationId: streams.delete
+      parameters:
+        - name: mergeEventsWithParent
+          description: Required if actually deleting the item and if it (or any of its
+            descendants) has linked events, ignored otherwise. If `true`, the
+            linked events will be assigned to the parent of the deleted item; if
+            `false`, the linked events will be deleted.
+          required: true
+          in: query
+        - name: id
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                - $ref: "#/components/schemas/item-deletion"
+  /accesses:
+    get:
+      description: |-
+        Gets manageable accesses. Only returns accesses that can
+        be managed by the requesting access and that are active when
+        making the request. To include accesses that have expired, use
+        the `includeExpired` parameter.
+      operationId: accesses.get
+      parameters:
+        - name: includeExpired
+          description: If `true`, also includes expired accesses. Defaults to `false`.
+          required: false
+          in: query
+        - name: includeDeletions
+          description: If `true`, also includes deleted accesses. Defaults to `false`.
+          required: false
+          in: query
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                - type: array
+                  items: "[accesses](#data-structure-access)"
+                - type: array
+                  items: deleted [accesses](#data-structure-access)
+    post:
+      description: Creates a new access. You can only create accesses whose permissions are
+        a subset of those granted to your own access token.
+      operationId: accesses.create
+      responses:
+        "201":
+          content:
+            application/json:
+              schema:
+                - $ref: "#/components/schemas/access"
+        "400":
+          description: invalid-item-id
+      requestBody:
+        description: An object with the new access's data
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/access"
+  "/accesses/{id}":
+    delete:
+      description: Deletes the specified access. You can only delete accesses whose
+        permissions are a subset of those granted to your own access token.
+      operationId: accesses.delete
+      parameters:
+        - name: id
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                - $ref: "#/components/schemas/item-deletion"
+  /accesses/check-app:
+    post:
+      description: For the app authorization process. Checks if the app requesting
+        authorization already has access with the same permissions (and on the
+        same device, if applicable), and returns details of the requested
+        permissions' streams (for display) if not.
+      operationId: accesses.checkApp
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                - type: array
+                  items: permission request objects
+                - $ref: "#/components/schemas/access"
+                - $ref: "#/components/schemas/access"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                requestingAppId:
+                  description: The id of the app requesting authorization.
+                  type: string
+                deviceName:
+                  description: The name of the device running the app requesting
+                    authorization, if applicable.
+                  type: string
+                requestedPermissions:
+                  description: An array of permission request objects, which are identical
+                    to stream permission objects of
+                    [accesses](#data-structure-access) except that each stream
+                    permission object must have a `defaultName` property
+                    specifying the name the stream should be created with later
+                    if missing.
+                  type: array of permission request objects
+  /audit/logs:
+    get:
+      description: >-
+        Fetches accessible audit logs.
+
+        By default, only returns logs that involve the access corresponding to the provided authorization token (self-auditing).
+      operationId: audit.get
+      parameters:
+        - name: accessId
+          description: >-
+            The id of a specific access to audit.
+
+            When specified, it fetches the audit logs that involve the matching access instead of the one used to authenticate this call.
+
+            It has to correspond to a sub-access (expired and deleted included) in regards to the provided authorization token.
+          required: false
+          in: query
+        - name: fromTime
+          description: |-
+            The start time of the timeframe you want to retrieve audit logs for.
+            Timestamps are considered with a day precision.
+          required: false
+          in: query
+        - name: toTime
+          description: |-
+            The end time of the timeframe you want to retrieve audit logs for.
+            Timestamps are considered with a day precision.
+          required: false
+          in: query
+        - name: status
+          description: >-
+            Filters audit logs by HTTP response status, a 3-digits number.
+
+            It is possible to provide only the first digit,
+
+            in which case the two unspecified digits will be wildcarded.
+
+            For example, `status=4` will return all logs with status between 400 and 499.
+          required: false
+          in: query
+        - name: ip
+          description: Filters audit logs by client IP address present in the
+            `forwardedFor` property.
+          required: false
+          in: query
+        - name: httpVerb
+          description: Filters audit logs by HTTP verb present in the `action` property.
+          required: false
+          in: query
+        - name: resource
+          description: Filters audit logs by API resource present in the `action` property.
+          required: false
+          in: query
+        - name: errorId
+          description: Filters audit logs by error id.
+          required: false
+          in: query
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                - type: array
+                  items: "[Audit logs](#data-structure-audit-log)"
+        "403":
+          description: forbidden
+  /webhooks:
+    get:
+      description: Gets manageable webhooks. Only returns webhooks that were created by the
+        access, unless you are using a personal access which returns all
+        existing webhooks in the user's account.
+      operationId: webhooks.get
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                - type: array
+                  items: "[webhooks](#data-structure-webhook)"
+    post:
+      description: Creates a new webhook. You can only create webhooks with app accesses.
+      operationId: webhooks.create
+      responses:
+        "201":
+          content:
+            application/json:
+              schema:
+                - $ref: "#/components/schemas/webhook"
+      requestBody:
+        description: An object with the new webhook's data
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/webhook"
+  "/webhooks/{id}":
+    get:
+      description: Fetches a specific webhook. Only returns a webhook if it was created by
+        the access, unless you are using a personal access which is allowed to
+        fetch any existing webhook in the user's account.
+      operationId: webhooks.getOne
+      parameters:
+        - name: id
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                - $ref: "#/components/schemas/webhook"
+    put:
+      description: >-
+        Modifies the webhook. You can only modify webhooks with the app access
+        that was used to create them, unless you are using a personal token.  
+
+        Updating the `state` to `active` resets the `currentRetries` counter.
+      operationId: webhooks.update
+      parameters:
+        - name: id
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                - $ref: "#/components/schemas/webhook"
+        "400":
+          description: item-already-exists
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties: {}
+    delete:
+      description: Deletes the specified webhook. You can only delete webhooks with the app
+        access that was used to create them, unless you are using a personal
+        token.
+      operationId: webhooks.delete
+      parameters:
+        - name: id
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                - $ref: "#/components/schemas/item-deletion"
+  "/webhooks/{id}/test":
+    post:
+      description: Sends a post request containing a message called `test` to the URL of
+        the specified webhook's `url`. You can only test webhooks with the app
+        access that was used to create them, unless you are using a personal
+        token.
+      operationId: webhooks.test
+      parameters:
+        - name: id
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                - $ref: "#/components/schemas/webhook"
+        "400":
+          description: unknown-referenced-resource
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties: {}
+  /followed-slices:
+    get:
+      description: Gets followed slices.
+      operationId: followedSlices.get
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                - type: array
+                  items: "[followed slices](#data-structure-followed-slice)"
+    post:
+      description: Creates a new followed slice.
+      operationId: followedSlices.create
+      responses:
+        "201":
+          content:
+            application/json:
+              schema:
+                - $ref: "#/components/schemas/followed-slice"
+      requestBody:
+        description: An object with the new followed slice's data
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/followed-slice"
+  "/followed-slices/{id}":
+    put:
+      description: Modifies the specified followed slice.
+      operationId: followedSlices.update
+      parameters:
+        - name: id
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                - $ref: "#/components/schemas/followed-slice"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties: {}
+    delete:
+      description: Deletes the specified followed slice.
+      operationId: followedSlices.delete
+      parameters:
+        - name: id
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                - $ref: "#/components/schemas/item-deletion"
+  /profile/app:
+    get:
+      description: Gets the app's dedicated profile set, which contains app-level settings
+        for the user. Available to app accesses.
+      operationId: profile.getApp
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                - type: object
+    put:
+      description: |-
+        Adds, updates or delete app profile keys. Available to app accesses.
+
+        - To add or update a key, just set its value
+        - To delete a key, set its value to `null`
+
+        Existing keys not included in the update are left untouched.
+      operationId: profile.updateApp
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                - type: object
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties: {}
+  /profile/public:
+    get:
+      description: Gets the public profile set, which contains the information the user
+        makes publicly available (e.g. avatar image). Available to all accesses.
+      operationId: profile.getPublic
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                - type: object
+    put:
+      description: >-
+        Adds, updates or delete public profile keys. Available to personal
+        accesses.
+
+
+        - To add or update a key, just set its value
+
+        - To delete a key, set its value to `null`
+
+
+        Existing keys not included in the update are left untouched.
+      operationId: profile.updatePublic
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                - type: object
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties: {}
+  /profile/private:
+    get:
+      description: Gets the private profile set. Available to personal accesses.
+      operationId: profile.getPrivate
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                - type: object
+    put:
+      description: >-
+        Adds, updates or delete private profile keys. Available to personal
+        accesses.
+
+
+        - To add or update a key, just set its value
+
+        - To delete a key, set its value to `null`
+
+
+        Existing keys not included in the update are left untouched.
+      operationId: profile.updatePrivate
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                - type: object
+  /account:
+    get:
+      description: Retrieves the user's account information.
+      operationId: account.get
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                - $ref: "#/components/schemas/account"
+    put:
+      description: Modifies the user's account information.
+      operationId: account.update
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                - $ref: "#/components/schemas/account"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties: {}
+  /account/change-password:
+    post:
+      description: Modifies the user's password.
+      operationId: account.changePassword
+      responses:
+        "200": {}
+        "400":
+          description: invalid-operation
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                oldPassword:
+                  description: The current password.
+                  type: string
+                newPassword:
+                  description: The new password.
+                  type: string
+  /account/request-password-reset:
+    post:
+      description: >-
+        Requests the resetting of the user's password. An e-mail containing an
+        expiring reset token (e.g. in a link) will be sent to the user.  
+
+        This method requires that the `appId` and `Origin` (or `Referer`) header comply with the [trusted app verification](#basics-trusted-apps-verification).
+      operationId: account.requestPasswordReset
+      responses:
+        "200": {}
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                appId:
+                  description: Your app's unique identifier.
+                  type: string
+  /account/reset-password:
+    post:
+      description: >-
+        Resets the user's password, authenticating the request with the given
+        reset token (see [request password
+        reset](#methods-account-account-requestPasswordReset) ).  
+
+        This method requires that the `appId` and `Origin` (or `Referer`) header comply with the [trusted app verification](#basics-trusted-apps-verification).
+      operationId: account.resetPassword
+      responses:
+        "200": {}
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                resetToken:
+                  description: The expiring reset token that was sent to the user after
+                    requesting the password reset.
+                  type: string
+                newPassword:
+                  description: The new password.
+                  type: string
+                appId:
+                  description: Your app's unique identifier.
+                  type: string
+  /access-info:
+    get:
+      description: Retrieves information about the access in use.
+      operationId: getAccessInfo
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                - type: "[key-value](#methods-key-value-)"
+  /:
+    post:
+      description: Sends a batch of API methods calls in one go (e.g. for to syncing
+        offline changes when resuming connectivity).
+      operationId: callBatch
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                - type: array
+                  items: call results
+      requestBody:
+        description: Array of method call objects, each defined as follows
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/false"
+components:
+  schemas:
+    event:
+      type: object
+      properties:
+        id:
+          uniqueItems: true
+          readOnly: (except at creation)
+          required: true
+          description: The identifier ([collision-resistant cuid](https://usecuid.org/))
+            for the event. Automatically generated if not set when creating the
+            event.
+          $ref: "#/components/schemas/identifier"
+        streamId:
+          required: true
+          description: The id of the belonging stream.
+          $ref: "#/components/schemas/identifier"
+        time:
+          required: true
+          description: The event's time. For period events, this is the time the event
+            started. Automatically set to the server time if not provided when
+            creating the event.
+          $ref: "#/components/schemas/timestamp"
+        duration:
+          description: If present and non-zero, indicates that the event is a period event.
+            **Running period events have a duration set to `null`**. **A
+            duration set to zero is equivalent to no duration**. (We use a
+            dedicated field for duration—instead of using the `content` field—as
+            we do specific processing of event durations, intervals and
+            overlapping.)
+          $ref: "#/components/schemas/timestamp"
+        type:
+          required: true
+          description: The type of the event. See the [event type
+            directory](/event-types/#directory) for a list of standard types.
+          type: string
+        content:
+          description: The `type`-specific content of the event, if any.
+          type: any type
+        tags:
+          description: The tags associated with the event.
+          type: array
+          items:
+            type: strings
+        description:
+          description: User description or comment for the event.
+          type: string
+        attachments:
+          readOnly: true
+          description: "An array describing the files attached to the event. Each item has
+            the following structure:"
+          type: array
+          items:
+            type: attachment objects
+        clientData:
+          description: Additional client data for the event.
+          $ref: "#/components/schemas/key-value"
+        trashed:
+          description: "`true` if the event is in the trash."
+          type: boolean
+        created:
+          readOnly: true
+          required: true
+          description: The time the event was created.
+          $ref: "#/components/schemas/timestamp"
+        createdBy:
+          readOnly: true
+          required: true
+          description: The id of the access used to create the event.
+          $ref: "#/components/schemas/identifier"
+        modified:
+          readOnly: true
+          required: true
+          description: The time the event was last modified.
+          $ref: "#/components/schemas/timestamp"
+        modifiedBy:
+          readOnly: true
+          required: true
+          description: The id of the last access used to modify the event.
+          $ref: "#/components/schemas/identifier"
+    stream:
+      type: object
+      properties:
+        id:
+          uniqueItems: true
+          readOnly: (except at creation)
+          required: true
+          description: The identifier for the stream. Automatically generated if not set
+            when creating the stream; **slugified if necessary**.
+          $ref: "#/components/schemas/identifier"
+        name:
+          uniqueItems: among siblings
+          required: true
+          description: A name identifying the stream for users. The name must be unique
+            among the stream's siblings in the streams tree structure.
+          type: string
+        parentId:
+          description: The identifier of the stream's parent, if any. A value of `null`
+            indicates that the stream has no parent (i.e. root stream).
+          $ref: "#/components/schemas/identifier"
+        singleActivity:
+          description: If specified and `true`, the system will ensure that period events
+            in this stream and its children never overlap.
+          type: boolean
+        clientData:
+          description: Additional client data for the stream.
+          $ref: "#/components/schemas/key-value"
+        children:
+          readOnly: true
+          required: true
+          description: "The stream's sub-streams, if any. This field cannot be set in
+            requests creating a new streams: streams are created individually by
+            design."
+          type: array
+          items:
+            type: streams
+        trashed:
+          description: "`true` if the stream is in the trash."
+          type: boolean
+        created:
+          readOnly: true
+          required: true
+          description: The time the stream was created.
+          $ref: "#/components/schemas/timestamp"
+        createdBy:
+          readOnly: true
+          required: true
+          description: The id of the access used to create the stream.
+          $ref: "#/components/schemas/identifier"
+        modified:
+          readOnly: true
+          required: true
+          description: The time the stream was last modified.
+          $ref: "#/components/schemas/timestamp"
+        modifiedBy:
+          readOnly: true
+          required: true
+          description: The id of the last access used to modify the stream.
+          $ref: "#/components/schemas/identifier"
+    access:
+      type: object
+      properties:
+        id:
+          uniqueItems: true
+          readOnly: true
+          required: true
+          description: The identifier for the access.
+          $ref: "#/components/schemas/identifier"
+        token:
+          uniqueItems: true
+          readOnly: (except at creation)
+          required: true
+          description: The token identifying the access. Automatically generated if not set
+            when creating the access; **slugified if necessary**.
+          type: string
+        type:
+          readOnly: (except at creation)
+          description: "The type — or usage — of the access. Default: `shared`."
+          schema:
+            type: string
+            enum:
+              - personal
+              - app
+              - shared
+        name:
+          uniqueItems: per type and device
+          required: true
+          description: The name identifying the access for the user. (For personal and app
+            access, the name is used as a technical identifier and not shown
+            as-is to the user.)
+          type: string
+        deviceName:
+          uniqueItems: per type and name
+          description: For app accesses only. The name of the client device running the
+            app, if applicable.
+          type: string
+        permissions:
+          required: true
+          description: 'Ignored for personal accesses. If permission levels conflict (e.g.
+            stream set to "manage" and child stream set to "contribute"), only
+            the highest level is considered. Each permission object has the
+            following structure:'
+          type: array
+          items:
+            type: permission objects
+        lastUsed:
+          readOnly: true
+          description: The time the access was last used.
+          $ref: "#/components/schemas/timestamp"
+        expireAfter:
+          readOnly: false
+          description: >-
+            (Only on create and update) If set, controls access expiry in
+            seconds.
+
+            When given a number in this attribute (positive or zero),
+
+            the access will expire (and not be accessible any more) after this many
+
+            seconds.
+
+
+            Use `expireAfter=0` to immediately disable an access (without deleting it).
+          type: number
+        expires:
+          readOnly: true
+          description: >-
+            If the access was set to expire: The timestamp after which the
+            access
+
+            will be deactivated.
+          $ref: "#/components/schemas/timestamp"
+        deleted:
+          readOnly: true
+          description: "If the access has been deleted: The timestamp of the deletion."
+          $ref: "#/components/schemas/timestamp"
+        clientData:
+          description: Additional client data for the access.
+          $ref: "#/components/schemas/key-value"
+        created:
+          readOnly: true
+          required: true
+          description: The time the access was created.
+          $ref: "#/components/schemas/timestamp"
+        createdBy:
+          readOnly: true
+          required: true
+          description: The id of the access used to create the access.
+          $ref: "#/components/schemas/identifier"
+        modified:
+          readOnly: true
+          required: true
+          description: The time the access was last modified.
+          $ref: "#/components/schemas/timestamp"
+        modifiedBy:
+          readOnly: true
+          required: true
+          description: The id of the last access used to modify the access.
+          $ref: "#/components/schemas/identifier"
+    followed-slice:
+      type: object
+      properties:
+        id:
+          uniqueItems: true
+          readOnly: true
+          required: true
+          description: The server-assigned identifier for the followed slice.
+          $ref: "#/components/schemas/identifier"
+        name:
+          uniqueItems: true
+          required: true
+          description: A name identifying the followed slice for the user.
+          type: string
+        url:
+          required: true
+          description: The URL of the API endpoint of the account hosting the slice. Not
+            modifiable after creation.
+          type: URL
+        accessToken:
+          required: true
+          description: The token of the shared access itself. Not modifiable after creation.
+          type: string
+    account:
+      type: object
+      properties:
+        username:
+          uniqueItems: true
+          readOnly: true
+          required: true
+          description: The user's username.
+          type: string
+        email:
+          uniqueItems: true
+          required: true
+          description: The user's contact e-mail address.
+          type: string
+        language:
+          required: true
+          description: The user's preferred language as a 2-letter ISO language code.
+          type: string
+        storageUsed:
+          required: true
+          description: The current storage size used by the user account.
+          type: object
+    audit-log:
+      type: object
+      properties:
+        id:
+          readOnly: true
+          required: true
+          description: The identifier for the action that generated this log.
+          $ref: "#/components/schemas/identifier"
+        type:
+          readOnly: true
+          required: true
+          description: The type of log.
+          type: string
+        time:
+          readOnly: true
+          required: true
+          description: The time the API call was executed.
+          $ref: "#/components/schemas/timestamp"
+        forwardedFor:
+          readOnly: true
+          required: true
+          description: The IP address of the client who performed the audited action.
+          type: string
+        action:
+          readOnly: true
+          required: true
+          description: The audited action, typically an API method call, composed by the
+            HTTP verb and the API resource.
+          type: string
+        query:
+          readOnly: true
+          required: true
+          description: The query string that accompanied the audited action, if any.
+          type: string
+        accessId:
+          readOnly: true
+          required: true
+          description: The identifier for the access used to perform the audited action.
+          type: string
+        status:
+          readOnly: true
+          required: true
+          description: The HTTP response status resulting from the audited action.
+          type: number
+        errorMessage:
+          readOnly: true
+          description: The error message resulting from the audited action, if any.
+          type: string
+        errorId:
+          readOnly: true
+          description: The identifier for the error resulting from the audited action, if
+            any.
+          type: string
+    high-frequency-series:
+      type: object
+      properties:
+        format:
+          required: true
+          description: The data format (for now only "flatJSON" format is supported).
+          type: string
+        fields:
+          required: true
+          description: >-
+            The "fields" array lists all the fields that you will be providing
+            in the "points" array, including the "deltaTime" field in first
+            position.
+
+            If the data type contains a single field (ex.: mass/kg), the second field is "value", otherwise, it is the list of fields with the required ones first.
+          type: Array of fields
+        points:
+          required: true
+          description: >-
+            The "points" array contains the data points, each data point is
+            represented by a simple array.
+
+            This makes the bulk of the message (your data points) very space-efficient; values are encoded positionally.
+
+            The first value corresponds to the first field, and so on.
+          type: Array of data points
+    webhook:
+      type: object
+      properties:
+        id:
+          readOnly: true
+          required: true
+          description: The identifier of the Webhook.
+          $ref: "#/components/schemas/identifier"
+        accessId:
+          readOnly: true
+          required: true
+          description: The identifier of the access that was used to create the Webhook.
+          $ref: "#/components/schemas/identifier"
+        url:
+          uniqueItems: per app access
+          readOnly: (except at creation)
+          required: true
+          description: >-
+            The URL where the HTTP POST requests will be made. To identify the
+            source of the webhook on your notifications server, you can use the
+            `url`'s hostname, path or query parameters. For example: 
+
+
+            ```json
+
+            {
+              "url": "https://${username}.my-notifications.com/${my-secret}/?param1=value1&param2=value2"
+            }
+
+            ```
+          type: string
+        minIntervalMs:
+          readOnly: true
+          required: true
+          description: "The webhooks run rate is throttled by a minimum interval between
+            HTTP calls in milliseconds, sending an array of changes that occured
+            during this period. Its value is set by the platform admin. "
+          type: number
+        maxRetries:
+          readOnly: true
+          required: true
+          description: In case of failure to send a request, the webhook will retry
+            `maxRetries` times at a growing interval of time before becoming
+            `inactive` after too many successive failures. Its value is set by
+            the platform admin.
+          type: number
+        currentRetries:
+          readOnly: true
+          required: true
+          description: The number of retries iterations since the last failed HTTP call.
+            This number is 0 if the last HTTP call was successful.
+          type: number
+        state:
+          required: true
+          description: The current state of the Webhook. An inactive Webhook will not make
+            any HTTP call when changes occur. It must be activated using the
+            [update webhook](#methods-webhooks-webhooks-update) method.
+          schema:
+            type: string
+            enum:
+              - active
+              - inactive
+        runCount:
+          readOnly: true
+          required: true
+          description: The number of times the Webhook has been run, including failures.
+          type: number
+        failCount:
+          readOnly: true
+          required: true
+          description: The number of times the Webhook has failed HTTP calls. Failed runs
+            are HTTP requests that received a response with a status outside of
+            the 200-299 range or no response at all.
+          type: number
+        lastRun:
+          readOnly: true
+          required: true
+          description: Represents the last Webhook call, comprised of its HTTP response
+            status and timestamp.
+          type: Run object
+        runs:
+          readOnly: true
+          required: true
+          description: "Array of Run objects in inverse chronological order (newest first)
+            which allows to monitor a webhook's health. Its length is set by the
+            platform admin. "
+          type: array
+          items:
+            type: Run objects
+        created:
+          readOnly: true
+          required: true
+          description: The time the webhook was created.
+          $ref: "#/components/schemas/timestamp"
+        createdBy:
+          readOnly: true
+          required: true
+          description: The id of the access used to create the webhook.
+          $ref: "#/components/schemas/identifier"
+        modified:
+          readOnly: true
+          required: true
+          description: The time the webhook was last modified.
+          $ref: "#/components/schemas/timestamp"
+        modifiedBy:
+          readOnly: true
+          required: true
+          description: The id of the last access used to modify the webhook.
+          $ref: "#/components/schemas/identifier"
+    item-deletion:
+      type: object
+      properties:
+        id:
+          required: true
+          description: The identifier of the deleted item.
+          $ref: "#/components/schemas/identifier"
+        deleted:
+          description: The time the item was deleted.
+          $ref: "#/components/schemas/timestamp"
+    key-value:
+      type: object
+      additionalProperties: true
+    error:
+      type: object
+      properties:
+        id:
+          required: true
+          description: Identifier for the error.
+          type: string
+        message:
+          required: true
+          description: A human-readable description of the error.
+          type: string
+        data:
+          description: Additional machine-readable details (specified for each error if
+            relevant).
+          type: any type
+        subErrors:
+          description: Lists the detailed causes of the main error, if any.
+          type: array
+          items:
+            type: errors
+    identifier:
+      type: string
+    timestamp:
+      type: number
