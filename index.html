@@ -12,9 +12,9 @@
 <p>The API supports any timestamped content, including files. Health metrics, locations, pictures, audio samples, notes, activities, vegetable garden yields, you name it. See <a href="/event-types/">the standard types directory</a>.</p>
 <p>Organization is handled via simple and proven constructs like a hierarchical structure (streams) and tags.</p>
 <p><img src="assets/images/event-type.png" alt="Event types"></p>
-</div><div class="col-md-4 marketing-icon"><h3>One simple HTTP&nbsp;+&nbsp;websockets API</h3><ul class="nav nav-tabs"><li class="active"><a href="#api-example-http" data-toggle="tab">HTTP</a></li><li><a href="#api-example-sockets" data-toggle="tab">Socket.IO</a></li><li class="active"><a href="#api-example-httpAuth" data-toggle="tab">HTTP</a></li></ul><div class="tab-content"><div id="api-example-httpAuth" class="tab-pane active"><pre><code class="lang-http">GET /events?auth={token} HTTP/1.1
+</div><div class="col-md-4 marketing-icon"><h3>One simple HTTP&nbsp;+&nbsp;websockets API</h3><ul class="nav nav-tabs"><li class="active"><a href="#api-example-http" data-toggle="tab">HTTP</a></li><li><a href="#api-example-sockets" data-toggle="tab">Socket.IO</a></li><li><a href="#api-example-httpAuth" data-toggle="tab">HTTP+Basic</a></li></ul><div class="tab-content"><div id="api-example-httpAuth" class="tab-pane active"><pre><code class="lang-http">GET /events HTTP/1.1
 Host: {user}.pryv.me
-Accept: application/json
+Authorization: Basic {Base64 encoded token}
 </code></pre>
 <div class="step-marker">⬇</div><pre><code class="lang-json">{
   &quot;events&quot;: [
@@ -37,9 +37,9 @@ Accept: application/json
   ]
 }
 </code></pre>
-</div><div id="api-example-http" class="tab-pane active"><pre><code class="lang-http">GET /events?auth={token} HTTP/1.1
+</div><div id="api-example-http" class="tab-pane active"><pre><code class="lang-http">GET /events HTTP/1.1
 Host: {user}.pryv.me
-Accept: application/json
+Authorization: {token}
 </code></pre>
 <div class="step-marker">⬇</div><pre><code class="lang-json">{
   &quot;events&quot;: [
