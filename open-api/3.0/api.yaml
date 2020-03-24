@@ -2,7 +2,7 @@ openapi: 3.0.0
 info:
   description: Description of Pryv.io API in Open API 3.0 standard format
   version: 1.0.0
-  title: Open API Pryv
+  title: Pryv.io API
   contact:
     email: hsupport@pryv.com
   license:
@@ -263,14 +263,11 @@ paths:
                 - type: array
                   items: "[item deletions](#data-structure-item-deletion)"
     post:
-      description: >-
-        Records a new event. It is recommended that events recorded this way are
-        completed events, i.e. either period events with a known duration or
-        mark events. To start a running period event, use [Start
-        period](#methods-events-events-start) instead.
-
-
-        In addition to JSON, this request accepts standard multipart/form-data content to support the creation of event with attached files in a single request. When sending a multipart request, one content part must hold the JSON for the new event and all other content parts must be the attached files.
+      description: Records a new event, in addition to JSON, this request accepts standard
+        multipart/form-data content to support the creation of event with
+        attached files in a single request. When sending a multipart request,
+        one content part must hold the JSON for the new event and all other
+        content parts must be the attached files.
       operationId: events.create
       responses:
         "201":
@@ -362,9 +359,9 @@ paths:
   /events/start:
     post:
       description: >-
-        Starts a new period event. This is equivalent to starting an event with
-        a null `duration`. In `singleActivity` streams, also stops the
-        previously running period event if any.
+        **(DEPRECATED)**    
+
+        Starts a new period event. This is equivalent to starting an event with a null `duration`. In `singleActivity` streams, also stops the previously running period event if any.
 
 
         See [Create event](#methods-events-events-create) for details.
@@ -372,10 +369,10 @@ paths:
       responses: {}
   /events/stop:
     post:
-      description: Stops a running period event. In `singleActivity` streams, which
-        guarantee that only one event is running at any given time, that event
-        is automatically determined; for regular streams, the event to stop (or
-        its type) must be specified.
+      description: >-
+        **(DEPRECATED)**  
+
+        Stops a running period event. In `singleActivity` streams, which guarantee that only one event is running at any given time, that event is automatically determined; for regular streams, the event to stop (or its type) must be specified.
       operationId: events.stop
       responses:
         "200":
@@ -392,8 +389,10 @@ paths:
               type: object
               properties:
                 streamId:
-                  description: The id of the `singleActivity` stream in which to stop the
-                    running event. Either this or `id` must be specified.
+                  description: >-
+                    (**DEPRECATED**)  
+
+                    The id of the `singleActivity` stream in which to stop the running event. Either this or `id` must be specified.
                   type: "[identifier](#data-structure-identifier)"
                 id:
                   description: The id of the event to stop. Either this or `streamId` (and
@@ -1189,10 +1188,7 @@ components:
         duration:
           description: If present and non-zero, indicates that the event is a period event.
             **Running period events have a duration set to `null`**. **A
-            duration set to zero is equivalent to no duration**. (We use a
-            dedicated field for duration—instead of using the `content` field—as
-            we do specific processing of event durations, intervals and
-            overlapping.)
+            duration set to zero is equivalent to no duration**.
           $ref: "#/components/schemas/timestamp"
         type:
           required: true
@@ -1264,8 +1260,10 @@ components:
             indicates that the stream has no parent (i.e. root stream).
           $ref: "#/components/schemas/identifier"
         singleActivity:
-          description: If specified and `true`, the system will ensure that period events
-            in this stream and its children never overlap.
+          description: >-
+            (**DEPRECATED**)  
+
+            If specified and `true`, the system will ensure that period events in this stream and its children never overlap.
           type: boolean
         clientData:
           description: Additional client data for the stream.
