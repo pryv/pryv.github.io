@@ -12,7 +12,7 @@ It describes what Webhooks are, why and how to use them on Pryv.io, illustrating
 <li><a href="#what-are-webhooks-">What are Webhooks?</a></li>
 <li><a href="#why-using-webhooks-">Why using Webhooks?</a></li>
 <li><a href="#why-only-notify-of-changes-">Why only notify of changes?</a> </li>
-<li><a href="#separation-of-reponsibility">Separation of reponsibility</a></li>
+<li><a href="#separation-of-responsibility">Separation of responsibility</a></li>
 </ol>
 </li>
 <li><a href="#use-case-notify-of-a-new-document-uploaded-on-your-application">Use case: Notify of a new document uploaded on your application</a></li>
@@ -57,7 +57,7 @@ It describes what Webhooks are, why and how to use them on Pryv.io, illustrating
 }
 </code></pre>
 <p>Providing only an event identifier in the webhook payload will force the recipients to make an API request to fetch the full resource, and will ensure that they are authorized to retrieve the information they are notified about with since they are required to use an authorization token.</p>
-<h3 id="separation-of-reponsibility">Separation of reponsibility</h3>
+<h3 id="separation-of-responsibility">Separation of responsibility</h3>
 <p>Importantly, only the app access used to create the webhook (or a personal one) can be used to modify it. This is meant to separate the responsibilities between the webhooks management and services that will consume the data following a notification.</p>
 <p>Typically, a certain access will be used to setup one or multiple webhooks per user, while updated data will be fetched using a different set of permissions.</p>
 <h2 id="use-case-notify-of-a-new-document-uploaded-on-your-application">Use case : Notify of a new document uploaded on your application</h2>
@@ -83,7 +83,7 @@ This notification message will contain information about the <em>patient name</e
 <h2 id="hands-on-example">Hands-on example</h2>
 <p><em>In this section, we will describe how to perform the previous example step-by-step using the Pryv Lab platform.</em></p>
 <p>Based on the previous use case (see the schema above), these are the steps to follow to setup event notifications with webhooks:</p>
-<p>If needed, create a new user account on the Pryv Lab platform <a href="https://sw.pryv.me/access/register.html">here</a></p>
+<p>If needed, create a new user account on the Pryv Lab platform <a href="https://sw.pryv.me/access/register.html">here</a>.</p>
 <ol>
 <li><p>You first need to obtain a token to create a webhook and store data into your account. You can generate an access token from the <a href="/app-web-access/?pryvServiceInfo=https://reg.pryv.me/service/info">Pryv Access Token Generator</a>.<br>You can set the permissions and leave other parameters unchanged:  </p>
 <pre><code class="lang-json">[
@@ -95,8 +95,7 @@ This notification message will contain information about the <em>patient name</e
 ]
 </code></pre>
 </li>
-<li><p>You then need to create the webhook by making an API call on the <a href="/reference/#create-webhook">webhooks.create</a> route with the necessary parameters. In particular, you need to provide the URL over which the HTTP POST requests will be made (See <a href="#user-identification">User identification</a> on how to allow the service to identify the webhook&#39;s account). 
-For example:  </p>
+<li><p>You then need to create the webhook by making an API call on the <a href="/reference/#create-webhook">webhooks.create</a> route with the necessary parameters. In particular, you need to provide the URL over which the HTTP POST requests will be made (see <a href="#user-identification">User identification</a> on how to allow the service to identify the webhook&#39;s account).<br>For example:  </p>
 <pre><code class="lang-json">{
  &quot;url&quot;: &quot;https://notifications.service.com/pryv/my-pryv-username&quot;
 }
@@ -112,8 +111,7 @@ For example:  </p>
 ]
 </code></pre>
 </li>
-<li><p>When your user adds new data to the platform, events related to his health are created and added to the <code>Health</code> stream using the <a href="/reference/#create-event">events.create</a> method.
-You can use the following parameters for a <code>count/steps</code> event:</p>
+<li><p>When your user adds new data to the platform, events related to his health are created and added to the <code>Health</code> stream using the <a href="/reference/#create-event">events.create</a> method.<br>You can use the following parameters for a <code>count/steps</code> event:</p>
 <pre><code class="lang-json">{
  &quot;streamId&quot;: &quot;health&quot;,
  &quot;type&quot;: &quot;count/steps&quot;,
@@ -121,8 +119,7 @@ You can use the following parameters for a <code>count/steps</code> event:</p>
 }
 </code></pre>
 </li>
-<li><p>Once the event is created, the webhook is triggered. It notifies the external service that an <code>eventsChanged</code> has occured in the user account by sending an HTTP POST request to the provided webhook URL.
-The request payload will look like this:  </p>
+<li><p>Once the event is created, the webhook is triggered. It notifies the external service that an <code>eventsChanged</code> has occured in the user account by sending an HTTP POST request to the provided webhook URL.<br>The request payload will look like this:  </p>
 <pre><code class="lang-json">{
  &quot;messages&quot;: [
    &quot;eventsChanged&quot;
@@ -198,7 +195,7 @@ It does so by performing an HTTP GET request on the events from the streamId <co
 <h3 id="webhook-authentication">Webhook authentication</h3>
 <p>You might need to include a shared secret between your application and the webhook provider in order to control the API usage of your external service.</p>
 <p>You can add a &quot;shared secret&quot; to the Pryv.io webhooks that your application trusts. This means that when you will be receiving a webhook notification, you can validate the provided secret and discard the request if it is not trustworthy.</p>
-<p>This secret can be provided in the same way as the username, illustrated above. In this example, we use the path parameters to store the secret:  </p>
+<p>This secret can be provided in the same way as the username, illustrated above. In this example, we use the path parameter to store the secret:  </p>
 <pre><code class="lang-json">{
   &quot;url&quot;: &quot;https://my-notifications.com/stefan.pryv.me/my-secret&quot;
 }
