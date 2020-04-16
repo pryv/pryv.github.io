@@ -83,18 +83,16 @@ This notification message will contain information about the <em>patient name</e
 <h2 id="hands-on-example">Hands-on example</h2>
 <p><em>In this section, we will describe how to perform the previous example step-by-step using the Pryv Lab platform.</em></p>
 <p>Based on the previous use case (see the schema above), these are the steps to follow to setup event notifications with webhooks:</p>
-<p>If needed, create a new user account on the Pryv Lab platform <a href="https://sw.pryv.me/access/register.html">here</a>.</p>
-<ol>
-<li><p>You first need to obtain a token to create a webhook and store data into your account. You can generate an access token from the <a href="/app-web-access/?pryvServiceInfo=https://reg.pryv.me/service/info">Pryv Access Token Generator</a>.<br>You can set the permissions and leave other parameters unchanged:  </p>
+<p>If needed, create a new user account on the Pryv Lab platform <a href="https://sw.pryv.me/access/register.html">here</a> and obtain a token to create a webhook and store data into your account. You can generate an access token from the <a href="/app-web-access/?pryvServiceInfo=https://reg.pryv.me/service/info">Pryv Access Token Generator</a>.<br>You can set the permissions and leave other parameters unchanged:  </p>
 <pre><code class="lang-json">[
- {
-   &quot;streamId&quot;: &quot;health&quot;,
-   &quot;defaultName&quot;: &quot;Health&quot;,
-   &quot;level&quot;: &quot;contribute&quot;
- }
+  {
+    &quot;streamId&quot;: &quot;health&quot;,
+    &quot;defaultName&quot;: &quot;Health&quot;,
+    &quot;level&quot;: &quot;contribute&quot;
+  }
 ]
 </code></pre>
-</li>
+<ol>
 <li><p>You then need to create the webhook by making an API call on the <a href="/reference/#create-webhook">webhooks.create</a> route with the necessary parameters. In particular, you need to provide the URL over which the HTTP POST requests will be made (see <a href="#user-identification">User identification</a> on how to allow the service to identify the webhook&#39;s account).<br>For example:  </p>
 <pre><code class="lang-json">{
  &quot;url&quot;: &quot;https://notifications.service.com/pryv/my-pryv-username&quot;
