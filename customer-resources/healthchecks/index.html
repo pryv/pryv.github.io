@@ -1,10 +1,9 @@
-<hr>
-<p>id: healthchecks
-title: &#39;Pryv.io Healthchecks&#39;
-template: default.jade
-customer: true</p>
-<h2 id="withtoc-true">withTOC: true</h2>
-<table>
+<!DOCTYPE html><html lang="en" class="no-js"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="description" property="og:description" content="Pryv API reference and resources for developers"><meta name="author" content="Pryv SA"><meta property="og:type" content="website"><meta name="image" property="og:image" content="/assets/images/logo-256.png"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Pryv.io Healthchecks | Pryv API</title><link rel="icon" href="/assets/images/favicon-black.ico" type="image/x-icon"><link rel="apple-touch-icon" sizes="120x120" href="/assets/images/apple-touch-icon-120x120-black.png"><link rel="apple-touch-icon" sizes="152x152" href="/assets/images/apple-touch-icon-152x152-black.png"><link rel="apple-touch-icon" sizes="180x180" href="/assets/images/apple-touch-icon-180x180-black.png"><!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+<!--[if lt IE 9]>
+  <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+  <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+<![endif]--><link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Roboto:400,300,500,700,400italic|Roboto+Condensed:400,300,700"><link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/styles/docco.min.css"><link rel="stylesheet" type="text/css" href="/assets/fonts/ss-gizmo.min.css"><link rel="stylesheet" type="text/css" href="/assets/style.css"></head><body class="healthchecks with-toc"><header id="page-header"><nav role="navigation" class="navbar navbar-default navbar-fixed-top"><div class="container-fluid"><div class="navbar-header"><a href="https://pryv.com" title="Pryv home" class="navbar-brand logo pryv-home"><img src="/assets/images/icon-home.svg" alt="Pryv home" height="50"></a><a href="/" title="Developers home" class="navbar-brand logo"><img src="/assets/images/logo-256-black.png" alt="Developers home"></a><button type="button" data-toggle="collapse" data-target="#main-nav" class="navbar-toggle"><span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button></div><div id="main-nav" class="collapse navbar-collapse"><ul class="nav navbar-nav"><li class="dropdown"><a href="#" data-toggle="dropdown" class="dropdown-toggle">Guides <b class="caret"></b></a><ul class="dropdown-menu"><li><a href="/getting-started/">Getting started</a></li><li><a href="/concepts/">API concepts</a></li><li><a href="/guides/data-modelling/">Data modelling</a></li><li><a href="/guides/webhooks/">Webhooks</a></li><li><a href="/guides/app-guidelines/">App guidelines</a></li><li><a href="/external-resources/">External resources</a></li></ul></li><li class="dropdown"><a href="#" data-toggle="dropdown" class="dropdown-toggle">Reference <b class="caret"></b></a><ul class="dropdown-menu"><li><a href="/reference/">API reference</a></li><li><a href="/change-log/">API change log</a></li><li><a href="/event-types/">Event types</a></li><li><a href="/open-api/">Open API</a></li><!--+menuItem('standardStructure')--></ul></li><li class="dropdown"><a href="#" data-toggle="dropdown" class="dropdown-toggle">FAQ <b class="caret"></b></a><ul class="dropdown-menu"><li><a href="/faq-api/">API</a></li><li><a href="/faq-infra/">Infrastructure</a></li></ul></li><!--lia(href='#') Blog--></ul><div class="navbar-right"><p class="navbar-text version"><a href="/change-log/" title="View change log">API version: <strong>1.5.0</strong></a></p></div></div></div></nav></header><div id="main-wrapper" class="container container-narrow"><div id="main"><h1 class="page-title">Pryv.io Healthchecks</h1><table>
 <thead>
 <tr>
 <th></th>
@@ -18,42 +17,44 @@ customer: true</p>
 </tr>
 <tr>
 <td>Reviewer</td>
-<td>Anastasia Bouzdine (v4), Guillaume Bassand (v1-3)</td>
+<td>Guillaume Bassand (v1-3), Anastasia Bouzdine (v4)</td>
 </tr>
 <tr>
 <td>Date</td>
-<td>24.04.2020</td>
+<td>28.04.2020</td>
 </tr>
 <tr>
 <td>Version</td>
-<td>5</td>
+<td>4</td>
 </tr>
 </tbody>
 </table>
-<h2 id="summary">Summary</h2>
+<h1 id="summary">Summary</h1>
 <p>This procedure describes how to perform regular healthcheck API calls to the Pryv.io API in order to remotely monitor its status. You can directly jump to the <a href="#healthchecks">Healthchecks section</a> to proceed to the healthchecks.</p>
 <p>Please note that the current procedure does not cover how to perform healthchecks per core machine, only per hosting. If you require core-level status, get in touch with your Pryv tech contact.</p>
-<h2 id="variables">Variables</h2>
+<h1 id="variables">Variables</h1>
 <p>As this guide is platform agnostic, we will use variables <code>${VARIABLE_NAME}</code> which must be replaced in the commands.</p>
 <p>In particular, the following variables should be replaced :</p>
 <ul>
-<li>the domain name, which will be called <code>${DOMAIN}</code>,</li>
-<li>the core machines hostings, identified with a <code>${HOSTING_NAME}</code>. In a Pryv.io platform, core machines are organized into clusters that we call hostings. Each of these has an identifier <code>${HOSTING_NAME}</code>, which can be found at the following URL: <a href="https://reg.${DOMAIN}/hostings">https://reg.${DOMAIN}/hostings</a>. The <code>${HOSTING_NAME}</code> are the keys of the object <code>regions:REGION_NAME:zones:ZONE_NAME:hostings</code>.</li>
-<li>the access token <code>${ACCESS_TOKEN}</code>, associated with a dedicated user account and that will be used in the API calls for healthchecks. The preparation chapter describes how to obtain it.</li>
+<li>the <strong>domain name</strong>, which will be called <code>${DOMAIN}</code>,</li>
+<li>the <strong>core machines hostings</strong>, identified with a <code>${HOSTING_NAME}</code>. In a Pryv.io platform, core machines are organized into clusters that we call hostings. Each of these has an identifier <code>${HOSTING_NAME}</code>, which can be found at the following URL: <a href="https://reg.${DOMAIN}/hostings">https://reg.${DOMAIN}/hostings</a>. The <code>${HOSTING_NAME}</code> are the keys of the object <code>regions:REGION_NAME:zones:ZONE_NAME:hostings</code>,</li>
+<li>the <strong>access token</strong> <code>${ACCESS_TOKEN}</code>, associated with a dedicated user account and that will be used in the API calls for healthchecks. The preparation chapter describes how to obtain it.</li>
 </ul>
-<h2 id="tools">Tools</h2>
-<h3 id="dns-checks-">DNS checks:</h3>
+<h1 id="tools">Tools</h1>
+<p>Depending on your skill set, this can be done using CLI tools or a web interface.</p>
+<h2 id="dns-checks-">DNS checks:</h2>
 <ul>
 <li>dig version 9.12.3+</li>
 </ul>
-<h3 id="http-calls">HTTP calls</h3>
+<h2 id="http-calls">HTTP calls</h2>
 <ul>
 <li>cURL v7.54.0+</li>
 </ul>
-<h2 id="preparation">Preparation</h2>
-<p>As the current Pryv.io version does not have dedicated API endpoints for a thorough healthcheck, we will create a dedicated user account in order to do so. This preparation phase describes how to create an account and obtain a non-expirable token. This must be done once and the <strong>username/token</strong> pairs stored for automatic API healthcheck calls.</p>
-<h3 id="create-account">Create account</h3>
-<p>We start by creating an account. We propose to use the following credentials, but these can be modified at the user&#39;s discretion:</p>
+<h1 id="preparation">Preparation</h1>
+<p>As the current Pryv.io version does not have dedicated API endpoints for a thorough healthcheck, we create a dedicated user account in order to do so. 
+This preparation phase describes how to create an account and obtain a non-expirable token. This must be done once and the username/token pairs stored for automatic API healthcheck calls.</p>
+<h2 id="create-account">Create account</h2>
+<p>We begin by creating an account. We propose to use the following credentials, but these can be modified at the user&#39;s discretion:</p>
 <ul>
 <li><strong>username</strong> : healthmetrics</li>
 <li><strong>password</strong> : healthmetrics</li>
@@ -75,11 +76,11 @@ customer: true</p>
 <li><strong>email</strong> : healthmetrics01@${DOMAIN}</li>
 <li><strong>username</strong> : healthmetrics</li>
 <li><strong>password</strong> : healthmetrics</li>
-<li><strong>password conrmation</strong> : healthmetrics</li>
+<li><strong>password confirmation</strong> : healthmetrics</li>
 </ul>
 </li>
 </ol>
-<h3 id="create-token">Create token</h3>
+<h2 id="create-token">Create token</h2>
 <p>In order to obtain a non-expirable access token, we must do 2 calls. First sign in with the user password to obtain a temporary personal token, and then use it to obtain a non-expirable one.</p>
 <p><strong>- Sign in:</strong></p>
 <pre><code class="lang-json">curl -i -H &quot;Content-Type: application/json&quot; \
@@ -95,7 +96,7 @@ customer: true</p>
 &quot;meta&quot;:
 {
 &quot;apiVersion&quot;:&quot;1.3.51&quot;,
-&quot;serverTime&quot;:1548952964.
+&quot;serverTime&quot;:1548952964.011
 },
 &quot;token&quot;:&quot;${PERSONAL_TOKEN}&quot;,
 &quot;preferredLanguage&quot;:&quot;en&quot;
@@ -112,7 +113,7 @@ customer: true</p>
 <pre><code class="lang-json">&quot;meta&quot;:
 {
 &quot;apiVersion&quot;:&quot;1.3.51&quot;,
-&quot;serverTime&quot;:1548953274.
+&quot;serverTime&quot;:1548953274.902
 },
 &quot;access&quot;:
 {
@@ -142,18 +143,51 @@ customer: true</p>
 <li>Click on <code>Accept</code> button</li>
 <li>Copy the Access token and save it for this machine&#39;s healthchecks. We will refer to it as <code>${ACCESS_TOKEN}</code>.</li>
 </ol>
-<h2 id="healthchecks">Healthchecks</h2>
-<h3 id="register">Register</h3>
-<p>The call to perform: <code>HTTP GET https://reg.${DOMAIN}/healthmetrics01/check_username</code></p>
+<h1 id="healthchecks">Healthchecks</h1>
+<h2 id="register">Register</h2>
+<p>The call to perform: <strong>HTTP GET</strong> <code>https://reg.${DOMAIN}/healthmetrics01/check_username</code></p>
 <p>Run <code>curl https://reg.${DOMAIN}/healthmetrics01/check_username</code></p>
 <p>The expected result: <code>Status: 200</code></p>
-<h3 id="dns">DNS</h3>
+<h2 id="dns">DNS</h2>
 <p>Run <code>Dig A healthmetrics01.${DOMAIN}</code></p>
-<p>The expected result:</p>
-<pre><code>An answer.
-</code></pre><h3 id="core">Core</h3>
+<p>The expected result: An answer.</p>
+<h2 id="core">Core</h2>
 <p>Authentication header: <code>${ACCESS_TOKEN}</code></p>
-<p>The call to perform: <code>HTTP GET https://healthmetrics01.${DOMAIN}/events?limit=1</code></p>
+<p>The call to perform: <strong>HTTP GET</strong> <code>https://healthmetrics01.${DOMAIN}/events?limit=1</code></p>
 <p>Run <code>curl -i -H &#39;Authorization: ${ACCESS_TOKEN}&#39;</code>
 <code>&quot;https://healthmetrics01.${DOMAIN}/events?limit=1&quot;</code></p>
 <p>The expected result: <code>Status: 200</code></p>
+</div><nav id="toc"></nav></div><footer id="page-footer"><nav class="navbar navbar-default"><div class="container-fluid"><div id="footer-nav"><ul class="nav navbar-nav"><li><a href="mailto:developers@pryv.com">Send a message</a></li><li><a href="https://github.com/pryv">GitHub</a></li><li><a href="https://pryv.com">pryv.com</a></li></ul></div></div></nav></footer><script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script><script src="/assets/bootstrap.min.js"></script><script src="/assets/js/toc.min.js"></script><!-- TOC generation--><script>jQuery(document).ready(function($) {
+  // Header is about 51 pixels. This equals to 'header + fuzz', fuzz was
+  // determined experimentally.
+  var offset = 100;
+
+  // Display TOC on the left side of the page.
+  $('#toc').toc({
+    selector: '#main h1:not(.page-title),#main h2,#main h3',
+    ulClass: 'nav'
+  });
+
+  // Synchronise scroll/click motion with TOC display.
+  $(document).ready(function() {
+    // NOTE This is done at onLoad since we need to wait for all CSS
+    // to appear.
+    $('body').scrollspy({
+      target: '#toc',
+      offset: offset
+    });
+  });
+});
+</script><!-- Code blocks highlighting--><script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/highlight.min.js"></script><script>hljs.initHighlightingOnLoad();
+</script><!-- Google Analytics--><script>var _gaq = _gaq || [];
+_gaq.push(['_setAccount', 'UA-36589447-2']);
+_gaq.push(['_trackPageview']);
+(function() {
+  var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+  ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+  var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+})();
+</script><!-- Sales-Wings--><script type="text/javascript" id="SW-fd71dffa-76e8-479e-a37b-6e915b97b023"></script><script>!function(){function a(){var a=document.createElement("script");
+a.type="text/javascript",a.async=1,a.src="//go.saleswingsapp.com/assets/javascripts/sw/fd71dffa-76e8-479e-a37b-6e915b97b023";
+var b=document.getElementById("SW-fd71dffa-76e8-479e-a37b-6e915b97b023");
+b.parentNode.insertBefore(a,b)}window.attachEvent?window.attachEvent("onload",a):window.addEventListener("load",a,0)}();</script></body></html>
