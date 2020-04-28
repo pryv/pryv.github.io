@@ -1,7 +1,7 @@
 openapi: 3.0.0
 info:
   description: Description of Pryv.io API in Open API 3.0 standard format
-  version: 1.0.0
+  version: 1.5.0
   title: Pryv.io API
   contact:
     email: hsupport@pryv.com
@@ -209,8 +209,13 @@ paths:
           required: false
           in: query
         - name: tags
-          description: If set, only events assigned to any of the listed tags will be
-            returned.
+          description: >-
+            **(DEPRECATED)**
+
+            Please use streamIds instead.
+
+
+            If set, only events assigned to any of the listed tags will be returned.
           required: false
           in: query
         - name: types
@@ -275,9 +280,8 @@ paths:
             application/json:
               schema:
                 - $ref: "#/components/schemas/event"
-                - $ref: "#/components/schemas/identifier"
         "400":
-          description: periods-overlap
+          description: invalid-operation
       requestBody:
         description: The new event's data
         required: true
@@ -317,9 +321,6 @@ paths:
             application/json:
               schema:
                 - $ref: "#/components/schemas/event"
-                - $ref: "#/components/schemas/identifier"
-        "400":
-          description: periods-overlap
       requestBody:
         content:
           application/json:
@@ -356,56 +357,6 @@ paths:
             application/json:
               schema:
                 - $ref: "#/components/schemas/item-deletion"
-  /events/start:
-    post:
-      description: >-
-        **(DEPRECATED)**    
-
-        Starts a new period event. This is equivalent to starting an event with a null `duration`. In `singleActivity` streams, also stops the previously running period event if any.
-
-
-        See [Create event](#methods-events-events-create) for details.
-      operationId: events.start
-      responses: {}
-  /events/stop:
-    post:
-      description: >-
-        **(DEPRECATED)**  
-
-        Stops a running period event. In `singleActivity` streams, which guarantee that only one event is running at any given time, that event is automatically determined; for regular streams, the event to stop (or its type) must be specified.
-      operationId: events.stop
-      responses:
-        "200":
-          content:
-            application/json:
-              schema:
-                - $ref: "#/components/schemas/identifier"
-        "400":
-          description: invalid-operation
-      requestBody:
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                streamId:
-                  description: >-
-                    (**DEPRECATED**)  
-
-                    The id of the `singleActivity` stream in which to stop the running event. Either this or `id` must be specified.
-                  type: "[identifier](#data-structure-identifier)"
-                id:
-                  description: The id of the event to stop. Either this or `streamId` (and
-                    possibly `type`) must be specified.
-                  type: "[identifier](#data-structure-identifier)"
-                type:
-                  description: The type of the event to stop. `streamId` must be specified
-                    as well. If there are multiple running events matching, the
-                    closest one (by time) will be stopped.
-                  type: string
-                time:
-                  description: "The stop time. Default: now."
-                  type: "[timestamp](#data-structure-timestamp)"
   "/events/{id}/{fileId}[/{fileName}]":
     get:
       description: >-
@@ -1175,9 +1126,20 @@ components:
             for the event. Automatically generated if not set when creating the
             event.
           $ref: "#/components/schemas/identifier"
+        streamIds:
+          required: true
+          description: The ids of the belonging streams.
+          type: array
+          items:
+            type:
+              $ref: "#/components/schemas/identifier"
         streamId:
           required: true
-          description: The id of the belonging stream.
+          description: |-
+            **(DEPRECATED)**
+            Please use streamIds instead.
+
+            The id of the first element of the streamIds array.
           $ref: "#/components/schemas/identifier"
         time:
           required: true
@@ -1199,7 +1161,11 @@ components:
           description: The `type`-specific content of the event, if any.
           type: any type
         tags:
-          description: The tags associated with the event.
+          description: |-
+            **(DEPRECATED)**
+            Please use streamIds instead.
+
+            The tags associated with the event.
           type: array
           items:
             type: strings
@@ -1259,12 +1225,6 @@ components:
           description: The identifier of the stream's parent, if any. A value of `null`
             indicates that the stream has no parent (i.e. root stream).
           $ref: "#/components/schemas/identifier"
-        singleActivity:
-          description: >-
-            (**DEPRECATED**)  
-
-            If specified and `true`, the system will ensure that period events in this stream and its children never overlap.
-          type: boolean
         clientData:
           description: Additional client data for the stream.
           $ref: "#/components/schemas/key-value"

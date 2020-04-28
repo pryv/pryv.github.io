@@ -3,7 +3,7 @@
 <!--[if lt IE 9]>
   <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
   <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
-<![endif]--><link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Roboto:400,300,500,700,400italic|Roboto+Condensed:400,300,700"><link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/styles/docco.min.css"><link rel="stylesheet" type="text/css" href="/assets/fonts/ss-gizmo.min.css"><link rel="stylesheet" type="text/css" href="/assets/style.css"></head><body class="data-modelling with-toc"><header id="page-header"><nav role="navigation" class="navbar navbar-default navbar-fixed-top"><div class="container-fluid"><div class="navbar-header"><a href="https://pryv.com" title="Pryv home" class="navbar-brand logo pryv-home"><img src="/assets/images/icon-home.svg" alt="Pryv home" height="50"></a><a href="/" title="Developers home" class="navbar-brand logo"><img src="/assets/images/logo-256-black.png" alt="Developers home"></a><button type="button" data-toggle="collapse" data-target="#main-nav" class="navbar-toggle"><span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button></div><div id="main-nav" class="collapse navbar-collapse"><ul class="nav navbar-nav"><li class="dropdown"><a href="#" data-toggle="dropdown" class="dropdown-toggle">Guides <b class="caret"></b></a><ul class="dropdown-menu"><li><a href="/getting-started/">Getting started</a></li><li><a href="/concepts/">API concepts</a></li><li><a href="/guides/data-modelling/">Data modelling</a></li><li><a href="/guides/webhooks/">Webhooks</a></li><li><a href="/guides/app-guidelines/">App guidelines</a></li><li><a href="/external-resources/">External resources</a></li></ul></li><li class="dropdown"><a href="#" data-toggle="dropdown" class="dropdown-toggle">Reference <b class="caret"></b></a><ul class="dropdown-menu"><li><a href="/reference/">API reference</a></li><li><a href="/change-log/">API change log</a></li><li><a href="/event-types/">Event types</a></li><li><a href="/open-api/">Open API</a></li><!--+menuItem('standardStructure')--></ul></li><li class="dropdown"><a href="#" data-toggle="dropdown" class="dropdown-toggle">FAQ <b class="caret"></b></a><ul class="dropdown-menu"><li><a href="/faq-api/">API</a></li><li><a href="/faq-infra/">Infrastructure</a></li></ul></li><!--lia(href='#') Blog--></ul><div class="navbar-right"><p class="navbar-text version"><a href="/change-log/" title="View change log">API version: <strong>1.4.33</strong></a></p></div></div></div></nav></header><div id="main-wrapper" class="container container-narrow"><div id="main"><h1 class="page-title">Data Modelling</h1><p>In the following section, you will find all the necessary information to design your own model and implement it under Pryv&#39;s conventions.</p>
+<![endif]--><link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Roboto:400,300,500,700,400italic|Roboto+Condensed:400,300,700"><link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/styles/docco.min.css"><link rel="stylesheet" type="text/css" href="/assets/fonts/ss-gizmo.min.css"><link rel="stylesheet" type="text/css" href="/assets/style.css"></head><body class="data-modelling with-toc"><header id="page-header"><nav role="navigation" class="navbar navbar-default navbar-fixed-top"><div class="container-fluid"><div class="navbar-header"><a href="https://pryv.com" title="Pryv home" class="navbar-brand logo pryv-home"><img src="/assets/images/icon-home.svg" alt="Pryv home" height="50"></a><a href="/" title="Developers home" class="navbar-brand logo"><img src="/assets/images/logo-256-black.png" alt="Developers home"></a><button type="button" data-toggle="collapse" data-target="#main-nav" class="navbar-toggle"><span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button></div><div id="main-nav" class="collapse navbar-collapse"><ul class="nav navbar-nav"><li class="dropdown"><a href="#" data-toggle="dropdown" class="dropdown-toggle">Guides <b class="caret"></b></a><ul class="dropdown-menu"><li><a href="/getting-started/">Getting started</a></li><li><a href="/concepts/">API concepts</a></li><li><a href="/guides/data-modelling/">Data modelling</a></li><li><a href="/guides/webhooks/">Webhooks</a></li><li><a href="/guides/app-guidelines/">App guidelines</a></li><li><a href="/external-resources/">External resources</a></li></ul></li><li class="dropdown"><a href="#" data-toggle="dropdown" class="dropdown-toggle">Reference <b class="caret"></b></a><ul class="dropdown-menu"><li><a href="/reference/">API reference</a></li><li><a href="/change-log/">API change log</a></li><li><a href="/event-types/">Event types</a></li><li><a href="/open-api/">Open API</a></li><!--+menuItem('standardStructure')--></ul></li><li class="dropdown"><a href="#" data-toggle="dropdown" class="dropdown-toggle">FAQ <b class="caret"></b></a><ul class="dropdown-menu"><li><a href="/faq-api/">API</a></li><li><a href="/faq-infra/">Infrastructure</a></li></ul></li><!--lia(href='#') Blog--></ul><div class="navbar-right"><p class="navbar-text version"><a href="/change-log/" title="View change log">API version: <strong>1.5.0</strong></a></p></div></div></div></nav></header><div id="main-wrapper" class="container container-narrow"><div id="main"><h1 class="page-title">Data Modelling</h1><p>In the following section, you will find all the necessary information to design your own model and implement it under Pryv&#39;s conventions.</p>
 <p>We describe two fundamental use cases : <strong>data collection</strong> to store and aggregate data from multiple data sources for a subject and <strong>consent aggregation</strong> of multiple subjects that granted permission to access their data.</p>
 <h3 id="data-collection">Data collection</h3>
 <p>Let&#39;s take the case of an athlete who uses four applications to store data on Pryv.io. 
@@ -160,40 +160,74 @@ Given this situation, we would recommend a stream structure similar to the follo
 ]
 </code></pre>
 <h3 id="consent-aggregation">Consent aggregation</h3>
-<p>Now, let&#39;s imagine that you want to store the accesses of multiple subjects that gave you their consent.
-You will therefore need a &quot;campaign&quot; stream structure which allows you to store the accesses of these accounts in order to be able to retrieve data from these accounts.</p>
-<p><img src="/assets/images/getting-started/campaign.png" alt="Example Campaign Structure"></p>
-<p>The &quot;campaign&quot; data structure described below will contain the following streams :</p>
+<p>Let&#39;s imagine now a different use case.</p>
+<p>You have been collecting consent from your app users to use their data and you need to store these accesses on Pryv.io in order to be able to retrieve data from their accounts.
+You will therefore need a &quot;campaign&quot; stream structure which allows you to store the accesses for your app.</p>
+<p><img src="/assets/images/Campaign.svg" alt="Example Campaign Structure"></p>
+<p>The &quot;campaign&quot; data structure will contain the following streams:</p>
 <ul>
-<li>The stream <strong>&quot;Campaign description&quot;</strong>, where you will store the requested permissions (the <code>streamId</code> you want to access e.g. <code>heartRate</code>, the level of permission e.g. &quot;read&quot;/&quot;manage&quot;/…), the consent information, the app identifiers. </li>
+<li>The stream <strong>Campaign 123 description</strong>, in which you will store information about the authorization you are requesting. 
+You can do a <a href="https://api.pryv.com/reference/#create-stream">streams.create</a> call with the following data:</li>
 </ul>
 <pre><code class="lang-json">{
-  &quot;streamId&quot;: &quot;campaign-123-description&quot;,
-  &quot;type&quot;: &quot;campaign/sempryv&quot;,
+  &quot;id&quot;: &quot;campaign-123-description&quot;,
   &quot;name&quot;: &quot;Campaign description&quot;,
-  &quot;parentId&quot;: &quot;campaign-123&quot;,
-  &quot;content&quot;: {
-    &quot;requestedPermissions&quot;: {}, //...
-    &quot;consentText&quot;: &quot;&quot;, //...
-    &quot;appId&quot;: &quot;&quot;, //
-    } 
+  &quot;parentId&quot;: &quot;campaign-123&quot;
 }
 </code></pre>
-<ul>
-<li>The stream <strong>&quot;Patient accesses&quot;</strong> that will contain the <code>username</code> and <code>token</code> properties for every subject that granted access to their data.<pre><code class="lang-json">{
-    &quot;streamId&quot;: &quot;campaign-123-description&quot;,
-    &quot;type&quot;: &quot;access/pryv&quot;,
-    &quot;name&quot;: &quot;Patient accesses&quot;,
-    &quot;parentId&quot;: &quot;campaign-123&quot;,
+<p>It will include the <code>requestingAppId</code> (your app&#39;s identifier that wishes to access data from the users), the <code>requestedPermissions</code> (containing the <code>streamId</code> your app wants to access and the level of permission) and the <code>clientData</code> (e.g. the consent information of your user).</p>
+<p>You can do an <a href="https://api.pryv.com/reference/#create-event">events.create</a> call containing this information:</p>
+<pre><code class="lang-json">{
+  &quot;event&quot;: {
+    &quot;id&quot;: &quot;ck9ckvwfo000vt4pvrudxci9b&quot;,
+    &quot;time&quot;: 1385046854.282,
+    &quot;streamIds&quot;: [&quot;campaign-123-description]&quot;,
+    &quot;type&quot;: &quot;campaign/auth-request&quot;,
     &quot;content&quot;: {
-    &quot;username&quot;: &quot;subject01&quot;,
-    &quot;token&quot;: &quot;ck0qmnwo40007a8ivbxn12zt7&quot;,
+        &quot;requestingAppId&quot;: &quot;test-app-id&quot;,
+        &quot;requestedPermissions&quot;: [
+        {
+            &quot;streamId&quot;: &quot;diary&quot;,
+            &quot;level&quot;: &quot;read&quot;,
+            &quot;defaultName&quot;: &quot;Journal&quot;
+        },
+        {
+            &quot;streamId&quot;: &quot;position&quot;,
+            &quot;level&quot;: &quot;contribute&quot;,
+            &quot;defaultName&quot;: &quot;Position&quot;
+        }],
+        &quot;clientData&quot;: &quot;&quot;, //...
     } 
+  }
 }
 </code></pre>
-</li>
+<p>More information about the content of this event can be found in the <a href="https://api.pryv.com/reference/#auth-request">Auth request section</a> of the API reference.</p>
+<ul>
+<li>The stream <strong>Patient accesses</strong> that will store the credentials (<code>username</code> and <code>token</code>) for every subject that granted access to their data. 
+You can do a <a href="https://api.pryv.com/reference/#create-stream">streams.create</a> call with the following data:</li>
 </ul>
-<p>Similarly, you can create the streams one by one as explained <a href="/guides/manipulate-streams">here</a> or all in one by doing a &quot;batch call&quot; : </p>
+<pre><code class="lang-json">{
+  &quot;id&quot;: &quot;patient-accesses&quot;,
+  &quot;name&quot;: &quot;Patient accesses&quot;,
+  &quot;parentId&quot;: &quot;campaign-123&quot;
+}
+</code></pre>
+<p>The events of this stream will contain the credentials of every subject that granted access to their data, in particular the <code>username</code> and the <code>token</code> associated with their Pryv.io account.</p>
+<p>You can do an <a href="https://api.pryv.com/reference/#create-event">events.create</a> call to store the credentials of &quot;Subject 01&quot; for example:</p>
+<pre><code class="lang-json">{
+  &quot;event&quot;: {
+    &quot;id&quot;: &quot;jk8ujvwfo000vt4vprfriwd5a&quot;,
+    &quot;time&quot;: 1385046854.285,
+    &quot;streamIds&quot;: [&quot;patient-accesses&quot;],
+    &quot;type&quot;: &quot;access/pryv&quot;,
+    &quot;content&quot;: {
+      &quot;username&quot;: &quot;subject01&quot;,
+      &quot;token&quot;: &quot;ck0qmnwo40007a8ivbxn12zt7&quot;,
+      } 
+  }
+}
+</code></pre>
+<p>For this stream structure, you can create the streams one by one as explained <a href="/guides/manipulate-streams">here</a> or all in one by doing a &quot;batch call&quot; : </p>
 <pre><code class="lang-json">[
   {
     &quot;method&quot;: &quot;streams.create&quot;,
@@ -213,7 +247,7 @@ You will therefore need a &quot;campaign&quot; stream structure which allows you
   {
     &quot;method&quot;: &quot;streams.create&quot;,
     &quot;params&quot;: {
-      &quot;id&quot;: &quot;campaign-123-patient-accesses&quot;,
+      &quot;id&quot;: &quot;patient-accesses&quot;,
       &quot;parentId&quot;: &quot;campaign-123&quot;,
       &quot;name&quot;: &quot;Patient accesses&quot;
     }
@@ -225,33 +259,28 @@ You will therefore need a &quot;campaign&quot; stream structure which allows you
   {
     &quot;method&quot;: &quot;events.create&quot;,
     &quot;params&quot;: {
-    &quot;time&quot;: 1385046854.282,
-    &quot;streamId&quot;: &quot;campaign-123-description&quot;,
-        &quot;type&quot;: &quot;campaign/pryv&quot;,
-    &quot;content&quot;: {
-      &quot;requestedPermissions&quot;: {}, //...
-      &quot;consentText&quot;: &quot;&quot;, //...
-      &quot;appId&quot;: &quot;&quot;, //
-    }
+      &quot;time&quot;: 1385046854.282,
+      &quot;streamIds&quot;: [&quot;campaign-123-description&quot;],
+      &quot;type&quot;: &quot;campaign/auth-request&quot;,
+      &quot;content&quot;: {
+        &quot;requestingAppId&quot;: &quot;&quot;, //...
+        &quot;requestedPermissions&quot;: {}, //...
+        &quot;clientData&quot;: &quot;&quot;, //
+      }
     }
   },
   {
     &quot;method&quot;: &quot;events.create&quot;,
     &quot;params&quot;: {
-    &quot;time&quot;: 1385046854.282,
-    &quot;streamId&quot;: &quot;campaign-123-patient-accesses&quot;,
-    &quot;type&quot;: &quot;access/pryv&quot;,
-    &quot;content&quot;: {
-      &quot;access&quot;: {
-        &quot;id&quot;: &quot;ck0qmmwo40006a8ive8nkv9es&quot;,
-        &quot;username&quot;: &quot;subject01&quot;,
-        &quot;token&quot;: &quot;ck0qmmwo40007a8ivbxnl2zt7&quot;, 
-        &quot;urlEndpoint&quot;: &quot;${PATIENT_USERNAME}.${PATIENT_DOMAIN}&quot;,
-        &quot;type&quot;: &quot;shared&quot;,
-        } 
+      &quot;time&quot;: 1385046854.283,
+      &quot;streamIds&quot;: [&quot;patient-accesses&quot;],
+      &quot;type&quot;: &quot;access/pryv&quot;,
+      &quot;content&quot;: {
+          &quot;username&quot;: &quot;subject01&quot;,
+          &quot;token&quot;: &quot;ck0qmnwo40007a8ivbxn12zt7&quot;,
+        }
       }
     }
-  }
 ]
 </code></pre>
 <p>If the stream already exists, the error <code>item-already-exists</code> will be displayed (See <a href="/reference/#create-stream">streams.create</a> specific errors for more information).</p>

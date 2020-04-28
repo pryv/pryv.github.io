@@ -1,0 +1,164 @@
+<!DOCTYPE html><html lang="en" class="no-js"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="description" property="og:description" content="Pryv API reference and resources for developers"><meta name="author" content="Pryv SA"><meta property="og:type" content="website"><meta name="image" property="og:image" content="/assets/images/logo-256.png"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Pryv.io platform validation guide | Pryv API</title><link rel="icon" href="/assets/images/favicon-black.ico" type="image/x-icon"><link rel="apple-touch-icon" sizes="120x120" href="/assets/images/apple-touch-icon-120x120-black.png"><link rel="apple-touch-icon" sizes="152x152" href="/assets/images/apple-touch-icon-152x152-black.png"><link rel="apple-touch-icon" sizes="180x180" href="/assets/images/apple-touch-icon-180x180-black.png"><!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+<!--[if lt IE 9]>
+  <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+  <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+<![endif]--><link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Roboto:400,300,500,700,400italic|Roboto+Condensed:400,300,700"><link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/styles/docco.min.css"><link rel="stylesheet" type="text/css" href="/assets/fonts/ss-gizmo.min.css"><link rel="stylesheet" type="text/css" href="/assets/style.css"></head><body class="platform-validation with-toc"><header id="page-header"><nav role="navigation" class="navbar navbar-default navbar-fixed-top"><div class="container-fluid"><div class="navbar-header"><a href="https://pryv.com" title="Pryv home" class="navbar-brand logo pryv-home"><img src="/assets/images/icon-home.svg" alt="Pryv home" height="50"></a><a href="/" title="Developers home" class="navbar-brand logo"><img src="/assets/images/logo-256-black.png" alt="Developers home"></a><button type="button" data-toggle="collapse" data-target="#main-nav" class="navbar-toggle"><span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button></div><div id="main-nav" class="collapse navbar-collapse"><ul class="nav navbar-nav"><li class="dropdown"><a href="#" data-toggle="dropdown" class="dropdown-toggle">Guides <b class="caret"></b></a><ul class="dropdown-menu"><li><a href="/getting-started/">Getting started</a></li><li><a href="/concepts/">API concepts</a></li><li><a href="/guides/data-modelling/">Data modelling</a></li><li><a href="/guides/webhooks/">Webhooks</a></li><li><a href="/guides/app-guidelines/">App guidelines</a></li><li><a href="/external-resources/">External resources</a></li></ul></li><li class="dropdown"><a href="#" data-toggle="dropdown" class="dropdown-toggle">Reference <b class="caret"></b></a><ul class="dropdown-menu"><li><a href="/reference/">API reference</a></li><li><a href="/change-log/">API change log</a></li><li><a href="/event-types/">Event types</a></li><li><a href="/open-api/">Open API</a></li><!--+menuItem('standardStructure')--></ul></li><li class="dropdown"><a href="#" data-toggle="dropdown" class="dropdown-toggle">FAQ <b class="caret"></b></a><ul class="dropdown-menu"><li><a href="/faq-api/">API</a></li><li><a href="/faq-infra/">Infrastructure</a></li></ul></li><!--lia(href='#') Blog--></ul><div class="navbar-right"><p class="navbar-text version"><a href="/change-log/" title="View change log">API version: <strong>1.4.33</strong></a></p></div></div></div></nav></header><div id="main-wrapper" class="container container-narrow"><div id="main"><h1 class="page-title">Pryv.io platform validation guide</h1><table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Author</td>
+<td>Ilia Kebets</td>
+</tr>
+<tr>
+<td>Reviewer</td>
+<td>Anastasia Bouzdine (v3), Guillaume Bassand (v1,2)</td>
+</tr>
+<tr>
+<td>Date</td>
+<td>24.04.2020</td>
+</tr>
+<tr>
+<td>Version</td>
+<td>4</td>
+</tr>
+</tbody>
+</table>
+<h1 id="summary">Summary</h1>
+<p>This procedure describes the steps to validate that a Pryv.io platform is up and running. You can directly jump to the <a href="#checklist">Checklist section</a> to proceed to a quick check-up of your Pryv.io platform.
+Troubleshooting steps can be found at the end of this document in case of validation failure.</p>
+<h1 id="variables">Variables</h1>
+<p>As this guide is platform agnostic, we will use variables <code>${VARIABLE_NAME}</code> which must be replaced in the commands.</p>
+<p>In particular, the following variables should be replaced :</p>
+<ul>
+<li>the domain name, which will be called <code>${DOMAIN}</code>,</li>
+<li>the configuration folder <code>${PRYV_CONFIG_FOLDER}</code>, corresponding to the folder on the machine containing the Pryv.io configuration files,</li>
+<li>the container name. Pryv.io components are containerized with Docker, so when doing certain actions on them, we address the containers by their name <code>${APP_CONTAINER_NAME}</code>. To find the name of a container, use <code>docker ps -a</code> to display all containers ;</li>
+<li>the core machine hostname <code>${CORE_MACHINE_HOSTNAME}</code>, corresponding to the machine running the Pryv.io core service. On default configurations, we define the first one as <code>co1.${DOMAIN}</code>.</li>
+</ul>
+<h1 id="tools">Tools</h1>
+<p>Depending on your skill set, this can be done using CLI tools or a web interface.</p>
+<h2 id="dns-checks-">DNS checks:</h2>
+<ul>
+<li>dig version 9.12.3+</li>
+<li>If you don&#39;t have access to <code>dig</code> or the right version, you can use <a href="https://toolbox.googleapps.com/apps/dig/">G Suite&#39;s Toolbox dig</a></li>
+</ul>
+<h2 id="http-checks-">HTTP checks:</h2>
+<ul>
+<li>cURL version 7.54.0+</li>
+<li>Chrome web browser version 71+</li>
+</ul>
+<h1 id="checklist">Checklist</h1>
+<h2 id="dns-is-set-as-domain-name-server">DNS is set as domain name server</h2>
+<p>Run <code>dig NS ${DOMAIN}</code>.</p>
+<p>The <code>ANSWER</code> section should exist and list 2 hostnames such as:  </p>
+<pre><code>;; ANSWER :
+${DOMAIN}.  SOME_TTL_NUMBER  IN  NS  dns1.${DOMAIN}.
+${DOMAIN}.  SOME_TTL_NUMBER  IN  NS  dns2.${DOMAIN}.
+</code></pre><p>If there is no <code>ANSWER</code> section, the name servers for the domain name <code>${DOMAIN}</code> are not defined or misconfigured.<br>Verify with your domain provider that the name servers are set correctly.</p>
+<h2 id="dns">DNS</h2>
+<p>Run <code>dig reg.${DOMAIN}</code>.</p>
+<p>The <code>ANSWER</code> section should exist and list a hostname such as:  </p>
+<pre><code>;; ANSWER :
+reg.${DOMAIN}.  SOME_TTL_NUMBER  IN  A  ${REGISTER_MACHINE_IP_ADDRESS}
+</code></pre><p>If there is no <code>ANSWER</code> section, this means that the DNS is not running or is unreachable. See <a href="#dns">DNS section</a>.</p>
+<h2 id="api">API</h2>
+<p>Run <code>curl -i https://${CORE_MACHINE_HOSTNAME}/status</code> or open <a href="https://${CORE_MACHINE_HOSTNAME}/status">https://${CORE_MACHINE_HOSTNAME}/status</a></p>
+<ul>
+<li>HTTP Status 200: OK</li>
+<li>HTTP Status 502: core service is not running, see <a href="#core">Core section</a></li>
+<li><code>connection refused</code> error: core&#39;s NGINX is not running, see <a href="#nginx">NGINX section</a></li>
+<li><code>could not resolve host</code> error: DNS is not running, see <a href="#dns">DNS section</a></li>
+</ul>
+<h2 id="register">Register</h2>
+<p>Run <code>curl -i https://reg.${DOMAIN}/wactiv/check_username</code> or open <a href="https://reg.${DOMAIN}/wactiv/check_username">https://reg.${DOMAIN}/wactiv/check_username</a></p>
+<p>HTTP status:  </p>
+<ul>
+<li>200: OK  </li>
+<li>500, 502: Register service is not running, see <a href="#register">Register section</a>  </li>
+</ul>
+<h1 id="troubleshoot">Troubleshoot</h1>
+<h2 id="dns">DNS</h2>
+<ol>
+<li>SSH to the machine</li>
+<li>Access the DNS container logs on the Register machine: <code>docker logs -f --tail 50 ${DNS_CONTAINER_NAME}</code>.  </li>
+</ol>
+<h3 id="redis-database-unreachable">Redis database unreachable</h3>
+<p>The logs contain the following error <code>Error: Redis connection to redis:6379 failed - getaddrinfo ENOTFOUND redis redis:6379</code>.<br>See the Redis logs: <code>tail -f ${PRYV_CONFIG_FOLDER}/reg-master/redis/log/redis.log</code><br>Fix issue if possible, otherwise send the last 100 lines of the log file to your Pryv tech contact. Run <code>tail -n 100 ${PRYV_CONFIG_FOLDER}/reg-master/redis/log/redis.log &gt; ${DATE}-${ISSUE_NAME}.log</code> to generate the log file.</p>
+<h3 id="configuration-error">Configuration error</h3>
+<p>If the service keeps rebooting with an error message, fix configuration if possible.<br>Otherwise, send the last 100 lines of the DNS log file to your Pryv tech contact. Run <code>docker logs --tail 100 ${DNS_CONTAINER_NAME} &gt; ${DATE}-${ISSUE_NAME}.log</code> to generate the log file.</p>
+<h2 id="core">Core</h2>
+<ol>
+<li>SSH to core machine</li>
+<li>Read logs &amp; fix issue if possible: <code>docker logs -f --tail 50 ${CORE_CONTAINER_NAME}</code></li>
+<li>Reboot if necessary: <code>docker stop ${CORE_CONTAINER_NAME} &amp;&amp; ./run-core</code></li>
+<li>Send container log to your Pryv tech contact. Run <code>docker logs --tail 100 ${CORE_CONTAINER_NAME} &gt; ${DATE}-${ISSUE_NAME}.log</code> to generate the log file.</li>
+</ol>
+<h3 id="configuration-error">Configuration error</h3>
+<p>If the service keeps rebooting with an error message, fix configuration if possible.<br>Otherwise, send the last 100 lines of the container log to your Pryv tech contact. Run <code>docker logs --tail 100 ${CORE_CONTAINER_NAME} &gt; ${DATE}-${ISSUE_NAME}.log</code> to generate the log file.</p>
+<h3 id="waiting-on-database-connection">Waiting on database connection</h3>
+<p>If the service is waiting on the database to be available for connection: <code>[database] Cannot connect to mongodb://mongodb:27017/pryv-node, retrying in a sec</code><br>check MongoDB status: <code>tail -f ${PRYV_CONFIG_FOLDER}/core/mongodb/log/mongodb.log</code>  </p>
+<ul>
+<li>Booting: just wait 1-15min depending on the size of your database  </li>
+<li>Error: read logs, fix error if possible &amp; reboot it if needed: <code>docker stop ${MONGODB_CONTAINER_NAME} &amp;&amp; ./run-core</code>  </li>
+<li>Send MongoDB container log to your Pryv tech contact. Run <code>tail -n 100 ${PRYV_CONFIG_FOLDER}/core/mongodb/log/mongodb.log &gt; ${DATE}-${ISSUE_NAME}.log</code> to generate the log file.  </li>
+</ul>
+<h2 id="nginx">NGINX</h2>
+<ol>
+<li>SSH to core/register machine</li>
+<li>Read logs &amp; fix issue if possible: <code>docker logs ${NGINX_CONTAINER_NAME}</code></li>
+<li>Reboot if necessary: <code>docker stop ${NGINX_CONTAINER_NAME} &amp;&amp; ./run-core</code></li>
+<li>Send error log to your Pryv tech contact. Run <code>docker logs --tail 100 ${NGINX_CONTAINER_NAME} &gt; ${DATE}-${ISSUE_NAME}.log</code> to generate the log file.</li>
+</ol>
+<h3 id="configuration-error">Configuration error</h3>
+<p>If the log file has a line such as: <code>2019/01/28 12:44:07 [emerg] ERROR MESSAGE ...</code>, fix issue if possible.<br>Otherwise, send error log to your Pryv tech contact. Run <code>docker logs --tail 100 ${NGINX_CONTAINER_NAME} &gt; ${DATE}-${ISSUE_NAME}.log</code> to generate the log file.</p>
+<h2 id="register">Register</h2>
+<ol>
+<li>SSH to the register machine</li>
+<li>Read logs &amp; fix issue if possible: <code>docker logs -f --tail 50 ${REGISTER_CONTAINER_NAME}</code>  </li>
+<li>Reboot if necessary: <code>docker stop ${REGISTER_CONTAINER_NAME} &amp;&amp; ./run-reg-master</code>  </li>
+<li>Send error log to your Pryv tech contact. Run <code>docker logs --tail 100 ${REGISTER_CONTAINER_NAME} &gt; ${DATE}-${ISSUE_NAME}.log</code> to generate the log file.</li>
+</ol>
+<h3 id="configuration-error">Configuration error</h3>
+<p>Service keeps rebooting with an error message - fix configuration if possible and reboot the service.</p>
+<h3 id="redis-database-unreachable">Redis database unreachable</h3>
+<p>See <a href="#redis-database-unreachable">this section under DNS</a>.</p>
+</div><nav id="toc"></nav></div><footer id="page-footer"><nav class="navbar navbar-default"><div class="container-fluid"><div id="footer-nav"><ul class="nav navbar-nav"><li><a href="mailto:developers@pryv.com">Send a message</a></li><li><a href="https://github.com/pryv">GitHub</a></li><li><a href="https://pryv.com">pryv.com</a></li></ul></div></div></nav></footer><script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script><script src="/assets/bootstrap.min.js"></script><script src="/assets/js/toc.min.js"></script><!-- TOC generation--><script>jQuery(document).ready(function($) {
+  // Header is about 51 pixels. This equals to 'header + fuzz', fuzz was
+  // determined experimentally.
+  var offset = 100;
+
+  // Display TOC on the left side of the page.
+  $('#toc').toc({
+    selector: '#main h1:not(.page-title),#main h2,#main h3',
+    ulClass: 'nav'
+  });
+
+  // Synchronise scroll/click motion with TOC display.
+  $(document).ready(function() {
+    // NOTE This is done at onLoad since we need to wait for all CSS
+    // to appear.
+    $('body').scrollspy({
+      target: '#toc',
+      offset: offset
+    });
+  });
+});
+</script><!-- Code blocks highlighting--><script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/highlight.min.js"></script><script>hljs.initHighlightingOnLoad();
+</script><!-- Google Analytics--><script>var _gaq = _gaq || [];
+_gaq.push(['_setAccount', 'UA-36589447-2']);
+_gaq.push(['_trackPageview']);
+(function() {
+  var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+  ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+  var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+})();
+</script><!-- Sales-Wings--><script type="text/javascript" id="SW-fd71dffa-76e8-479e-a37b-6e915b97b023"></script><script>!function(){function a(){var a=document.createElement("script");
+a.type="text/javascript",a.async=1,a.src="//go.saleswingsapp.com/assets/javascripts/sw/fd71dffa-76e8-479e-a37b-6e915b97b023";
+var b=document.getElementById("SW-fd71dffa-76e8-479e-a37b-6e915b97b023");
+b.parentNode.insertBefore(a,b)}window.attachEvent?window.attachEvent("onload",a):window.addEventListener("load",a,0)}();</script></body></html>

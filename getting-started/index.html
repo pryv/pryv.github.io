@@ -3,7 +3,7 @@
 <!--[if lt IE 9]>
   <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
   <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
-<![endif]--><link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Roboto:400,300,500,700,400italic|Roboto+Condensed:400,300,700"><link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/styles/docco.min.css"><link rel="stylesheet" type="text/css" href="/assets/fonts/ss-gizmo.min.css"><link rel="stylesheet" type="text/css" href="/assets/style.css"></head><body class="getting-started with-toc"><header id="page-header"><nav role="navigation" class="navbar navbar-default navbar-fixed-top"><div class="container-fluid"><div class="navbar-header"><a href="https://pryv.com" title="Pryv home" class="navbar-brand logo pryv-home"><img src="/assets/images/icon-home.svg" alt="Pryv home" height="50"></a><a href="/" title="Developers home" class="navbar-brand logo"><img src="/assets/images/logo-256-black.png" alt="Developers home"></a><button type="button" data-toggle="collapse" data-target="#main-nav" class="navbar-toggle"><span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button></div><div id="main-nav" class="collapse navbar-collapse"><ul class="nav navbar-nav"><li class="dropdown"><a href="#" data-toggle="dropdown" class="dropdown-toggle">Guides <b class="caret"></b></a><ul class="dropdown-menu"><li class="active"><a href="/getting-started/">Getting started</a></li><li><a href="/concepts/">API concepts</a></li><li><a href="/guides/data-modelling/">Data modelling</a></li><li><a href="/guides/webhooks/">Webhooks</a></li><li><a href="/guides/app-guidelines/">App guidelines</a></li><li><a href="/external-resources/">External resources</a></li></ul></li><li class="dropdown"><a href="#" data-toggle="dropdown" class="dropdown-toggle">Reference <b class="caret"></b></a><ul class="dropdown-menu"><li><a href="/reference/">API reference</a></li><li><a href="/change-log/">API change log</a></li><li><a href="/event-types/">Event types</a></li><li><a href="/open-api/">Open API</a></li><!--+menuItem('standardStructure')--></ul></li><li class="dropdown"><a href="#" data-toggle="dropdown" class="dropdown-toggle">FAQ <b class="caret"></b></a><ul class="dropdown-menu"><li><a href="/faq-api/">API</a></li><li><a href="/faq-infra/">Infrastructure</a></li></ul></li><!--lia(href='#') Blog--></ul><div class="navbar-right"><p class="navbar-text version"><a href="/change-log/" title="View change log">API version: <strong>1.4.33</strong></a></p></div></div></div></nav></header><div id="main-wrapper" class="container container-narrow"><div id="main"><h1 class="page-title">Get started with Pryv.io API</h1><p>In this tutorial, we will help you to try out and evaluate Pryv.io API for your
+<![endif]--><link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Roboto:400,300,500,700,400italic|Roboto+Condensed:400,300,700"><link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/styles/docco.min.css"><link rel="stylesheet" type="text/css" href="/assets/fonts/ss-gizmo.min.css"><link rel="stylesheet" type="text/css" href="/assets/style.css"></head><body class="getting-started with-toc"><header id="page-header"><nav role="navigation" class="navbar navbar-default navbar-fixed-top"><div class="container-fluid"><div class="navbar-header"><a href="https://pryv.com" title="Pryv home" class="navbar-brand logo pryv-home"><img src="/assets/images/icon-home.svg" alt="Pryv home" height="50"></a><a href="/" title="Developers home" class="navbar-brand logo"><img src="/assets/images/logo-256-black.png" alt="Developers home"></a><button type="button" data-toggle="collapse" data-target="#main-nav" class="navbar-toggle"><span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button></div><div id="main-nav" class="collapse navbar-collapse"><ul class="nav navbar-nav"><li class="dropdown"><a href="#" data-toggle="dropdown" class="dropdown-toggle">Guides <b class="caret"></b></a><ul class="dropdown-menu"><li class="active"><a href="/getting-started/">Getting started</a></li><li><a href="/concepts/">API concepts</a></li><li><a href="/guides/data-modelling/">Data modelling</a></li><li><a href="/guides/webhooks/">Webhooks</a></li><li><a href="/guides/app-guidelines/">App guidelines</a></li><li><a href="/external-resources/">External resources</a></li></ul></li><li class="dropdown"><a href="#" data-toggle="dropdown" class="dropdown-toggle">Reference <b class="caret"></b></a><ul class="dropdown-menu"><li><a href="/reference/">API reference</a></li><li><a href="/change-log/">API change log</a></li><li><a href="/event-types/">Event types</a></li><li><a href="/open-api/">Open API</a></li><!--+menuItem('standardStructure')--></ul></li><li class="dropdown"><a href="#" data-toggle="dropdown" class="dropdown-toggle">FAQ <b class="caret"></b></a><ul class="dropdown-menu"><li><a href="/faq-api/">API</a></li><li><a href="/faq-infra/">Infrastructure</a></li></ul></li><!--lia(href='#') Blog--></ul><div class="navbar-right"><p class="navbar-text version"><a href="/change-log/" title="View change log">API version: <strong>1.5.0</strong></a></p></div></div></div></nav></header><div id="main-wrapper" class="container container-narrow"><div id="main"><h1 class="page-title">Get started with Pryv.io API</h1><p>In this tutorial, we will help you to try out and evaluate Pryv.io API for your
 projects. Throughout these steps, we will use our <a href="https://pryv.com/pryvlab/">Lab platform</a> for testing the Pryv.io API.</p>
 <p>We will guide you through:</p>
 <ol>
@@ -126,6 +126,7 @@ Events either have a type from the list of <a href="/event-types/#directory"><st
 <p><img src="/assets/images/getting-started/streams_structure_v2.png" alt="Pryv.io Data Model"></p>
 <p>Here&#39;s an example of an event, corresponding to the heart rate collected by the Pulse Oximeter App as described in the streams structure above :</p>
 <pre><code class="lang-json">{
+  &quot;streamIds&quot;: [&quot;pulseOximeterApp&quot;],
   &quot;streamId&quot;: &quot;pulseOximeterApp&quot;,
   &quot;type&quot;: &quot;frequency/bpm&quot;,
   &quot;content&quot;: 90,
@@ -145,6 +146,7 @@ Events either have a type from the list of <a href="/event-types/#directory"><st
 </ul>
 <pre><code class="lang-json">{
   &quot;id&quot;: &quot;c3jkdjdt000ze64d8u9z4hap&quot;,
+  &quot;streamIds&quot;: [&quot;smartwatchA&quot;],
   &quot;streamId&quot;: &quot;smartwatchA&quot;,
   &quot;type&quot;: &quot;count/steps&quot;,
   &quot;content&quot;: 14972,
@@ -157,6 +159,7 @@ Events either have a type from the list of <a href="/event-types/#directory"><st
 </ul>
 <pre><code class="lang-json">{
   &quot;id&quot;: &quot;c4jghrjkj011ez46d8u4y3pah&quot;,
+  &quot;streamIds&quot;: [&quot;pulseOximeterApp&quot;],
   &quot;streamId&quot;: &quot;pulseOximeterApp&quot;,
   &quot;type&quot;: &quot;blood-pressure/bpm-mmhg&quot;,
   &quot;content&quot;: {
@@ -176,6 +179,7 @@ Events either have a type from the list of <a href="/event-types/#directory"><st
 <p>These events will have the type <code>picture/attached</code> :</p>
 <pre><code class="lang-json">{
   &quot;id&quot;: &quot;ck2bzkjdt000ze64d8u9z4pha&quot;,
+  &quot;streamIds&quot;: [&quot;foodA&quot;],
   &quot;streamId&quot;: &quot;foodA&quot;,
   &quot;type&quot;: &quot;picture/attached&quot;,
   &quot;content&quot;: null,
@@ -200,6 +204,7 @@ Events either have a type from the list of <a href="/event-types/#directory"><st
 <pre><code class="lang-json">{
   &quot;id&quot;: &quot;ck2klss8v00124yjx45s3jp5r&quot;,
     &quot;time&quot;: 1572882785.023,
+    &quot;streamId&quot;: [&quot;position&quot;],
     &quot;streamId&quot;: &quot;position&quot;,
     &quot;tags&quot;: [],
     &quot;type&quot;: &quot;series:position/wgs84&quot;,
@@ -214,10 +219,6 @@ Events either have a type from the list of <a href="/event-types/#directory"><st
 }
 </code></pre>
 <p>More information on HF series is provided in the <a href="/reference-preview/#hf-series"><strong>API reference</strong></a>.</p>
-<ul>
-<li><strong>start</strong> and <strong>stop</strong> events. This can be very useful for time-tracking, enabling the athlete to track and report his activities in real-time (ex.: running, cycling, exercising, etc).
-This allows to specify time durations for events or to guarantee that only one event is running at a given time in <code>singleActivity</code> streams (<strong>DEPRECATED</strong>). More information on these methods is provided <a href="/reference/#start-period"><strong>here</strong></a>.</li>
-</ul>
 <p>To get more details on all possible event types, see the <a href="/reference/#event"><strong>events API reference</strong></a>.</p>
 <h1 id="access-management">Access Management</h1>
 <p>You might want to give permissions to applications and third-parties to access and manage your account (by reading or adding new data).</p>

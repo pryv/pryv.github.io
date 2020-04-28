@@ -1,0 +1,159 @@
+<hr>
+<p>id: healthchecks
+title: &#39;Pryv.io Healthchecks&#39;
+template: default.jade
+customer: true</p>
+<h2 id="withtoc-true">withTOC: true</h2>
+<table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Author</td>
+<td>Ilia Kebets</td>
+</tr>
+<tr>
+<td>Reviewer</td>
+<td>Anastasia Bouzdine (v4), Guillaume Bassand (v1-3)</td>
+</tr>
+<tr>
+<td>Date</td>
+<td>24.04.2020</td>
+</tr>
+<tr>
+<td>Version</td>
+<td>5</td>
+</tr>
+</tbody>
+</table>
+<h2 id="summary">Summary</h2>
+<p>This procedure describes how to perform regular healthcheck API calls to the Pryv.io API in order to remotely monitor its status. You can directly jump to the <a href="#healthchecks">Healthchecks section</a> to proceed to the healthchecks.</p>
+<p>Please note that the current procedure does not cover how to perform healthchecks per core machine, only per hosting. If you require core-level status, get in touch with your Pryv tech contact.</p>
+<h2 id="variables">Variables</h2>
+<p>As this guide is platform agnostic, we will use variables <code>${VARIABLE_NAME}</code> which must be replaced in the commands.</p>
+<p>In particular, the following variables should be replaced :</p>
+<ul>
+<li>the domain name, which will be called <code>${DOMAIN}</code>,</li>
+<li>the core machines hostings, identified with a <code>${HOSTING_NAME}</code>. In a Pryv.io platform, core machines are organized into clusters that we call hostings. Each of these has an identifier <code>${HOSTING_NAME}</code>, which can be found at the following URL: <a href="https://reg.${DOMAIN}/hostings">https://reg.${DOMAIN}/hostings</a>. The <code>${HOSTING_NAME}</code> are the keys of the object <code>regions:REGION_NAME:zones:ZONE_NAME:hostings</code>.</li>
+<li>the access token <code>${ACCESS_TOKEN}</code>, associated with a dedicated user account and that will be used in the API calls for healthchecks. The preparation chapter describes how to obtain it.</li>
+</ul>
+<h2 id="tools">Tools</h2>
+<h3 id="dns-checks-">DNS checks:</h3>
+<ul>
+<li>dig version 9.12.3+</li>
+</ul>
+<h3 id="http-calls">HTTP calls</h3>
+<ul>
+<li>cURL v7.54.0+</li>
+</ul>
+<h2 id="preparation">Preparation</h2>
+<p>As the current Pryv.io version does not have dedicated API endpoints for a thorough healthcheck, we will create a dedicated user account in order to do so. This preparation phase describes how to create an account and obtain a non-expirable token. This must be done once and the <strong>username/token</strong> pairs stored for automatic API healthcheck calls.</p>
+<h3 id="create-account">Create account</h3>
+<p>We start by creating an account. We propose to use the following credentials, but these can be modified at the user&#39;s discretion:</p>
+<ul>
+<li><strong>username</strong> : healthmetrics</li>
+<li><strong>password</strong> : healthmetrics</li>
+<li><strong>email</strong> : healthmetrics01@${DOMAIN}</li>
+</ul>
+<pre><code class="lang-json">curl -i -X POST -H &#39;Content-Type: application/json&#39; \
+-d &#39;{&quot;hosting&quot;:&quot;${HOSTING_NAME}&quot;,
+&quot;username&quot;: &quot;healthmetrics01&quot;,
+&quot;password&quot;:&quot;healthmetrics01&quot;,
+&quot;email&quot;: &quot;healthmetrics01@${DOMAIN}&quot;,
+&quot;language&quot;: &quot;en&quot;,
+&quot;appid&quot;:&quot;pryv-metrics&quot;}&#39; \
+&quot;https://reg.${DOMAIN}/user/&quot;
+</code></pre>
+<p>If you are using a default configuration, you can use the default web app:</p>
+<ol>
+<li>Go to <a href="https://sw.${DOMAIN}/access/register.html">https://sw.${DOMAIN}/access/register.html</a></li>
+<li>Fill the fields with:<ul>
+<li><strong>email</strong> : healthmetrics01@${DOMAIN}</li>
+<li><strong>username</strong> : healthmetrics</li>
+<li><strong>password</strong> : healthmetrics</li>
+<li><strong>password conrmation</strong> : healthmetrics</li>
+</ul>
+</li>
+</ol>
+<h3 id="create-token">Create token</h3>
+<p>In order to obtain a non-expirable access token, we must do 2 calls. First sign in with the user password to obtain a temporary personal token, and then use it to obtain a non-expirable one.</p>
+<p><strong>- Sign in:</strong></p>
+<pre><code class="lang-json">curl -i -H &quot;Content-Type: application/json&quot; \
+-H &quot;Origin: https://sw.${DOMAIN}&quot; \
+-X POST \
+-d &#39;{&quot;username&quot;:&quot;healthmetrics01&quot;,
+&quot;password&quot;:&quot;healthmetrics01&quot;,
+&quot;appId&quot;:&quot;pryv-metrics&quot;}&#39; \
+&quot;https://healthmetrics01.${DOMAIN}/auth/login&quot;
+</code></pre>
+<p>The response body should contain a valid personal token under the field <code>token</code>:</p>
+<pre><code class="lang-json">{
+&quot;meta&quot;:
+{
+&quot;apiVersion&quot;:&quot;1.3.51&quot;,
+&quot;serverTime&quot;:1548952964.
+},
+&quot;token&quot;:&quot;${PERSONAL_TOKEN}&quot;,
+&quot;preferredLanguage&quot;:&quot;en&quot;
+}
+</code></pre>
+<p><strong>- Create token</strong></p>
+<pre><code class="lang-json">curl -i -X POST -H &#39;Content-Type: application/json&#39; \
+-H &#39;Authorization: ${PERSONAL_TOKEN}&#39; \
+-d &#39;{&quot;name&quot;:&quot;metricsAccess&quot;,
+&quot;permissions&quot;:[{&quot;streamId&quot;:&quot;*&quot;,&quot;level&quot;:&quot;manage&quot;}]}&#39; \
+&quot;https://healthmetrics01.${DOMAIN}/accesses&quot;
+</code></pre>
+<p>The response body should contain a valid access token under the <code>access:token</code> field:</p>
+<pre><code class="lang-json">&quot;meta&quot;:
+{
+&quot;apiVersion&quot;:&quot;1.3.51&quot;,
+&quot;serverTime&quot;:1548953274.
+},
+&quot;access&quot;:
+{
+&quot;name&quot;:&quot;metricsAccess&quot;,
+&quot;permissions&quot;:
+[
+{&quot;streamId&quot;:&quot;*&quot;,&quot;level&quot;:&quot;manage&quot;}
+],
+&quot;type&quot;:&quot;shared&quot;,
+&quot;token&quot;:&quot;${ACCESS_TOKEN}&quot;,
+&quot;created&quot;:1548953274.877,
+&quot;createdBy&quot;:&quot;cjrkulo5s00040t0cb5xwlupi&quot;,
+&quot;modified&quot;:1548953274.877,
+&quot;modifiedBy&quot;:&quot;cjrkulo5s00040t0cb5xwlupi&quot;,
+&quot;id&quot;:&quot;cjrkusc1p00060t0czs7ect45&quot;
+}
+}
+</code></pre>
+<p>If you are using a default configuration, you can use the default web app:</p>
+<ol>
+<li>Go to <a href="https://api.pryv.com/app-web-access/?pryv-reg=reg.${DOMAIN}">https://api.pryv.com/app-web-access/?pryv-reg=reg.${DOMAIN}</a></li>
+<li>Click on <code>Master Token</code>radio button</li>
+<li>Click on <code>Request Access</code> button</li>
+<li>Click on <code>Sign in</code> Pryv button</li>
+<li>Enter credentials: <code>healthmetrics01/healthmetrics01</code> in the pop-up window</li>
+<li>Click on <code>Sign in</code> button</li>
+<li>Click on <code>Accept</code> button</li>
+<li>Copy the Access token and save it for this machine&#39;s healthchecks. We will refer to it as <code>${ACCESS_TOKEN}</code>.</li>
+</ol>
+<h2 id="healthchecks">Healthchecks</h2>
+<h3 id="register">Register</h3>
+<p>The call to perform: <code>HTTP GET https://reg.${DOMAIN}/healthmetrics01/check_username</code></p>
+<p>Run <code>curl https://reg.${DOMAIN}/healthmetrics01/check_username</code></p>
+<p>The expected result: <code>Status: 200</code></p>
+<h3 id="dns">DNS</h3>
+<p>Run <code>Dig A healthmetrics01.${DOMAIN}</code></p>
+<p>The expected result:</p>
+<pre><code>An answer.
+</code></pre><h3 id="core">Core</h3>
+<p>Authentication header: <code>${ACCESS_TOKEN}</code></p>
+<p>The call to perform: <code>HTTP GET https://healthmetrics01.${DOMAIN}/events?limit=1</code></p>
+<p>Run <code>curl -i -H &#39;Authorization: ${ACCESS_TOKEN}&#39;</code>
+<code>&quot;https://healthmetrics01.${DOMAIN}/events?limit=1&quot;</code></p>
+<p>The expected result: <code>Status: 200</code></p>
