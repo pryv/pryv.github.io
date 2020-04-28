@@ -47,7 +47,7 @@ All four applications store their data in a single account:</p>
 </table>
 <p>One general advice is to use one stream or substream per device.
 Given this situation, we would recommend a stream structure similar to the following :</p>
-<p><img src="/assets/images/getting-started/streams_structure_v2.png" alt="Example Streams Structure"></p>
+<p><img src="/assets/images/Data_modelling.svg" alt="Example Streams Structure"></p>
 <p>This stream structure has multiple benefits:</p>
 <ul>
 <li>Provides enough context to the data and thus avoids ambiguities:<ul>
@@ -160,70 +160,67 @@ Given this situation, we would recommend a stream structure similar to the follo
 ]
 </code></pre>
 <h3 id="consent-aggregation">Consent aggregation</h3>
-<p>Let&#39;s imagine now a different use case.</p>
-<p>You have been collecting consent from your app users to use their data and you need to store these accesses on Pryv.io in order to be able to retrieve data from their accounts.
+<p>Let&#39;s imagine now a different use case. You are conducting an Allergology Exposition research, in which you analyze the exposition of subjects to allergens by tracking their geolocation through your app.</p>
+<p>You have been collecting consent from your app users to use their data and you need to store these accesses on Pryv.io.
 You will therefore need a &quot;campaign&quot; stream structure which allows you to store the accesses for your app.</p>
 <p><img src="/assets/images/Campaign.svg" alt="Example Campaign Structure"></p>
 <p>The &quot;campaign&quot; data structure will contain the following streams:</p>
-<ul>
-<li>The stream <strong>Campaign 123 description</strong>, in which you will store information about the authorization you are requesting. 
-You can do a <a href="https://api.pryv.com/reference/#create-stream">streams.create</a> call with the following data:</li>
-</ul>
+<p>The stream <strong>Campaign description</strong>, in which you will store information about the authorization you are requesting. 
+You can do a <a href="https://api.pryv.com/reference/#create-stream">streams.create</a> call with the following data:</p>
 <pre><code class="lang-json">{
-  &quot;id&quot;: &quot;campaign-123-description&quot;,
+  &quot;id&quot;: &quot;campaign-description&quot;,
   &quot;name&quot;: &quot;Campaign description&quot;,
-  &quot;parentId&quot;: &quot;campaign-123&quot;
+  &quot;parentId&quot;: &quot;allergology-exposition-campaign&quot;
 }
 </code></pre>
-<p>It will include the <code>requestingAppId</code> (your app&#39;s identifier that wishes to access data from the users), the <code>requestedPermissions</code> (containing the <code>streamId</code> your app wants to access and the level of permission) and the <code>clientData</code> (e.g. the consent information of your user).</p>
+<p>Its events will include the fields necessary to perform an <a href="https://api.pryv.com/reference/#auth-request">Auth request</a>:</p>
+<ul>
+<li><code>requestingAppId</code>, your app&#39;s identifier that wishes to access data from the users  </li>
+<li><code>requestedPermissions</code>, containing the streams your app wants to access and their associated level of permission  </li>
+<li><code>clientData</code>, containing the consent information of your user</li>
+</ul>
 <p>You can do an <a href="https://api.pryv.com/reference/#create-event">events.create</a> call containing this information:</p>
 <pre><code class="lang-json">{
   &quot;event&quot;: {
     &quot;id&quot;: &quot;ck9ckvwfo000vt4pvrudxci9b&quot;,
     &quot;time&quot;: 1385046854.282,
-    &quot;streamIds&quot;: [&quot;campaign-123-description]&quot;,
+    &quot;streamIds&quot;: [&quot;campaign-description]&quot;,
     &quot;type&quot;: &quot;campaign/auth-request&quot;,
     &quot;content&quot;: {
-        &quot;requestingAppId&quot;: &quot;test-app-id&quot;,
-        &quot;requestedPermissions&quot;: [
-        {
-            &quot;streamId&quot;: &quot;diary&quot;,
-            &quot;level&quot;: &quot;read&quot;,
-            &quot;defaultName&quot;: &quot;Journal&quot;
-        },
-        {
-            &quot;streamId&quot;: &quot;position&quot;,
-            &quot;level&quot;: &quot;contribute&quot;,
-            &quot;defaultName&quot;: &quot;Position&quot;
-        }],
-        &quot;clientData&quot;: &quot;&quot;, //...
-    } 
+      &quot;requestingAppId&quot;: &quot;test-app-id&quot;,
+      &quot;requestedPermissions&quot;: [
+      {
+          &quot;streamId&quot;: &quot;geolocation&quot;,
+          &quot;level&quot;: &quot;read&quot;,
+          &quot;defaultName&quot;: &quot;Geolocation&quot;
+      }],
+      &quot;clientData&quot;: {
+        &quot;app-web-auth:description&quot;: {
+          &quot;type&quot;: &quot;note/txt&quot;,
+          &quot;content&quot;: &quot;This is a consent message.&quot;
+        }
+      }
+    }
   }
 }
 </code></pre>
-<p>More information about the content of this event can be found in the <a href="https://api.pryv.com/reference/#auth-request">Auth request section</a> of the API reference.</p>
-<ul>
-<li>The stream <strong>Patient accesses</strong> that will store the credentials (<code>username</code> and <code>token</code>) for every subject that granted access to their data. 
-You can do a <a href="https://api.pryv.com/reference/#create-stream">streams.create</a> call with the following data:</li>
-</ul>
+<p>The stream <strong>Patient accesses</strong> that will store the credentials in <code>pryvApiEndpoint</code> format (see <a href="/guides/app-guidelines/">App guidelines</a>) for every subject that granted access to their data.
+You can do a <a href="/reference/#create-stream">streams.create</a> call with the following data:</p>
 <pre><code class="lang-json">{
   &quot;id&quot;: &quot;patient-accesses&quot;,
   &quot;name&quot;: &quot;Patient accesses&quot;,
-  &quot;parentId&quot;: &quot;campaign-123&quot;
+  &quot;parentId&quot;: &quot;allergology-exposition-campaign&quot;
 }
 </code></pre>
-<p>The events of this stream will contain the credentials of every subject that granted access to their data, in particular the <code>username</code> and the <code>token</code> associated with their Pryv.io account.</p>
-<p>You can do an <a href="https://api.pryv.com/reference/#create-event">events.create</a> call to store the credentials of &quot;Subject 01&quot; for example:</p>
+<p>The events of this stream will contain the credentials of every subject that granted access to their data, in particular the <code>pryvApiEndpoint</code> associated with their Pryv.io account.</p>
+<p>You can do an <a href="/reference/#create-event">events.create</a> call to store the credentials of &quot;Subject 01&quot; for example:</p>
 <pre><code class="lang-json">{
   &quot;event&quot;: {
     &quot;id&quot;: &quot;jk8ujvwfo000vt4vprfriwd5a&quot;,
     &quot;time&quot;: 1385046854.285,
     &quot;streamIds&quot;: [&quot;patient-accesses&quot;],
-    &quot;type&quot;: &quot;access/pryv&quot;,
-    &quot;content&quot;: {
-      &quot;username&quot;: &quot;subject01&quot;,
-      &quot;token&quot;: &quot;ck0qmnwo40007a8ivbxn12zt7&quot;,
-      } 
+    &quot;type&quot;: &quot;access/pryvApiEndpoint&quot;,
+    &quot;content&quot;: &quot;https://ck0qmnwo40007a8ivbxn12zt7@subject01.pryv.me/&quot;
   }
 }
 </code></pre>
@@ -232,15 +229,15 @@ You can do a <a href="https://api.pryv.com/reference/#create-stream">streams.cre
   {
     &quot;method&quot;: &quot;streams.create&quot;,
     &quot;params&quot;: {
-      &quot;id&quot;: &quot;campaign-123&quot;,
-      &quot;name&quot;: &quot;Campaign name&quot;
+      &quot;id&quot;: &quot;allergology-exposition-campaign&quot;,
+      &quot;name&quot;: &quot;Allergology Exposition Campaign&quot;
     }
   },
     {
     &quot;method&quot;: &quot;streams.create&quot;,
     &quot;params&quot;: {
-      &quot;id&quot;: &quot;campaign-123-description&quot;,
-      &quot;parentId&quot;: &quot;campaign-123&quot;,
+      &quot;id&quot;: &quot;campaign-description&quot;,
+      &quot;parentId&quot;: &quot;allergology-exposition-campaign&quot;,
       &quot;name&quot;: &quot;Campaign description&quot;
     }
   },
@@ -248,42 +245,12 @@ You can do a <a href="https://api.pryv.com/reference/#create-stream">streams.cre
     &quot;method&quot;: &quot;streams.create&quot;,
     &quot;params&quot;: {
       &quot;id&quot;: &quot;patient-accesses&quot;,
-      &quot;parentId&quot;: &quot;campaign-123&quot;,
+      &quot;parentId&quot;: &quot;allergology-exposition-campaign&quot;,
       &quot;name&quot;: &quot;Patient accesses&quot;
     }
   }
 ]
 </code></pre>
-<p>You can then add events to the different streams at once by doing an <a href="/reference/#create-event">events.create</a> call, and store the campaign data in one stream, and the username and token of the subject in another stream:</p>
-<pre><code class="lang-json">[
-  {
-    &quot;method&quot;: &quot;events.create&quot;,
-    &quot;params&quot;: {
-      &quot;time&quot;: 1385046854.282,
-      &quot;streamIds&quot;: [&quot;campaign-123-description&quot;],
-      &quot;type&quot;: &quot;campaign/auth-request&quot;,
-      &quot;content&quot;: {
-        &quot;requestingAppId&quot;: &quot;&quot;, //...
-        &quot;requestedPermissions&quot;: {}, //...
-        &quot;clientData&quot;: &quot;&quot;, //
-      }
-    }
-  },
-  {
-    &quot;method&quot;: &quot;events.create&quot;,
-    &quot;params&quot;: {
-      &quot;time&quot;: 1385046854.283,
-      &quot;streamIds&quot;: [&quot;patient-accesses&quot;],
-      &quot;type&quot;: &quot;access/pryv&quot;,
-      &quot;content&quot;: {
-          &quot;username&quot;: &quot;subject01&quot;,
-          &quot;token&quot;: &quot;ck0qmnwo40007a8ivbxn12zt7&quot;,
-        }
-      }
-    }
-]
-</code></pre>
-<p>If the stream already exists, the error <code>item-already-exists</code> will be displayed (See <a href="/reference/#create-stream">streams.create</a> specific errors for more information).</p>
 </div><nav id="toc"></nav></div><footer id="page-footer"><nav class="navbar navbar-default"><div class="container-fluid"><div id="footer-nav"><ul class="nav navbar-nav"><li><a href="mailto:developers@pryv.com">Send a message</a></li><li><a href="https://github.com/pryv">GitHub</a></li><li><a href="https://pryv.com">pryv.com</a></li></ul></div></div></nav></footer><script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script><script src="/assets/bootstrap.min.js"></script><script src="/assets/js/toc.min.js"></script><!-- TOC generation--><script>jQuery(document).ready(function($) {
   // Header is about 51 pixels. This equals to 'header + fuzz', fuzz was
   // determined experimentally.
