@@ -7,17 +7,18 @@
 It walks you through the different steps that have to be performed in order to set up your platform.</p>
 <h2 id="table-of-contents">Table of contents</h2>
 <ul>
-<li><a href="#set-up-the-machines">Set up the machines</a></li>
-<li><a href="#obtain-a-domain-name">Obtain a domain name</a></li>
-<li><a href="#obtain-the-license-key-credentials-and-config-files">Obtain the license key, credentials and config files</a></li>
-<li><a href="#set-the-platform-parameters">Set the platform parameters</a></li>
-<li><a href="#obtain-an-ssl-certificate">Obtain an SSL certificate</a></li>
-<li><a href="#validate-your-platform-installation">Validate your platform installation</a></li>
-<li><a href="#set-up-the-platform-health-monitoring">Set up the platform health monitoring</a></li>
-<li><a href="#customize-authorization-registration-and-reset-password-apps">Customize authorization, registration and reset password apps</a></li>
-<li><a href="#set-up-email-sending">Set up email sending</a></li>
-<li><a href="#define-your-data-model">Define your data model</a></li>
-<li><a href="#other-documents">Other documents</a></li>
+<li>1 <a href="#set-up-the-machines">Set up the machines</a></li>
+<li>2 <a href="#obtain-a-domain-name">Obtain a domain name</a></li>
+<li>3 <a href="#obtain-the-license-key-credentials-and-config-files">Obtain the license key, credentials and config files</a></li>
+<li>4 <a href="#set-the-platform-parameters">Set the platform parameters</a></li>
+<li>5 <a href="#obtain-an-ssl-certificate">Obtain an SSL certificate</a></li>
+<li>6 <a href="#validate-your-platform-installation">Validate your platform installation</a></li>
+<li>7 <a href="#set-up-the-platform-health-monitoring">Set up the platform health monitoring</a></li>
+<li>8 <a href="#customize-authorization-registration-and-reset-password-apps">Customize authorization, registration and reset password apps</a></li>
+<li>9 <a href="#set-up-email-sending">Set up email sending</a></li>
+<li>10 <a href="#define-your-data-model">Define your data model</a></li>
+<li>11 <a href="#customize-event-types-validation">Customize event types validation</a></li>
+<li>12 <a href="#other-documents">Other documents</a></li>
 </ul>
 <h2 id="set-up-the-machines">Set up the machines</h2>
 <p>You need first to define which hardware or virtual machines you will provision to host your Pryv.io instance.  </p>
@@ -28,15 +29,16 @@ It walks you through the different steps that have to be performed in order to s
 <p>Now that your machines are ordered, you need to register your own domain name.</p>
 <p>You can either:  </p>
 <ul>
-<li>obtain one yourself through a domain name registrar of your choice;</li>
+<li>obtain one yourself through a domain name registrar of your choice, make sure that you can configure your domain&#39;s name servers.</li>
 <li>or contact us directly to obtain a pryv.io subdomain, e.g. <strong><em>your-platform-name</em>.pryv.io</strong></li>
 </ul>
+<p>You will need to obtain an additional one for your staging development, and pre-production if you have one.</p>
 <h2 id="obtain-the-license-key-credentials-and-configuration-files">Obtain the license key, credentials and configuration files</h2>
 <p>In order to be able to run your Pryv.io instance, you will need to get a license key for your platform from Pryv and the credentials to pull the Docker images defined in the configuration files.</p>
 <h2 id="set-the-platform-parameters">Set the platform parameters</h2>
 <p>Along with the configuration files, you will find an Installation guide describing where to unpack them and how to set the platform variables.</p>
 <h2 id="obtain-an-ssl-certificate">Obtain an SSL certificate</h2>
-<p>You will need to obtain an SSL certificate to enable encryption to the platform&#39;s API. For this, you can either obtain one from your hosting provider, or generate one using LetsEncrypt, for which we can provide you a quick guide.</p>
+<p>You will need to obtain a wildcard SSL certificate for *.DOMAIN to enable encryption to the platform&#39;s API. For this, you can either obtain one from your hosting provider, or generate one using LetsEncrypt, for which we can provide you a quick guide.</p>
 <p>We have automatic SSL certificate renewal on our roadmap, so let us know if you are interested.</p>
 <h2 id="validate-your-platform-installation">Validate your platform installation</h2>
 <p>Now that your Pryv.io platform is configured and running, you can run the validation procedure from the <a href="/customer-resources/platform-validation">Pryv.io platform validation guide</a>.</p>
@@ -90,6 +92,11 @@ It walks you through the different steps that have to be performed in order to s
 <p>To do so, you need to design the data model your app(s) will use using Pryv&#39;s data structures: <strong>streams</strong> and <strong>events</strong>.</p>
 <p>You can have a look at our <a href="https://api.pryv.com/guides/data-modelling/">Data modelling guide</a> which describes the Pryv.io data structure and walks you through different use cases for your data model.</p>
 <p>We can also help you with the design and validation of your data model.</p>
+<h2 id="customize-event-types-validation">Customize event types validation</h2>
+<p>Your Pryv.io platform performs content validation for the types definnition that you provide it. Events with undefined types are allowed but their content is not validated.<br>By default, the one defined in the <a href="/event-types/">Event Types</a> page is used.</p>
+<p>You can host your definitions page on a public URL which will be loaded at the platform boot. You can define this URL in the platform parameters as following:</p>
+<pre><code class="lang-yaml">EVENT_TYPES_URL: &quot;https://api.pryv.com/event-types/flat.json&quot;
+</code></pre>
 <h2 id="other-documents">Other documents</h2>
 <p>More resources can be found in our <a href="https://api.pryv.com/customer-resources/#documents">Customer Resources page</a>, or in the <a href="https://api.pryv.com/faq-infra/">FAQ</a>.</p>
 </div><nav id="toc"></nav></div><footer id="page-footer"><nav class="navbar navbar-default"><div class="container-fluid"><div id="footer-nav"><ul class="nav navbar-nav"><li><a href="mailto:developers@pryv.com">Send a message</a></li><li><a href="https://github.com/pryv">GitHub</a></li><li><a href="https://pryv.com">pryv.com</a></li></ul></div></div></nav></footer><script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script><script src="/assets/bootstrap.min.js"></script><script src="/assets/js/toc.min.js"></script><!-- TOC generation--><script>jQuery(document).ready(function($) {
