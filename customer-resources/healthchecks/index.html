@@ -144,13 +144,13 @@ This preparation phase describes how to create an account and obtain a non-expir
 <li>Copy the Access token and save it for this machine&#39;s healthchecks. We will refer to it as <code>${ACCESS_TOKEN}</code>.</li>
 </ol>
 <h1 id="healthchecks">Healthchecks</h1>
+<h2 id="dns">DNS</h2>
+<p>Run <code>Dig A healthmetrics01.${DOMAIN}</code></p>
+<p>The expected result: An answer.</p>
 <h2 id="register">Register</h2>
 <p>The call to perform: <strong>HTTP GET</strong> <code>https://reg.${DOMAIN}/healthmetrics01/check_username</code></p>
 <p>Run <code>curl https://reg.${DOMAIN}/healthmetrics01/check_username</code></p>
 <p>The expected result: <code>Status: 200</code></p>
-<h2 id="dns">DNS</h2>
-<p>Run <code>Dig A healthmetrics01.${DOMAIN}</code></p>
-<p>The expected result: An answer.</p>
 <h2 id="core">Core</h2>
 <p>Authentication header: <code>${ACCESS_TOKEN}</code></p>
 <p>The call to perform: <strong>HTTP GET</strong> <code>https://healthmetrics01.${DOMAIN}/events?limit=1</code></p>
