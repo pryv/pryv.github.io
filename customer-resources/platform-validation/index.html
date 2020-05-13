@@ -93,6 +93,7 @@ reg.${DOMAIN}.  SOME_TTL_NUMBER  IN  A  ${REGISTER_MACHINE_IP_ADDRESS}
 <h3 id="configuration-error">Configuration error</h3>
 <p>If the service keeps rebooting with an error message, fix configuration if possible.<br>Otherwise, send the last 100 lines of the DNS log file to your Pryv tech contact. Run <code>docker logs --tail 100 ${DNS_CONTAINER_NAME} &gt; ${DATE}-${ISSUE_NAME}.log</code> to generate the log file.</p>
 <h3 id="port-is-unreachable-from-the-internet">Port is unreachable from the Internet</h3>
+<p>If there are no errors in the logs, the machine might simply not be reachable from the Internet on port UDP/53.</p>
 <ol>
 <li>SSH to the Register machine</li>
 <li>Make a DNS request: <code>dig @localhost reg.${DOMAIN}</code></li>
