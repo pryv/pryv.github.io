@@ -92,6 +92,12 @@ reg.${DOMAIN}.  SOME_TTL_NUMBER  IN  A  ${REGISTER_MACHINE_IP_ADDRESS}
 <p>The logs contain the following error <code>Error: Redis connection to redis:6379 failed - getaddrinfo ENOTFOUND redis redis:6379</code>.<br>See the Redis logs: <code>tail -f ${PRYV_CONFIG_FOLDER}/reg-master/redis/log/redis.log</code><br>Fix issue if possible, otherwise send the last 100 lines of the log file to your Pryv tech contact. Run <code>tail -n 100 ${PRYV_CONFIG_FOLDER}/reg-master/redis/log/redis.log &gt; ${DATE}-${ISSUE_NAME}.log</code> to generate the log file.</p>
 <h3 id="configuration-error">Configuration error</h3>
 <p>If the service keeps rebooting with an error message, fix configuration if possible.<br>Otherwise, send the last 100 lines of the DNS log file to your Pryv tech contact. Run <code>docker logs --tail 100 ${DNS_CONTAINER_NAME} &gt; ${DATE}-${ISSUE_NAME}.log</code> to generate the log file.</p>
+<h3 id="port-is-unreachable-from-the-internet">Port is unreachable from the Internet</h3>
+<ol>
+<li>SSH to the Register machine</li>
+<li>Make a DNS request: <code>dig @localhost reg.${DOMAIN}</code></li>
+</ol>
+<p>If the request yields an answer, your firewall settings might be set wrong. You must allow INGRESS UDP/53 as defined in the <strong>Deployment design guide</strong> from the <a href="https://api.pryv.com/customer-resources/#documents">Customer Resources page</a>.</p>
 <h2 id="core">Core</h2>
 <ol>
 <li>SSH to core machine</li>
