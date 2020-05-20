@@ -3,16 +3,15 @@
 <!--[if lt IE 9]>
   <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
   <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
-<![endif]--><link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Roboto:400,300,500,700,400italic|Roboto+Condensed:400,300,700"><link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/styles/docco.min.css"><link rel="stylesheet" type="text/css" href="/assets/fonts/ss-gizmo.min.css"><link rel="stylesheet" type="text/css" href="/assets/style.css"></head><body class="data-modelling with-toc"><header id="page-header"><nav role="navigation" class="navbar navbar-default navbar-fixed-top"><div class="container-fluid"><div class="navbar-header"><a href="https://pryv.com" title="Pryv home" class="navbar-brand logo pryv-home"><img src="/assets/images/icon-home.svg" alt="Pryv home" height="50"></a><a href="/" title="Developers home" class="navbar-brand logo"><img src="/assets/images/logo-256-black.png" alt="Developers home"></a><button type="button" data-toggle="collapse" data-target="#main-nav" class="navbar-toggle"><span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button></div><div id="main-nav" class="collapse navbar-collapse"><ul class="nav navbar-nav"><li class="dropdown"><a href="#" data-toggle="dropdown" class="dropdown-toggle">Guides <b class="caret"></b></a><ul class="dropdown-menu"><li><a href="/getting-started/">Getting started</a></li><li><a href="/concepts/">API concepts</a></li><li><a href="/guides/data-modelling/">Data modelling</a></li><li><a href="/guides/webhooks/">Webhooks</a></li><li><a href="/guides/app-guidelines/">App guidelines</a></li><li><a href="/external-resources/">External resources</a></li></ul></li><li class="dropdown"><a href="#" data-toggle="dropdown" class="dropdown-toggle">Reference <b class="caret"></b></a><ul class="dropdown-menu"><li><a href="/reference/">API reference</a></li><li><a href="/change-log/">API change log</a></li><li><a href="/event-types/">Event types</a></li><li><a href="/open-api/">Open API</a></li><!--+menuItem('standardStructure')--></ul></li><li class="dropdown"><a href="#" data-toggle="dropdown" class="dropdown-toggle">FAQ <b class="caret"></b></a><ul class="dropdown-menu"><li><a href="/faq-api/">API</a></li><li><a href="/faq-infra/">Infrastructure</a></li></ul></li><!--lia(href='#') Blog--></ul><div class="navbar-right"><p class="navbar-text version"><a href="/change-log/" title="View change log">API version: <strong>1.5.4</strong></a></p></div></div></div></nav></header><div id="main-wrapper" class="container container-narrow"><div id="main"><h1 class="page-title">Data Modelling</h1><p>In the following section, you will find all the necessary information to design your own model and implement it under Pryv&#39;s conventions.</p>
-<p>We describe two fundamental use cases : <strong>data collection</strong> to store and aggregate data from multiple data sources for a subject and <strong>consent aggregation</strong> of multiple subjects that granted permission to access their data.</p>
+<![endif]--><link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Roboto:400,300,500,700,400italic|Roboto+Condensed:400,300,700"><link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/styles/docco.min.css"><link rel="stylesheet" type="text/css" href="/assets/fonts/ss-gizmo.min.css"><link rel="stylesheet" type="text/css" href="/assets/style.css"></head><body class="data-modelling with-toc"><header id="page-header"><nav role="navigation" class="navbar navbar-default navbar-fixed-top"><div class="container-fluid"><div class="navbar-header"><a href="https://pryv.com" title="Pryv home" class="navbar-brand logo pryv-home"><img src="/assets/images/icon-home.svg" alt="Pryv home" height="50"></a><a href="/" title="Developers home" class="navbar-brand logo"><img src="/assets/images/logo-256-black.png" alt="Developers home"></a><button type="button" data-toggle="collapse" data-target="#main-nav" class="navbar-toggle"><span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button></div><div id="main-nav" class="collapse navbar-collapse"><ul class="nav navbar-nav"><li class="dropdown"><a href="#" data-toggle="dropdown" class="dropdown-toggle">Guides <b class="caret"></b></a><ul class="dropdown-menu"><li><a href="/getting-started/">Getting started</a></li><li><a href="/concepts/">API concepts</a></li><li><a href="/guides/data-modelling/">Data modelling</a></li><li><a href="/guides/webhooks/">Webhooks</a></li><li><a href="/guides/app-guidelines/">App guidelines</a></li><li><a href="/external-resources/">External resources</a></li></ul></li><li class="dropdown"><a href="#" data-toggle="dropdown" class="dropdown-toggle">Reference <b class="caret"></b></a><ul class="dropdown-menu"><li><a href="/reference/">API reference</a></li><li><a href="/change-log/">API change log</a></li><li><a href="/event-types/">Event types</a></li><li><a href="/open-api/">Open API</a></li><!--+menuItem('standardStructure')--></ul></li><li class="dropdown"><a href="#" data-toggle="dropdown" class="dropdown-toggle">FAQ <b class="caret"></b></a><ul class="dropdown-menu"><li><a href="/faq-api/">API</a></li><li><a href="/faq-infra/">Infrastructure</a></li></ul></li><!--lia(href='#') Blog--></ul><div class="navbar-right"><p class="navbar-text version"><a href="/change-log/" title="View change log">API version: <strong>1.5.4</strong></a></p></div></div></div></nav></header><div id="main-wrapper" class="container container-narrow"><div id="main"><h1 class="page-title">Data Modelling</h1><p>In the following section, you will find all the necessary information to design your own data model and implement it under Pryv&#39;s conventions.</p>
+<p>We describe two basic use cases : <strong>data collection</strong> to store and aggregate data from multiple data sources for a subject and <strong>consent aggregation</strong> of multiple subjects that granted permission to access their data.</p>
 <h3 id="data-collection">Data collection</h3>
-<p>Let&#39;s take the case of an athlete who uses four applications to store data on Pryv.io. 
-All four applications store their data in a single account:</p>
+<p>Let&#39;s say you built an algorithm that computes allergen exposure based on geolocation data from your users and integrates it to their health profile.</p>
+<p>All the different data sources store their data in the user&#39;s account:</p>
 <ul>
-<li><strong>Nutrition Mobile App</strong>: Tracks the consumption of various types of food through pictures of meals.</li>
-<li><strong>Smartwatch A</strong>: Collects the GPS position of the athlete during the training (<code>position/wgs84</code>), which represents a high volume of data.</li>
-<li><strong>Smartwatch B</strong>: Linked to the same application but only used to monitor the <code>calories burned</code> and <code>heart rate</code> during the training.</li>
-<li><strong>Pulse Oximeter</strong>: Used at home to check the health of the heart (<code>pulse rate</code>, <code>blood oxygenation / SpO2</code>)</li>
+<li><strong>Smartwatch</strong>: Collects in real-time the GPS position of the user, which represents a high volume of data.</li>
+<li><strong>Allergen Exposure Mobile App</strong>: Tracks the allergen exposure using the geolocation data from the smartwatch of the user.</li>
+<li><strong>Digital Tensiometer</strong>: Used at home to daily monitor blood pressure and added in the health profile of the user.</li>
 </ul>
 <p>Here is a list of data generated by the applications and their corresponding Pryv types :</p>
 <table>
@@ -24,162 +23,173 @@ All four applications store their data in a single account:</p>
 </thead>
 <tbody>
 <tr>
-<td style="text-align:left">Heart rate</td>
-<td style="text-align:left"><code>frequency/bpm</code></td>
-</tr>
-<tr>
-<td style="text-align:left">Blood oxygenation</td>
-<td style="text-align:left"><code>oxygen-rate/spo2</code></td>
-</tr>
-<tr>
-<td style="text-align:left">Nutrition</td>
-<td style="text-align:left"><code>picture/attached</code></td>
-</tr>
-<tr>
-<td style="text-align:left">Physical activity</td>
+<td style="text-align:left">Position</td>
 <td style="text-align:left"><code>position/wgs84</code></td>
 </tr>
 <tr>
-<td style="text-align:left">Physical activity</td>
-<td style="text-align:left"><code>energy/calories</code></td>
+<td style="text-align:left">Allergen exposure</td>
+<td style="text-align:left"><code>density/kg-m3</code></td>
+</tr>
+<tr>
+<td style="text-align:left">Blood pressure</td>
+<td style="text-align:left"><code>blood-pressure/mmhg-bpm</code></td>
 </tr>
 </tbody>
 </table>
 <p>One general advice is to use one stream or substream per device.
-Given this situation, we would recommend a stream structure similar to the following :</p>
-<p><img src="/assets/images/Data_modelling.svg" alt="Example Streams Structure"></p>
+Given this situation, we would recommend a stream structure similar to the following:</p>
+<p><img src="/assets/images/data_model_allergens.svg" alt="Example Streams Structure"></p>
 <p>This stream structure has multiple benefits:</p>
 <ul>
-<li>Provides enough context to the data and thus avoids ambiguities:<ul>
-<li>between food consumption (<code>calories ingested</code>) and physical activity (<code>calories burned</code>)</li>
-<li>between consumption of different food (<code>foodA</code>, <code>foodB</code>)</li>
+<li>Allows aggregation of data originating from different data sources</li>
+<li>Provides enough context to the data and thus avoids ambiguities</li>
+<li>Enables granular permissions to streams</li>
 </ul>
-</li>
-<li>Allows interoperability in the case of multiple devices that:<ul>
-<li>measure the same type of data through different apps (<code>heartRate</code> from <code>pulseOximeterApp</code> and <code>smartwatchB</code>)</li>
-<li>use the same app but measure different parameters (<code>smartwatchA</code> : <code>GPS position</code>, <code>smartwatchB</code> : <code>heartRate</code> and <code>calories burned</code>)</li>
-</ul>
-</li>
-</ul>
-<p>To implement it, you will first need to create the root streams <code>heart</code>, <code>blood</code>, etc and then the corresponding substreams, in which you will be able to insert the events. You can find out more on how to create streams <a href="/guides/manipulate-streams">here</a>.</p>
-<p>Alternatively, you can also do a <a href="http://api.pryv.com/reference/#call-batch">&quot;batch call&quot;</a> to create all the streams using a single API call. A batch call is recommended when you need to send a batch of API methods calls in one go (e.g. for syncing offline changes when resuming connectivity, for creating the streams structure, etc). In the property &quot;method&quot;, you define the API method that you want to call and the parameters you wish to provide it.</p>
+<p>Let&#39;s imagine now that you want doctors to provide feedback to users after consulting their health profile and allergen exposure. 
+You can easily do so by adding a new stream <code>Doctor&#39;s feedback</code> in which the doctor will be communicating with his patient.</p>
+<p>As multiple actors are involved in your process, you might need to restrict accesses to particular streams of the user&#39;s data.
+For example, you can restrict the access to the stream <code>Position</code> to the <strong>Allergen Exposure App</strong> only and the access to the stream <code>Health Profile</code> to the <strong>Doctor</strong> only, so that personal and sensitive data from the user is protected.</p>
+<p>The streams structure and accesses over it would look like the following:</p>
+<p><img src="/assets/images/data_model_allergens_doctor.svg" alt="Example Streams Structure"></p>
+<p>This structure allows you a granular level of control to accesses to the data. Different permissions can be defined for each stream and substream, therefore enabling you to share only necessary information with third-parties.<br>For example, the access you will create (see <a href="/reference/#create-access">accesses.create</a> call for more details) for the <strong>Allergen Exposure App</strong> will enable your app to <code>read</code> the geolocation data from the user and to <code>manage</code> the stream in which allergen exposure data will be added:</p>
+<pre><code class="lang-json">{
+  &quot;access&quot;: {
+    &quot;id&quot;: &quot;cka6h2b2t00065wpvubqj12xb&quot;,
+    &quot;token&quot;: &quot;cka6h2b2t00075wpvgcuy4ocn&quot;,
+    &quot;type&quot;: &quot;shared&quot;,
+    &quot;name&quot;: &quot;For Allergen Exposure App&quot;,
+    &quot;permissions&quot;: [
+      {
+        &quot;streamId&quot;: &quot;position&quot;,
+        &quot;level&quot;: &quot;read&quot;
+      },
+      {
+        &quot;streamId&quot;: &quot;allergen-exposure-app&quot;,
+        &quot;level&quot;: &quot;manage&quot;
+      }
+    ],
+</code></pre>
+<p>Available levels of permissions (<code>read</code>, <code>manage</code>, <code>contribute</code>, <code>create-only</code>) are defined and explained <a href="/reference/#access">here</a>.   </p>
+<p>A global overview of the streams and permissions structure of this use case is provided in this <a href="https://docs.google.com/spreadsheets/d/1UUb94rovSegFucEUtl9jcx4UcTAClfkKh9T2meVM5Zo/edit#gid=0">Excel template</a>. We advise you to build your own file based on this template in which you will describe your own data model depending on the use cases of your app/device.</p>
+<p>To implement this structure, you first need to create the root streams <code>smartwatch</code>, <code>allergen exposure app</code> and <code>health profile</code> and then the corresponding substreams, in which you will be able to insert the events (see <a href="/reference/#create-stream">streams.create</a> call for more details).</p>
+<p>Alternatively, you can also do a <a href="/reference/#call-batch">&quot;batch call&quot;</a> to create all the streams using a single API call. </p>
 <p>In our case :</p>
 <pre><code class="lang-json">[
   {
     &quot;method&quot;: &quot;streams.create&quot;,
     &quot;params&quot;: {
-      &quot;id&quot;: &quot;heart&quot;,
-      &quot;name&quot;: &quot;Heart&quot;
+      &quot;id&quot;: &quot;smartwatch&quot;,
+      &quot;name&quot;: &quot;Smartwatch&quot;
     }
   },
+  {
+    &quot;method&quot;: &quot;streams.create&quot;,
+    &quot;params&quot;: {
+      &quot;id&quot;: &quot;position&quot;,
+      &quot;parentId&quot;: &quot;smartwatch&quot;,
+      &quot;name&quot;: &quot;Position&quot;
+    },
+  }
     {
     &quot;method&quot;: &quot;streams.create&quot;,
     &quot;params&quot;: {
-      &quot;id&quot;: &quot;heartRate&quot;,
-      &quot;parentId&quot;: &quot;heart&quot;,
-      &quot;name&quot;: &quot;Heart Rate&quot;
+      &quot;id&quot;: &quot;allergen-exposure-app&quot;,
+      &quot;name&quot;: &quot;Allergen Exposure App&quot;
     }
   },
   {
     &quot;method&quot;: &quot;streams.create&quot;,
     &quot;params&quot;: {
-      &quot;id&quot;: &quot;pulseOximeterApp&quot;,
-      &quot;parentId&quot;: &quot;heartRate&quot;,
-      &quot;name&quot;: &quot;Pulse Oximeter Application&quot;
+      &quot;id&quot;: &quot;pollen&quot;,
+      &quot;parentId&quot;: &quot;allergen-exposure-app&quot;,
+      &quot;name&quot;: &quot;Pollen&quot;
     }
   },
   {
     &quot;method&quot;: &quot;streams.create&quot;,
     &quot;params&quot;: {
-      &quot;id&quot;: &quot;blood&quot;,
-      &quot;name&quot;: &quot;Blood&quot;
+      &quot;id&quot;: &quot;cereal-crops&quot;,
+      &quot;parentId&quot;: &quot;allergen-exposure-app&quot;,
+      &quot;name&quot;: &quot;Cereal crops&quot;
     }
   },
   {
     &quot;method&quot;: &quot;streams.create&quot;,
     &quot;params&quot;: {
-      &quot;id&quot;: &quot;bloodOxygenation&quot;,
-      &quot;parentId&quot;: &quot;blood&quot;,
-      &quot;name&quot;: &quot;Blood Oxygenation&quot;
+      &quot;id&quot;: &quot;hazelnut-tree&quot;,
+      &quot;parentId&quot;: &quot;allergen-exposure-app&quot;,
+      &quot;name&quot;: &quot;Hazelnut tree&quot;
     }
   },
   {
     &quot;method&quot;: &quot;streams.create&quot;,
     &quot;params&quot;: {
-      &quot;id&quot;: &quot;physicalActivity&quot;,
-      &quot;name&quot;: &quot;Physical Activity&quot;
+      &quot;id&quot;: &quot;health-profile&quot;,
+      &quot;name&quot;: &quot;Health Profile&quot;
     }
   },
   {
     &quot;method&quot;: &quot;streams.create&quot;,
     &quot;params&quot;: {
-      &quot;id&quot;: &quot;smartwatchA&quot;,
-      &quot;parentId&quot;: &quot;physicalActivity&quot;,
-      &quot;name&quot;: &quot;Smart Watch A&quot;
+      &quot;id&quot;: &quot;digital-tensiometer&quot;,
+      &quot;parentId&quot;: &quot;health-profile&quot;,
+      &quot;name&quot;: &quot;Digital tensiometer&quot;
     }
   },
   {
     &quot;method&quot;: &quot;streams.create&quot;,
     &quot;params&quot;: {
-      &quot;id&quot;: &quot;smartwatchB&quot;,
-      &quot;parentId&quot;: &quot;physicalActivity&quot;,
-      &quot;name&quot;: &quot;Smart Watch B&quot;
+      &quot;id&quot;: &quot;blood-pressure&quot;,
+      &quot;parentId&quot;: &quot;digital-tensiometer&quot;,
+      &quot;name&quot;: &quot;Blood pressure&quot;
     }
   },
   {
     &quot;method&quot;: &quot;streams.create&quot;,
     &quot;params&quot;: {
-      &quot;id&quot;: &quot;foodConsumption&quot;,
-      &quot;name&quot;: &quot;Food Consumption&quot;
+      &quot;id&quot;: &quot;weight&quot;,
+      &quot;parentId&quot;: &quot;health-profile&quot;,
+      &quot;name&quot;: &quot;Weight&quot;
     }
   },
   {
     &quot;method&quot;: &quot;streams.create&quot;,
     &quot;params&quot;: {
-      &quot;id&quot;: &quot;foodA&quot;,
-      &quot;parentId&quot;: &quot;foodConsumption&quot;,
-      &quot;name&quot;: &quot;Food A&quot;
+      &quot;id&quot;: &quot;doctor-feedback&quot;,
+      &quot;name&quot;: &quot;Doctor&#39;s feedback&quot;
     }
   },
   {
     &quot;method&quot;: &quot;streams.create&quot;,
     &quot;params&quot;: {
-      &quot;id&quot;: &quot;nutritionApp&quot;,
-      &quot;parentId&quot;: &quot;foodA&quot;,
-      &quot;name&quot;: &quot;Nutrition App&quot;
-    }
-  },
-  {
-    &quot;method&quot;: &quot;streams.create&quot;,
-    &quot;params&quot;: {
-      &quot;id&quot;: &quot;foodB&quot;,
-      &quot;parentId&quot;: &quot;foodConsumption&quot;,
-      &quot;name&quot;: &quot;Food B&quot;
+      &quot;id&quot;: &quot;comment&quot;,
+      &quot;parentId&quot;: &quot;doctor-feedback&quot;,
+      &quot;name&quot;: &quot;Comment&quot;
     }
   }
 ]
 </code></pre>
 <h3 id="consent-aggregation">Consent aggregation</h3>
-<p>Let&#39;s imagine now a different use case. You are conducting an Allergology Exposition research, in which you analyze the exposition of subjects to allergens by tracking their geolocation through your app.</p>
-<p>You have been collecting consent from your app users to use their data and you need to store these accesses on Pryv.io.
-You will therefore need a &quot;campaign&quot; stream structure which allows you to store the accesses for your app.</p>
+<p>Let&#39;s imagine now a slightly different use case. You are conducting an Allergology Exposition research, in which you analyze the exposition of subjects to allergens by tracking their geolocation through your app.</p>
+<p>You have been collecting consent from your app users to use their data and you need to store these accesses on Pryv.io. You will therefore need a &quot;campaign&quot; stream structure which allows you to store the accesses for your app.</p>
 <p><img src="/assets/images/Campaign.svg" alt="Example Campaign Structure"></p>
 <p>The &quot;campaign&quot; data structure will contain the following streams:</p>
-<p>The stream <strong>Campaign description</strong>, in which you will store information about the authorization you are requesting. 
-You can do a <a href="https://api.pryv.com/reference/#create-stream">streams.create</a> call with the following data:</p>
+<ul>
+<li>The stream <strong>Campaign description</strong>, in which you will store information about the authorization you are requesting. You can do a <a href="/reference/#create-stream">streams.create</a> call with the following data:</li>
+</ul>
 <pre><code class="lang-json">{
   &quot;id&quot;: &quot;campaign-description&quot;,
   &quot;name&quot;: &quot;Campaign description&quot;,
   &quot;parentId&quot;: &quot;allergology-exposition-campaign&quot;
 }
 </code></pre>
-<p>Its events will include the fields necessary to perform an <a href="https://api.pryv.com/reference/#auth-request">Auth request</a>:</p>
+<p>Its events will include the fields necessary to perform an <a href="/reference/#auth-request">Auth request</a>:</p>
 <ul>
-<li><code>requestingAppId</code>, your app&#39;s identifier that wishes to access data from the users  </li>
-<li><code>requestedPermissions</code>, containing the streams your app wants to access and their associated level of permission  </li>
+<li><code>requestingAppId</code>, your app&#39;s identifier that wishes to access data from the users</li>
+<li><code>requestedPermissions</code>, containing the streams your app wants to access and their associated level of permission</li>
 <li><code>clientData</code>, containing the consent information of your user</li>
 </ul>
-<p>You can do an <a href="https://api.pryv.com/reference/#create-event">events.create</a> call containing this information:</p>
+<p>You can do an <a href="/reference/#create-event">events.create</a> call containing this information:</p>
 <pre><code class="lang-json">{
   &quot;event&quot;: {
     &quot;id&quot;: &quot;ck9ckvwfo000vt4pvrudxci9b&quot;,
@@ -187,7 +197,7 @@ You can do a <a href="https://api.pryv.com/reference/#create-stream">streams.cre
     &quot;streamIds&quot;: [&quot;campaign-description]&quot;,
     &quot;type&quot;: &quot;campaign/auth-request&quot;,
     &quot;content&quot;: {
-      &quot;requestingAppId&quot;: &quot;test-app-id&quot;,
+      &quot;requestingAppId&quot;: &quot;allergen-exposure-app-id&quot;,
       &quot;requestedPermissions&quot;: [
       {
           &quot;streamId&quot;: &quot;geolocation&quot;,
@@ -204,8 +214,9 @@ You can do a <a href="https://api.pryv.com/reference/#create-stream">streams.cre
   }
 }
 </code></pre>
-<p>The stream <strong>Patient accesses</strong> that will store the credentials in <code>pryvApiEndpoint</code> format (see <a href="/guides/app-guidelines/">App guidelines</a>) for every subject that granted access to their data.
-You can do a <a href="/reference/#create-stream">streams.create</a> call with the following data:</p>
+<ul>
+<li>The stream <strong>Patient accesses</strong> that will store the credentials in <code>pryvApiEndpoint</code> format (see <a href="/guides/app-guidelines/">App guidelines</a>) for every subject that granted access to their data. You can do a <a href="/reference/#create-stream">streams.create</a> call with the following data:</li>
+</ul>
 <pre><code class="lang-json">{
   &quot;id&quot;: &quot;patient-accesses&quot;,
   &quot;name&quot;: &quot;Patient accesses&quot;,
@@ -224,7 +235,7 @@ You can do a <a href="/reference/#create-stream">streams.create</a> call with th
   }
 }
 </code></pre>
-<p>For this stream structure, you can create the streams one by one as explained <a href="/guides/manipulate-streams">here</a> or all in one by doing a &quot;batch call&quot; : </p>
+<p>For this stream structure, you can create the streams as explained <a href="/reference/#create-stream">here</a> or all in one by doing a &quot;batch call&quot; :</p>
 <pre><code class="lang-json">[
   {
     &quot;method&quot;: &quot;streams.create&quot;,

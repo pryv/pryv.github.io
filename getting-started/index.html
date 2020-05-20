@@ -78,36 +78,33 @@ When adding data to your account, you need to comply with Pryv&#39;s conventions
 <p>The Pryv.io data model is composed of two entities: <strong>events</strong> and <strong>streams</strong>.   </p>
 <p>All the data that you collect and aggregate should follow an organisation in streams and events. 
 Inside each stream can be found timestamped events : </p>
-<p><img src="/assets/images/Data_modelling.svg" alt="Pryv.io Data Model"></p>
+<p><img src="/assets/images/data_model_allergens.svg" alt="Pryv.io Data Model"></p>
 <h3 id="streams">Streams</h3>
 <p><strong>Streams</strong> are the main way of encoding context for events and are organised in a hierarchical way. They can have sub-streams and usually correspond to organizational levels for the user (e.g. life journal, blood pressure recording, etc.) or encode data sources (e.g. apps and/or devices).</p>
 <p><img src="/assets/images/getting-started/stream_level_1.png" alt="Stream example"></p>
-<p>Here is an example of a <strong>stream</strong> with sub-streams (children): the <strong>Pulse Oximeter App</strong> has a dedicated substream, which collects &quot;events&quot; such as the heart rate measurements.</p>
+<p>Here is an example of a <strong>stream</strong> with sub-streams (children): the <strong>Digital Tensiometer</strong> has a dedicated substream, which collects &quot;events&quot; such as the blood pressure measurements and adds them in the substream <code>blood-pressure</code>.</p>
 <pre><code class="lang-json">{
-  &quot;id&quot;: &quot;heart&quot;,
-  &quot;name&quot;: &quot;Heart&quot;,
+  &quot;id&quot;: &quot;health-profile&quot;,
+  &quot;name&quot;: &quot;Health Profile&quot;,
   &quot;parentId&quot;: null,
   &quot;created&quot;: 1528445539.785,
   &quot;createdBy&quot;: &quot;cji5os3u11ntt0b40tg0xhfea&quot;,
   &quot;modified&quot;: 1528445581.592,
   &quot;modifiedBy&quot;: &quot;cjhagb5up1b950b40xsbeh5yj&quot;,
-  &quot;clientData&quot;: {
-    &quot;pryv-browser:bgColor&quot;: &quot;#e81034&quot;
-  },
   &quot;children&quot;: [
     {
-      &quot;id&quot;: &quot;heartRate&quot;,
-      &quot;name&quot;: &quot;Heart Rate&quot;,
-      &quot;parentId&quot;: &quot;heart&quot;,
+      &quot;id&quot;: &quot;digital-tensiometer&quot;,
+      &quot;name&quot;: &quot;Digital Tensiometer&quot;,
+      &quot;parentId&quot;: &quot;health-profile&quot;,
       &quot;created&quot;: 1528445684.508,
       &quot;createdBy&quot;: &quot;cji5os3u11ntt0b40tg0xhfea&quot;,
       &quot;modified&quot;: 1528445684.508,
       &quot;modifiedBy&quot;: &quot;cji5os3u11ntt0b40tg0xhfea&quot;,
       &quot;children&quot;: [
         {
-          &quot;id&quot;: &quot;pulseOximeterApp&quot;,
-          &quot;name&quot;: &quot;Pulse Oximeter App&quot;,
-          &quot;parentId&quot;: &quot;heartRate&quot;,
+          &quot;id&quot;: &quot;blood-pressure&quot;,
+          &quot;name&quot;: &quot;Blood Pressure&quot;,
+          &quot;parentId&quot;: &quot;digital-tensiometer&quot;,
           &quot;created&quot;: 1528445704.807,
           &quot;createdBy&quot;: &quot;cji5os3u11ntt0b40tg0xhfea&quot;,
           &quot;modified&quot;: 1528445704.807,
@@ -122,69 +119,59 @@ Inside each stream can be found timestamped events : </p>
 <h3 id="events">Events</h3>
 <p><strong>Events</strong> are the primary unit of content in Pryv.io. An event is a timestamped piece of typed data, and always occurs in one stream. 
 Events either have a type from the list of <a href="/event-types/#directory"><strong>standard event types</strong></a> to allow interoperability, or an application-specific type. </p>
-<p>Our athlete will therefore be adding events of different types, each related to specific streams:</p>
-<p><img src="/assets/images/Data_modelling.svg" alt="Pryv.io Data Model"></p>
-<p>Here&#39;s an example of an event, corresponding to the heart rate collected by the Pulse Oximeter App as described in the streams structure above :</p>
+<p>Our user will therefore be adding events of different types, each related to specific streams:</p>
+<p><img src="/assets/images/data_model_allergens.svg" alt="Pryv.io Data Model"></p>
+<p>Here&#39;s an example of an event, corresponding to the blood pressure collected by the <strong>Digital Tensiometer</strong> and added in the substream <code>blood-pressure</code> as described in the streams structure above :</p>
 <pre><code class="lang-json">{
-  &quot;streamIds&quot;: [&quot;pulseOximeterApp&quot;],
-  &quot;streamId&quot;: &quot;pulseOximeterApp&quot;,
-  &quot;type&quot;: &quot;frequency/bpm&quot;,
-  &quot;content&quot;: 90,
-  &quot;time&quot;: 1528446260.693,
-  &quot;tags&quot;: [],
-  &quot;created&quot;: 1528446260.693,
-  &quot;createdBy&quot;: &quot;cji5os3u11ntt0b40tg0xhfea&quot;,
-  &quot;modified&quot;: 1528446260.693,
-  &quot;modifiedBy&quot;: &quot;cji5os3u11ntt0b40tg0xhfea&quot;,
-  &quot;id&quot;: &quot;cji5pfumt1nu90b40chlpetyp&quot;
+  &quot;id&quot;: &quot;cji5pfumt1nu90b40chlpetyp&quot;,
+  &quot;streamIds&quot;: [&quot;blood-pressure&quot;],
+  &quot;type&quot;: &quot;blood-pressure/mmhg-bpm&quot;,
+  &quot;content&quot;: {
+    &quot;systolic&quot;: 120,
+    &quot;diastolic&quot;: 80,
+    &quot;rate&quot;: 90
+  },
+  &quot;time&quot;: 1528446260.693
 }
 </code></pre>
 <p>Pryv offers the possibility to manipulate a broad range of event types that can be all found in the <a href="http://api.pryv.com/event-types/"><strong>event type directory</strong></a>. </p>
-<p>Basic event types include :</p>
+<p><strong>Basic event types</strong> include :</p>
 <ul>
-<li><a href="http://api.pryv.com/event-types/#numerical-types"><strong>numerical values</strong></a> to capture number values. For example, the type <code>count/steps</code> can be used to record the counting of objects (eggs, apples, steps etc.). In the case of our athlete, we can use this type to count the daily number of steps recorded by the smartwatch A;</li>
+<li><a href="http://api.pryv.com/event-types/#numerical-types"><strong>numerical values</strong></a> to capture number values. For example, the type <code>density/kg-m3</code> can be used to record the density of a material. In the case of our user, we can use this type to reflect the exposure to specific allergens in his daily life.</li>
 </ul>
 <pre><code class="lang-json">{
   &quot;id&quot;: &quot;c3jkdjdt000ze64d8u9z4hap&quot;,
-  &quot;streamIds&quot;: [&quot;smartwatchA&quot;],
-  &quot;streamId&quot;: &quot;smartwatchA&quot;,
-  &quot;type&quot;: &quot;count/steps&quot;,
-  &quot;content&quot;: 14972,
-  &quot;time&quot;: 1589358119.329,
-  &quot;tags&quot;: []
+  &quot;streamIds&quot;: [&quot;pollen&quot;],
+  &quot;type&quot;: &quot;density/kg-m3&quot;,
+  &quot;content&quot;: 850,
+  &quot;time&quot;: 1589358119.329
 }
 </code></pre>
 <ul>
-<li><a href="http://api.pryv.com/event-types/#complex-types"><strong>complex types</strong></a>, which will be relevant for specific activities and measurements. In the case of our athlete, the type <code>blood-pressure/bpm-mmhg</code> can be used to record a blood pressure measurement. It will represent an object, the blood pressure measurement, that has three properties : the systolic and diastolic blood pressure stored in mmHg, and the heart rate in bpm.</li>
+<li><a href="http://api.pryv.com/event-types/#complex-types"><strong>complex types</strong></a>, which will be relevant for specific activities and measurements. In the use case above, the type <code>blood-pressure/bpm-mmhg</code> can be used to record a blood pressure measurement. It will represent an object, the blood pressure measurement, that has three properties : the systolic and diastolic blood pressure stored in <strong>mmHg</strong>, and the heart rate in <strong>bpm</strong>.</li>
 </ul>
 <pre><code class="lang-json">{
   &quot;id&quot;: &quot;c4jghrjkj011ez46d8u4y3pah&quot;,
-  &quot;streamIds&quot;: [&quot;pulseOximeterApp&quot;],
-  &quot;streamId&quot;: &quot;pulseOximeterApp&quot;,
+  &quot;streamIds&quot;: [&quot;blood-pressure&quot;],
   &quot;type&quot;: &quot;blood-pressure/bpm-mmhg&quot;,
   &quot;content&quot;: {
-      &quot;systolic&quot;: 100, 
-      &quot;diastolic&quot;: 70, 
-      &quot;rate&quot;: 75
+      &quot;systolic&quot;: 120, 
+      &quot;diastolic&quot;: 80, 
+      &quot;rate&quot;: 95
       },
-  &quot;time&quot;: 1682359123.3923,
-  &quot;tags&quot;: []
+  &quot;time&quot;: 1682359123.3923
 }
 </code></pre>
 <p>More specific event types also involve :</p>
-<ul>
-<li><strong>attachments</strong> that can be added to events, for example for our athlete to post pictures of his meals in the stream <code>FoodA</code>. 
-<img src="/assets/images/getting-started/attachment_example.png" alt="Attachment"></li>
-</ul>
+<p><strong>Attachments</strong> that can be added to events, for example for our user to post pictures of his nutrition in a dedicated substream under his <code>Health Profile</code> stream. 
+<img src="/assets/images/getting-started/attachment.png" alt="Attachment"></p>
 <p>These events will have the type <code>picture/attached</code> :</p>
 <pre><code class="lang-json">{
   &quot;id&quot;: &quot;ck2bzkjdt000ze64d8u9z4pha&quot;,
-  &quot;streamIds&quot;: [&quot;foodA&quot;],
-  &quot;streamId&quot;: &quot;foodA&quot;,
+  &quot;streamIds&quot;: [&quot;nutrition&quot;],
   &quot;type&quot;: &quot;picture/attached&quot;,
   &quot;content&quot;: null,
   &quot;time&quot;: 1572358119.329,
-  &quot;tags&quot;: [],
   &quot;attachments&quot;: [
     {
       &quot;id&quot;: &quot;ck2bzkjdt000ze64d8u9z4pha&quot;,
@@ -196,25 +183,21 @@ Events either have a type from the list of <a href="/event-types/#directory"><st
   ]
 }
 </code></pre>
-<ul>
-<li><strong>high-frequency series</strong> that can be used to collect a high volume of data. This data structure, described in the <a href="http://api.pryv.com/reference/#data-structure-high-frequency-series"><strong>corresponding section</strong></a>, is used for high frequency data to resolve issues with data density. In our example, it can be used for the smartwatch A to collect GPS position in real-time of the athlete. 
-<img src="/assets/images/getting-started/hf_example.png" alt="HF"></li>
-</ul>
+<p><strong>High-frequency series</strong> that can be used to collect a high volume of data. This data structure, described in the <a href="http://api.pryv.com/reference/#data-structure-high-frequency-series"><strong>corresponding section</strong></a>, is used for high frequency data to resolve issues with data density. In our example, it can be used for the smartwatch to collect GPS position in real-time of the user. 
+<img src="/assets/images/getting-started/hf-event.png" alt="HF"></p>
 <p>This data will have the type <code>position/wgs84</code> :</p>
 <pre><code class="lang-json">{
   &quot;id&quot;: &quot;ck2klss8v00124yjx45s3jp5r&quot;,
-    &quot;time&quot;: 1572882785.023,
-    &quot;streamId&quot;: [&quot;position&quot;],
-    &quot;streamId&quot;: &quot;position&quot;,
-    &quot;tags&quot;: [],
-    &quot;type&quot;: &quot;series:position/wgs84&quot;,
-    &quot;content&quot;: {
-      &quot;elementType&quot;: &quot;position/wgs84&quot;,
-      &quot;fields&quot;: [
-        &quot;deltaTime&quot;,
-        &quot;latitude&quot;,
-        &quot;longitude&quot;
-      ],
+  &quot;time&quot;: 1572882785.023,
+  &quot;streamIds&quot;: [&quot;position&quot;],
+  &quot;type&quot;: &quot;series:position/wgs84&quot;,
+  &quot;content&quot;: {
+    &quot;elementType&quot;: &quot;position/wgs84&quot;,
+    &quot;fields&quot;: [
+      &quot;deltaTime&quot;,
+      &quot;latitude&quot;,
+      &quot;longitude&quot;
+    ],
   }
 }
 </code></pre>
@@ -225,29 +208,24 @@ Events either have a type from the list of <a href="/event-types/#directory"><st
 <p>In a previous <a href="#obtain-an-access-token">section</a>, we generated a token to be able to give access to Pryv.io user account to an app or a trusted third party of our choice. This token represents the access your application has to a user account; it only expires when the user retracts his consent. 
 This token should be stored permanently and securely in your application.</p>
 <p>Pryv.io enables you to define accesses with different levels of permissions for third-parties to interact with your data, or only particular folders of your data.</p>
-<p>Let&#39;s imagine that our athlete wants to share pictures of his meals with his nutritionist Bob, and enable his doctor Tom to check the evolution of his blood oxygenation. </p>
-<p>To do so, he needs to give permission to his nutritionist Bob to &quot;contribute&quot; to the stream <code>FoodA</code> on which the pictures of his meals are uploaded. The level &quot;contribute&quot; will enable Bob to not only view the pictures, but also add his comments as new events in the stream <code>nutritionApp</code>. </p>
-<p><img src="/assets/images/getting-started/access_bob.png" alt="Access distribution for Bob"></p>
-<p>The access for the nutritionist Bob will be created by a <code>POST</code> call on accesses (see <a href="/reference/#create-access">accesses.create</a>):</p>
-<pre><code class="lang-json">{
-  &quot;name&quot;: &quot;For Nutritionist Bob&quot;,
-  &quot;permissions&quot;: [
-    {
-      &quot;streamId&quot;: &quot;FoodA&quot;,
-      &quot;level&quot;: &quot;contribute&quot;
-    }
-  ]
-}
-</code></pre>
-<p>Similarly, the athlete will give access to the stream <code>heartRate</code> to doctor Tom on a &quot;read&quot; level for the doctor to be able to consult the evolution of his heart rate.</p>
-<p><img src="/assets/images/getting-started/access_tom.png" alt="Access distribution for Tom"></p>
-<p>This will be translated into the creation of a new read access on the stream <code>heartRate</code>(see <a href="/reference/#create-access">accesses.create</a>):</p>
+<p>Let&#39;s imagine that our user wants his doctor Tom to give him feedback on his daily allergen exposure. The streams structure will then look like the following :</p>
+<p><img src="/assets/images/data_model_allergens_doctor.svg" alt="Example with doctor feedback"></p>
+<p>To do so, he needs to give permission to the doctor Tom to &quot;read&quot; the data from the stream <code>Allergen exposure App</code> and to &quot;manage&quot; the streams <code>Doctor&#39;s feedback</code> in which he will be adding his feedback, and <code>Health Profile</code> in which he will record events related to his patient&#39;s health. The level &quot;manage&quot; will enable Tom to fully control the stream and to add his comments as new events in the stream <code>Comment</code>. </p>
+<p>The access for doctor Tom will be created by a <code>POST</code> call on accesses (see <a href="/reference/#create-access">accesses.create</a>):</p>
 <pre><code class="lang-json">{
   &quot;name&quot;: &quot;For Doctor Tom&quot;,
   &quot;permissions&quot;: [
     {
-      &quot;streamId&quot;: &quot;heartRate&quot;,
+      &quot;streamId&quot;: &quot;allergen-exposure-app&quot;,
       &quot;level&quot;: &quot;read&quot;
+    },
+    {
+      &quot;streamId&quot;: &quot;health-profile&quot;,
+      &quot;level&quot;: &quot;manage&quot;
+    },
+    {
+      &quot;streamId&quot;: &quot;doctor-feedback&quot;,
+      &quot;level&quot;: &quot;manage&quot;
     }
   ]
 }
@@ -259,6 +237,7 @@ This token should be stored permanently and securely in your application.</p>
 <li><code>read</code>: Enables users to view the stream and its contents (sub-streams and events).</li>
 <li><code>contribute</code>: Enables users to contribute to one or multiple events of the stream. Cannot create, update, delete and move streams.</li>
 <li><code>manage</code>: Enables users to fully control the stream. Can create, update, delete and move the stream.</li>
+<li><code>create-only</code>: Enables users to read the stream and create events on it and its children.</li>
 </ul>
 <p>A more exhaustive explanation of the concept of &quot;Access&quot; and the different &quot;levels&quot; of permissions can be found in the <a href="http://api.pryv.com/reference/#access">API reference</a>.</p>
 <h1 id="what-next-">What Next?</h1>
