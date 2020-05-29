@@ -46,7 +46,7 @@ Authorization: {token}
 </code></pre></div></div><aside><div class="example"><p>In a web app</p>
 <pre><code class="lang-html">&lt;script src=&quot;https://chuangzi.pryv.me/socket.io/socket.io.js&quot;&gt;&lt;/script&gt;
 &lt;script&gt;
-var socket = io.connect(&quot;https://chuangzi.pryv.me:443/chuangzi?auth=ckapcmx0l0003hrpvolqt3u8n&amp;resource=/chuangzi&quot;);
+var socket = io.connect(&quot;https://chuangzi.pryv.me:443/chuangzi?auth=ckas82m2400038vpvmb7enlqa&amp;resource=/chuangzi&quot;);
 });
 &lt;/script&gt;
 </code></pre>
@@ -74,7 +74,9 @@ Available messages are: </p>
 <li><code>accessesChanged</code></li>
 <li><code>systemBoot</code> (webhooks only)</li>
 </ul>
-<p>Messages describe what type of resource has been changed (created, updated or deleted). It does not include the contents of the change, which must be retrieved through the API using a valid access token.<br>The <code>systemBoot</code> message is executed when the notifications system is started in order to query possibly missed data changes.</p>
+<p>Messages do not include the content of the changes, but they describe what type of resource has been changed (created, updated or deleted).
+They inform the server that it needs to fetch new or updated data through the API by doing a HTTP GET request with a valid access token. 
+The <code>systemBoot</code> message is executed when the notifications system is started in order to query possibly missed data changes.</p>
 </div></div><!-- it's either:--><!-- !trusted & !preview--><!-- !preview & -full--><!-- -preview--><section id="basics-subscribe-to-changes-with-websockets"> <h3 id="with-websockets">With websockets</h3>
 <div class="content"><div class="meta"></div><div class="intro"><p>Get notified of data changes in a web application using websockets.</p>
 </div></div><aside><div class="example"><p>Subscribe to events changes (Javascript)</p>
@@ -93,7 +95,7 @@ Available messages are: </p>
   &quot;meta&quot;: {
     &quot;apiVersion&quot;: &quot;1.4.11&quot;,
     &quot;serial&quot;: &quot;20190802&quot;,
-    &quot;serverTime&quot;: 1590583984.391
+    &quot;serverTime&quot;: 1590757717.141
   }
 }
 </code></pre>
@@ -161,7 +163,7 @@ API-Version: 1.5.4
 <div class="content"><div class="meta"></div><div class="intro"><p>The API exchanges data with clients in JSON (MIME type <code>application/json</code>), except when uploading/downloading attached files.</p>
 </div></div><aside><div class="example"><p>Example event</p>
 <pre><code>{
-  "id": "ckapcmx250013hrpvwhrhicqc",
+  "id": "ckas82m3t00138vpvnhtbjjp3",
   "time": 1350373077.359,
   "streamIds": [
     "diary"
@@ -173,10 +175,10 @@ API-Version: 1.5.4
     "latitude": 40.714728,
     "longitude": -73.998672
   },
-  "created": 1590576784.349,
-  "createdBy": "ckapcmx0k0000hrpvgznk9zwc",
-  "modified": 1590576784.349,
-  "modifiedBy": "ckapcmx0k0000hrpvgznk9zwc"
+  "created": 1590750517.097,
+  "createdBy": "ckas82m2300008vpv21u021zi",
+  "modified": 1590750517.097,
+  "modifiedBy": "ckas82m2300008vpv21u021zi"
 }</code></pre></div></aside></section><!-- it's either:--><!-- !trusted & !preview--><!-- !preview & -full--><!-- -preview--><section id="basics-authentication"><h2 id="authentication">Authentication</h2>
 <div class="content"><div class="meta"></div><div class="intro"><p>All requests for retrieving and manipulating activity data must carry a valid <a href="#data-structure-access">access token</a>. 
 The preferred method is to use the HTTP <code>Authorization</code> header. </p>
@@ -382,7 +384,7 @@ Only present if a valid access token has been provided.</p>
 <pre><code>{
   "apiVersion": "1.5.4",
   "serial": "20190428",
-  "time": 1590583984.381
+  "time": 1590757717.131
 }</code></pre></div></aside></section></section><!-- it's either:--><!-- !trusted & !preview--><!-- !preview & -full--><!-- -preview--><section id="basics-errors"><h2 id="errors">Errors</h2>
 <div class="content"><div class="meta"></div><div class="intro"><p>When an error occurs, the API returns a response with an <code>error</code> object (see <a href="#data-structure-error">error</a> detailing the cause. (Over HTTP, the response status is set to 4xx or 5xx.) In this documentation, errors are identified by their <code>id</code>.</p>
 </div></div><aside><div class="example"><pre><code>{
@@ -417,25 +419,25 @@ Only present if a valid access token has been provided.</p>
   "password": "B|_|tt3rfly!",
   "appId": "my-app-id"
 }</code></pre><div class="step-marker">⬇</div><pre><code>{
-  "token": "ckapcmx0l0002hrpv2qyeyrpj",
+  "token": "ckas82m2300028vpvr3a3haz0",
   "preferredLanguage": "zh"
 }</code></pre></div><div class="tab-pane http"><pre><code>curl -i -X POST -H 'Origin: https://sw.pryv.me' -H 'Content-Type: application/json' -d '{"username":"chuangzi","password":"B|_|tt3rfly!","appId":"my-app-id"}' "https://${username}.pryv.me/auth/login"</code></pre><div class="step-marker">⬇</div><pre><code>HTTP/1.1 200 OK
 Content-Type: application/json; charset=utf-8
 API-Version: 1.5.4
 
 {
-  "token": "ckapcmx0l0002hrpv2qyeyrpj",
+  "token": "ckas82m2300028vpvr3a3haz0",
   "preferredLanguage": "zh"
 }
 </code></pre></div><div class="tab-pane sockets"><pre><code>socket.emit('auth.login', {"username":"chuangzi","password":"B|_|tt3rfly!","appId":"my-app-id"}, callback);</code></pre><div class="step-marker">⬇</div><pre><code>{
-  "token": "ckapcmx0l0002hrpv2qyeyrpj",
+  "token": "ckas82m2300028vpvr3a3haz0",
   "preferredLanguage": "zh"
 }</code></pre></div><div class="tab-pane httpAuth"><pre><code>curl -i -X POST -H 'Origin: https://sw.pryv.me' -H 'Content-Type: application/json' -d '{"username":"chuangzi","password":"B|_|tt3rfly!","appId":"my-app-id"}' "https://${username}.pryv.me/auth/login"</code></pre><div class="step-marker">⬇</div><pre><code>HTTP/1.1 200 OK
 Content-Type: application/json; charset=utf-8
 API-Version: 1.5.4
 
 {
-  "token": "ckapcmx0l0002hrpv2qyeyrpj",
+  "token": "ckas82m2300028vpvr3a3haz0",
   "preferredLanguage": "zh"
 }
 </code></pre></div></div></div></aside></section><!-- it's either:--><!-- !trusted & !preview--><!-- !preview & -full--><!-- -preview--><section id="methods-auth-auth-logout" class="method"> <h3 id="logout-user">Logout user</h3>
@@ -595,22 +597,22 @@ API-Version: 1.5.4
 <div class="tab-content"><div class="tab-pane json active"><pre><code>{
   "code": "1234"
 }</code></pre><div class="step-marker">⬇</div><pre><code>{
-  "token": "ckapcmx0l0002hrpv2qyeyrpj"
+  "token": "ckas82m2300028vpvr3a3haz0"
 }</code></pre></div><div class="tab-pane http"><pre><code>curl -i -X POST -H 'Content-Type: application/json' -d '{"code":"1234"}' "https://${token}@${username}.pryv.me/mfa/verify"</code></pre><div class="step-marker">⬇</div><pre><code>HTTP/1.1 200 OK
 Content-Type: application/json; charset=utf-8
 API-Version: 1.5.4
 
 {
-  "token": "ckapcmx0l0002hrpv2qyeyrpj"
+  "token": "ckas82m2300028vpvr3a3haz0"
 }
 </code></pre></div><div class="tab-pane sockets"><pre><code>socket.emit('mfa.verify', {"code":"1234"}, callback);</code></pre><div class="step-marker">⬇</div><pre><code>{
-  "token": "ckapcmx0l0002hrpv2qyeyrpj"
+  "token": "ckas82m2300028vpvr3a3haz0"
 }</code></pre></div><div class="tab-pane httpAuth"><pre><code>curl -i -X POST -H 'Content-Type: application/json' -d '{"code":"1234"}' "https://${username}.pryv.me/mfa/verify?auth=${token}"</code></pre><div class="step-marker">⬇</div><pre><code>HTTP/1.1 200 OK
 Content-Type: application/json; charset=utf-8
 API-Version: 1.5.4
 
 {
-  "token": "ckapcmx0l0002hrpv2qyeyrpj"
+  "token": "ckas82m2300028vpvr3a3haz0"
 }
 </code></pre></div></div></div></aside></section><!-- it's either:--><!-- !trusted & !preview--><!-- !preview & -full--><!-- -preview--><section id="methods-mfa-mfa-deactivate" class="method"> <h3 id="deactivate-mfa">Deactivate MFA</h3>
 <div class="content"><div class="meta"><span class="method-id"><span class="label">id</span><span class="label-value"><code>mfa.deactivate</code></span></span><span class="http"><span class="label">HTTP</span><span class="label-value"><code>POST /mfa/deactivate</code></span></span></div><div class="intro"><p>Deactivate MFA for a given Pryv.io user.</p>
@@ -679,8 +681,8 @@ Please use streamIds instead.</p>
 <div class="tab-content"><div class="tab-pane json active"><pre><code>{}</code></pre><div class="step-marker">⬇</div><pre><code>{
   "events": [
     {
-      "id": "ckapcmx250010hrpvx64g7a2l",
-      "time": 1590580384.349,
+      "id": "ckas82m3t00108vpvfvg9jxkv",
+      "time": 1590754117.097,
       "streamIds": [
         "diary"
       ],
@@ -690,21 +692,21 @@ Please use streamIds instead.</p>
       "content": null,
       "attachments": [
         {
-          "id": "ckapcmx250011hrpvbh8p7621",
+          "id": "ckas82m3t00118vpvzbazg4zs",
           "fileName": "photo.jpg",
           "type": "image/jpeg",
           "size": 2561,
-          "readToken": "ckapcmx250012hrpv2zpf0ged-OIkPU5YTYPWgaf30ijGckfteroo"
+          "readToken": "ckas82m3t00128vpvm9c3a4xj-5oGuVQTuRjsR6KHu902iuXtnKKf"
         }
       ],
-      "created": 1590580384.349,
-      "createdBy": "ckapcmx0l0004hrpv636r3ms0",
-      "modified": 1590580384.349,
-      "modifiedBy": "ckapcmx0l0004hrpv636r3ms0"
+      "created": 1590754117.097,
+      "createdBy": "ckas82m2400048vpv2h6x79gq",
+      "modified": 1590754117.097,
+      "modifiedBy": "ckas82m2400048vpv2h6x79gq"
     },
     {
-      "id": "ckapcmx25000nhrpv5ig47ud9",
-      "time": 1590583984.349,
+      "id": "ckas82m3t000n8vpvero8eyc2",
+      "time": 1590757717.097,
       "streamIds": [
         "jogging"
       ],
@@ -712,13 +714,13 @@ Please use streamIds instead.</p>
       "tags": [],
       "type": "activity/pryv",
       "content": null,
-      "created": 1590583984.349,
-      "createdBy": "ckapcmx0l0001hrpvpgjpdplt",
-      "modified": 1590583984.349,
-      "modifiedBy": "ckapcmx0l0001hrpvpgjpdplt"
+      "created": 1590757717.097,
+      "createdBy": "ckas82m2300018vpvn8vg4lfj",
+      "modified": 1590757717.097,
+      "modifiedBy": "ckas82m2300018vpvn8vg4lfj"
     },
     {
-      "id": "ckapcmx250013hrpvwhrhicqc",
+      "id": "ckas82m3t00138vpvnhtbjjp3",
       "time": 1350373077.359,
       "streamIds": [
         "diary"
@@ -730,10 +732,10 @@ Please use streamIds instead.</p>
         "latitude": 40.714728,
         "longitude": -73.998672
       },
-      "created": 1590576784.349,
-      "createdBy": "ckapcmx0k0000hrpvgznk9zwc",
-      "modified": 1590576784.349,
-      "modifiedBy": "ckapcmx0k0000hrpvgznk9zwc"
+      "created": 1590750517.097,
+      "createdBy": "ckas82m2300008vpv21u021zi",
+      "modified": 1590750517.097,
+      "modifiedBy": "ckas82m2300008vpv21u021zi"
     }
   ]
 }</code></pre></div><div class="tab-pane http"><pre><code>curl -i "https://${token}@${username}.pryv.me/events"</code></pre><div class="step-marker">⬇</div><pre><code>HTTP/1.1 200 OK
@@ -743,8 +745,8 @@ API-Version: 1.5.4
 {
   "events": [
     {
-      "id": "ckapcmx250010hrpvx64g7a2l",
-      "time": 1590580384.349,
+      "id": "ckas82m3t00108vpvfvg9jxkv",
+      "time": 1590754117.097,
       "streamIds": [
         "diary"
       ],
@@ -754,21 +756,21 @@ API-Version: 1.5.4
       "content": null,
       "attachments": [
         {
-          "id": "ckapcmx250011hrpvbh8p7621",
+          "id": "ckas82m3t00118vpvzbazg4zs",
           "fileName": "photo.jpg",
           "type": "image/jpeg",
           "size": 2561,
-          "readToken": "ckapcmx250012hrpv2zpf0ged-OIkPU5YTYPWgaf30ijGckfteroo"
+          "readToken": "ckas82m3t00128vpvm9c3a4xj-5oGuVQTuRjsR6KHu902iuXtnKKf"
         }
       ],
-      "created": 1590580384.349,
-      "createdBy": "ckapcmx0l0004hrpv636r3ms0",
-      "modified": 1590580384.349,
-      "modifiedBy": "ckapcmx0l0004hrpv636r3ms0"
+      "created": 1590754117.097,
+      "createdBy": "ckas82m2400048vpv2h6x79gq",
+      "modified": 1590754117.097,
+      "modifiedBy": "ckas82m2400048vpv2h6x79gq"
     },
     {
-      "id": "ckapcmx25000nhrpv5ig47ud9",
-      "time": 1590583984.349,
+      "id": "ckas82m3t000n8vpvero8eyc2",
+      "time": 1590757717.097,
       "streamIds": [
         "jogging"
       ],
@@ -776,13 +778,13 @@ API-Version: 1.5.4
       "tags": [],
       "type": "activity/pryv",
       "content": null,
-      "created": 1590583984.349,
-      "createdBy": "ckapcmx0l0001hrpvpgjpdplt",
-      "modified": 1590583984.349,
-      "modifiedBy": "ckapcmx0l0001hrpvpgjpdplt"
+      "created": 1590757717.097,
+      "createdBy": "ckas82m2300018vpvn8vg4lfj",
+      "modified": 1590757717.097,
+      "modifiedBy": "ckas82m2300018vpvn8vg4lfj"
     },
     {
-      "id": "ckapcmx250013hrpvwhrhicqc",
+      "id": "ckas82m3t00138vpvnhtbjjp3",
       "time": 1350373077.359,
       "streamIds": [
         "diary"
@@ -794,18 +796,18 @@ API-Version: 1.5.4
         "latitude": 40.714728,
         "longitude": -73.998672
       },
-      "created": 1590576784.349,
-      "createdBy": "ckapcmx0k0000hrpvgznk9zwc",
-      "modified": 1590576784.349,
-      "modifiedBy": "ckapcmx0k0000hrpvgznk9zwc"
+      "created": 1590750517.097,
+      "createdBy": "ckas82m2300008vpv21u021zi",
+      "modified": 1590750517.097,
+      "modifiedBy": "ckas82m2300008vpv21u021zi"
     }
   ]
 }
 </code></pre></div><div class="tab-pane sockets"><pre><code>socket.emit('events.get', {}, callback);</code></pre><div class="step-marker">⬇</div><pre><code>{
   "events": [
     {
-      "id": "ckapcmx250010hrpvx64g7a2l",
-      "time": 1590580384.349,
+      "id": "ckas82m3t00108vpvfvg9jxkv",
+      "time": 1590754117.097,
       "streamIds": [
         "diary"
       ],
@@ -815,21 +817,21 @@ API-Version: 1.5.4
       "content": null,
       "attachments": [
         {
-          "id": "ckapcmx250011hrpvbh8p7621",
+          "id": "ckas82m3t00118vpvzbazg4zs",
           "fileName": "photo.jpg",
           "type": "image/jpeg",
           "size": 2561,
-          "readToken": "ckapcmx250012hrpv2zpf0ged-OIkPU5YTYPWgaf30ijGckfteroo"
+          "readToken": "ckas82m3t00128vpvm9c3a4xj-5oGuVQTuRjsR6KHu902iuXtnKKf"
         }
       ],
-      "created": 1590580384.349,
-      "createdBy": "ckapcmx0l0004hrpv636r3ms0",
-      "modified": 1590580384.349,
-      "modifiedBy": "ckapcmx0l0004hrpv636r3ms0"
+      "created": 1590754117.097,
+      "createdBy": "ckas82m2400048vpv2h6x79gq",
+      "modified": 1590754117.097,
+      "modifiedBy": "ckas82m2400048vpv2h6x79gq"
     },
     {
-      "id": "ckapcmx25000nhrpv5ig47ud9",
-      "time": 1590583984.349,
+      "id": "ckas82m3t000n8vpvero8eyc2",
+      "time": 1590757717.097,
       "streamIds": [
         "jogging"
       ],
@@ -837,13 +839,13 @@ API-Version: 1.5.4
       "tags": [],
       "type": "activity/pryv",
       "content": null,
-      "created": 1590583984.349,
-      "createdBy": "ckapcmx0l0001hrpvpgjpdplt",
-      "modified": 1590583984.349,
-      "modifiedBy": "ckapcmx0l0001hrpvpgjpdplt"
+      "created": 1590757717.097,
+      "createdBy": "ckas82m2300018vpvn8vg4lfj",
+      "modified": 1590757717.097,
+      "modifiedBy": "ckas82m2300018vpvn8vg4lfj"
     },
     {
-      "id": "ckapcmx250013hrpvwhrhicqc",
+      "id": "ckas82m3t00138vpvnhtbjjp3",
       "time": 1350373077.359,
       "streamIds": [
         "diary"
@@ -855,10 +857,10 @@ API-Version: 1.5.4
         "latitude": 40.714728,
         "longitude": -73.998672
       },
-      "created": 1590576784.349,
-      "createdBy": "ckapcmx0k0000hrpvgznk9zwc",
-      "modified": 1590576784.349,
-      "modifiedBy": "ckapcmx0k0000hrpvgznk9zwc"
+      "created": 1590750517.097,
+      "createdBy": "ckas82m2300008vpv21u021zi",
+      "modified": 1590750517.097,
+      "modifiedBy": "ckas82m2300008vpv21u021zi"
     }
   ]
 }</code></pre></div><div class="tab-pane httpAuth"><pre><code>curl -i "https://${username}.pryv.me/events?auth=${token}"</code></pre><div class="step-marker">⬇</div><pre><code>HTTP/1.1 200 OK
@@ -868,8 +870,8 @@ API-Version: 1.5.4
 {
   "events": [
     {
-      "id": "ckapcmx250010hrpvx64g7a2l",
-      "time": 1590580384.349,
+      "id": "ckas82m3t00108vpvfvg9jxkv",
+      "time": 1590754117.097,
       "streamIds": [
         "diary"
       ],
@@ -879,21 +881,21 @@ API-Version: 1.5.4
       "content": null,
       "attachments": [
         {
-          "id": "ckapcmx250011hrpvbh8p7621",
+          "id": "ckas82m3t00118vpvzbazg4zs",
           "fileName": "photo.jpg",
           "type": "image/jpeg",
           "size": 2561,
-          "readToken": "ckapcmx250012hrpv2zpf0ged-OIkPU5YTYPWgaf30ijGckfteroo"
+          "readToken": "ckas82m3t00128vpvm9c3a4xj-5oGuVQTuRjsR6KHu902iuXtnKKf"
         }
       ],
-      "created": 1590580384.349,
-      "createdBy": "ckapcmx0l0004hrpv636r3ms0",
-      "modified": 1590580384.349,
-      "modifiedBy": "ckapcmx0l0004hrpv636r3ms0"
+      "created": 1590754117.097,
+      "createdBy": "ckas82m2400048vpv2h6x79gq",
+      "modified": 1590754117.097,
+      "modifiedBy": "ckas82m2400048vpv2h6x79gq"
     },
     {
-      "id": "ckapcmx25000nhrpv5ig47ud9",
-      "time": 1590583984.349,
+      "id": "ckas82m3t000n8vpvero8eyc2",
+      "time": 1590757717.097,
       "streamIds": [
         "jogging"
       ],
@@ -901,13 +903,13 @@ API-Version: 1.5.4
       "tags": [],
       "type": "activity/pryv",
       "content": null,
-      "created": 1590583984.349,
-      "createdBy": "ckapcmx0l0001hrpvpgjpdplt",
-      "modified": 1590583984.349,
-      "modifiedBy": "ckapcmx0l0001hrpvpgjpdplt"
+      "created": 1590757717.097,
+      "createdBy": "ckas82m2300018vpvn8vg4lfj",
+      "modified": 1590757717.097,
+      "modifiedBy": "ckas82m2300018vpvn8vg4lfj"
     },
     {
-      "id": "ckapcmx250013hrpvwhrhicqc",
+      "id": "ckas82m3t00138vpvnhtbjjp3",
       "time": 1350373077.359,
       "streamIds": [
         "diary"
@@ -919,10 +921,10 @@ API-Version: 1.5.4
         "latitude": 40.714728,
         "longitude": -73.998672
       },
-      "created": 1590576784.349,
-      "createdBy": "ckapcmx0k0000hrpvgznk9zwc",
-      "modified": 1590576784.349,
-      "modifiedBy": "ckapcmx0k0000hrpvgznk9zwc"
+      "created": 1590750517.097,
+      "createdBy": "ckas82m2300008vpv21u021zi",
+      "modified": 1590750517.097,
+      "modifiedBy": "ckas82m2300008vpv21u021zi"
     }
   ]
 }
@@ -932,8 +934,8 @@ API-Version: 1.5.4
 <div class="step-marker">⬇</div><pre><code>{
   "events": [
     {
-      "id": "ckapcmx250010hrpvx64g7a2l",
-      "time": 1590580384.349,
+      "id": "ckas82m3t00108vpvfvg9jxkv",
+      "time": 1590754117.097,
       "streamIds": [
         "diary"
       ],
@@ -943,21 +945,21 @@ API-Version: 1.5.4
       "content": null,
       "attachments": [
         {
-          "id": "ckapcmx250011hrpvbh8p7621",
+          "id": "ckas82m3t00118vpvzbazg4zs",
           "fileName": "photo.jpg",
           "type": "image/jpeg",
           "size": 2561,
-          "readToken": "ckapcmx250012hrpv2zpf0ged-OIkPU5YTYPWgaf30ijGckfteroo"
+          "readToken": "ckas82m3t00128vpvm9c3a4xj-5oGuVQTuRjsR6KHu902iuXtnKKf"
         }
       ],
-      "created": 1590580384.349,
-      "createdBy": "ckapcmx0l0004hrpv636r3ms0",
-      "modified": 1590580384.349,
-      "modifiedBy": "ckapcmx0l0004hrpv636r3ms0"
+      "created": 1590754117.097,
+      "createdBy": "ckas82m2400048vpv2h6x79gq",
+      "modified": 1590754117.097,
+      "modifiedBy": "ckas82m2400048vpv2h6x79gq"
     },
     {
-      "id": "ckapcmx25000whrpvoknyq3ro",
-      "time": 1590580384.349,
+      "id": "ckas82m3t000w8vpvj7a0xduv",
+      "time": 1590754117.097,
       "streamIds": [
         "diary"
       ],
@@ -965,13 +967,13 @@ API-Version: 1.5.4
       "tags": [],
       "type": "note/text",
       "content": "道可道非常道。。。",
-      "created": 1590580384.349,
-      "createdBy": "ckapcmx0l0001hrpvpgjpdplt",
-      "modified": 1590619984.349,
-      "modifiedBy": "ckapcmx0l0001hrpvpgjpdplt"
+      "created": 1590754117.097,
+      "createdBy": "ckas82m2300018vpvn8vg4lfj",
+      "modified": 1590793717.097,
+      "modifiedBy": "ckas82m2300018vpvn8vg4lfj"
     },
     {
-      "id": "ckapcmx250013hrpvwhrhicqc",
+      "id": "ckas82m3t00138vpvnhtbjjp3",
       "time": 1350373077.359,
       "streamIds": [
         "diary"
@@ -983,14 +985,14 @@ API-Version: 1.5.4
         "latitude": 40.714728,
         "longitude": -73.998672
       },
-      "created": 1590576784.349,
-      "createdBy": "ckapcmx0k0000hrpvgznk9zwc",
-      "modified": 1590576784.349,
-      "modifiedBy": "ckapcmx0k0000hrpvgznk9zwc"
+      "created": 1590750517.097,
+      "createdBy": "ckas82m2300008vpv21u021zi",
+      "modified": 1590750517.097,
+      "modifiedBy": "ckas82m2300008vpv21u021zi"
     },
     {
-      "id": "ckapcmx25000vhrpvpyerqqzf",
-      "time": 1590583984.349,
+      "id": "ckas82m3t000v8vpvribb8k9b",
+      "time": 1590757717.097,
       "streamIds": [
         "weight"
       ],
@@ -998,20 +1000,20 @@ API-Version: 1.5.4
       "tags": [],
       "type": "mass/kg",
       "content": 90,
-      "created": 1590583984.349,
-      "createdBy": "ckapcmx0l0001hrpvpgjpdplt",
-      "modified": 1590583984.349,
-      "modifiedBy": "ckapcmx0l0001hrpvpgjpdplt"
+      "created": 1590757717.097,
+      "createdBy": "ckas82m2300018vpvn8vg4lfj",
+      "modified": 1590757717.097,
+      "modifiedBy": "ckas82m2300018vpvn8vg4lfj"
     }
   ]
 }</code></pre></div><div class="example"><p>cURL with deletions</p>
-<pre><code class="lang-bash">curl -i &quot;https://${token}@${username}.pryv.me/events?includeDeletions=true&amp;modifiedSince=1590497584.582&quot;&quot;
+<pre><code class="lang-bash">curl -i &quot;https://${token}@${username}.pryv.me/events?includeDeletions=true&amp;modifiedSince=1590671317.319&quot;&quot;
 </code></pre>
 <div class="step-marker">⬇</div><pre><code>{
   "events": [
     {
-      "id": "ckapcmx25000vhrpvpyerqqzf",
-      "time": 1590583984.349,
+      "id": "ckas82m3t000v8vpvribb8k9b",
+      "time": 1590757717.097,
       "streamIds": [
         "weight"
       ],
@@ -1019,24 +1021,24 @@ API-Version: 1.5.4
       "tags": [],
       "type": "mass/kg",
       "content": 90,
-      "created": 1590583984.349,
-      "createdBy": "ckapcmx0l0001hrpvpgjpdplt",
-      "modified": 1590583984.349,
-      "modifiedBy": "ckapcmx0l0001hrpvpgjpdplt"
+      "created": 1590757717.097,
+      "createdBy": "ckas82m2300018vpvn8vg4lfj",
+      "modified": 1590757717.097,
+      "modifiedBy": "ckas82m2300018vpvn8vg4lfj"
     }
   ],
   "eventDeletions": [
     {
-      "id": "ckapcmx2f001bhrpv2nknax0g",
-      "deleted": 1590580384.359
+      "id": "ckas82m45001b8vpvww4m2uh7",
+      "deleted": 1590754117.109
     },
     {
-      "id": "ckapcmx2f001chrpvex5nq9me",
-      "deleted": 1590547984.359
+      "id": "ckas82m45001c8vpv9qs0qezw",
+      "deleted": 1590721717.109
     },
     {
-      "id": "ckapcmx2f001dhrpvybvg3cw5",
-      "deleted": 1590511984.359
+      "id": "ckas82m45001d8vpvb6e4n6og",
+      "deleted": 1590685717.109
     }
   ]
 }</code></pre></div></aside></section><!-- it's either:--><!-- !trusted & !preview--><!-- !preview & -full--><!-- -preview--><section id="methods-events-events-getOne" class="method"> <h3 id="get-one-event">Get one event</h3>
@@ -1051,8 +1053,8 @@ API-Version: 1.5.4
   "includeHistory": true
 }</code></pre><div class="step-marker">⬇</div><pre><code>{
   "event": {
-    "id": "ckapcmx25000xhrpvjglfjfhs",
-    "time": 1590580384.349,
+    "id": "ckas82m3t000x8vpvirqtc7o4",
+    "time": 1590754117.097,
     "streamIds": [
       "diary"
     ],
@@ -1060,15 +1062,15 @@ API-Version: 1.5.4
     "tags": [],
     "type": "note/text",
     "content": "Hi, I am the latest version of this event",
-    "created": 1590580384.349,
-    "createdBy": "ckapcmx0l0001hrpvpgjpdplt",
-    "modified": 1590591184.349,
-    "modifiedBy": "ckapcmx0l0001hrpvpgjpdplt"
+    "created": 1590754117.097,
+    "createdBy": "ckas82m2300018vpvn8vg4lfj",
+    "modified": 1590764917.097,
+    "modifiedBy": "ckas82m2300018vpvn8vg4lfj"
   },
   "history": [
     {
-      "id": "ckapcmx25000yhrpvmpgwgh87",
-      "time": 1590580384.349,
+      "id": "ckas82m3t000y8vpvyvc86zw6",
+      "time": 1590754117.097,
       "streamIds": [
         "diary"
       ],
@@ -1076,14 +1078,14 @@ API-Version: 1.5.4
       "tags": [],
       "type": "note/text",
       "content": "Hi, I am the first modification",
-      "created": 1590580384.349,
-      "createdBy": "ckapcmx0l0001hrpvpgjpdplt",
-      "modified": 1590587584.349,
-      "modifiedBy": "ckapcmx0l0001hrpvpgjpdplt"
+      "created": 1590754117.097,
+      "createdBy": "ckas82m2300018vpvn8vg4lfj",
+      "modified": 1590761317.097,
+      "modifiedBy": "ckas82m2300018vpvn8vg4lfj"
     },
     {
-      "id": "ckapcmx25000zhrpvchjhaqsi",
-      "time": 1590580384.349,
+      "id": "ckas82m3t000z8vpvs5tk0hn3",
+      "time": 1590754117.097,
       "streamIds": [
         "diary"
       ],
@@ -1091,10 +1093,10 @@ API-Version: 1.5.4
       "tags": [],
       "type": "note/text",
       "content": "Hi, I was the initial event",
-      "created": 1590580384.349,
-      "createdBy": "ckapcmx0l0001hrpvpgjpdplt",
-      "modified": 1590583984.349,
-      "modifiedBy": "ckapcmx0l0001hrpvpgjpdplt"
+      "created": 1590754117.097,
+      "createdBy": "ckas82m2300018vpvn8vg4lfj",
+      "modified": 1590757717.097,
+      "modifiedBy": "ckas82m2300018vpvn8vg4lfj"
     }
   ]
 }</code></pre></div><div class="tab-pane http"><pre><code>curl -i "https://${token}@${username}.pryv.me/events/${id}&includeHistory=true"</code></pre><div class="step-marker">⬇</div><pre><code>HTTP/1.1 200 OK
@@ -1103,8 +1105,8 @@ API-Version: 1.5.4
 
 {
   "event": {
-    "id": "ckapcmx25000xhrpvjglfjfhs",
-    "time": 1590580384.349,
+    "id": "ckas82m3t000x8vpvirqtc7o4",
+    "time": 1590754117.097,
     "streamIds": [
       "diary"
     ],
@@ -1112,15 +1114,15 @@ API-Version: 1.5.4
     "tags": [],
     "type": "note/text",
     "content": "Hi, I am the latest version of this event",
-    "created": 1590580384.349,
-    "createdBy": "ckapcmx0l0001hrpvpgjpdplt",
-    "modified": 1590591184.349,
-    "modifiedBy": "ckapcmx0l0001hrpvpgjpdplt"
+    "created": 1590754117.097,
+    "createdBy": "ckas82m2300018vpvn8vg4lfj",
+    "modified": 1590764917.097,
+    "modifiedBy": "ckas82m2300018vpvn8vg4lfj"
   },
   "history": [
     {
-      "id": "ckapcmx25000yhrpvmpgwgh87",
-      "time": 1590580384.349,
+      "id": "ckas82m3t000y8vpvyvc86zw6",
+      "time": 1590754117.097,
       "streamIds": [
         "diary"
       ],
@@ -1128,14 +1130,14 @@ API-Version: 1.5.4
       "tags": [],
       "type": "note/text",
       "content": "Hi, I am the first modification",
-      "created": 1590580384.349,
-      "createdBy": "ckapcmx0l0001hrpvpgjpdplt",
-      "modified": 1590587584.349,
-      "modifiedBy": "ckapcmx0l0001hrpvpgjpdplt"
+      "created": 1590754117.097,
+      "createdBy": "ckas82m2300018vpvn8vg4lfj",
+      "modified": 1590761317.097,
+      "modifiedBy": "ckas82m2300018vpvn8vg4lfj"
     },
     {
-      "id": "ckapcmx25000zhrpvchjhaqsi",
-      "time": 1590580384.349,
+      "id": "ckas82m3t000z8vpvs5tk0hn3",
+      "time": 1590754117.097,
       "streamIds": [
         "diary"
       ],
@@ -1143,17 +1145,17 @@ API-Version: 1.5.4
       "tags": [],
       "type": "note/text",
       "content": "Hi, I was the initial event",
-      "created": 1590580384.349,
-      "createdBy": "ckapcmx0l0001hrpvpgjpdplt",
-      "modified": 1590583984.349,
-      "modifiedBy": "ckapcmx0l0001hrpvpgjpdplt"
+      "created": 1590754117.097,
+      "createdBy": "ckas82m2300018vpvn8vg4lfj",
+      "modified": 1590757717.097,
+      "modifiedBy": "ckas82m2300018vpvn8vg4lfj"
     }
   ]
 }
 </code></pre></div><div class="tab-pane sockets"><pre><code>socket.emit('events.getOne', {"includeHistory":true}, callback);</code></pre><div class="step-marker">⬇</div><pre><code>{
   "event": {
-    "id": "ckapcmx25000xhrpvjglfjfhs",
-    "time": 1590580384.349,
+    "id": "ckas82m3t000x8vpvirqtc7o4",
+    "time": 1590754117.097,
     "streamIds": [
       "diary"
     ],
@@ -1161,15 +1163,15 @@ API-Version: 1.5.4
     "tags": [],
     "type": "note/text",
     "content": "Hi, I am the latest version of this event",
-    "created": 1590580384.349,
-    "createdBy": "ckapcmx0l0001hrpvpgjpdplt",
-    "modified": 1590591184.349,
-    "modifiedBy": "ckapcmx0l0001hrpvpgjpdplt"
+    "created": 1590754117.097,
+    "createdBy": "ckas82m2300018vpvn8vg4lfj",
+    "modified": 1590764917.097,
+    "modifiedBy": "ckas82m2300018vpvn8vg4lfj"
   },
   "history": [
     {
-      "id": "ckapcmx25000yhrpvmpgwgh87",
-      "time": 1590580384.349,
+      "id": "ckas82m3t000y8vpvyvc86zw6",
+      "time": 1590754117.097,
       "streamIds": [
         "diary"
       ],
@@ -1177,14 +1179,14 @@ API-Version: 1.5.4
       "tags": [],
       "type": "note/text",
       "content": "Hi, I am the first modification",
-      "created": 1590580384.349,
-      "createdBy": "ckapcmx0l0001hrpvpgjpdplt",
-      "modified": 1590587584.349,
-      "modifiedBy": "ckapcmx0l0001hrpvpgjpdplt"
+      "created": 1590754117.097,
+      "createdBy": "ckas82m2300018vpvn8vg4lfj",
+      "modified": 1590761317.097,
+      "modifiedBy": "ckas82m2300018vpvn8vg4lfj"
     },
     {
-      "id": "ckapcmx25000zhrpvchjhaqsi",
-      "time": 1590580384.349,
+      "id": "ckas82m3t000z8vpvs5tk0hn3",
+      "time": 1590754117.097,
       "streamIds": [
         "diary"
       ],
@@ -1192,10 +1194,10 @@ API-Version: 1.5.4
       "tags": [],
       "type": "note/text",
       "content": "Hi, I was the initial event",
-      "created": 1590580384.349,
-      "createdBy": "ckapcmx0l0001hrpvpgjpdplt",
-      "modified": 1590583984.349,
-      "modifiedBy": "ckapcmx0l0001hrpvpgjpdplt"
+      "created": 1590754117.097,
+      "createdBy": "ckas82m2300018vpvn8vg4lfj",
+      "modified": 1590757717.097,
+      "modifiedBy": "ckas82m2300018vpvn8vg4lfj"
     }
   ]
 }</code></pre></div><div class="tab-pane httpAuth"><pre><code>curl -i "https://${username}.pryv.me/events/${id}?auth=${token}&includeHistory=true"</code></pre><div class="step-marker">⬇</div><pre><code>HTTP/1.1 200 OK
@@ -1204,8 +1206,8 @@ API-Version: 1.5.4
 
 {
   "event": {
-    "id": "ckapcmx25000xhrpvjglfjfhs",
-    "time": 1590580384.349,
+    "id": "ckas82m3t000x8vpvirqtc7o4",
+    "time": 1590754117.097,
     "streamIds": [
       "diary"
     ],
@@ -1213,15 +1215,15 @@ API-Version: 1.5.4
     "tags": [],
     "type": "note/text",
     "content": "Hi, I am the latest version of this event",
-    "created": 1590580384.349,
-    "createdBy": "ckapcmx0l0001hrpvpgjpdplt",
-    "modified": 1590591184.349,
-    "modifiedBy": "ckapcmx0l0001hrpvpgjpdplt"
+    "created": 1590754117.097,
+    "createdBy": "ckas82m2300018vpvn8vg4lfj",
+    "modified": 1590764917.097,
+    "modifiedBy": "ckas82m2300018vpvn8vg4lfj"
   },
   "history": [
     {
-      "id": "ckapcmx25000yhrpvmpgwgh87",
-      "time": 1590580384.349,
+      "id": "ckas82m3t000y8vpvyvc86zw6",
+      "time": 1590754117.097,
       "streamIds": [
         "diary"
       ],
@@ -1229,14 +1231,14 @@ API-Version: 1.5.4
       "tags": [],
       "type": "note/text",
       "content": "Hi, I am the first modification",
-      "created": 1590580384.349,
-      "createdBy": "ckapcmx0l0001hrpvpgjpdplt",
-      "modified": 1590587584.349,
-      "modifiedBy": "ckapcmx0l0001hrpvpgjpdplt"
+      "created": 1590754117.097,
+      "createdBy": "ckas82m2300018vpvn8vg4lfj",
+      "modified": 1590761317.097,
+      "modifiedBy": "ckas82m2300018vpvn8vg4lfj"
     },
     {
-      "id": "ckapcmx25000zhrpvchjhaqsi",
-      "time": 1590580384.349,
+      "id": "ckas82m3t000z8vpvs5tk0hn3",
+      "time": 1590754117.097,
       "streamIds": [
         "diary"
       ],
@@ -1244,10 +1246,10 @@ API-Version: 1.5.4
       "tags": [],
       "type": "note/text",
       "content": "Hi, I was the initial event",
-      "created": 1590580384.349,
-      "createdBy": "ckapcmx0l0001hrpvpgjpdplt",
-      "modified": 1590583984.349,
-      "modifiedBy": "ckapcmx0l0001hrpvpgjpdplt"
+      "created": 1590754117.097,
+      "createdBy": "ckas82m2300018vpvn8vg4lfj",
+      "modified": 1590757717.097,
+      "modifiedBy": "ckas82m2300018vpvn8vg4lfj"
     }
   ]
 }
@@ -1268,8 +1270,8 @@ API-Version: 1.5.4
   "content": 90
 }</code></pre><div class="step-marker">⬇</div><pre><code>{
   "event": {
-    "id": "ckapcmx25000vhrpvpyerqqzf",
-    "time": 1590583984.349,
+    "id": "ckas82m3t000v8vpvribb8k9b",
+    "time": 1590757717.097,
     "streamIds": [
       "weight"
     ],
@@ -1277,10 +1279,10 @@ API-Version: 1.5.4
     "tags": [],
     "type": "mass/kg",
     "content": 90,
-    "created": 1590583984.349,
-    "createdBy": "ckapcmx0l0001hrpvpgjpdplt",
-    "modified": 1590583984.349,
-    "modifiedBy": "ckapcmx0l0001hrpvpgjpdplt"
+    "created": 1590757717.097,
+    "createdBy": "ckas82m2300018vpvn8vg4lfj",
+    "modified": 1590757717.097,
+    "modifiedBy": "ckas82m2300018vpvn8vg4lfj"
   }
 }</code></pre></div><div class="tab-pane http"><pre><code>curl -i -X POST -H 'Content-Type: application/json' -d '{"streamIds":["weight"],"type":"mass/kg","content":90}' "https://${token}@${username}.pryv.me/events"</code></pre><div class="step-marker">⬇</div><pre><code>HTTP/1.1 201 Created
 Content-Type: application/json; charset=utf-8
@@ -1288,8 +1290,8 @@ API-Version: 1.5.4
 
 {
   "event": {
-    "id": "ckapcmx25000vhrpvpyerqqzf",
-    "time": 1590583984.349,
+    "id": "ckas82m3t000v8vpvribb8k9b",
+    "time": 1590757717.097,
     "streamIds": [
       "weight"
     ],
@@ -1297,16 +1299,16 @@ API-Version: 1.5.4
     "tags": [],
     "type": "mass/kg",
     "content": 90,
-    "created": 1590583984.349,
-    "createdBy": "ckapcmx0l0001hrpvpgjpdplt",
-    "modified": 1590583984.349,
-    "modifiedBy": "ckapcmx0l0001hrpvpgjpdplt"
+    "created": 1590757717.097,
+    "createdBy": "ckas82m2300018vpvn8vg4lfj",
+    "modified": 1590757717.097,
+    "modifiedBy": "ckas82m2300018vpvn8vg4lfj"
   }
 }
 </code></pre></div><div class="tab-pane sockets"><pre><code>socket.emit('events.create', {"streamIds":["weight"],"type":"mass/kg","content":90}, callback);</code></pre><div class="step-marker">⬇</div><pre><code>{
   "event": {
-    "id": "ckapcmx25000vhrpvpyerqqzf",
-    "time": 1590583984.349,
+    "id": "ckas82m3t000v8vpvribb8k9b",
+    "time": 1590757717.097,
     "streamIds": [
       "weight"
     ],
@@ -1314,10 +1316,10 @@ API-Version: 1.5.4
     "tags": [],
     "type": "mass/kg",
     "content": 90,
-    "created": 1590583984.349,
-    "createdBy": "ckapcmx0l0001hrpvpgjpdplt",
-    "modified": 1590583984.349,
-    "modifiedBy": "ckapcmx0l0001hrpvpgjpdplt"
+    "created": 1590757717.097,
+    "createdBy": "ckas82m2300018vpvn8vg4lfj",
+    "modified": 1590757717.097,
+    "modifiedBy": "ckas82m2300018vpvn8vg4lfj"
   }
 }</code></pre></div><div class="tab-pane httpAuth"><pre><code>curl -i -X POST -H 'Content-Type: application/json' -d '{"streamIds":["weight"],"type":"mass/kg","content":90}' "https://${username}.pryv.me/events?auth=${token}"</code></pre><div class="step-marker">⬇</div><pre><code>HTTP/1.1 201 Created
 Content-Type: application/json; charset=utf-8
@@ -1325,8 +1327,8 @@ API-Version: 1.5.4
 
 {
   "event": {
-    "id": "ckapcmx25000vhrpvpyerqqzf",
-    "time": 1590583984.349,
+    "id": "ckas82m3t000v8vpvribb8k9b",
+    "time": 1590757717.097,
     "streamIds": [
       "weight"
     ],
@@ -1334,10 +1336,10 @@ API-Version: 1.5.4
     "tags": [],
     "type": "mass/kg",
     "content": 90,
-    "created": 1590583984.349,
-    "createdBy": "ckapcmx0l0001hrpvpgjpdplt",
-    "modified": 1590583984.349,
-    "modifiedBy": "ckapcmx0l0001hrpvpgjpdplt"
+    "created": 1590757717.097,
+    "createdBy": "ckas82m2300018vpvn8vg4lfj",
+    "modified": 1590757717.097,
+    "modifiedBy": "ckas82m2300018vpvn8vg4lfj"
   }
 }
 </code></pre></div></div></div><div class="example"><p>cURL with attachment</p>
@@ -1345,8 +1347,8 @@ API-Version: 1.5.4
 </code></pre>
 <div class="step-marker">⬇</div><pre><code>{
   "event": {
-    "id": "ckapcmx250010hrpvx64g7a2l",
-    "time": 1590580384.349,
+    "id": "ckas82m3t00108vpvfvg9jxkv",
+    "time": 1590754117.097,
     "streamIds": [
       "diary"
     ],
@@ -1356,17 +1358,17 @@ API-Version: 1.5.4
     "content": null,
     "attachments": [
       {
-        "id": "ckapcmx250011hrpvbh8p7621",
+        "id": "ckas82m3t00118vpvzbazg4zs",
         "fileName": "photo.jpg",
         "type": "image/jpeg",
         "size": 2561,
-        "readToken": "ckapcmx250012hrpv2zpf0ged-OIkPU5YTYPWgaf30ijGckfteroo"
+        "readToken": "ckas82m3t00128vpvm9c3a4xj-5oGuVQTuRjsR6KHu902iuXtnKKf"
       }
     ],
-    "created": 1590580384.349,
-    "createdBy": "ckapcmx0l0004hrpv636r3ms0",
-    "modified": 1590580384.349,
-    "modifiedBy": "ckapcmx0l0004hrpv636r3ms0"
+    "created": 1590754117.097,
+    "createdBy": "ckas82m2400048vpv2h6x79gq",
+    "modified": 1590754117.097,
+    "modifiedBy": "ckas82m2400048vpv2h6x79gq"
   }
 }</code></pre></div></aside></section><!-- it's either:--><!-- !trusted & !preview--><!-- !preview & -full--><!-- -preview--><section id="methods-events-events-update" class="method"> <h3 id="update-event">Update event</h3>
 <div class="content"><div class="meta"><span class="method-id"><span class="label">id</span><span class="label-value"><code>events.update</code></span></span><span class="http"><span class="label">HTTP</span><span class="label-value"><code>PUT /events/{id}</code></span></span></div><div class="intro"><p>Modifies the event.</p>
@@ -1386,9 +1388,9 @@ API-Version: 1.5.4
     "tags": [
       "home"
     ],
-    "modified": 1590583984.583,
-    "modifiedBy": "ckapcmx0l0001hrpvpgjpdplt",
-    "id": "ckapcmx250013hrpvwhrhicqc",
+    "modified": 1590757717.319,
+    "modifiedBy": "ckas82m2300018vpvn8vg4lfj",
+    "id": "ckas82m3t00138vpvnhtbjjp3",
     "time": 1350373077.359,
     "streamIds": [
       "diary"
@@ -1399,8 +1401,8 @@ API-Version: 1.5.4
       "latitude": 40.714728,
       "longitude": -73.998672
     },
-    "created": 1590576784.349,
-    "createdBy": "ckapcmx0k0000hrpvgznk9zwc"
+    "created": 1590750517.097,
+    "createdBy": "ckas82m2300008vpv21u021zi"
   }
 }</code></pre></div><div class="tab-pane http"><pre><code>curl -i -X PUT -H 'Content-Type: application/json' -d '{"tags":["home"]}' "https://${token}@${username}.pryv.me/events/${id}"</code></pre><div class="step-marker">⬇</div><pre><code>HTTP/1.1 200 OK
 Content-Type: application/json; charset=utf-8
@@ -1411,9 +1413,9 @@ API-Version: 1.5.4
     "tags": [
       "home"
     ],
-    "modified": 1590583984.583,
-    "modifiedBy": "ckapcmx0l0001hrpvpgjpdplt",
-    "id": "ckapcmx250013hrpvwhrhicqc",
+    "modified": 1590757717.319,
+    "modifiedBy": "ckas82m2300018vpvn8vg4lfj",
+    "id": "ckas82m3t00138vpvnhtbjjp3",
     "time": 1350373077.359,
     "streamIds": [
       "diary"
@@ -1424,8 +1426,8 @@ API-Version: 1.5.4
       "latitude": 40.714728,
       "longitude": -73.998672
     },
-    "created": 1590576784.349,
-    "createdBy": "ckapcmx0k0000hrpvgznk9zwc"
+    "created": 1590750517.097,
+    "createdBy": "ckas82m2300008vpv21u021zi"
   }
 }
 </code></pre></div><div class="tab-pane sockets"><pre><code>socket.emit('events.update', {"update":{"tags":["home"]}}, callback);</code></pre><div class="step-marker">⬇</div><pre><code>{
@@ -1433,9 +1435,9 @@ API-Version: 1.5.4
     "tags": [
       "home"
     ],
-    "modified": 1590583984.583,
-    "modifiedBy": "ckapcmx0l0001hrpvpgjpdplt",
-    "id": "ckapcmx250013hrpvwhrhicqc",
+    "modified": 1590757717.319,
+    "modifiedBy": "ckas82m2300018vpvn8vg4lfj",
+    "id": "ckas82m3t00138vpvnhtbjjp3",
     "time": 1350373077.359,
     "streamIds": [
       "diary"
@@ -1446,8 +1448,8 @@ API-Version: 1.5.4
       "latitude": 40.714728,
       "longitude": -73.998672
     },
-    "created": 1590576784.349,
-    "createdBy": "ckapcmx0k0000hrpvgznk9zwc"
+    "created": 1590750517.097,
+    "createdBy": "ckas82m2300008vpv21u021zi"
   }
 }</code></pre></div><div class="tab-pane httpAuth"><pre><code>curl -i -X PUT -H 'Content-Type: application/json' -d '{"tags":["home"]}' "https://${username}.pryv.me/events/${id}?auth=${token}"</code></pre><div class="step-marker">⬇</div><pre><code>HTTP/1.1 200 OK
 Content-Type: application/json; charset=utf-8
@@ -1458,9 +1460,9 @@ API-Version: 1.5.4
     "tags": [
       "home"
     ],
-    "modified": 1590583984.583,
-    "modifiedBy": "ckapcmx0l0001hrpvpgjpdplt",
-    "id": "ckapcmx250013hrpvwhrhicqc",
+    "modified": 1590757717.319,
+    "modifiedBy": "ckas82m2300018vpvn8vg4lfj",
+    "id": "ckas82m3t00138vpvnhtbjjp3",
     "time": 1350373077.359,
     "streamIds": [
       "diary"
@@ -1471,8 +1473,8 @@ API-Version: 1.5.4
       "latitude": 40.714728,
       "longitude": -73.998672
     },
-    "created": 1590576784.349,
-    "createdBy": "ckapcmx0k0000hrpvgznk9zwc"
+    "created": 1590750517.097,
+    "createdBy": "ckas82m2300008vpv21u021zi"
   }
 }
 </code></pre></div></div></div></aside></section><!-- it's either:--><!-- !trusted & !preview--><!-- !preview & -full--><!-- -preview--><section id="methods-events-events-addAttachment" class="method"> <h3 id="add-attachment-s-">Add attachment(s)</h3>
@@ -1480,33 +1482,33 @@ API-Version: 1.5.4
 </div><h4 id="result">Result</h4>
 <span class="http"><span class="label">HTTP</span><span class="label-value"><code>200 OK</code></span></span><table class="definitions"><tr><th><code>event</code></th><td><div class="header"><span class="type"><a href="#data-structure-event">event</a></span></div><div class="description"><p>The updated event.</p>
 </div></td></tr></table></div><aside><div class="example"><p>cURL</p>
-<pre><code class="lang-bash">curl -i -F &quot;file=@travel-expense.jpg&quot; &quot;https://${token}@${username}.pryv.me/events/ckapcmx25000phrpv4h2lg2ff&quot;&quot;
+<pre><code class="lang-bash">curl -i -F &quot;file=@travel-expense.jpg&quot; &quot;https://${token}@${username}.pryv.me/events/ckas82m3t000p8vpvcjrswha5&quot;&quot;
 </code></pre>
 <div class="step-marker">⬇</div><pre><code>{
   "event": {
-    "id": "ckapcmx25000phrpv4h2lg2ff",
-    "time": 1590583984.349,
+    "id": "ckas82m3t000p8vpvcjrswha5",
+    "time": 1590757717.097,
     "duration": null,
     "streamIds": [
-      "ckapcmx24000dhrpvk7jm11a8"
+      "ckas82m3t000d8vpvw8i5zryc"
     ],
-    "streamId": "ckapcmx24000dhrpvk7jm11a8",
+    "streamId": "ckas82m3t000d8vpvw8i5zryc",
     "tags": [],
     "type": "activity/pryv",
     "content": null,
     "attachments": [
       {
-        "id": "ckapcmx25000qhrpveabexhzn",
+        "id": "ckas82m3t000q8vpvlsajm4es",
         "fileName": "travel-expense.jpg",
         "type": "image/jpeg",
         "size": 1111,
-        "readToken": "ckapcmx25000rhrpvb4qojbkd-Jn4SDgtLBN3IAUBpOfNctdcoESg"
+        "readToken": "ckas82m3t000r8vpvij6l3vau-2zTOIeK9q4Oe1CET1l0GTZiEVDu"
       }
     ],
-    "created": 1590583984.349,
-    "createdBy": "ckapcmx0l0001hrpvpgjpdplt",
-    "modified": 1590583984.349,
-    "modifiedBy": "ckapcmx0l0001hrpvpgjpdplt"
+    "created": 1590757717.097,
+    "createdBy": "ckas82m2300018vpvn8vg4lfj",
+    "modified": 1590757717.097,
+    "modifiedBy": "ckas82m2300018vpvn8vg4lfj"
   }
 }</code></pre></div></aside></section><!-- it's either:--><!-- !trusted & !preview--><!-- !preview & -full--><!-- -preview--><section id="methods-events-events-getAttachment" class="method"> <h3 id="get-attachment">Get attachment</h3>
 <div class="content"><div class="meta"><span class="http"><span class="label">HTTP-only</span><span class="label-value"><code>GET /events/{id}/{fileId}[/{fileName}]</code></span></span></div><div class="intro"><p>Gets the attached file. Accepts an arbitrary filename path suffix (ignored) for easier link readability.
@@ -1523,84 +1525,84 @@ For this function using the <code>auth</code> query parameter is not accepted. Y
 </div></td></tr></table><h4 id="result">Result</h4>
 <span class="http"><span class="label">HTTP</span><span class="label-value"><code>200 OK</code></span></span><table class="definitions"><tr><th><code>event</code></th><td><div class="header"><span class="type"><a href="#data-structure-event">event</a></span></div><div class="description"><p>The updated event.</p>
 </div></td></tr></table></div><aside><div class="example"><div class="tab-content"><div class="tab-pane json active"><pre><code>{
-  "id": "ckapcmx25000phrpv4h2lg2ff",
-  "fileId": "ckapcmx25000qhrpveabexhzn"
+  "id": "ckas82m3t000p8vpvcjrswha5",
+  "fileId": "ckas82m3t000q8vpvlsajm4es"
 }</code></pre><div class="step-marker">⬇</div><pre><code>{
   "event": {
-    "id": "ckapcmx25000phrpv4h2lg2ff",
-    "time": 1590583984.349,
+    "id": "ckas82m3t000p8vpvcjrswha5",
+    "time": 1590757717.097,
     "duration": null,
     "streamIds": [
-      "ckapcmx24000dhrpvk7jm11a8"
+      "ckas82m3t000d8vpvw8i5zryc"
     ],
-    "streamId": "ckapcmx24000dhrpvk7jm11a8",
+    "streamId": "ckas82m3t000d8vpvw8i5zryc",
     "tags": [],
     "type": "activity/pryv",
     "content": null,
-    "created": 1590583984.349,
-    "createdBy": "ckapcmx0l0001hrpvpgjpdplt",
-    "modified": 1590583984.349,
-    "modifiedBy": "ckapcmx0l0001hrpvpgjpdplt"
+    "created": 1590757717.097,
+    "createdBy": "ckas82m2300018vpvn8vg4lfj",
+    "modified": 1590757717.097,
+    "modifiedBy": "ckas82m2300018vpvn8vg4lfj"
   }
-}</code></pre></div><div class="tab-pane http"><pre><code>curl -i -X DELETE "https://${token}@${username}.pryv.me/events/ckapcmx25000phrpv4h2lg2ff/ckapcmx25000qhrpveabexhzn"</code></pre><div class="step-marker">⬇</div><pre><code>HTTP/1.1 200 OK
+}</code></pre></div><div class="tab-pane http"><pre><code>curl -i -X DELETE "https://${token}@${username}.pryv.me/events/ckas82m3t000p8vpvcjrswha5/ckas82m3t000q8vpvlsajm4es"</code></pre><div class="step-marker">⬇</div><pre><code>HTTP/1.1 200 OK
 Content-Type: application/json; charset=utf-8
 API-Version: 1.5.4
 
 {
   "event": {
-    "id": "ckapcmx25000phrpv4h2lg2ff",
-    "time": 1590583984.349,
+    "id": "ckas82m3t000p8vpvcjrswha5",
+    "time": 1590757717.097,
     "duration": null,
     "streamIds": [
-      "ckapcmx24000dhrpvk7jm11a8"
+      "ckas82m3t000d8vpvw8i5zryc"
     ],
-    "streamId": "ckapcmx24000dhrpvk7jm11a8",
+    "streamId": "ckas82m3t000d8vpvw8i5zryc",
     "tags": [],
     "type": "activity/pryv",
     "content": null,
-    "created": 1590583984.349,
-    "createdBy": "ckapcmx0l0001hrpvpgjpdplt",
-    "modified": 1590583984.349,
-    "modifiedBy": "ckapcmx0l0001hrpvpgjpdplt"
+    "created": 1590757717.097,
+    "createdBy": "ckas82m2300018vpvn8vg4lfj",
+    "modified": 1590757717.097,
+    "modifiedBy": "ckas82m2300018vpvn8vg4lfj"
   }
 }
-</code></pre></div><div class="tab-pane sockets"><pre><code>socket.emit('events.deleteAttachment', {"id":"ckapcmx25000phrpv4h2lg2ff","fileId":"ckapcmx25000qhrpveabexhzn"}, callback);</code></pre><div class="step-marker">⬇</div><pre><code>{
+</code></pre></div><div class="tab-pane sockets"><pre><code>socket.emit('events.deleteAttachment', {"id":"ckas82m3t000p8vpvcjrswha5","fileId":"ckas82m3t000q8vpvlsajm4es"}, callback);</code></pre><div class="step-marker">⬇</div><pre><code>{
   "event": {
-    "id": "ckapcmx25000phrpv4h2lg2ff",
-    "time": 1590583984.349,
+    "id": "ckas82m3t000p8vpvcjrswha5",
+    "time": 1590757717.097,
     "duration": null,
     "streamIds": [
-      "ckapcmx24000dhrpvk7jm11a8"
+      "ckas82m3t000d8vpvw8i5zryc"
     ],
-    "streamId": "ckapcmx24000dhrpvk7jm11a8",
+    "streamId": "ckas82m3t000d8vpvw8i5zryc",
     "tags": [],
     "type": "activity/pryv",
     "content": null,
-    "created": 1590583984.349,
-    "createdBy": "ckapcmx0l0001hrpvpgjpdplt",
-    "modified": 1590583984.349,
-    "modifiedBy": "ckapcmx0l0001hrpvpgjpdplt"
+    "created": 1590757717.097,
+    "createdBy": "ckas82m2300018vpvn8vg4lfj",
+    "modified": 1590757717.097,
+    "modifiedBy": "ckas82m2300018vpvn8vg4lfj"
   }
-}</code></pre></div><div class="tab-pane httpAuth"><pre><code>curl -i -X DELETE "https://${username}.pryv.me/events/ckapcmx25000phrpv4h2lg2ff/ckapcmx25000qhrpveabexhzn?auth=${token}"</code></pre><div class="step-marker">⬇</div><pre><code>HTTP/1.1 200 OK
+}</code></pre></div><div class="tab-pane httpAuth"><pre><code>curl -i -X DELETE "https://${username}.pryv.me/events/ckas82m3t000p8vpvcjrswha5/ckas82m3t000q8vpvlsajm4es?auth=${token}"</code></pre><div class="step-marker">⬇</div><pre><code>HTTP/1.1 200 OK
 Content-Type: application/json; charset=utf-8
 API-Version: 1.5.4
 
 {
   "event": {
-    "id": "ckapcmx25000phrpv4h2lg2ff",
-    "time": 1590583984.349,
+    "id": "ckas82m3t000p8vpvcjrswha5",
+    "time": 1590757717.097,
     "duration": null,
     "streamIds": [
-      "ckapcmx24000dhrpvk7jm11a8"
+      "ckas82m3t000d8vpvw8i5zryc"
     ],
-    "streamId": "ckapcmx24000dhrpvk7jm11a8",
+    "streamId": "ckas82m3t000d8vpvw8i5zryc",
     "tags": [],
     "type": "activity/pryv",
     "content": null,
-    "created": 1590583984.349,
-    "createdBy": "ckapcmx0l0001hrpvpgjpdplt",
-    "modified": 1590583984.349,
-    "modifiedBy": "ckapcmx0l0001hrpvpgjpdplt"
+    "created": 1590757717.097,
+    "createdBy": "ckas82m2300018vpvn8vg4lfj",
+    "modified": 1590757717.097,
+    "modifiedBy": "ckas82m2300018vpvn8vg4lfj"
   }
 }
 </code></pre></div></div></div></aside></section><!-- it's either:--><!-- !trusted & !preview--><!-- !preview & -full--><!-- -preview--><section id="methods-events-events-delete" class="method"> <h3 id="delete-event">Delete event</h3>
@@ -1617,14 +1619,14 @@ API-Version: 1.5.4
 <span class="http"><span class="label">HTTP</span><span class="label-value"><code>200 OK</code></span></span><table class="definitions"><tr><th><code>eventDeletion</code></th><td><div class="header"><span class="type"><a href="#data-structure-item-deletion">item deletion</a></span></div><div class="description"><p>The event deletion record.</p>
 </div></td></tr></table></div><aside><div class="example"><p>Trashing</p>
 <div class="tab-content"><div class="tab-pane json active"><pre><code>{
-  "id": "ckapcmx25000whrpvoknyq3ro"
+  "id": "ckas82m3t000w8vpvj7a0xduv"
 }</code></pre><div class="step-marker">⬇</div><pre><code>{
   "event": {
     "trashed": true,
-    "modified": 1590583984.583,
-    "modifiedBy": "ckapcmx0l0001hrpvpgjpdplt",
-    "id": "ckapcmx25000whrpvoknyq3ro",
-    "time": 1590580384.349,
+    "modified": 1590757717.32,
+    "modifiedBy": "ckas82m2300018vpvn8vg4lfj",
+    "id": "ckas82m3t000w8vpvj7a0xduv",
+    "time": 1590754117.097,
     "streamIds": [
       "diary"
     ],
@@ -1632,20 +1634,20 @@ API-Version: 1.5.4
     "tags": [],
     "type": "note/text",
     "content": "道可道非常道。。。",
-    "created": 1590580384.349,
-    "createdBy": "ckapcmx0l0001hrpvpgjpdplt"
+    "created": 1590754117.097,
+    "createdBy": "ckas82m2300018vpvn8vg4lfj"
   }
-}</code></pre></div><div class="tab-pane http"><pre><code>curl -i -X DELETE "https://${token}@${username}.pryv.me/events/ckapcmx25000whrpvoknyq3ro"</code></pre><div class="step-marker">⬇</div><pre><code>HTTP/1.1 200 OK
+}</code></pre></div><div class="tab-pane http"><pre><code>curl -i -X DELETE "https://${token}@${username}.pryv.me/events/ckas82m3t000w8vpvj7a0xduv"</code></pre><div class="step-marker">⬇</div><pre><code>HTTP/1.1 200 OK
 Content-Type: application/json; charset=utf-8
 API-Version: 1.5.4
 
 {
   "event": {
     "trashed": true,
-    "modified": 1590583984.583,
-    "modifiedBy": "ckapcmx0l0001hrpvpgjpdplt",
-    "id": "ckapcmx25000whrpvoknyq3ro",
-    "time": 1590580384.349,
+    "modified": 1590757717.32,
+    "modifiedBy": "ckas82m2300018vpvn8vg4lfj",
+    "id": "ckas82m3t000w8vpvj7a0xduv",
+    "time": 1590754117.097,
     "streamIds": [
       "diary"
     ],
@@ -1653,17 +1655,17 @@ API-Version: 1.5.4
     "tags": [],
     "type": "note/text",
     "content": "道可道非常道。。。",
-    "created": 1590580384.349,
-    "createdBy": "ckapcmx0l0001hrpvpgjpdplt"
+    "created": 1590754117.097,
+    "createdBy": "ckas82m2300018vpvn8vg4lfj"
   }
 }
-</code></pre></div><div class="tab-pane sockets"><pre><code>socket.emit('events.delete', {"id":"ckapcmx25000whrpvoknyq3ro"}, callback);</code></pre><div class="step-marker">⬇</div><pre><code>{
+</code></pre></div><div class="tab-pane sockets"><pre><code>socket.emit('events.delete', {"id":"ckas82m3t000w8vpvj7a0xduv"}, callback);</code></pre><div class="step-marker">⬇</div><pre><code>{
   "event": {
     "trashed": true,
-    "modified": 1590583984.583,
-    "modifiedBy": "ckapcmx0l0001hrpvpgjpdplt",
-    "id": "ckapcmx25000whrpvoknyq3ro",
-    "time": 1590580384.349,
+    "modified": 1590757717.32,
+    "modifiedBy": "ckas82m2300018vpvn8vg4lfj",
+    "id": "ckas82m3t000w8vpvj7a0xduv",
+    "time": 1590754117.097,
     "streamIds": [
       "diary"
     ],
@@ -1671,20 +1673,20 @@ API-Version: 1.5.4
     "tags": [],
     "type": "note/text",
     "content": "道可道非常道。。。",
-    "created": 1590580384.349,
-    "createdBy": "ckapcmx0l0001hrpvpgjpdplt"
+    "created": 1590754117.097,
+    "createdBy": "ckas82m2300018vpvn8vg4lfj"
   }
-}</code></pre></div><div class="tab-pane httpAuth"><pre><code>curl -i -X DELETE "https://${username}.pryv.me/events/ckapcmx25000whrpvoknyq3ro?auth=${token}"</code></pre><div class="step-marker">⬇</div><pre><code>HTTP/1.1 200 OK
+}</code></pre></div><div class="tab-pane httpAuth"><pre><code>curl -i -X DELETE "https://${username}.pryv.me/events/ckas82m3t000w8vpvj7a0xduv?auth=${token}"</code></pre><div class="step-marker">⬇</div><pre><code>HTTP/1.1 200 OK
 Content-Type: application/json; charset=utf-8
 API-Version: 1.5.4
 
 {
   "event": {
     "trashed": true,
-    "modified": 1590583984.583,
-    "modifiedBy": "ckapcmx0l0001hrpvpgjpdplt",
-    "id": "ckapcmx25000whrpvoknyq3ro",
-    "time": 1590580384.349,
+    "modified": 1590757717.32,
+    "modifiedBy": "ckas82m2300018vpvn8vg4lfj",
+    "id": "ckas82m3t000w8vpvj7a0xduv",
+    "time": 1590754117.097,
     "streamIds": [
       "diary"
     ],
@@ -1692,37 +1694,37 @@ API-Version: 1.5.4
     "tags": [],
     "type": "note/text",
     "content": "道可道非常道。。。",
-    "created": 1590580384.349,
-    "createdBy": "ckapcmx0l0001hrpvpgjpdplt"
+    "created": 1590754117.097,
+    "createdBy": "ckas82m2300018vpvn8vg4lfj"
   }
 }
 </code></pre></div></div></div><div class="example"><p>Deleting</p>
 <div class="tab-content"><div class="tab-pane json active"><pre><code>{
-  "id": "ckapcmx25000whrpvoknyq3ro"
+  "id": "ckas82m3t000w8vpvj7a0xduv"
 }</code></pre><div class="step-marker">⬇</div><pre><code>{
   "eventDeletion": {
-    "id": "ckapcmx25000whrpvoknyq3ro"
+    "id": "ckas82m3t000w8vpvj7a0xduv"
   }
-}</code></pre></div><div class="tab-pane http"><pre><code>curl -i -X DELETE "https://${token}@${username}.pryv.me/events/ckapcmx25000whrpvoknyq3ro"</code></pre><div class="step-marker">⬇</div><pre><code>HTTP/1.1 200 OK
+}</code></pre></div><div class="tab-pane http"><pre><code>curl -i -X DELETE "https://${token}@${username}.pryv.me/events/ckas82m3t000w8vpvj7a0xduv"</code></pre><div class="step-marker">⬇</div><pre><code>HTTP/1.1 200 OK
 Content-Type: application/json; charset=utf-8
 API-Version: 1.5.4
 
 {
   "eventDeletion": {
-    "id": "ckapcmx25000whrpvoknyq3ro"
+    "id": "ckas82m3t000w8vpvj7a0xduv"
   }
 }
-</code></pre></div><div class="tab-pane sockets"><pre><code>socket.emit('events.delete', {"id":"ckapcmx25000whrpvoknyq3ro"}, callback);</code></pre><div class="step-marker">⬇</div><pre><code>{
+</code></pre></div><div class="tab-pane sockets"><pre><code>socket.emit('events.delete', {"id":"ckas82m3t000w8vpvj7a0xduv"}, callback);</code></pre><div class="step-marker">⬇</div><pre><code>{
   "eventDeletion": {
-    "id": "ckapcmx25000whrpvoknyq3ro"
+    "id": "ckas82m3t000w8vpvj7a0xduv"
   }
-}</code></pre></div><div class="tab-pane httpAuth"><pre><code>curl -i -X DELETE "https://${username}.pryv.me/events/ckapcmx25000whrpvoknyq3ro?auth=${token}"</code></pre><div class="step-marker">⬇</div><pre><code>HTTP/1.1 200 OK
+}</code></pre></div><div class="tab-pane httpAuth"><pre><code>curl -i -X DELETE "https://${username}.pryv.me/events/ckas82m3t000w8vpvj7a0xduv?auth=${token}"</code></pre><div class="step-marker">⬇</div><pre><code>HTTP/1.1 200 OK
 Content-Type: application/json; charset=utf-8
 API-Version: 1.5.4
 
 {
   "eventDeletion": {
-    "id": "ckapcmx25000whrpvoknyq3ro"
+    "id": "ckas82m3t000w8vpvj7a0xduv"
   }
 }
 </code></pre></div></div></div></aside></section></section><!-- it's either:--><!-- !trusted & !preview--><!-- !preview & -full--><!-- -preview--><section id="methods-hfs"><h2 id="hf-events">HF events</h2>
@@ -1747,8 +1749,8 @@ For example, to store HF series of <code>mass/kg</code> data points, the type of
   "type": "series:position/wgs84"
 }</code></pre><div class="step-marker">⬇</div><pre><code>{
   "event": {
-    "id": "ckapcmx250014hrpvvshbyw7n",
-    "time": 1590583984.349,
+    "id": "ckas82m3t00148vpvii9rhnwi",
+    "time": 1590757717.098,
     "streamIds": [
       "position"
     ],
@@ -1773,10 +1775,10 @@ For example, to store HF series of <code>mass/kg</code> data points, the type of
         "longitude"
       ]
     },
-    "created": 1590583984.349,
-    "createdBy": "ckapcmx0l0001hrpvpgjpdplt",
-    "modified": 1590583984.349,
-    "modifiedBy": "ckapcmx0l0001hrpvpgjpdplt"
+    "created": 1590757717.098,
+    "createdBy": "ckas82m2300018vpvn8vg4lfj",
+    "modified": 1590757717.098,
+    "modifiedBy": "ckas82m2300018vpvn8vg4lfj"
   }
 }</code></pre></div><div class="tab-pane http"><pre><code>curl -i -X POST -H 'Content-Type: application/json' -d '{"streamIds":["position"],"type":"series:position/wgs84"}' "https://${token}@${username}.pryv.me/events"</code></pre><div class="step-marker">⬇</div><pre><code>HTTP/1.1 201 Created
 Content-Type: application/json; charset=utf-8
@@ -1784,8 +1786,8 @@ API-Version: 1.5.4
 
 {
   "event": {
-    "id": "ckapcmx250014hrpvvshbyw7n",
-    "time": 1590583984.349,
+    "id": "ckas82m3t00148vpvii9rhnwi",
+    "time": 1590757717.098,
     "streamIds": [
       "position"
     ],
@@ -1810,16 +1812,16 @@ API-Version: 1.5.4
         "longitude"
       ]
     },
-    "created": 1590583984.349,
-    "createdBy": "ckapcmx0l0001hrpvpgjpdplt",
-    "modified": 1590583984.349,
-    "modifiedBy": "ckapcmx0l0001hrpvpgjpdplt"
+    "created": 1590757717.098,
+    "createdBy": "ckas82m2300018vpvn8vg4lfj",
+    "modified": 1590757717.098,
+    "modifiedBy": "ckas82m2300018vpvn8vg4lfj"
   }
 }
 </code></pre></div><div class="tab-pane sockets"><pre><code>socket.emit('hfs.create', {"streamIds":["position"],"type":"series:position/wgs84"}, callback);</code></pre><div class="step-marker">⬇</div><pre><code>{
   "event": {
-    "id": "ckapcmx250014hrpvvshbyw7n",
-    "time": 1590583984.349,
+    "id": "ckas82m3t00148vpvii9rhnwi",
+    "time": 1590757717.098,
     "streamIds": [
       "position"
     ],
@@ -1844,10 +1846,10 @@ API-Version: 1.5.4
         "longitude"
       ]
     },
-    "created": 1590583984.349,
-    "createdBy": "ckapcmx0l0001hrpvpgjpdplt",
-    "modified": 1590583984.349,
-    "modifiedBy": "ckapcmx0l0001hrpvpgjpdplt"
+    "created": 1590757717.098,
+    "createdBy": "ckas82m2300018vpvn8vg4lfj",
+    "modified": 1590757717.098,
+    "modifiedBy": "ckas82m2300018vpvn8vg4lfj"
   }
 }</code></pre></div><div class="tab-pane httpAuth"><pre><code>curl -i -X POST -H 'Content-Type: application/json' -d '{"streamIds":["position"],"type":"series:position/wgs84"}' "https://${username}.pryv.me/events?auth=${token}"</code></pre><div class="step-marker">⬇</div><pre><code>HTTP/1.1 201 Created
 Content-Type: application/json; charset=utf-8
@@ -1855,8 +1857,8 @@ API-Version: 1.5.4
 
 {
   "event": {
-    "id": "ckapcmx250014hrpvvshbyw7n",
-    "time": 1590583984.349,
+    "id": "ckas82m3t00148vpvii9rhnwi",
+    "time": 1590757717.098,
     "streamIds": [
       "position"
     ],
@@ -1881,10 +1883,10 @@ API-Version: 1.5.4
         "longitude"
       ]
     },
-    "created": 1590583984.349,
-    "createdBy": "ckapcmx0l0001hrpvpgjpdplt",
-    "modified": 1590583984.349,
-    "modifiedBy": "ckapcmx0l0001hrpvpgjpdplt"
+    "created": 1590757717.098,
+    "createdBy": "ckas82m2300018vpvn8vg4lfj",
+    "modified": 1590757717.098,
+    "modifiedBy": "ckas82m2300018vpvn8vg4lfj"
   }
 }
 </code></pre></div></div></div></aside></section><!-- it's either:--><!-- !trusted & !preview--><!-- !preview & -full--><!-- -preview--><section id="methods-hfs-hfs-get" class="method"> <h3 id="get-hf-series-data-points">Get HF series data points</h3>
@@ -2100,7 +2102,7 @@ API-Version: 1.5.4
   "format": "seriesBatch",
   "data": [
     {
-      "eventId": "ckapcmx250015hrpvffw8wg8m",
+      "eventId": "ckas82m3u00158vpv6zonin0w",
       "data": {
         "format": "flatJSON",
         "fields": [
@@ -2124,7 +2126,7 @@ API-Version: 1.5.4
       }
     },
     {
-      "eventId": "ckapcmx250016hrpv7zexqjok",
+      "eventId": "ckas82m3u00168vpvdxqy0x96",
       "data": {
         "format": "flatJSON",
         "fields": [
@@ -2158,16 +2160,16 @@ API-Version: 1.5.4
   ]
 }</code></pre><div class="step-marker">⬇</div><pre><code>{
   "status": "ok"
-}</code></pre></div><div class="tab-pane http"><pre><code>curl -i -X POST -H 'Content-Type: application/json' -d '{"format":"seriesBatch","data":[{"eventId":"ckapcmx250015hrpvffw8wg8m","data":{"format":"flatJSON","fields":["deltaTime","value"],"points":[[0,70],[1,71],[2,72]]}},{"eventId":"ckapcmx250016hrpv7zexqjok","data":{"format":"flatJSON","fields":["deltaTime","latitude","longitude","altitude"],"points":[[0,10.2,11.2,500],[2,10.2,11.2,510],[1,10.2,11.2,520]]}}]}' "https://${token}@${username}.pryv.me/series/batch"</code></pre><div class="step-marker">⬇</div><pre><code>HTTP/1.1 201 Created
+}</code></pre></div><div class="tab-pane http"><pre><code>curl -i -X POST -H 'Content-Type: application/json' -d '{"format":"seriesBatch","data":[{"eventId":"ckas82m3u00158vpv6zonin0w","data":{"format":"flatJSON","fields":["deltaTime","value"],"points":[[0,70],[1,71],[2,72]]}},{"eventId":"ckas82m3u00168vpvdxqy0x96","data":{"format":"flatJSON","fields":["deltaTime","latitude","longitude","altitude"],"points":[[0,10.2,11.2,500],[2,10.2,11.2,510],[1,10.2,11.2,520]]}}]}' "https://${token}@${username}.pryv.me/series/batch"</code></pre><div class="step-marker">⬇</div><pre><code>HTTP/1.1 201 Created
 Content-Type: application/json; charset=utf-8
 API-Version: 1.5.4
 
 {
   "status": "ok"
 }
-</code></pre></div><div class="tab-pane sockets"><pre><code>socket.emit('hfs.addBatch', {"format":"seriesBatch","data":[{"eventId":"ckapcmx250015hrpvffw8wg8m","data":{"format":"flatJSON","fields":["deltaTime","value"],"points":[[0,70],[1,71],[2,72]]}},{"eventId":"ckapcmx250016hrpv7zexqjok","data":{"format":"flatJSON","fields":["deltaTime","latitude","longitude","altitude"],"points":[[0,10.2,11.2,500],[2,10.2,11.2,510],[1,10.2,11.2,520]]}}]}, callback);</code></pre><div class="step-marker">⬇</div><pre><code>{
+</code></pre></div><div class="tab-pane sockets"><pre><code>socket.emit('hfs.addBatch', {"format":"seriesBatch","data":[{"eventId":"ckas82m3u00158vpv6zonin0w","data":{"format":"flatJSON","fields":["deltaTime","value"],"points":[[0,70],[1,71],[2,72]]}},{"eventId":"ckas82m3u00168vpvdxqy0x96","data":{"format":"flatJSON","fields":["deltaTime","latitude","longitude","altitude"],"points":[[0,10.2,11.2,500],[2,10.2,11.2,510],[1,10.2,11.2,520]]}}]}, callback);</code></pre><div class="step-marker">⬇</div><pre><code>{
   "status": "ok"
-}</code></pre></div><div class="tab-pane httpAuth"><pre><code>curl -i -X POST -H 'Content-Type: application/json' -d '{"format":"seriesBatch","data":[{"eventId":"ckapcmx250015hrpvffw8wg8m","data":{"format":"flatJSON","fields":["deltaTime","value"],"points":[[0,70],[1,71],[2,72]]}},{"eventId":"ckapcmx250016hrpv7zexqjok","data":{"format":"flatJSON","fields":["deltaTime","latitude","longitude","altitude"],"points":[[0,10.2,11.2,500],[2,10.2,11.2,510],[1,10.2,11.2,520]]}}]}' "https://${username}.pryv.me/series/batch?auth=${token}"</code></pre><div class="step-marker">⬇</div><pre><code>HTTP/1.1 201 Created
+}</code></pre></div><div class="tab-pane httpAuth"><pre><code>curl -i -X POST -H 'Content-Type: application/json' -d '{"format":"seriesBatch","data":[{"eventId":"ckas82m3u00158vpv6zonin0w","data":{"format":"flatJSON","fields":["deltaTime","value"],"points":[[0,70],[1,71],[2,72]]}},{"eventId":"ckas82m3u00168vpvdxqy0x96","data":{"format":"flatJSON","fields":["deltaTime","latitude","longitude","altitude"],"points":[[0,10.2,11.2,500],[2,10.2,11.2,510],[1,10.2,11.2,520]]}}]}' "https://${username}.pryv.me/series/batch?auth=${token}"</code></pre><div class="step-marker">⬇</div><pre><code>HTTP/1.1 201 Created
 Content-Type: application/json; charset=utf-8
 API-Version: 1.5.4
 
@@ -2198,76 +2200,76 @@ API-Version: 1.5.4
 }</code></pre><div class="step-marker">⬇</div><pre><code>{
   "streams": [
     {
-      "id": "ckapcmx24000chrpv158igflx",
+      "id": "ckas82m3t000c8vpvsxrokazx",
       "name": "Noble Works Co.",
       "parentId": "work",
       "children": [
         {
-          "id": "ckapcmx24000ehrpv3a3a8oiq",
+          "id": "ckas82m3t000e8vpviw3l3z5o",
           "name": "Last Be First",
-          "parentId": "ckapcmx24000chrpv158igflx",
+          "parentId": "ckas82m3t000c8vpvsxrokazx",
           "children": [],
-          "created": 1527470132.3800714,
-          "createdBy": "ckapcmx0k0000hrpvgznk9zwc",
-          "modified": 1527470375.8224823,
-          "modifiedBy": "ckapcmx0k0000hrpvgznk9zwc"
+          "created": 1527643845.768597,
+          "createdBy": "ckas82m2300008vpv21u021zi",
+          "modified": 1527643862.3048942,
+          "modifiedBy": "ckas82m2300008vpv21u021zi"
         },
         {
-          "id": "ckapcmx25000fhrpvs1cf13eh",
+          "id": "ckas82m3t000f8vpvh0otpfam",
           "name": "Big Tree",
-          "parentId": "ckapcmx24000chrpv158igflx",
+          "parentId": "ckas82m3t000c8vpvsxrokazx",
           "children": [],
-          "created": 1527470132.3800714,
-          "createdBy": "ckapcmx0k0000hrpvgznk9zwc",
-          "modified": 1527470472.483438,
-          "modifiedBy": "ckapcmx0k0000hrpvgznk9zwc"
+          "created": 1527643845.768597,
+          "createdBy": "ckas82m2300008vpv21u021zi",
+          "modified": 1527644052.9463005,
+          "modifiedBy": "ckas82m2300008vpv21u021zi"
         },
         {
-          "id": "ckapcmx25000ghrpv0ra6nr01",
+          "id": "ckas82m3t000g8vpvd6sueewr",
           "name": "Inner Light",
-          "parentId": "ckapcmx24000chrpv158igflx",
+          "parentId": "ckas82m3t000c8vpvsxrokazx",
           "children": [],
-          "created": 1527470132.3800714,
-          "createdBy": "ckapcmx0k0000hrpvgznk9zwc",
-          "modified": 1527470378.5471952,
-          "modifiedBy": "ckapcmx0k0000hrpvgznk9zwc"
+          "created": 1527643845.768597,
+          "createdBy": "ckas82m2300008vpv21u021zi",
+          "modified": 1527644051.0919752,
+          "modifiedBy": "ckas82m2300008vpv21u021zi"
         }
       ],
-      "created": 1527470109.6221488,
-      "createdBy": "ckapcmx0k0000hrpvgznk9zwc",
-      "modified": 1527470243.3421118,
-      "modifiedBy": "ckapcmx0k0000hrpvgznk9zwc"
+      "created": 1527643824.394394,
+      "createdBy": "ckas82m2300008vpv21u021zi",
+      "modified": 1527644010.90485,
+      "modifiedBy": "ckas82m2300008vpv21u021zi"
     },
     {
-      "id": "ckapcmx24000dhrpvk7jm11a8",
+      "id": "ckas82m3t000d8vpvw8i5zryc",
       "name": "Freelancing",
       "parentId": "work",
       "children": [
         {
-          "id": "ckapcmx25000hhrpva3fiwcre",
+          "id": "ckas82m3t000h8vpv0oqfxxrz",
           "name": "Funky Veggies",
-          "parentId": "ckapcmx24000dhrpvk7jm11a8",
+          "parentId": "ckas82m3t000d8vpvw8i5zryc",
           "children": [],
-          "created": 1527470128.6000473,
-          "createdBy": "ckapcmx0k0000hrpvgznk9zwc",
-          "modified": 1527470223.855392,
-          "modifiedBy": "ckapcmx0k0000hrpvgznk9zwc"
+          "created": 1527643846.7346659,
+          "createdBy": "ckas82m2300008vpv21u021zi",
+          "modified": 1527644135.0790038,
+          "modifiedBy": "ckas82m2300008vpv21u021zi"
         },
         {
-          "id": "ckapcmx25000ihrpvd441pfm5",
+          "id": "ckas82m3t000i8vpv7sladw8f",
           "name": "Jojo Lapin & sons",
-          "parentId": "ckapcmx24000dhrpvk7jm11a8",
+          "parentId": "ckas82m3t000d8vpvw8i5zryc",
           "children": [],
-          "created": 1527470128.6000473,
-          "createdBy": "ckapcmx0k0000hrpvgznk9zwc",
-          "modified": 1527470347.7627547,
-          "modifiedBy": "ckapcmx0k0000hrpvgznk9zwc"
+          "created": 1527643846.7346659,
+          "createdBy": "ckas82m2300008vpv21u021zi",
+          "modified": 1527643923.281,
+          "modifiedBy": "ckas82m2300008vpv21u021zi"
         }
       ],
-      "created": 1527470109.6221488,
-      "createdBy": "ckapcmx0k0000hrpvgznk9zwc",
-      "modified": 1527470169.640634,
-      "modifiedBy": "ckapcmx0k0000hrpvgznk9zwc"
+      "created": 1527643824.394394,
+      "createdBy": "ckas82m2300008vpv21u021zi",
+      "modified": 1527643923.9380078,
+      "modifiedBy": "ckas82m2300008vpv21u021zi"
     }
   ]
 }</code></pre></div><div class="tab-pane http"><pre><code>curl -i "https://${token}@${username}.pryv.me/streams&parentId=work"</code></pre><div class="step-marker">⬇</div><pre><code>HTTP/1.1 200 OK
@@ -2277,152 +2279,152 @@ API-Version: 1.5.4
 {
   "streams": [
     {
-      "id": "ckapcmx24000chrpv158igflx",
+      "id": "ckas82m3t000c8vpvsxrokazx",
       "name": "Noble Works Co.",
       "parentId": "work",
       "children": [
         {
-          "id": "ckapcmx24000ehrpv3a3a8oiq",
+          "id": "ckas82m3t000e8vpviw3l3z5o",
           "name": "Last Be First",
-          "parentId": "ckapcmx24000chrpv158igflx",
+          "parentId": "ckas82m3t000c8vpvsxrokazx",
           "children": [],
-          "created": 1527470132.3800714,
-          "createdBy": "ckapcmx0k0000hrpvgznk9zwc",
-          "modified": 1527470375.8224823,
-          "modifiedBy": "ckapcmx0k0000hrpvgznk9zwc"
+          "created": 1527643845.768597,
+          "createdBy": "ckas82m2300008vpv21u021zi",
+          "modified": 1527643862.3048942,
+          "modifiedBy": "ckas82m2300008vpv21u021zi"
         },
         {
-          "id": "ckapcmx25000fhrpvs1cf13eh",
+          "id": "ckas82m3t000f8vpvh0otpfam",
           "name": "Big Tree",
-          "parentId": "ckapcmx24000chrpv158igflx",
+          "parentId": "ckas82m3t000c8vpvsxrokazx",
           "children": [],
-          "created": 1527470132.3800714,
-          "createdBy": "ckapcmx0k0000hrpvgznk9zwc",
-          "modified": 1527470472.483438,
-          "modifiedBy": "ckapcmx0k0000hrpvgznk9zwc"
+          "created": 1527643845.768597,
+          "createdBy": "ckas82m2300008vpv21u021zi",
+          "modified": 1527644052.9463005,
+          "modifiedBy": "ckas82m2300008vpv21u021zi"
         },
         {
-          "id": "ckapcmx25000ghrpv0ra6nr01",
+          "id": "ckas82m3t000g8vpvd6sueewr",
           "name": "Inner Light",
-          "parentId": "ckapcmx24000chrpv158igflx",
+          "parentId": "ckas82m3t000c8vpvsxrokazx",
           "children": [],
-          "created": 1527470132.3800714,
-          "createdBy": "ckapcmx0k0000hrpvgznk9zwc",
-          "modified": 1527470378.5471952,
-          "modifiedBy": "ckapcmx0k0000hrpvgznk9zwc"
+          "created": 1527643845.768597,
+          "createdBy": "ckas82m2300008vpv21u021zi",
+          "modified": 1527644051.0919752,
+          "modifiedBy": "ckas82m2300008vpv21u021zi"
         }
       ],
-      "created": 1527470109.6221488,
-      "createdBy": "ckapcmx0k0000hrpvgznk9zwc",
-      "modified": 1527470243.3421118,
-      "modifiedBy": "ckapcmx0k0000hrpvgznk9zwc"
+      "created": 1527643824.394394,
+      "createdBy": "ckas82m2300008vpv21u021zi",
+      "modified": 1527644010.90485,
+      "modifiedBy": "ckas82m2300008vpv21u021zi"
     },
     {
-      "id": "ckapcmx24000dhrpvk7jm11a8",
+      "id": "ckas82m3t000d8vpvw8i5zryc",
       "name": "Freelancing",
       "parentId": "work",
       "children": [
         {
-          "id": "ckapcmx25000hhrpva3fiwcre",
+          "id": "ckas82m3t000h8vpv0oqfxxrz",
           "name": "Funky Veggies",
-          "parentId": "ckapcmx24000dhrpvk7jm11a8",
+          "parentId": "ckas82m3t000d8vpvw8i5zryc",
           "children": [],
-          "created": 1527470128.6000473,
-          "createdBy": "ckapcmx0k0000hrpvgznk9zwc",
-          "modified": 1527470223.855392,
-          "modifiedBy": "ckapcmx0k0000hrpvgznk9zwc"
+          "created": 1527643846.7346659,
+          "createdBy": "ckas82m2300008vpv21u021zi",
+          "modified": 1527644135.0790038,
+          "modifiedBy": "ckas82m2300008vpv21u021zi"
         },
         {
-          "id": "ckapcmx25000ihrpvd441pfm5",
+          "id": "ckas82m3t000i8vpv7sladw8f",
           "name": "Jojo Lapin & sons",
-          "parentId": "ckapcmx24000dhrpvk7jm11a8",
+          "parentId": "ckas82m3t000d8vpvw8i5zryc",
           "children": [],
-          "created": 1527470128.6000473,
-          "createdBy": "ckapcmx0k0000hrpvgznk9zwc",
-          "modified": 1527470347.7627547,
-          "modifiedBy": "ckapcmx0k0000hrpvgznk9zwc"
+          "created": 1527643846.7346659,
+          "createdBy": "ckas82m2300008vpv21u021zi",
+          "modified": 1527643923.281,
+          "modifiedBy": "ckas82m2300008vpv21u021zi"
         }
       ],
-      "created": 1527470109.6221488,
-      "createdBy": "ckapcmx0k0000hrpvgznk9zwc",
-      "modified": 1527470169.640634,
-      "modifiedBy": "ckapcmx0k0000hrpvgznk9zwc"
+      "created": 1527643824.394394,
+      "createdBy": "ckas82m2300008vpv21u021zi",
+      "modified": 1527643923.9380078,
+      "modifiedBy": "ckas82m2300008vpv21u021zi"
     }
   ]
 }
 </code></pre></div><div class="tab-pane sockets"><pre><code>socket.emit('streams.get', {"parentId":"work"}, callback);</code></pre><div class="step-marker">⬇</div><pre><code>{
   "streams": [
     {
-      "id": "ckapcmx24000chrpv158igflx",
+      "id": "ckas82m3t000c8vpvsxrokazx",
       "name": "Noble Works Co.",
       "parentId": "work",
       "children": [
         {
-          "id": "ckapcmx24000ehrpv3a3a8oiq",
+          "id": "ckas82m3t000e8vpviw3l3z5o",
           "name": "Last Be First",
-          "parentId": "ckapcmx24000chrpv158igflx",
+          "parentId": "ckas82m3t000c8vpvsxrokazx",
           "children": [],
-          "created": 1527470132.3800714,
-          "createdBy": "ckapcmx0k0000hrpvgznk9zwc",
-          "modified": 1527470375.8224823,
-          "modifiedBy": "ckapcmx0k0000hrpvgznk9zwc"
+          "created": 1527643845.768597,
+          "createdBy": "ckas82m2300008vpv21u021zi",
+          "modified": 1527643862.3048942,
+          "modifiedBy": "ckas82m2300008vpv21u021zi"
         },
         {
-          "id": "ckapcmx25000fhrpvs1cf13eh",
+          "id": "ckas82m3t000f8vpvh0otpfam",
           "name": "Big Tree",
-          "parentId": "ckapcmx24000chrpv158igflx",
+          "parentId": "ckas82m3t000c8vpvsxrokazx",
           "children": [],
-          "created": 1527470132.3800714,
-          "createdBy": "ckapcmx0k0000hrpvgznk9zwc",
-          "modified": 1527470472.483438,
-          "modifiedBy": "ckapcmx0k0000hrpvgznk9zwc"
+          "created": 1527643845.768597,
+          "createdBy": "ckas82m2300008vpv21u021zi",
+          "modified": 1527644052.9463005,
+          "modifiedBy": "ckas82m2300008vpv21u021zi"
         },
         {
-          "id": "ckapcmx25000ghrpv0ra6nr01",
+          "id": "ckas82m3t000g8vpvd6sueewr",
           "name": "Inner Light",
-          "parentId": "ckapcmx24000chrpv158igflx",
+          "parentId": "ckas82m3t000c8vpvsxrokazx",
           "children": [],
-          "created": 1527470132.3800714,
-          "createdBy": "ckapcmx0k0000hrpvgznk9zwc",
-          "modified": 1527470378.5471952,
-          "modifiedBy": "ckapcmx0k0000hrpvgznk9zwc"
+          "created": 1527643845.768597,
+          "createdBy": "ckas82m2300008vpv21u021zi",
+          "modified": 1527644051.0919752,
+          "modifiedBy": "ckas82m2300008vpv21u021zi"
         }
       ],
-      "created": 1527470109.6221488,
-      "createdBy": "ckapcmx0k0000hrpvgznk9zwc",
-      "modified": 1527470243.3421118,
-      "modifiedBy": "ckapcmx0k0000hrpvgznk9zwc"
+      "created": 1527643824.394394,
+      "createdBy": "ckas82m2300008vpv21u021zi",
+      "modified": 1527644010.90485,
+      "modifiedBy": "ckas82m2300008vpv21u021zi"
     },
     {
-      "id": "ckapcmx24000dhrpvk7jm11a8",
+      "id": "ckas82m3t000d8vpvw8i5zryc",
       "name": "Freelancing",
       "parentId": "work",
       "children": [
         {
-          "id": "ckapcmx25000hhrpva3fiwcre",
+          "id": "ckas82m3t000h8vpv0oqfxxrz",
           "name": "Funky Veggies",
-          "parentId": "ckapcmx24000dhrpvk7jm11a8",
+          "parentId": "ckas82m3t000d8vpvw8i5zryc",
           "children": [],
-          "created": 1527470128.6000473,
-          "createdBy": "ckapcmx0k0000hrpvgznk9zwc",
-          "modified": 1527470223.855392,
-          "modifiedBy": "ckapcmx0k0000hrpvgznk9zwc"
+          "created": 1527643846.7346659,
+          "createdBy": "ckas82m2300008vpv21u021zi",
+          "modified": 1527644135.0790038,
+          "modifiedBy": "ckas82m2300008vpv21u021zi"
         },
         {
-          "id": "ckapcmx25000ihrpvd441pfm5",
+          "id": "ckas82m3t000i8vpv7sladw8f",
           "name": "Jojo Lapin & sons",
-          "parentId": "ckapcmx24000dhrpvk7jm11a8",
+          "parentId": "ckas82m3t000d8vpvw8i5zryc",
           "children": [],
-          "created": 1527470128.6000473,
-          "createdBy": "ckapcmx0k0000hrpvgznk9zwc",
-          "modified": 1527470347.7627547,
-          "modifiedBy": "ckapcmx0k0000hrpvgznk9zwc"
+          "created": 1527643846.7346659,
+          "createdBy": "ckas82m2300008vpv21u021zi",
+          "modified": 1527643923.281,
+          "modifiedBy": "ckas82m2300008vpv21u021zi"
         }
       ],
-      "created": 1527470109.6221488,
-      "createdBy": "ckapcmx0k0000hrpvgznk9zwc",
-      "modified": 1527470169.640634,
-      "modifiedBy": "ckapcmx0k0000hrpvgznk9zwc"
+      "created": 1527643824.394394,
+      "createdBy": "ckas82m2300008vpv21u021zi",
+      "modified": 1527643923.9380078,
+      "modifiedBy": "ckas82m2300008vpv21u021zi"
     }
   ]
 }</code></pre></div><div class="tab-pane httpAuth"><pre><code>curl -i "https://${username}.pryv.me/streams?auth=${token}&parentId=work"</code></pre><div class="step-marker">⬇</div><pre><code>HTTP/1.1 200 OK
@@ -2432,76 +2434,76 @@ API-Version: 1.5.4
 {
   "streams": [
     {
-      "id": "ckapcmx24000chrpv158igflx",
+      "id": "ckas82m3t000c8vpvsxrokazx",
       "name": "Noble Works Co.",
       "parentId": "work",
       "children": [
         {
-          "id": "ckapcmx24000ehrpv3a3a8oiq",
+          "id": "ckas82m3t000e8vpviw3l3z5o",
           "name": "Last Be First",
-          "parentId": "ckapcmx24000chrpv158igflx",
+          "parentId": "ckas82m3t000c8vpvsxrokazx",
           "children": [],
-          "created": 1527470132.3800714,
-          "createdBy": "ckapcmx0k0000hrpvgznk9zwc",
-          "modified": 1527470375.8224823,
-          "modifiedBy": "ckapcmx0k0000hrpvgznk9zwc"
+          "created": 1527643845.768597,
+          "createdBy": "ckas82m2300008vpv21u021zi",
+          "modified": 1527643862.3048942,
+          "modifiedBy": "ckas82m2300008vpv21u021zi"
         },
         {
-          "id": "ckapcmx25000fhrpvs1cf13eh",
+          "id": "ckas82m3t000f8vpvh0otpfam",
           "name": "Big Tree",
-          "parentId": "ckapcmx24000chrpv158igflx",
+          "parentId": "ckas82m3t000c8vpvsxrokazx",
           "children": [],
-          "created": 1527470132.3800714,
-          "createdBy": "ckapcmx0k0000hrpvgznk9zwc",
-          "modified": 1527470472.483438,
-          "modifiedBy": "ckapcmx0k0000hrpvgznk9zwc"
+          "created": 1527643845.768597,
+          "createdBy": "ckas82m2300008vpv21u021zi",
+          "modified": 1527644052.9463005,
+          "modifiedBy": "ckas82m2300008vpv21u021zi"
         },
         {
-          "id": "ckapcmx25000ghrpv0ra6nr01",
+          "id": "ckas82m3t000g8vpvd6sueewr",
           "name": "Inner Light",
-          "parentId": "ckapcmx24000chrpv158igflx",
+          "parentId": "ckas82m3t000c8vpvsxrokazx",
           "children": [],
-          "created": 1527470132.3800714,
-          "createdBy": "ckapcmx0k0000hrpvgznk9zwc",
-          "modified": 1527470378.5471952,
-          "modifiedBy": "ckapcmx0k0000hrpvgznk9zwc"
+          "created": 1527643845.768597,
+          "createdBy": "ckas82m2300008vpv21u021zi",
+          "modified": 1527644051.0919752,
+          "modifiedBy": "ckas82m2300008vpv21u021zi"
         }
       ],
-      "created": 1527470109.6221488,
-      "createdBy": "ckapcmx0k0000hrpvgznk9zwc",
-      "modified": 1527470243.3421118,
-      "modifiedBy": "ckapcmx0k0000hrpvgznk9zwc"
+      "created": 1527643824.394394,
+      "createdBy": "ckas82m2300008vpv21u021zi",
+      "modified": 1527644010.90485,
+      "modifiedBy": "ckas82m2300008vpv21u021zi"
     },
     {
-      "id": "ckapcmx24000dhrpvk7jm11a8",
+      "id": "ckas82m3t000d8vpvw8i5zryc",
       "name": "Freelancing",
       "parentId": "work",
       "children": [
         {
-          "id": "ckapcmx25000hhrpva3fiwcre",
+          "id": "ckas82m3t000h8vpv0oqfxxrz",
           "name": "Funky Veggies",
-          "parentId": "ckapcmx24000dhrpvk7jm11a8",
+          "parentId": "ckas82m3t000d8vpvw8i5zryc",
           "children": [],
-          "created": 1527470128.6000473,
-          "createdBy": "ckapcmx0k0000hrpvgznk9zwc",
-          "modified": 1527470223.855392,
-          "modifiedBy": "ckapcmx0k0000hrpvgznk9zwc"
+          "created": 1527643846.7346659,
+          "createdBy": "ckas82m2300008vpv21u021zi",
+          "modified": 1527644135.0790038,
+          "modifiedBy": "ckas82m2300008vpv21u021zi"
         },
         {
-          "id": "ckapcmx25000ihrpvd441pfm5",
+          "id": "ckas82m3t000i8vpv7sladw8f",
           "name": "Jojo Lapin & sons",
-          "parentId": "ckapcmx24000dhrpvk7jm11a8",
+          "parentId": "ckas82m3t000d8vpvw8i5zryc",
           "children": [],
-          "created": 1527470128.6000473,
-          "createdBy": "ckapcmx0k0000hrpvgznk9zwc",
-          "modified": 1527470347.7627547,
-          "modifiedBy": "ckapcmx0k0000hrpvgznk9zwc"
+          "created": 1527643846.7346659,
+          "createdBy": "ckas82m2300008vpv21u021zi",
+          "modified": 1527643923.281,
+          "modifiedBy": "ckas82m2300008vpv21u021zi"
         }
       ],
-      "created": 1527470109.6221488,
-      "createdBy": "ckapcmx0k0000hrpvgznk9zwc",
-      "modified": 1527470169.640634,
-      "modifiedBy": "ckapcmx0k0000hrpvgznk9zwc"
+      "created": 1527643824.394394,
+      "createdBy": "ckas82m2300008vpv21u021zi",
+      "modified": 1527643923.9380078,
+      "modifiedBy": "ckas82m2300008vpv21u021zi"
     }
   ]
 }
@@ -2525,10 +2527,10 @@ API-Version: 1.5.4
     "name": "Diastolic pressure",
     "parentId": "heart",
     "children": [],
-    "created": 1590583984.349,
-    "createdBy": "ckapcmx0l0001hrpvpgjpdplt",
-    "modified": 1590583984.349,
-    "modifiedBy": "ckapcmx0l0001hrpvpgjpdplt"
+    "created": 1590757717.097,
+    "createdBy": "ckas82m2300018vpvn8vg4lfj",
+    "modified": 1590757717.097,
+    "modifiedBy": "ckas82m2300018vpvn8vg4lfj"
   }
 }</code></pre></div><div class="tab-pane http"><pre><code>curl -i -X POST -H 'Content-Type: application/json' -d '{"id":"diastolic","name":"Diastolic pressure","parentId":"heart"}' "https://${token}@${username}.pryv.me/streams"</code></pre><div class="step-marker">⬇</div><pre><code>HTTP/1.1 201 Created
 Content-Type: application/json; charset=utf-8
@@ -2540,10 +2542,10 @@ API-Version: 1.5.4
     "name": "Diastolic pressure",
     "parentId": "heart",
     "children": [],
-    "created": 1590583984.349,
-    "createdBy": "ckapcmx0l0001hrpvpgjpdplt",
-    "modified": 1590583984.349,
-    "modifiedBy": "ckapcmx0l0001hrpvpgjpdplt"
+    "created": 1590757717.097,
+    "createdBy": "ckas82m2300018vpvn8vg4lfj",
+    "modified": 1590757717.097,
+    "modifiedBy": "ckas82m2300018vpvn8vg4lfj"
   }
 }
 </code></pre></div><div class="tab-pane sockets"><pre><code>socket.emit('streams.create', {"id":"diastolic","name":"Diastolic pressure","parentId":"heart"}, callback);</code></pre><div class="step-marker">⬇</div><pre><code>{
@@ -2552,10 +2554,10 @@ API-Version: 1.5.4
     "name": "Diastolic pressure",
     "parentId": "heart",
     "children": [],
-    "created": 1590583984.349,
-    "createdBy": "ckapcmx0l0001hrpvpgjpdplt",
-    "modified": 1590583984.349,
-    "modifiedBy": "ckapcmx0l0001hrpvpgjpdplt"
+    "created": 1590757717.097,
+    "createdBy": "ckas82m2300018vpvn8vg4lfj",
+    "modified": 1590757717.097,
+    "modifiedBy": "ckas82m2300018vpvn8vg4lfj"
   }
 }</code></pre></div><div class="tab-pane httpAuth"><pre><code>curl -i -X POST -H 'Content-Type: application/json' -d '{"id":"diastolic","name":"Diastolic pressure","parentId":"heart"}' "https://${username}.pryv.me/streams?auth=${token}"</code></pre><div class="step-marker">⬇</div><pre><code>HTTP/1.1 201 Created
 Content-Type: application/json; charset=utf-8
@@ -2567,10 +2569,10 @@ API-Version: 1.5.4
     "name": "Diastolic pressure",
     "parentId": "heart",
     "children": [],
-    "created": 1590583984.349,
-    "createdBy": "ckapcmx0l0001hrpvpgjpdplt",
-    "modified": 1590583984.349,
-    "modifiedBy": "ckapcmx0l0001hrpvpgjpdplt"
+    "created": 1590757717.097,
+    "createdBy": "ckas82m2300018vpvn8vg4lfj",
+    "modified": 1590757717.097,
+    "modifiedBy": "ckas82m2300018vpvn8vg4lfj"
   }
 }
 </code></pre></div></div></div></aside></section><!-- it's either:--><!-- !trusted & !preview--><!-- !preview & -full--><!-- -preview--><section id="methods-streams-streams-update" class="method"> <h3 id="update-stream">Update stream</h3>
@@ -2589,12 +2591,12 @@ API-Version: 1.5.4
 }</code></pre><div class="step-marker">⬇</div><pre><code>{
   "stream": {
     "name": "Slothing",
-    "modified": 1590583984.584,
-    "modifiedBy": "ckapcmx0l0001hrpvpgjpdplt",
+    "modified": 1590757717.32,
+    "modifiedBy": "ckas82m2300018vpvn8vg4lfj",
     "id": "sport",
     "parentId": null,
-    "created": 1527470080.349,
-    "createdBy": "ckapcmx0k0000hrpvgznk9zwc"
+    "created": 1527643813.097,
+    "createdBy": "ckas82m2300008vpv21u021zi"
   }
 }</code></pre></div><div class="tab-pane http"><pre><code>curl -i -X PUT -H 'Content-Type: application/json' -d '{"name":"Slothing"}' "https://${token}@${username}.pryv.me/streams/sport"</code></pre><div class="step-marker">⬇</div><pre><code>HTTP/1.1 200 OK
 Content-Type: application/json; charset=utf-8
@@ -2603,23 +2605,23 @@ API-Version: 1.5.4
 {
   "stream": {
     "name": "Slothing",
-    "modified": 1590583984.584,
-    "modifiedBy": "ckapcmx0l0001hrpvpgjpdplt",
+    "modified": 1590757717.32,
+    "modifiedBy": "ckas82m2300018vpvn8vg4lfj",
     "id": "sport",
     "parentId": null,
-    "created": 1527470080.349,
-    "createdBy": "ckapcmx0k0000hrpvgznk9zwc"
+    "created": 1527643813.097,
+    "createdBy": "ckas82m2300008vpv21u021zi"
   }
 }
 </code></pre></div><div class="tab-pane sockets"><pre><code>socket.emit('streams.update', {"id":"sport","update":{"name":"Slothing"}}, callback);</code></pre><div class="step-marker">⬇</div><pre><code>{
   "stream": {
     "name": "Slothing",
-    "modified": 1590583984.584,
-    "modifiedBy": "ckapcmx0l0001hrpvpgjpdplt",
+    "modified": 1590757717.32,
+    "modifiedBy": "ckas82m2300018vpvn8vg4lfj",
     "id": "sport",
     "parentId": null,
-    "created": 1527470080.349,
-    "createdBy": "ckapcmx0k0000hrpvgznk9zwc"
+    "created": 1527643813.097,
+    "createdBy": "ckas82m2300008vpv21u021zi"
   }
 }</code></pre></div><div class="tab-pane httpAuth"><pre><code>curl -i -X PUT -H 'Content-Type: application/json' -d '{"name":"Slothing"}' "https://${username}.pryv.me/streams/sport?auth=${token}"</code></pre><div class="step-marker">⬇</div><pre><code>HTTP/1.1 200 OK
 Content-Type: application/json; charset=utf-8
@@ -2628,12 +2630,12 @@ API-Version: 1.5.4
 {
   "stream": {
     "name": "Slothing",
-    "modified": 1590583984.584,
-    "modifiedBy": "ckapcmx0l0001hrpvpgjpdplt",
+    "modified": 1590757717.32,
+    "modifiedBy": "ckas82m2300018vpvn8vg4lfj",
     "id": "sport",
     "parentId": null,
-    "created": 1527470080.349,
-    "createdBy": "ckapcmx0k0000hrpvgznk9zwc"
+    "created": 1527643813.097,
+    "createdBy": "ckas82m2300008vpv21u021zi"
   }
 }
 </code></pre></div></div></div></aside></section><!-- it's either:--><!-- !trusted & !preview--><!-- !preview & -full--><!-- -preview--><section id="methods-streams-streams-delete" class="method"> <h3 id="delete-stream">Delete stream</h3>
@@ -2655,14 +2657,14 @@ API-Version: 1.5.4
 }</code></pre><div class="step-marker">⬇</div><pre><code>{
   "stream": {
     "trashed": true,
-    "modified": 1590583984.584,
-    "modifiedBy": "ckapcmx0l0001hrpvpgjpdplt",
+    "modified": 1590757717.32,
+    "modifiedBy": "ckas82m2300018vpvn8vg4lfj",
     "id": "weight",
     "name": "Weight",
     "parentId": "health",
     "children": [],
-    "created": 1527470080.8757682,
-    "createdBy": "ckapcmx0k0000hrpvgznk9zwc"
+    "created": 1527643815.9547598,
+    "createdBy": "ckas82m2300008vpv21u021zi"
   }
 }</code></pre></div><div class="tab-pane http"><pre><code>curl -i -X DELETE "https://${token}@${username}.pryv.me/streams/weight"</code></pre><div class="step-marker">⬇</div><pre><code>HTTP/1.1 200 OK
 Content-Type: application/json; charset=utf-8
@@ -2671,27 +2673,27 @@ API-Version: 1.5.4
 {
   "stream": {
     "trashed": true,
-    "modified": 1590583984.584,
-    "modifiedBy": "ckapcmx0l0001hrpvpgjpdplt",
+    "modified": 1590757717.32,
+    "modifiedBy": "ckas82m2300018vpvn8vg4lfj",
     "id": "weight",
     "name": "Weight",
     "parentId": "health",
     "children": [],
-    "created": 1527470080.8757682,
-    "createdBy": "ckapcmx0k0000hrpvgznk9zwc"
+    "created": 1527643815.9547598,
+    "createdBy": "ckas82m2300008vpv21u021zi"
   }
 }
 </code></pre></div><div class="tab-pane sockets"><pre><code>socket.emit('streams.delete', {"id":"weight"}, callback);</code></pre><div class="step-marker">⬇</div><pre><code>{
   "stream": {
     "trashed": true,
-    "modified": 1590583984.584,
-    "modifiedBy": "ckapcmx0l0001hrpvpgjpdplt",
+    "modified": 1590757717.32,
+    "modifiedBy": "ckas82m2300018vpvn8vg4lfj",
     "id": "weight",
     "name": "Weight",
     "parentId": "health",
     "children": [],
-    "created": 1527470080.8757682,
-    "createdBy": "ckapcmx0k0000hrpvgznk9zwc"
+    "created": 1527643815.9547598,
+    "createdBy": "ckas82m2300008vpv21u021zi"
   }
 }</code></pre></div><div class="tab-pane httpAuth"><pre><code>curl -i -X DELETE "https://${username}.pryv.me/streams/weight?auth=${token}"</code></pre><div class="step-marker">⬇</div><pre><code>HTTP/1.1 200 OK
 Content-Type: application/json; charset=utf-8
@@ -2700,14 +2702,14 @@ API-Version: 1.5.4
 {
   "stream": {
     "trashed": true,
-    "modified": 1590583984.584,
-    "modifiedBy": "ckapcmx0l0001hrpvpgjpdplt",
+    "modified": 1590757717.32,
+    "modifiedBy": "ckas82m2300018vpvn8vg4lfj",
     "id": "weight",
     "name": "Weight",
     "parentId": "health",
     "children": [],
-    "created": 1527470080.8757682,
-    "createdBy": "ckapcmx0k0000hrpvgznk9zwc"
+    "created": 1527643815.9547598,
+    "createdBy": "ckas82m2300008vpv21u021zi"
   }
 }
 </code></pre></div></div></div><div class="example"><p>Deleting</p>
@@ -2756,8 +2758,8 @@ the <code>includeExpired</code> parameter.</p>
 </div></td></tr></table></div><aside><div class="example"><div class="tab-content"><div class="tab-pane json active"><pre><code>{}</code></pre><div class="step-marker">⬇</div><pre><code>{
   "accesses": [
     {
-      "id": "ckapcmx0l0004hrpv636r3ms0",
-      "token": "ckapcmx0l0005hrpv0w800drg",
+      "id": "ckas82m2400048vpv2h6x79gq",
+      "token": "ckas82m2400058vpvsrsvw7sp",
       "type": "shared",
       "name": "Arthur",
       "permissions": [
@@ -2766,10 +2768,10 @@ the <code>includeExpired</code> parameter.</p>
           "level": "contribute"
         }
       ],
-      "created": 1590540784.293,
-      "createdBy": "ckapcmx0l0001hrpvpgjpdplt",
-      "modified": 1590540784.293,
-      "modifiedBy": "ckapcmx0l0001hrpvpgjpdplt"
+      "created": 1590714517.036,
+      "createdBy": "ckas82m2300018vpvn8vg4lfj",
+      "modified": 1590714517.036,
+      "modifiedBy": "ckas82m2300018vpvn8vg4lfj"
     }
   ]
 }</code></pre></div><div class="tab-pane http"><pre><code>curl -i "https://${token}@${username}.pryv.me/accesses"</code></pre><div class="step-marker">⬇</div><pre><code>HTTP/1.1 200 OK
@@ -2779,8 +2781,8 @@ API-Version: 1.5.4
 {
   "accesses": [
     {
-      "id": "ckapcmx0l0004hrpv636r3ms0",
-      "token": "ckapcmx0l0005hrpv0w800drg",
+      "id": "ckas82m2400048vpv2h6x79gq",
+      "token": "ckas82m2400058vpvsrsvw7sp",
       "type": "shared",
       "name": "Arthur",
       "permissions": [
@@ -2789,18 +2791,18 @@ API-Version: 1.5.4
           "level": "contribute"
         }
       ],
-      "created": 1590540784.293,
-      "createdBy": "ckapcmx0l0001hrpvpgjpdplt",
-      "modified": 1590540784.293,
-      "modifiedBy": "ckapcmx0l0001hrpvpgjpdplt"
+      "created": 1590714517.036,
+      "createdBy": "ckas82m2300018vpvn8vg4lfj",
+      "modified": 1590714517.036,
+      "modifiedBy": "ckas82m2300018vpvn8vg4lfj"
     }
   ]
 }
 </code></pre></div><div class="tab-pane sockets"><pre><code>socket.emit('accesses.get', {}, callback);</code></pre><div class="step-marker">⬇</div><pre><code>{
   "accesses": [
     {
-      "id": "ckapcmx0l0004hrpv636r3ms0",
-      "token": "ckapcmx0l0005hrpv0w800drg",
+      "id": "ckas82m2400048vpv2h6x79gq",
+      "token": "ckas82m2400058vpvsrsvw7sp",
       "type": "shared",
       "name": "Arthur",
       "permissions": [
@@ -2809,10 +2811,10 @@ API-Version: 1.5.4
           "level": "contribute"
         }
       ],
-      "created": 1590540784.293,
-      "createdBy": "ckapcmx0l0001hrpvpgjpdplt",
-      "modified": 1590540784.293,
-      "modifiedBy": "ckapcmx0l0001hrpvpgjpdplt"
+      "created": 1590714517.036,
+      "createdBy": "ckas82m2300018vpvn8vg4lfj",
+      "modified": 1590714517.036,
+      "modifiedBy": "ckas82m2300018vpvn8vg4lfj"
     }
   ]
 }</code></pre></div><div class="tab-pane httpAuth"><pre><code>curl -i "https://${username}.pryv.me/accesses?auth=${token}"</code></pre><div class="step-marker">⬇</div><pre><code>HTTP/1.1 200 OK
@@ -2822,8 +2824,8 @@ API-Version: 1.5.4
 {
   "accesses": [
     {
-      "id": "ckapcmx0l0004hrpv636r3ms0",
-      "token": "ckapcmx0l0005hrpv0w800drg",
+      "id": "ckas82m2400048vpv2h6x79gq",
+      "token": "ckas82m2400058vpvsrsvw7sp",
       "type": "shared",
       "name": "Arthur",
       "permissions": [
@@ -2832,10 +2834,10 @@ API-Version: 1.5.4
           "level": "contribute"
         }
       ],
-      "created": 1590540784.293,
-      "createdBy": "ckapcmx0l0001hrpvpgjpdplt",
-      "modified": 1590540784.293,
-      "modifiedBy": "ckapcmx0l0001hrpvpgjpdplt"
+      "created": 1590714517.036,
+      "createdBy": "ckas82m2300018vpvn8vg4lfj",
+      "modified": 1590714517.036,
+      "modifiedBy": "ckas82m2300018vpvn8vg4lfj"
     }
   ]
 }
@@ -2845,8 +2847,8 @@ API-Version: 1.5.4
 <div class="step-marker">⬇</div><pre><code>{
   "accesses": [
     {
-      "id": "ckapcmx0l0004hrpv636r3ms0",
-      "token": "ckapcmx0l0005hrpv0w800drg",
+      "id": "ckas82m2400048vpv2h6x79gq",
+      "token": "ckas82m2400058vpvsrsvw7sp",
       "type": "shared",
       "name": "Arthur",
       "permissions": [
@@ -2855,16 +2857,16 @@ API-Version: 1.5.4
           "level": "contribute"
         }
       ],
-      "created": 1590540784.293,
-      "createdBy": "ckapcmx0l0001hrpvpgjpdplt",
-      "modified": 1590540784.293,
-      "modifiedBy": "ckapcmx0l0001hrpvpgjpdplt"
+      "created": 1590714517.036,
+      "createdBy": "ckas82m2300018vpvn8vg4lfj",
+      "modified": 1590714517.036,
+      "modifiedBy": "ckas82m2300018vpvn8vg4lfj"
     }
   ],
   "accessDeletions": [
     {
-      "id": "ckapcmx0l0008hrpvwmm9a7im",
-      "token": "ckapcmx0l0009hrpv62q7auce",
+      "id": "ckas82m2400088vpvx1y2f5dh",
+      "token": "ckas82m2400098vpv3u3pi7tp",
       "type": "shared",
       "name": "Health parameters survey",
       "permissions": [
@@ -2873,11 +2875,11 @@ API-Version: 1.5.4
           "level": "read"
         }
       ],
-      "created": 1590583864.293,
-      "createdBy": "ckapcmx0l0001hrpvpgjpdplt",
-      "modified": 1590583864.293,
-      "modifiedBy": "ckapcmx0l0001hrpvpgjpdplt",
-      "deleted": 1590583924.293
+      "created": 1590757597.036,
+      "createdBy": "ckas82m2300018vpvn8vg4lfj",
+      "modified": 1590757597.036,
+      "modifiedBy": "ckas82m2300018vpvn8vg4lfj",
+      "deleted": 1590757657.036
     }
   ]
 }</code></pre></div></aside></section><!-- it's either:--><!-- !trusted & !preview--><!-- !preview & -full--><!-- -preview--><section id="methods-accesses-accesses-create" class="method"> <h3 id="create-access">Create access</h3>
@@ -2898,8 +2900,8 @@ API-Version: 1.5.4
   ]
 }</code></pre><div class="step-marker">⬇</div><pre><code>{
   "access": {
-    "id": "ckapcmx0l0006hrpvbn27zrw9",
-    "token": "ckapcmx0l0007hrpv5wzrgxsn",
+    "id": "ckas82m2400068vpvaneq4to4",
+    "token": "ckas82m2400078vpvtznduc7v",
     "type": "shared",
     "name": "For colleagues",
     "permissions": [
@@ -2908,10 +2910,10 @@ API-Version: 1.5.4
         "level": "read"
       }
     ],
-    "created": 1590583984.293,
-    "createdBy": "ckapcmx0l0001hrpvpgjpdplt",
-    "modified": 1590583984.293,
-    "modifiedBy": "ckapcmx0l0001hrpvpgjpdplt"
+    "created": 1590757717.036,
+    "createdBy": "ckas82m2300018vpvn8vg4lfj",
+    "modified": 1590757717.036,
+    "modifiedBy": "ckas82m2300018vpvn8vg4lfj"
   }
 }</code></pre></div><div class="tab-pane http"><pre><code>curl -i -X POST -H 'Content-Type: application/json' -d '{"name":"For colleagues","permissions":[{"streamId":"work","level":"read"}]}' "https://${token}@${username}.pryv.me/accesses"</code></pre><div class="step-marker">⬇</div><pre><code>HTTP/1.1 201 Created
 Content-Type: application/json; charset=utf-8
@@ -2919,8 +2921,8 @@ API-Version: 1.5.4
 
 {
   "access": {
-    "id": "ckapcmx0l0006hrpvbn27zrw9",
-    "token": "ckapcmx0l0007hrpv5wzrgxsn",
+    "id": "ckas82m2400068vpvaneq4to4",
+    "token": "ckas82m2400078vpvtznduc7v",
     "type": "shared",
     "name": "For colleagues",
     "permissions": [
@@ -2929,16 +2931,16 @@ API-Version: 1.5.4
         "level": "read"
       }
     ],
-    "created": 1590583984.293,
-    "createdBy": "ckapcmx0l0001hrpvpgjpdplt",
-    "modified": 1590583984.293,
-    "modifiedBy": "ckapcmx0l0001hrpvpgjpdplt"
+    "created": 1590757717.036,
+    "createdBy": "ckas82m2300018vpvn8vg4lfj",
+    "modified": 1590757717.036,
+    "modifiedBy": "ckas82m2300018vpvn8vg4lfj"
   }
 }
 </code></pre></div><div class="tab-pane sockets"><pre><code>socket.emit('accesses.create', {"name":"For colleagues","permissions":[{"streamId":"work","level":"read"}]}, callback);</code></pre><div class="step-marker">⬇</div><pre><code>{
   "access": {
-    "id": "ckapcmx0l0006hrpvbn27zrw9",
-    "token": "ckapcmx0l0007hrpv5wzrgxsn",
+    "id": "ckas82m2400068vpvaneq4to4",
+    "token": "ckas82m2400078vpvtznduc7v",
     "type": "shared",
     "name": "For colleagues",
     "permissions": [
@@ -2947,10 +2949,10 @@ API-Version: 1.5.4
         "level": "read"
       }
     ],
-    "created": 1590583984.293,
-    "createdBy": "ckapcmx0l0001hrpvpgjpdplt",
-    "modified": 1590583984.293,
-    "modifiedBy": "ckapcmx0l0001hrpvpgjpdplt"
+    "created": 1590757717.036,
+    "createdBy": "ckas82m2300018vpvn8vg4lfj",
+    "modified": 1590757717.036,
+    "modifiedBy": "ckas82m2300018vpvn8vg4lfj"
   }
 }</code></pre></div><div class="tab-pane httpAuth"><pre><code>curl -i -X POST -H 'Content-Type: application/json' -d '{"name":"For colleagues","permissions":[{"streamId":"work","level":"read"}]}' "https://${username}.pryv.me/accesses?auth=${token}"</code></pre><div class="step-marker">⬇</div><pre><code>HTTP/1.1 201 Created
 Content-Type: application/json; charset=utf-8
@@ -2958,8 +2960,8 @@ API-Version: 1.5.4
 
 {
   "access": {
-    "id": "ckapcmx0l0006hrpvbn27zrw9",
-    "token": "ckapcmx0l0007hrpv5wzrgxsn",
+    "id": "ckas82m2400068vpvaneq4to4",
+    "token": "ckas82m2400078vpvtznduc7v",
     "type": "shared",
     "name": "For colleagues",
     "permissions": [
@@ -2968,10 +2970,10 @@ API-Version: 1.5.4
         "level": "read"
       }
     ],
-    "created": 1590583984.293,
-    "createdBy": "ckapcmx0l0001hrpvpgjpdplt",
-    "modified": 1590583984.293,
-    "modifiedBy": "ckapcmx0l0001hrpvpgjpdplt"
+    "created": 1590757717.036,
+    "createdBy": "ckas82m2300018vpvn8vg4lfj",
+    "modified": 1590757717.036,
+    "modifiedBy": "ckas82m2300018vpvn8vg4lfj"
   }
 }
 </code></pre></div></div></div></aside></section><!-- it's either:--><!-- !trusted & !preview--><!-- !preview & -full--><!-- -preview--><section id="methods-accesses-accesses-delete" class="method"> <h3 id="delete-access">Delete access</h3>
@@ -2981,31 +2983,31 @@ API-Version: 1.5.4
 </div></td></tr></table><h4 id="result">Result</h4>
 <span class="http"><span class="label">HTTP</span><span class="label-value"><code>200 OK</code></span></span><table class="definitions"><tr><th><code>accessDeletion</code></th><td><div class="header"><span class="type"><a href="#data-structure-item-deletion">item deletion</a></span></div><div class="description"><p>The deletion record.</p>
 </div></td></tr></table></div><aside><div class="example"><div class="tab-content"><div class="tab-pane json active"><pre><code>{
-  "id": "ckapcmx0l0004hrpv636r3ms0"
+  "id": "ckas82m2400048vpv2h6x79gq"
 }</code></pre><div class="step-marker">⬇</div><pre><code>{
   "accessDeletion": {
-    "id": "ckapcmx0l0004hrpv636r3ms0"
+    "id": "ckas82m2400048vpv2h6x79gq"
   }
-}</code></pre></div><div class="tab-pane http"><pre><code>curl -i -X DELETE "https://${token}@${username}.pryv.me/accesses/ckapcmx0l0004hrpv636r3ms0"</code></pre><div class="step-marker">⬇</div><pre><code>HTTP/1.1 200 OK
+}</code></pre></div><div class="tab-pane http"><pre><code>curl -i -X DELETE "https://${token}@${username}.pryv.me/accesses/ckas82m2400048vpv2h6x79gq"</code></pre><div class="step-marker">⬇</div><pre><code>HTTP/1.1 200 OK
 Content-Type: application/json; charset=utf-8
 API-Version: 1.5.4
 
 {
   "accessDeletion": {
-    "id": "ckapcmx0l0004hrpv636r3ms0"
+    "id": "ckas82m2400048vpv2h6x79gq"
   }
 }
-</code></pre></div><div class="tab-pane sockets"><pre><code>socket.emit('accesses.delete', {"id":"ckapcmx0l0004hrpv636r3ms0"}, callback);</code></pre><div class="step-marker">⬇</div><pre><code>{
+</code></pre></div><div class="tab-pane sockets"><pre><code>socket.emit('accesses.delete', {"id":"ckas82m2400048vpv2h6x79gq"}, callback);</code></pre><div class="step-marker">⬇</div><pre><code>{
   "accessDeletion": {
-    "id": "ckapcmx0l0004hrpv636r3ms0"
+    "id": "ckas82m2400048vpv2h6x79gq"
   }
-}</code></pre></div><div class="tab-pane httpAuth"><pre><code>curl -i -X DELETE "https://${username}.pryv.me/accesses/ckapcmx0l0004hrpv636r3ms0?auth=${token}"</code></pre><div class="step-marker">⬇</div><pre><code>HTTP/1.1 200 OK
+}</code></pre></div><div class="tab-pane httpAuth"><pre><code>curl -i -X DELETE "https://${username}.pryv.me/accesses/ckas82m2400048vpv2h6x79gq?auth=${token}"</code></pre><div class="step-marker">⬇</div><pre><code>HTTP/1.1 200 OK
 Content-Type: application/json; charset=utf-8
 API-Version: 1.5.4
 
 {
   "accessDeletion": {
-    "id": "ckapcmx0l0004hrpv636r3ms0"
+    "id": "ckas82m2400048vpv2h6x79gq"
   }
 }
 </code></pre></div></div></div></aside></section><!-- it's either:--><!-- !trusted & !preview--><!-- !preview & -full--><!-- -preview--><section id="methods-accesses-accesses-checkApp" class="method"> <h3 id="check-app-authorization">Check app authorization</h3>
@@ -3047,8 +3049,8 @@ For example, <code>status=4</code> will return all logs with status between 400 
 <p>When providing a specific access id, if the result of <a href="#methods-accesses-accesses-get">Get Accesses</a>
 using the provided Authorization token does not contain the given access, then it is not auditable.</p>
 </div></td></tr></table></div><aside><div class="example"><div class="tab-content"><div class="tab-pane json active"><pre><code>{
-  "auth": "ckapcmx2y001mhrpv5g4xdeho",
-  "accessId": "ckapcmx2y001lhrpvrlb3btks",
+  "auth": "ckas82m4o001m8vpvqh7lzqzi",
+  "accessId": "ckas82m4o001l8vpv1nshc6fw",
   "fromTime": 1561000000,
   "toTime": 1562000000,
   "status": 403,
@@ -3059,163 +3061,163 @@ using the provided Authorization token does not contain the given access, then i
 }</code></pre><div class="step-marker">⬇</div><pre><code>{
   "auditLogs": [
     {
-      "id": "ckapcmx2y001nhrpvysaq2hms",
+      "id": "ckas82m4o001n8vpvnokahdpy",
       "type": "audit/core",
       "time": 1561988300,
       "forwardedFor": "172.18.0.7",
       "action": "GET /events",
       "query": "streamId=diary",
-      "accessId": "ckapcmx2y001lhrpvrlb3btks",
+      "accessId": "ckas82m4o001l8vpv1nshc6fw",
       "status": 403,
       "errorMessage": "Access session has expired.",
       "errorId": "forbidden"
     },
     {
-      "id": "ckapcmx2y001ohrpvzkmklsfm",
+      "id": "ckas82m4o001o8vpvozwfjspt",
       "type": "audit/core",
       "time": 1561988900,
       "forwardedFor": "172.18.0.7",
       "action": "GET /events",
       "query": "streamId=diary",
-      "accessId": "ckapcmx2y001lhrpvrlb3btks",
+      "accessId": "ckas82m4o001l8vpv1nshc6fw",
       "status": 403,
       "errorMessage": "Access session has expired.",
       "errorId": "forbidden"
     },
     {
-      "id": "ckapcmx2y001phrpvmc8wme8l",
+      "id": "ckas82m4o001p8vpvz75zq9af",
       "type": "audit/core",
       "time": 1561989200,
       "forwardedFor": "172.18.0.7",
       "action": "GET /events",
       "query": "streamId=work",
-      "accessId": "ckapcmx2y001lhrpvrlb3btks",
+      "accessId": "ckas82m4o001l8vpv1nshc6fw",
       "status": 403,
       "errorMessage": "Access session has expired.",
       "errorId": "forbidden"
     }
   ]
-}</code></pre></div><div class="tab-pane http"><pre><code>curl -i "https://${token}@${username}.pryv.me/audit/logs&auth=ckapcmx2y001mhrpv5g4xdeho&accessId=ckapcmx2y001lhrpvrlb3btks&fromTime=1561000000&toTime=1562000000&status=403&ip=172.18.0.7&httpVerb=GET&resource=/events&errorId=forbidden"</code></pre><div class="step-marker">⬇</div><pre><code>HTTP/1.1 200 OK
+}</code></pre></div><div class="tab-pane http"><pre><code>curl -i "https://${token}@${username}.pryv.me/audit/logs&auth=ckas82m4o001m8vpvqh7lzqzi&accessId=ckas82m4o001l8vpv1nshc6fw&fromTime=1561000000&toTime=1562000000&status=403&ip=172.18.0.7&httpVerb=GET&resource=/events&errorId=forbidden"</code></pre><div class="step-marker">⬇</div><pre><code>HTTP/1.1 200 OK
 Content-Type: application/json; charset=utf-8
 API-Version: 1.5.4
 
 {
   "auditLogs": [
     {
-      "id": "ckapcmx2y001nhrpvysaq2hms",
+      "id": "ckas82m4o001n8vpvnokahdpy",
       "type": "audit/core",
       "time": 1561988300,
       "forwardedFor": "172.18.0.7",
       "action": "GET /events",
       "query": "streamId=diary",
-      "accessId": "ckapcmx2y001lhrpvrlb3btks",
+      "accessId": "ckas82m4o001l8vpv1nshc6fw",
       "status": 403,
       "errorMessage": "Access session has expired.",
       "errorId": "forbidden"
     },
     {
-      "id": "ckapcmx2y001ohrpvzkmklsfm",
+      "id": "ckas82m4o001o8vpvozwfjspt",
       "type": "audit/core",
       "time": 1561988900,
       "forwardedFor": "172.18.0.7",
       "action": "GET /events",
       "query": "streamId=diary",
-      "accessId": "ckapcmx2y001lhrpvrlb3btks",
+      "accessId": "ckas82m4o001l8vpv1nshc6fw",
       "status": 403,
       "errorMessage": "Access session has expired.",
       "errorId": "forbidden"
     },
     {
-      "id": "ckapcmx2y001phrpvmc8wme8l",
+      "id": "ckas82m4o001p8vpvz75zq9af",
       "type": "audit/core",
       "time": 1561989200,
       "forwardedFor": "172.18.0.7",
       "action": "GET /events",
       "query": "streamId=work",
-      "accessId": "ckapcmx2y001lhrpvrlb3btks",
+      "accessId": "ckas82m4o001l8vpv1nshc6fw",
       "status": 403,
       "errorMessage": "Access session has expired.",
       "errorId": "forbidden"
     }
   ]
 }
-</code></pre></div><div class="tab-pane sockets"><pre><code>socket.emit('audit.get', {"auth":"ckapcmx2y001mhrpv5g4xdeho","accessId":"ckapcmx2y001lhrpvrlb3btks","fromTime":1561000000,"toTime":1562000000,"status":403,"ip":"172.18.0.7","httpVerb":"GET","resource":"/events","errorId":"forbidden"}, callback);</code></pre><div class="step-marker">⬇</div><pre><code>{
+</code></pre></div><div class="tab-pane sockets"><pre><code>socket.emit('audit.get', {"auth":"ckas82m4o001m8vpvqh7lzqzi","accessId":"ckas82m4o001l8vpv1nshc6fw","fromTime":1561000000,"toTime":1562000000,"status":403,"ip":"172.18.0.7","httpVerb":"GET","resource":"/events","errorId":"forbidden"}, callback);</code></pre><div class="step-marker">⬇</div><pre><code>{
   "auditLogs": [
     {
-      "id": "ckapcmx2y001nhrpvysaq2hms",
+      "id": "ckas82m4o001n8vpvnokahdpy",
       "type": "audit/core",
       "time": 1561988300,
       "forwardedFor": "172.18.0.7",
       "action": "GET /events",
       "query": "streamId=diary",
-      "accessId": "ckapcmx2y001lhrpvrlb3btks",
+      "accessId": "ckas82m4o001l8vpv1nshc6fw",
       "status": 403,
       "errorMessage": "Access session has expired.",
       "errorId": "forbidden"
     },
     {
-      "id": "ckapcmx2y001ohrpvzkmklsfm",
+      "id": "ckas82m4o001o8vpvozwfjspt",
       "type": "audit/core",
       "time": 1561988900,
       "forwardedFor": "172.18.0.7",
       "action": "GET /events",
       "query": "streamId=diary",
-      "accessId": "ckapcmx2y001lhrpvrlb3btks",
+      "accessId": "ckas82m4o001l8vpv1nshc6fw",
       "status": 403,
       "errorMessage": "Access session has expired.",
       "errorId": "forbidden"
     },
     {
-      "id": "ckapcmx2y001phrpvmc8wme8l",
+      "id": "ckas82m4o001p8vpvz75zq9af",
       "type": "audit/core",
       "time": 1561989200,
       "forwardedFor": "172.18.0.7",
       "action": "GET /events",
       "query": "streamId=work",
-      "accessId": "ckapcmx2y001lhrpvrlb3btks",
+      "accessId": "ckas82m4o001l8vpv1nshc6fw",
       "status": 403,
       "errorMessage": "Access session has expired.",
       "errorId": "forbidden"
     }
   ]
-}</code></pre></div><div class="tab-pane httpAuth"><pre><code>curl -i "https://${username}.pryv.me/audit/logs?auth=${token}&auth=ckapcmx2y001mhrpv5g4xdeho&accessId=ckapcmx2y001lhrpvrlb3btks&fromTime=1561000000&toTime=1562000000&status=403&ip=172.18.0.7&httpVerb=GET&resource=/events&errorId=forbidden"</code></pre><div class="step-marker">⬇</div><pre><code>HTTP/1.1 200 OK
+}</code></pre></div><div class="tab-pane httpAuth"><pre><code>curl -i "https://${username}.pryv.me/audit/logs?auth=${token}&auth=ckas82m4o001m8vpvqh7lzqzi&accessId=ckas82m4o001l8vpv1nshc6fw&fromTime=1561000000&toTime=1562000000&status=403&ip=172.18.0.7&httpVerb=GET&resource=/events&errorId=forbidden"</code></pre><div class="step-marker">⬇</div><pre><code>HTTP/1.1 200 OK
 Content-Type: application/json; charset=utf-8
 API-Version: 1.5.4
 
 {
   "auditLogs": [
     {
-      "id": "ckapcmx2y001nhrpvysaq2hms",
+      "id": "ckas82m4o001n8vpvnokahdpy",
       "type": "audit/core",
       "time": 1561988300,
       "forwardedFor": "172.18.0.7",
       "action": "GET /events",
       "query": "streamId=diary",
-      "accessId": "ckapcmx2y001lhrpvrlb3btks",
+      "accessId": "ckas82m4o001l8vpv1nshc6fw",
       "status": 403,
       "errorMessage": "Access session has expired.",
       "errorId": "forbidden"
     },
     {
-      "id": "ckapcmx2y001ohrpvzkmklsfm",
+      "id": "ckas82m4o001o8vpvozwfjspt",
       "type": "audit/core",
       "time": 1561988900,
       "forwardedFor": "172.18.0.7",
       "action": "GET /events",
       "query": "streamId=diary",
-      "accessId": "ckapcmx2y001lhrpvrlb3btks",
+      "accessId": "ckas82m4o001l8vpv1nshc6fw",
       "status": 403,
       "errorMessage": "Access session has expired.",
       "errorId": "forbidden"
     },
     {
-      "id": "ckapcmx2y001phrpvmc8wme8l",
+      "id": "ckas82m4o001p8vpvz75zq9af",
       "type": "audit/core",
       "time": 1561989200,
       "forwardedFor": "172.18.0.7",
       "action": "GET /events",
       "query": "streamId=work",
-      "accessId": "ckapcmx2y001lhrpvrlb3btks",
+      "accessId": "ckas82m4o001l8vpv1nshc6fw",
       "status": 403,
       "errorMessage": "Access session has expired.",
       "errorId": "forbidden"
@@ -3232,8 +3234,8 @@ API-Version: 1.5.4
 </div></td></tr></table></div><aside><div class="example"><div class="tab-content"><div class="tab-pane json active"><pre><code>{}</code></pre><div class="step-marker">⬇</div><pre><code>{
   "webhooks": [
     {
-      "id": "ckapcmx2t001ghrpvm8vzn512",
-      "accessId": "ckapcmx2t001ehrpvj2up77xo",
+      "id": "ckas82m4j001g8vpvyeg1wvtz",
+      "accessId": "ckas82m4j001e8vpvhlfojhxr",
       "url": "https://notifications.service.com/pryv",
       "minIntervalMs": 5000,
       "maxRetries": 5,
@@ -3243,26 +3245,26 @@ API-Version: 1.5.4
       "failCount": 0,
       "lastRun": {
         "status": 200,
-        "timestamp": 1590580384.373
+        "timestamp": 1590754117.123
       },
       "runs": [
         {
           "status": 200,
-          "timestamp": 1590580384.373
+          "timestamp": 1590754117.123
         },
         {
           "status": 200,
-          "timestamp": 1590576784.373
+          "timestamp": 1590750517.123
         }
       ],
-      "created": 1590497584.373,
-      "createdBy": "ckapcmx2t001ehrpvj2up77xo",
-      "modified": 1590497584.373,
-      "modifiedBy": "ckapcmx2t001ehrpvj2up77xo"
+      "created": 1590671317.123,
+      "createdBy": "ckas82m4j001e8vpvhlfojhxr",
+      "modified": 1590671317.123,
+      "modifiedBy": "ckas82m4j001e8vpvhlfojhxr"
     },
     {
-      "id": "ckapcmx2t001ihrpv2ixr0zug",
-      "accessId": "ckapcmx2t001ehrpvj2up77xo",
+      "id": "ckas82m4j001i8vpvyx6f4sn5",
+      "accessId": "ckas82m4j001e8vpvhlfojhxr",
       "url": "https://notifications.pryv.me/webhooks",
       "minIntervalMs": 5000,
       "maxRetries": 5,
@@ -3272,46 +3274,46 @@ API-Version: 1.5.4
       "failCount": 2,
       "lastRun": {
         "status": 200,
-        "timestamp": 1590583979.373
+        "timestamp": 1590757712.123
       },
       "runs": [
         {
           "status": 500,
-          "timestamp": 1590583979.373
+          "timestamp": 1590757712.123
         },
         {
           "status": 500,
-          "timestamp": 1590583974.373
+          "timestamp": 1590757707.123
         },
         {
           "status": 200,
-          "timestamp": 1590583384.373
+          "timestamp": 1590757117.123
         },
         {
           "status": 200,
-          "timestamp": 1590582784.373
+          "timestamp": 1590756517.123
         },
         {
           "status": 200,
-          "timestamp": 1590582184.373
+          "timestamp": 1590755917.123
         },
         {
           "status": 200,
-          "timestamp": 1590581584.373
+          "timestamp": 1590755317.123
         },
         {
           "status": 200,
-          "timestamp": 1590580984.373
+          "timestamp": 1590754717.123
         },
         {
           "status": 200,
-          "timestamp": 1590580384.373
+          "timestamp": 1590754117.123
         }
       ],
-      "created": 1590411184.373,
-      "createdBy": "ckapcmx2t001ehrpvj2up77xo",
-      "modified": 1590411184.373,
-      "modifiedBy": "ckapcmx2t001ehrpvj2up77xo"
+      "created": 1590584917.123,
+      "createdBy": "ckas82m4j001e8vpvhlfojhxr",
+      "modified": 1590584917.123,
+      "modifiedBy": "ckas82m4j001e8vpvhlfojhxr"
     }
   ]
 }</code></pre></div><div class="tab-pane http"><pre><code>curl -i "https://${token}@${username}.pryv.me/webhooks"</code></pre><div class="step-marker">⬇</div><pre><code>HTTP/1.1 200 OK
@@ -3321,8 +3323,8 @@ API-Version: 1.5.4
 {
   "webhooks": [
     {
-      "id": "ckapcmx2t001ghrpvm8vzn512",
-      "accessId": "ckapcmx2t001ehrpvj2up77xo",
+      "id": "ckas82m4j001g8vpvyeg1wvtz",
+      "accessId": "ckas82m4j001e8vpvhlfojhxr",
       "url": "https://notifications.service.com/pryv",
       "minIntervalMs": 5000,
       "maxRetries": 5,
@@ -3332,26 +3334,26 @@ API-Version: 1.5.4
       "failCount": 0,
       "lastRun": {
         "status": 200,
-        "timestamp": 1590580384.373
+        "timestamp": 1590754117.123
       },
       "runs": [
         {
           "status": 200,
-          "timestamp": 1590580384.373
+          "timestamp": 1590754117.123
         },
         {
           "status": 200,
-          "timestamp": 1590576784.373
+          "timestamp": 1590750517.123
         }
       ],
-      "created": 1590497584.373,
-      "createdBy": "ckapcmx2t001ehrpvj2up77xo",
-      "modified": 1590497584.373,
-      "modifiedBy": "ckapcmx2t001ehrpvj2up77xo"
+      "created": 1590671317.123,
+      "createdBy": "ckas82m4j001e8vpvhlfojhxr",
+      "modified": 1590671317.123,
+      "modifiedBy": "ckas82m4j001e8vpvhlfojhxr"
     },
     {
-      "id": "ckapcmx2t001ihrpv2ixr0zug",
-      "accessId": "ckapcmx2t001ehrpvj2up77xo",
+      "id": "ckas82m4j001i8vpvyx6f4sn5",
+      "accessId": "ckas82m4j001e8vpvhlfojhxr",
       "url": "https://notifications.pryv.me/webhooks",
       "minIntervalMs": 5000,
       "maxRetries": 5,
@@ -3361,54 +3363,54 @@ API-Version: 1.5.4
       "failCount": 2,
       "lastRun": {
         "status": 200,
-        "timestamp": 1590583979.373
+        "timestamp": 1590757712.123
       },
       "runs": [
         {
           "status": 500,
-          "timestamp": 1590583979.373
+          "timestamp": 1590757712.123
         },
         {
           "status": 500,
-          "timestamp": 1590583974.373
+          "timestamp": 1590757707.123
         },
         {
           "status": 200,
-          "timestamp": 1590583384.373
+          "timestamp": 1590757117.123
         },
         {
           "status": 200,
-          "timestamp": 1590582784.373
+          "timestamp": 1590756517.123
         },
         {
           "status": 200,
-          "timestamp": 1590582184.373
+          "timestamp": 1590755917.123
         },
         {
           "status": 200,
-          "timestamp": 1590581584.373
+          "timestamp": 1590755317.123
         },
         {
           "status": 200,
-          "timestamp": 1590580984.373
+          "timestamp": 1590754717.123
         },
         {
           "status": 200,
-          "timestamp": 1590580384.373
+          "timestamp": 1590754117.123
         }
       ],
-      "created": 1590411184.373,
-      "createdBy": "ckapcmx2t001ehrpvj2up77xo",
-      "modified": 1590411184.373,
-      "modifiedBy": "ckapcmx2t001ehrpvj2up77xo"
+      "created": 1590584917.123,
+      "createdBy": "ckas82m4j001e8vpvhlfojhxr",
+      "modified": 1590584917.123,
+      "modifiedBy": "ckas82m4j001e8vpvhlfojhxr"
     }
   ]
 }
 </code></pre></div><div class="tab-pane sockets"><pre><code>socket.emit('webhooks.get', {}, callback);</code></pre><div class="step-marker">⬇</div><pre><code>{
   "webhooks": [
     {
-      "id": "ckapcmx2t001ghrpvm8vzn512",
-      "accessId": "ckapcmx2t001ehrpvj2up77xo",
+      "id": "ckas82m4j001g8vpvyeg1wvtz",
+      "accessId": "ckas82m4j001e8vpvhlfojhxr",
       "url": "https://notifications.service.com/pryv",
       "minIntervalMs": 5000,
       "maxRetries": 5,
@@ -3418,26 +3420,26 @@ API-Version: 1.5.4
       "failCount": 0,
       "lastRun": {
         "status": 200,
-        "timestamp": 1590580384.373
+        "timestamp": 1590754117.123
       },
       "runs": [
         {
           "status": 200,
-          "timestamp": 1590580384.373
+          "timestamp": 1590754117.123
         },
         {
           "status": 200,
-          "timestamp": 1590576784.373
+          "timestamp": 1590750517.123
         }
       ],
-      "created": 1590497584.373,
-      "createdBy": "ckapcmx2t001ehrpvj2up77xo",
-      "modified": 1590497584.373,
-      "modifiedBy": "ckapcmx2t001ehrpvj2up77xo"
+      "created": 1590671317.123,
+      "createdBy": "ckas82m4j001e8vpvhlfojhxr",
+      "modified": 1590671317.123,
+      "modifiedBy": "ckas82m4j001e8vpvhlfojhxr"
     },
     {
-      "id": "ckapcmx2t001ihrpv2ixr0zug",
-      "accessId": "ckapcmx2t001ehrpvj2up77xo",
+      "id": "ckas82m4j001i8vpvyx6f4sn5",
+      "accessId": "ckas82m4j001e8vpvhlfojhxr",
       "url": "https://notifications.pryv.me/webhooks",
       "minIntervalMs": 5000,
       "maxRetries": 5,
@@ -3447,46 +3449,46 @@ API-Version: 1.5.4
       "failCount": 2,
       "lastRun": {
         "status": 200,
-        "timestamp": 1590583979.373
+        "timestamp": 1590757712.123
       },
       "runs": [
         {
           "status": 500,
-          "timestamp": 1590583979.373
+          "timestamp": 1590757712.123
         },
         {
           "status": 500,
-          "timestamp": 1590583974.373
+          "timestamp": 1590757707.123
         },
         {
           "status": 200,
-          "timestamp": 1590583384.373
+          "timestamp": 1590757117.123
         },
         {
           "status": 200,
-          "timestamp": 1590582784.373
+          "timestamp": 1590756517.123
         },
         {
           "status": 200,
-          "timestamp": 1590582184.373
+          "timestamp": 1590755917.123
         },
         {
           "status": 200,
-          "timestamp": 1590581584.373
+          "timestamp": 1590755317.123
         },
         {
           "status": 200,
-          "timestamp": 1590580984.373
+          "timestamp": 1590754717.123
         },
         {
           "status": 200,
-          "timestamp": 1590580384.373
+          "timestamp": 1590754117.123
         }
       ],
-      "created": 1590411184.373,
-      "createdBy": "ckapcmx2t001ehrpvj2up77xo",
-      "modified": 1590411184.373,
-      "modifiedBy": "ckapcmx2t001ehrpvj2up77xo"
+      "created": 1590584917.123,
+      "createdBy": "ckas82m4j001e8vpvhlfojhxr",
+      "modified": 1590584917.123,
+      "modifiedBy": "ckas82m4j001e8vpvhlfojhxr"
     }
   ]
 }</code></pre></div><div class="tab-pane httpAuth"><pre><code>curl -i "https://${username}.pryv.me/webhooks?auth=${token}"</code></pre><div class="step-marker">⬇</div><pre><code>HTTP/1.1 200 OK
@@ -3496,8 +3498,8 @@ API-Version: 1.5.4
 {
   "webhooks": [
     {
-      "id": "ckapcmx2t001ghrpvm8vzn512",
-      "accessId": "ckapcmx2t001ehrpvj2up77xo",
+      "id": "ckas82m4j001g8vpvyeg1wvtz",
+      "accessId": "ckas82m4j001e8vpvhlfojhxr",
       "url": "https://notifications.service.com/pryv",
       "minIntervalMs": 5000,
       "maxRetries": 5,
@@ -3507,26 +3509,26 @@ API-Version: 1.5.4
       "failCount": 0,
       "lastRun": {
         "status": 200,
-        "timestamp": 1590580384.373
+        "timestamp": 1590754117.123
       },
       "runs": [
         {
           "status": 200,
-          "timestamp": 1590580384.373
+          "timestamp": 1590754117.123
         },
         {
           "status": 200,
-          "timestamp": 1590576784.373
+          "timestamp": 1590750517.123
         }
       ],
-      "created": 1590497584.373,
-      "createdBy": "ckapcmx2t001ehrpvj2up77xo",
-      "modified": 1590497584.373,
-      "modifiedBy": "ckapcmx2t001ehrpvj2up77xo"
+      "created": 1590671317.123,
+      "createdBy": "ckas82m4j001e8vpvhlfojhxr",
+      "modified": 1590671317.123,
+      "modifiedBy": "ckas82m4j001e8vpvhlfojhxr"
     },
     {
-      "id": "ckapcmx2t001ihrpv2ixr0zug",
-      "accessId": "ckapcmx2t001ehrpvj2up77xo",
+      "id": "ckas82m4j001i8vpvyx6f4sn5",
+      "accessId": "ckas82m4j001e8vpvhlfojhxr",
       "url": "https://notifications.pryv.me/webhooks",
       "minIntervalMs": 5000,
       "maxRetries": 5,
@@ -3536,46 +3538,46 @@ API-Version: 1.5.4
       "failCount": 2,
       "lastRun": {
         "status": 200,
-        "timestamp": 1590583979.373
+        "timestamp": 1590757712.123
       },
       "runs": [
         {
           "status": 500,
-          "timestamp": 1590583979.373
+          "timestamp": 1590757712.123
         },
         {
           "status": 500,
-          "timestamp": 1590583974.373
+          "timestamp": 1590757707.123
         },
         {
           "status": 200,
-          "timestamp": 1590583384.373
+          "timestamp": 1590757117.123
         },
         {
           "status": 200,
-          "timestamp": 1590582784.373
+          "timestamp": 1590756517.123
         },
         {
           "status": 200,
-          "timestamp": 1590582184.373
+          "timestamp": 1590755917.123
         },
         {
           "status": 200,
-          "timestamp": 1590581584.373
+          "timestamp": 1590755317.123
         },
         {
           "status": 200,
-          "timestamp": 1590580984.373
+          "timestamp": 1590754717.123
         },
         {
           "status": 200,
-          "timestamp": 1590580384.373
+          "timestamp": 1590754117.123
         }
       ],
-      "created": 1590411184.373,
-      "createdBy": "ckapcmx2t001ehrpvj2up77xo",
-      "modified": 1590411184.373,
-      "modifiedBy": "ckapcmx2t001ehrpvj2up77xo"
+      "created": 1590584917.123,
+      "createdBy": "ckas82m4j001e8vpvhlfojhxr",
+      "modified": 1590584917.123,
+      "modifiedBy": "ckas82m4j001e8vpvhlfojhxr"
     }
   ]
 }
@@ -3587,8 +3589,8 @@ API-Version: 1.5.4
 <span class="http"><span class="label">HTTP</span><span class="label-value"><code>200 OK</code></span></span><table class="definitions"><tr><th><code>webhook</code></th><td><div class="header"><span class="type"><a href="#data-structure-webhook">webhook</a></span></div><div class="description"><p>The webhook.</p>
 </div></td></tr></table></div><aside><div class="example"><div class="tab-content"><div class="tab-pane json active"><pre><code>{}</code></pre><div class="step-marker">⬇</div><pre><code>{
   "webhook": {
-    "id": "ckapcmx2t001ghrpvm8vzn512",
-    "accessId": "ckapcmx2t001ehrpvj2up77xo",
+    "id": "ckas82m4j001g8vpvyeg1wvtz",
+    "accessId": "ckas82m4j001e8vpvhlfojhxr",
     "url": "https://notifications.service.com/pryv",
     "minIntervalMs": 5000,
     "maxRetries": 5,
@@ -3598,22 +3600,22 @@ API-Version: 1.5.4
     "failCount": 0,
     "lastRun": {
       "status": 200,
-      "timestamp": 1590580384.373
+      "timestamp": 1590754117.123
     },
     "runs": [
       {
         "status": 200,
-        "timestamp": 1590580384.373
+        "timestamp": 1590754117.123
       },
       {
         "status": 200,
-        "timestamp": 1590576784.373
+        "timestamp": 1590750517.123
       }
     ],
-    "created": 1590497584.373,
-    "createdBy": "ckapcmx2t001ehrpvj2up77xo",
-    "modified": 1590497584.373,
-    "modifiedBy": "ckapcmx2t001ehrpvj2up77xo"
+    "created": 1590671317.123,
+    "createdBy": "ckas82m4j001e8vpvhlfojhxr",
+    "modified": 1590671317.123,
+    "modifiedBy": "ckas82m4j001e8vpvhlfojhxr"
   }
 }</code></pre></div><div class="tab-pane http"><pre><code>curl -i "https://${token}@${username}.pryv.me/webhooks/${id}"</code></pre><div class="step-marker">⬇</div><pre><code>HTTP/1.1 200 OK
 Content-Type: application/json; charset=utf-8
@@ -3621,8 +3623,8 @@ API-Version: 1.5.4
 
 {
   "webhook": {
-    "id": "ckapcmx2t001ghrpvm8vzn512",
-    "accessId": "ckapcmx2t001ehrpvj2up77xo",
+    "id": "ckas82m4j001g8vpvyeg1wvtz",
+    "accessId": "ckas82m4j001e8vpvhlfojhxr",
     "url": "https://notifications.service.com/pryv",
     "minIntervalMs": 5000,
     "maxRetries": 5,
@@ -3632,28 +3634,28 @@ API-Version: 1.5.4
     "failCount": 0,
     "lastRun": {
       "status": 200,
-      "timestamp": 1590580384.373
+      "timestamp": 1590754117.123
     },
     "runs": [
       {
         "status": 200,
-        "timestamp": 1590580384.373
+        "timestamp": 1590754117.123
       },
       {
         "status": 200,
-        "timestamp": 1590576784.373
+        "timestamp": 1590750517.123
       }
     ],
-    "created": 1590497584.373,
-    "createdBy": "ckapcmx2t001ehrpvj2up77xo",
-    "modified": 1590497584.373,
-    "modifiedBy": "ckapcmx2t001ehrpvj2up77xo"
+    "created": 1590671317.123,
+    "createdBy": "ckas82m4j001e8vpvhlfojhxr",
+    "modified": 1590671317.123,
+    "modifiedBy": "ckas82m4j001e8vpvhlfojhxr"
   }
 }
 </code></pre></div><div class="tab-pane sockets"><pre><code>socket.emit('webhooks.getOne', {}, callback);</code></pre><div class="step-marker">⬇</div><pre><code>{
   "webhook": {
-    "id": "ckapcmx2t001ghrpvm8vzn512",
-    "accessId": "ckapcmx2t001ehrpvj2up77xo",
+    "id": "ckas82m4j001g8vpvyeg1wvtz",
+    "accessId": "ckas82m4j001e8vpvhlfojhxr",
     "url": "https://notifications.service.com/pryv",
     "minIntervalMs": 5000,
     "maxRetries": 5,
@@ -3663,22 +3665,22 @@ API-Version: 1.5.4
     "failCount": 0,
     "lastRun": {
       "status": 200,
-      "timestamp": 1590580384.373
+      "timestamp": 1590754117.123
     },
     "runs": [
       {
         "status": 200,
-        "timestamp": 1590580384.373
+        "timestamp": 1590754117.123
       },
       {
         "status": 200,
-        "timestamp": 1590576784.373
+        "timestamp": 1590750517.123
       }
     ],
-    "created": 1590497584.373,
-    "createdBy": "ckapcmx2t001ehrpvj2up77xo",
-    "modified": 1590497584.373,
-    "modifiedBy": "ckapcmx2t001ehrpvj2up77xo"
+    "created": 1590671317.123,
+    "createdBy": "ckas82m4j001e8vpvhlfojhxr",
+    "modified": 1590671317.123,
+    "modifiedBy": "ckas82m4j001e8vpvhlfojhxr"
   }
 }</code></pre></div><div class="tab-pane httpAuth"><pre><code>curl -i "https://${username}.pryv.me/webhooks/${id}?auth=${token}"</code></pre><div class="step-marker">⬇</div><pre><code>HTTP/1.1 200 OK
 Content-Type: application/json; charset=utf-8
@@ -3686,8 +3688,8 @@ API-Version: 1.5.4
 
 {
   "webhook": {
-    "id": "ckapcmx2t001ghrpvm8vzn512",
-    "accessId": "ckapcmx2t001ehrpvj2up77xo",
+    "id": "ckas82m4j001g8vpvyeg1wvtz",
+    "accessId": "ckas82m4j001e8vpvhlfojhxr",
     "url": "https://notifications.service.com/pryv",
     "minIntervalMs": 5000,
     "maxRetries": 5,
@@ -3697,22 +3699,22 @@ API-Version: 1.5.4
     "failCount": 0,
     "lastRun": {
       "status": 200,
-      "timestamp": 1590580384.373
+      "timestamp": 1590754117.123
     },
     "runs": [
       {
         "status": 200,
-        "timestamp": 1590580384.373
+        "timestamp": 1590754117.123
       },
       {
         "status": 200,
-        "timestamp": 1590576784.373
+        "timestamp": 1590750517.123
       }
     ],
-    "created": 1590497584.373,
-    "createdBy": "ckapcmx2t001ehrpvj2up77xo",
-    "modified": 1590497584.373,
-    "modifiedBy": "ckapcmx2t001ehrpvj2up77xo"
+    "created": 1590671317.123,
+    "createdBy": "ckas82m4j001e8vpvhlfojhxr",
+    "modified": 1590671317.123,
+    "modifiedBy": "ckas82m4j001e8vpvhlfojhxr"
   }
 }
 </code></pre></div></div></div></aside></section><!-- it's either:--><!-- !trusted & !preview--><!-- !preview & -full--><!-- -preview--><section id="methods-webhooks-webhooks-create" class="method"> <h3 id="create-webhook">Create webhook</h3>
@@ -3726,8 +3728,8 @@ API-Version: 1.5.4
   "url": "https://sievey.io/webhooks"
 }</code></pre><div class="step-marker">⬇</div><pre><code>{
   "webhook": {
-    "id": "ckapcmx2t001jhrpvemmcv4nf",
-    "accessId": "ckapcmx2t001fhrpv0xm05ibl",
+    "id": "ckas82m4j001j8vpvpwr6b3lm",
+    "accessId": "ckas82m4j001f8vpvdseodrnc",
     "url": "https://sievey.io/webhooks",
     "minIntervalMs": 5000,
     "maxRetries": 5,
@@ -3737,10 +3739,10 @@ API-Version: 1.5.4
     "failCount": 0,
     "lastRun": {},
     "runs": [],
-    "created": 1590583979.373,
-    "createdBy": "ckapcmx2t001fhrpv0xm05ibl",
-    "modified": 1590583979.373,
-    "modifiedBy": "ckapcmx2t001fhrpv0xm05ibl"
+    "created": 1590757712.123,
+    "createdBy": "ckas82m4j001f8vpvdseodrnc",
+    "modified": 1590757712.123,
+    "modifiedBy": "ckas82m4j001f8vpvdseodrnc"
   }
 }</code></pre></div><div class="tab-pane http"><pre><code>curl -i -X POST -H 'Content-Type: application/json' -d '{"url":"https://sievey.io/webhooks"}' "https://${token}@${username}.pryv.me/webhooks"</code></pre><div class="step-marker">⬇</div><pre><code>HTTP/1.1 201 Created
 Content-Type: application/json; charset=utf-8
@@ -3748,8 +3750,8 @@ API-Version: 1.5.4
 
 {
   "webhook": {
-    "id": "ckapcmx2t001jhrpvemmcv4nf",
-    "accessId": "ckapcmx2t001fhrpv0xm05ibl",
+    "id": "ckas82m4j001j8vpvpwr6b3lm",
+    "accessId": "ckas82m4j001f8vpvdseodrnc",
     "url": "https://sievey.io/webhooks",
     "minIntervalMs": 5000,
     "maxRetries": 5,
@@ -3759,16 +3761,16 @@ API-Version: 1.5.4
     "failCount": 0,
     "lastRun": {},
     "runs": [],
-    "created": 1590583979.373,
-    "createdBy": "ckapcmx2t001fhrpv0xm05ibl",
-    "modified": 1590583979.373,
-    "modifiedBy": "ckapcmx2t001fhrpv0xm05ibl"
+    "created": 1590757712.123,
+    "createdBy": "ckas82m4j001f8vpvdseodrnc",
+    "modified": 1590757712.123,
+    "modifiedBy": "ckas82m4j001f8vpvdseodrnc"
   }
 }
 </code></pre></div><div class="tab-pane sockets"><pre><code>socket.emit('webhooks.create', {"url":"https://sievey.io/webhooks"}, callback);</code></pre><div class="step-marker">⬇</div><pre><code>{
   "webhook": {
-    "id": "ckapcmx2t001jhrpvemmcv4nf",
-    "accessId": "ckapcmx2t001fhrpv0xm05ibl",
+    "id": "ckas82m4j001j8vpvpwr6b3lm",
+    "accessId": "ckas82m4j001f8vpvdseodrnc",
     "url": "https://sievey.io/webhooks",
     "minIntervalMs": 5000,
     "maxRetries": 5,
@@ -3778,10 +3780,10 @@ API-Version: 1.5.4
     "failCount": 0,
     "lastRun": {},
     "runs": [],
-    "created": 1590583979.373,
-    "createdBy": "ckapcmx2t001fhrpv0xm05ibl",
-    "modified": 1590583979.373,
-    "modifiedBy": "ckapcmx2t001fhrpv0xm05ibl"
+    "created": 1590757712.123,
+    "createdBy": "ckas82m4j001f8vpvdseodrnc",
+    "modified": 1590757712.123,
+    "modifiedBy": "ckas82m4j001f8vpvdseodrnc"
   }
 }</code></pre></div><div class="tab-pane httpAuth"><pre><code>curl -i -X POST -H 'Content-Type: application/json' -d '{"url":"https://sievey.io/webhooks"}' "https://${username}.pryv.me/webhooks?auth=${token}"</code></pre><div class="step-marker">⬇</div><pre><code>HTTP/1.1 201 Created
 Content-Type: application/json; charset=utf-8
@@ -3789,8 +3791,8 @@ API-Version: 1.5.4
 
 {
   "webhook": {
-    "id": "ckapcmx2t001jhrpvemmcv4nf",
-    "accessId": "ckapcmx2t001fhrpv0xm05ibl",
+    "id": "ckas82m4j001j8vpvpwr6b3lm",
+    "accessId": "ckas82m4j001f8vpvdseodrnc",
     "url": "https://sievey.io/webhooks",
     "minIntervalMs": 5000,
     "maxRetries": 5,
@@ -3800,10 +3802,10 @@ API-Version: 1.5.4
     "failCount": 0,
     "lastRun": {},
     "runs": [],
-    "created": 1590583979.373,
-    "createdBy": "ckapcmx2t001fhrpv0xm05ibl",
-    "modified": 1590583979.373,
-    "modifiedBy": "ckapcmx2t001fhrpv0xm05ibl"
+    "created": 1590757712.123,
+    "createdBy": "ckas82m4j001f8vpvdseodrnc",
+    "modified": 1590757712.123,
+    "modifiedBy": "ckas82m4j001f8vpvdseodrnc"
   }
 }
 </code></pre></div></div></div></aside></section><!-- it's either:--><!-- !trusted & !preview--><!-- !preview & -full--><!-- -preview--><section id="methods-webhooks-webhooks-update" class="method"> <h3 id="update-webhook">Update webhook</h3>
@@ -3820,8 +3822,8 @@ API-Version: 1.5.4
   "state": "active"
 }</code></pre><div class="step-marker">⬇</div><pre><code>{
   "webhook": {
-    "id": "ckapcmx2t001hhrpvnmwgxo04",
-    "accessId": "ckapcmx2t001ehrpvj2up77xo",
+    "id": "ckas82m4j001h8vpv3d4jm68q",
+    "accessId": "ckas82m4j001e8vpvhlfojhxr",
     "url": "https://notifications.pryv.me/myusername/ui3HDAw43",
     "minIntervalMs": 5000,
     "maxRetries": 5,
@@ -3831,28 +3833,28 @@ API-Version: 1.5.4
     "failCount": 5,
     "lastRun": {
       "status": 404,
-      "timestamp": 1590583969.373
+      "timestamp": 1590757702.123
     },
     "runs": [
       {
         "status": 404,
-        "timestamp": 1590583969.373
+        "timestamp": 1590757702.123
       },
       {
         "status": 404,
-        "timestamp": 1590583929.373
+        "timestamp": 1590757662.123
       },
       {
         "status": 404,
-        "timestamp": 1590583909.373
+        "timestamp": 1590757642.123
       },
       {
         "status": 404,
-        "timestamp": 1590583899.373
+        "timestamp": 1590757632.123
       },
       {
         "status": 404,
-        "timestamp": 1590583894.373
+        "timestamp": 1590757627.123
       }
     ]
   }
@@ -3862,8 +3864,8 @@ API-Version: 1.5.4
 
 {
   "webhook": {
-    "id": "ckapcmx2t001hhrpvnmwgxo04",
-    "accessId": "ckapcmx2t001ehrpvj2up77xo",
+    "id": "ckas82m4j001h8vpv3d4jm68q",
+    "accessId": "ckas82m4j001e8vpvhlfojhxr",
     "url": "https://notifications.pryv.me/myusername/ui3HDAw43",
     "minIntervalMs": 5000,
     "maxRetries": 5,
@@ -3873,36 +3875,36 @@ API-Version: 1.5.4
     "failCount": 5,
     "lastRun": {
       "status": 404,
-      "timestamp": 1590583969.373
+      "timestamp": 1590757702.123
     },
     "runs": [
       {
         "status": 404,
-        "timestamp": 1590583969.373
+        "timestamp": 1590757702.123
       },
       {
         "status": 404,
-        "timestamp": 1590583929.373
+        "timestamp": 1590757662.123
       },
       {
         "status": 404,
-        "timestamp": 1590583909.373
+        "timestamp": 1590757642.123
       },
       {
         "status": 404,
-        "timestamp": 1590583899.373
+        "timestamp": 1590757632.123
       },
       {
         "status": 404,
-        "timestamp": 1590583894.373
+        "timestamp": 1590757627.123
       }
     ]
   }
 }
 </code></pre></div><div class="tab-pane sockets"><pre><code>socket.emit('webhooks.update', {"state":"active"}, callback);</code></pre><div class="step-marker">⬇</div><pre><code>{
   "webhook": {
-    "id": "ckapcmx2t001hhrpvnmwgxo04",
-    "accessId": "ckapcmx2t001ehrpvj2up77xo",
+    "id": "ckas82m4j001h8vpv3d4jm68q",
+    "accessId": "ckas82m4j001e8vpvhlfojhxr",
     "url": "https://notifications.pryv.me/myusername/ui3HDAw43",
     "minIntervalMs": 5000,
     "maxRetries": 5,
@@ -3912,28 +3914,28 @@ API-Version: 1.5.4
     "failCount": 5,
     "lastRun": {
       "status": 404,
-      "timestamp": 1590583969.373
+      "timestamp": 1590757702.123
     },
     "runs": [
       {
         "status": 404,
-        "timestamp": 1590583969.373
+        "timestamp": 1590757702.123
       },
       {
         "status": 404,
-        "timestamp": 1590583929.373
+        "timestamp": 1590757662.123
       },
       {
         "status": 404,
-        "timestamp": 1590583909.373
+        "timestamp": 1590757642.123
       },
       {
         "status": 404,
-        "timestamp": 1590583899.373
+        "timestamp": 1590757632.123
       },
       {
         "status": 404,
-        "timestamp": 1590583894.373
+        "timestamp": 1590757627.123
       }
     ]
   }
@@ -3943,8 +3945,8 @@ API-Version: 1.5.4
 
 {
   "webhook": {
-    "id": "ckapcmx2t001hhrpvnmwgxo04",
-    "accessId": "ckapcmx2t001ehrpvj2up77xo",
+    "id": "ckas82m4j001h8vpv3d4jm68q",
+    "accessId": "ckas82m4j001e8vpvhlfojhxr",
     "url": "https://notifications.pryv.me/myusername/ui3HDAw43",
     "minIntervalMs": 5000,
     "maxRetries": 5,
@@ -3954,28 +3956,28 @@ API-Version: 1.5.4
     "failCount": 5,
     "lastRun": {
       "status": 404,
-      "timestamp": 1590583969.373
+      "timestamp": 1590757702.123
     },
     "runs": [
       {
         "status": 404,
-        "timestamp": 1590583969.373
+        "timestamp": 1590757702.123
       },
       {
         "status": 404,
-        "timestamp": 1590583929.373
+        "timestamp": 1590757662.123
       },
       {
         "status": 404,
-        "timestamp": 1590583909.373
+        "timestamp": 1590757642.123
       },
       {
         "status": 404,
-        "timestamp": 1590583899.373
+        "timestamp": 1590757632.123
       },
       {
         "status": 404,
-        "timestamp": 1590583894.373
+        "timestamp": 1590757627.123
       }
     ]
   }
@@ -3987,31 +3989,31 @@ API-Version: 1.5.4
 </div></td></tr></table><h4 id="result">Result</h4>
 <span class="http"><span class="label">HTTP</span><span class="label-value"><code>200 OK</code></span></span><table class="definitions"><tr><th><code>webhookDeletion</code></th><td><div class="header"><span class="type"><a href="#data-structure-item-deletion">item deletion</a></span></div><div class="description"><p>The deletion record.</p>
 </div></td></tr></table></div><aside><div class="example"><div class="tab-content"><div class="tab-pane json active"><pre><code>{
-  "id": "ckapcmx2t001jhrpvemmcv4nf"
+  "id": "ckas82m4j001j8vpvpwr6b3lm"
 }</code></pre><div class="step-marker">⬇</div><pre><code>{
   "webhookDeletion": {
-    "id": "ckapcmx2t001jhrpvemmcv4nf"
+    "id": "ckas82m4j001j8vpvpwr6b3lm"
   }
-}</code></pre></div><div class="tab-pane http"><pre><code>curl -i -X DELETE "https://${token}@${username}.pryv.me/webhooks/ckapcmx2t001jhrpvemmcv4nf"</code></pre><div class="step-marker">⬇</div><pre><code>HTTP/1.1 200 OK
+}</code></pre></div><div class="tab-pane http"><pre><code>curl -i -X DELETE "https://${token}@${username}.pryv.me/webhooks/ckas82m4j001j8vpvpwr6b3lm"</code></pre><div class="step-marker">⬇</div><pre><code>HTTP/1.1 200 OK
 Content-Type: application/json; charset=utf-8
 API-Version: 1.5.4
 
 {
   "webhookDeletion": {
-    "id": "ckapcmx2t001jhrpvemmcv4nf"
+    "id": "ckas82m4j001j8vpvpwr6b3lm"
   }
 }
-</code></pre></div><div class="tab-pane sockets"><pre><code>socket.emit('webhooks.delete', {"id":"ckapcmx2t001jhrpvemmcv4nf"}, callback);</code></pre><div class="step-marker">⬇</div><pre><code>{
+</code></pre></div><div class="tab-pane sockets"><pre><code>socket.emit('webhooks.delete', {"id":"ckas82m4j001j8vpvpwr6b3lm"}, callback);</code></pre><div class="step-marker">⬇</div><pre><code>{
   "webhookDeletion": {
-    "id": "ckapcmx2t001jhrpvemmcv4nf"
+    "id": "ckas82m4j001j8vpvpwr6b3lm"
   }
-}</code></pre></div><div class="tab-pane httpAuth"><pre><code>curl -i -X DELETE "https://${username}.pryv.me/webhooks/ckapcmx2t001jhrpvemmcv4nf?auth=${token}"</code></pre><div class="step-marker">⬇</div><pre><code>HTTP/1.1 200 OK
+}</code></pre></div><div class="tab-pane httpAuth"><pre><code>curl -i -X DELETE "https://${username}.pryv.me/webhooks/ckas82m4j001j8vpvpwr6b3lm?auth=${token}"</code></pre><div class="step-marker">⬇</div><pre><code>HTTP/1.1 200 OK
 Content-Type: application/json; charset=utf-8
 API-Version: 1.5.4
 
 {
   "webhookDeletion": {
-    "id": "ckapcmx2t001jhrpvemmcv4nf"
+    "id": "ckas82m4j001j8vpvpwr6b3lm"
   }
 }
 </code></pre></div></div></div></aside></section><!-- it's either:--><!-- !trusted & !preview--><!-- !preview & -full--><!-- -preview--><section id="methods-webhooks-webhooks-test" class="method"> <h3 id="test-webhook">Test webhook</h3>
@@ -4024,8 +4026,8 @@ API-Version: 1.5.4
 <table class="definitions"><tr><th><code>unknown-referenced-resource</code></th><td><div class="header"><span class="http"><span class="label">HTTP</span><span class="label-value"><code>400</code></span></span></div><div class="description"><p>The webhook&#39;s <code>url</code> is either unreachable or responds with a 4xx/5xx status.</p>
 </div></td></tr></table></div><aside><div class="example"><div class="tab-content"><div class="tab-pane json active"><pre><code>{}</code></pre><div class="step-marker">⬇</div><pre><code>{
   "webhook": {
-    "id": "ckapcmx2t001jhrpvemmcv4nf",
-    "accessId": "ckapcmx2t001fhrpv0xm05ibl",
+    "id": "ckas82m4j001j8vpvpwr6b3lm",
+    "accessId": "ckas82m4j001f8vpvdseodrnc",
     "url": "https://sievey.io/webhooks",
     "minIntervalMs": 5000,
     "maxRetries": 5,
@@ -4035,10 +4037,10 @@ API-Version: 1.5.4
     "failCount": 0,
     "lastRun": {},
     "runs": [],
-    "created": 1590583979.373,
-    "createdBy": "ckapcmx2t001fhrpv0xm05ibl",
-    "modified": 1590583979.373,
-    "modifiedBy": "ckapcmx2t001fhrpv0xm05ibl"
+    "created": 1590757712.123,
+    "createdBy": "ckas82m4j001f8vpvdseodrnc",
+    "modified": 1590757712.123,
+    "modifiedBy": "ckas82m4j001f8vpvdseodrnc"
   }
 }</code></pre></div><div class="tab-pane http"><pre><code>curl -i -X POST -H 'Content-Type: application/json' -d '{}' "https://${token}@${username}.pryv.me/webhooks/${id}/test"</code></pre><div class="step-marker">⬇</div><pre><code>HTTP/1.1 200 OK
 Content-Type: application/json; charset=utf-8
@@ -4046,8 +4048,8 @@ API-Version: 1.5.4
 
 {
   "webhook": {
-    "id": "ckapcmx2t001jhrpvemmcv4nf",
-    "accessId": "ckapcmx2t001fhrpv0xm05ibl",
+    "id": "ckas82m4j001j8vpvpwr6b3lm",
+    "accessId": "ckas82m4j001f8vpvdseodrnc",
     "url": "https://sievey.io/webhooks",
     "minIntervalMs": 5000,
     "maxRetries": 5,
@@ -4057,16 +4059,16 @@ API-Version: 1.5.4
     "failCount": 0,
     "lastRun": {},
     "runs": [],
-    "created": 1590583979.373,
-    "createdBy": "ckapcmx2t001fhrpv0xm05ibl",
-    "modified": 1590583979.373,
-    "modifiedBy": "ckapcmx2t001fhrpv0xm05ibl"
+    "created": 1590757712.123,
+    "createdBy": "ckas82m4j001f8vpvdseodrnc",
+    "modified": 1590757712.123,
+    "modifiedBy": "ckas82m4j001f8vpvdseodrnc"
   }
 }
 </code></pre></div><div class="tab-pane sockets"><pre><code>socket.emit('webhooks.test', {}, callback);</code></pre><div class="step-marker">⬇</div><pre><code>{
   "webhook": {
-    "id": "ckapcmx2t001jhrpvemmcv4nf",
-    "accessId": "ckapcmx2t001fhrpv0xm05ibl",
+    "id": "ckas82m4j001j8vpvpwr6b3lm",
+    "accessId": "ckas82m4j001f8vpvdseodrnc",
     "url": "https://sievey.io/webhooks",
     "minIntervalMs": 5000,
     "maxRetries": 5,
@@ -4076,10 +4078,10 @@ API-Version: 1.5.4
     "failCount": 0,
     "lastRun": {},
     "runs": [],
-    "created": 1590583979.373,
-    "createdBy": "ckapcmx2t001fhrpv0xm05ibl",
-    "modified": 1590583979.373,
-    "modifiedBy": "ckapcmx2t001fhrpv0xm05ibl"
+    "created": 1590757712.123,
+    "createdBy": "ckas82m4j001f8vpvdseodrnc",
+    "modified": 1590757712.123,
+    "modifiedBy": "ckas82m4j001f8vpvdseodrnc"
   }
 }</code></pre></div><div class="tab-pane httpAuth"><pre><code>curl -i -X POST -H 'Content-Type: application/json' -d '{}' "https://${username}.pryv.me/webhooks/${id}/test?auth=${token}"</code></pre><div class="step-marker">⬇</div><pre><code>HTTP/1.1 200 OK
 Content-Type: application/json; charset=utf-8
@@ -4087,8 +4089,8 @@ API-Version: 1.5.4
 
 {
   "webhook": {
-    "id": "ckapcmx2t001jhrpvemmcv4nf",
-    "accessId": "ckapcmx2t001fhrpv0xm05ibl",
+    "id": "ckas82m4j001j8vpvpwr6b3lm",
+    "accessId": "ckas82m4j001f8vpvdseodrnc",
     "url": "https://sievey.io/webhooks",
     "minIntervalMs": 5000,
     "maxRetries": 5,
@@ -4098,10 +4100,10 @@ API-Version: 1.5.4
     "failCount": 0,
     "lastRun": {},
     "runs": [],
-    "created": 1590583979.373,
-    "createdBy": "ckapcmx2t001fhrpv0xm05ibl",
-    "modified": 1590583979.373,
-    "modifiedBy": "ckapcmx2t001fhrpv0xm05ibl"
+    "created": 1590757712.123,
+    "createdBy": "ckas82m4j001f8vpvdseodrnc",
+    "modified": 1590757712.123,
+    "modifiedBy": "ckas82m4j001f8vpvdseodrnc"
   }
 }
 </code></pre></div></div></div></aside></section></section><!-- it's either:--><!-- !trusted & !preview--><!-- !preview & -full--><!-- -preview--><section id="methods-followed-slices"><h2 id="followed-slices">Followed slices</h2>
@@ -4448,8 +4450,8 @@ API-Version: 1.5.4
 <span class="http"><span class="label">HTTP</span><span class="label-value"><code>200 OK</code></span></span><p>The current <a href="#data-structure-access">Access properties</a>, as well as:</p>
 <table class="definitions"><tr><th><code>calls</code></th><td><div class="header"><span class="type"><a href="#methods-key-value-">key-value</a></span></div><div class="description"><p>A map of API methods and the number of time each of them was called using the current access.</p>
 </div></td></tr></table></div><aside><div class="example"><div class="tab-content"><div class="tab-pane json active"><pre><code>{}</code></pre><div class="step-marker">⬇</div><pre><code>{
-  "id": "ckapcmx0l000ahrpvhd50jlyu",
-  "token": "ckapcmx0l000bhrpvfzczzav2",
+  "id": "ckas82m24000a8vpv9dtd12lf",
+  "token": "ckas82m24000b8vpvj9hj4o39",
   "type": "app",
   "name": "Current access",
   "deviceName": "My awesome device",
@@ -4459,16 +4461,16 @@ API-Version: 1.5.4
       "level": "read"
     }
   ],
-  "lastUsed": 1590583684.293,
-  "expires": 1590583864.293,
-  "deleted": 1590583924.293,
+  "lastUsed": 1590757417.036,
+  "expires": 1590757597.036,
+  "deleted": 1590757657.036,
   "clientData": {
     "consent": "My custom consent message."
   },
-  "created": 1590583864.293,
-  "createdBy": "ckapcmx0l0001hrpvpgjpdplt",
-  "modified": 1590583864.293,
-  "modifiedBy": "ckapcmx0l0001hrpvpgjpdplt",
+  "created": 1590757597.036,
+  "createdBy": "ckas82m2300018vpvn8vg4lfj",
+  "modified": 1590757597.036,
+  "modifiedBy": "ckas82m2300018vpvn8vg4lfj",
   "calls": {
     "getAccessInfo": 12,
     "profile:get": 5,
@@ -4481,8 +4483,8 @@ Content-Type: application/json; charset=utf-8
 API-Version: 1.5.4
 
 {
-  "id": "ckapcmx0l000ahrpvhd50jlyu",
-  "token": "ckapcmx0l000bhrpvfzczzav2",
+  "id": "ckas82m24000a8vpv9dtd12lf",
+  "token": "ckas82m24000b8vpvj9hj4o39",
   "type": "app",
   "name": "Current access",
   "deviceName": "My awesome device",
@@ -4492,16 +4494,16 @@ API-Version: 1.5.4
       "level": "read"
     }
   ],
-  "lastUsed": 1590583684.293,
-  "expires": 1590583864.293,
-  "deleted": 1590583924.293,
+  "lastUsed": 1590757417.036,
+  "expires": 1590757597.036,
+  "deleted": 1590757657.036,
   "clientData": {
     "consent": "My custom consent message."
   },
-  "created": 1590583864.293,
-  "createdBy": "ckapcmx0l0001hrpvpgjpdplt",
-  "modified": 1590583864.293,
-  "modifiedBy": "ckapcmx0l0001hrpvpgjpdplt",
+  "created": 1590757597.036,
+  "createdBy": "ckas82m2300018vpvn8vg4lfj",
+  "modified": 1590757597.036,
+  "modifiedBy": "ckas82m2300018vpvn8vg4lfj",
   "calls": {
     "getAccessInfo": 12,
     "profile:get": 5,
@@ -4511,8 +4513,8 @@ API-Version: 1.5.4
   }
 }
 </code></pre></div><div class="tab-pane sockets"><pre><code>socket.emit('getAccessInfo', {}, callback);</code></pre><div class="step-marker">⬇</div><pre><code>{
-  "id": "ckapcmx0l000ahrpvhd50jlyu",
-  "token": "ckapcmx0l000bhrpvfzczzav2",
+  "id": "ckas82m24000a8vpv9dtd12lf",
+  "token": "ckas82m24000b8vpvj9hj4o39",
   "type": "app",
   "name": "Current access",
   "deviceName": "My awesome device",
@@ -4522,16 +4524,16 @@ API-Version: 1.5.4
       "level": "read"
     }
   ],
-  "lastUsed": 1590583684.293,
-  "expires": 1590583864.293,
-  "deleted": 1590583924.293,
+  "lastUsed": 1590757417.036,
+  "expires": 1590757597.036,
+  "deleted": 1590757657.036,
   "clientData": {
     "consent": "My custom consent message."
   },
-  "created": 1590583864.293,
-  "createdBy": "ckapcmx0l0001hrpvpgjpdplt",
-  "modified": 1590583864.293,
-  "modifiedBy": "ckapcmx0l0001hrpvpgjpdplt",
+  "created": 1590757597.036,
+  "createdBy": "ckas82m2300018vpvn8vg4lfj",
+  "modified": 1590757597.036,
+  "modifiedBy": "ckas82m2300018vpvn8vg4lfj",
   "calls": {
     "getAccessInfo": 12,
     "profile:get": 5,
@@ -4544,8 +4546,8 @@ Content-Type: application/json; charset=utf-8
 API-Version: 1.5.4
 
 {
-  "id": "ckapcmx0l000ahrpvhd50jlyu",
-  "token": "ckapcmx0l000bhrpvfzczzav2",
+  "id": "ckas82m24000a8vpv9dtd12lf",
+  "token": "ckas82m24000b8vpvj9hj4o39",
   "type": "app",
   "name": "Current access",
   "deviceName": "My awesome device",
@@ -4555,16 +4557,16 @@ API-Version: 1.5.4
       "level": "read"
     }
   ],
-  "lastUsed": 1590583684.293,
-  "expires": 1590583864.293,
-  "deleted": 1590583924.293,
+  "lastUsed": 1590757417.036,
+  "expires": 1590757597.036,
+  "deleted": 1590757657.036,
   "clientData": {
     "consent": "My custom consent message."
   },
-  "created": 1590583864.293,
-  "createdBy": "ckapcmx0l0001hrpvpgjpdplt",
-  "modified": 1590583864.293,
-  "modifiedBy": "ckapcmx0l0001hrpvpgjpdplt",
+  "created": 1590757597.036,
+  "createdBy": "ckas82m2300018vpvn8vg4lfj",
+  "modified": 1590757597.036,
+  "modifiedBy": "ckas82m2300018vpvn8vg4lfj",
   "calls": {
     "getAccessInfo": 12,
     "profile:get": 5,
@@ -4620,7 +4622,7 @@ API-Version: 1.5.4
   "results": [
     {
       "event": {
-        "id": "ckapcmx25000shrpvk54uk5tq",
+        "id": "ckas82m3t000s8vpvuh9ixp6b",
         "time": 1385046854.282,
         "streamIds": [
           "heart"
@@ -4629,15 +4631,15 @@ API-Version: 1.5.4
         "tags": [],
         "type": "frequency/bpm",
         "content": 90,
-        "created": 1590583984.349,
-        "createdBy": "ckapcmx0l0001hrpvpgjpdplt",
-        "modified": 1590583984.349,
-        "modifiedBy": "ckapcmx0l0001hrpvpgjpdplt"
+        "created": 1590757717.097,
+        "createdBy": "ckas82m2300018vpvn8vg4lfj",
+        "modified": 1590757717.097,
+        "modifiedBy": "ckas82m2300018vpvn8vg4lfj"
       }
     },
     {
       "event": {
-        "id": "ckapcmx25000thrpvo5ren8z6",
+        "id": "ckas82m3t000t8vpv3vuj9o6q",
         "time": 1385046854.282,
         "streamIds": [
           "systolic"
@@ -4646,15 +4648,15 @@ API-Version: 1.5.4
         "tags": [],
         "type": "pressure/mmhg",
         "content": 120,
-        "created": 1590583984.349,
-        "createdBy": "ckapcmx0l0001hrpvpgjpdplt",
-        "modified": 1590583984.349,
-        "modifiedBy": "ckapcmx0l0001hrpvpgjpdplt"
+        "created": 1590757717.097,
+        "createdBy": "ckas82m2300018vpvn8vg4lfj",
+        "modified": 1590757717.097,
+        "modifiedBy": "ckas82m2300018vpvn8vg4lfj"
       }
     },
     {
       "event": {
-        "id": "ckapcmx25000uhrpvrlay42aa",
+        "id": "ckas82m3t000u8vpvut187lpa",
         "time": 1385046854.282,
         "streamIds": [
           "diastolic"
@@ -4663,10 +4665,10 @@ API-Version: 1.5.4
         "tags": [],
         "type": "pressure/mmhg",
         "content": 80,
-        "created": 1590583984.349,
-        "createdBy": "ckapcmx0l0001hrpvpgjpdplt",
-        "modified": 1590583984.349,
-        "modifiedBy": "ckapcmx0l0001hrpvpgjpdplt"
+        "created": 1590757717.097,
+        "createdBy": "ckas82m2300018vpvn8vg4lfj",
+        "modified": 1590757717.097,
+        "modifiedBy": "ckas82m2300018vpvn8vg4lfj"
       }
     }
   ]
@@ -4678,7 +4680,7 @@ API-Version: 1.5.4
   "results": [
     {
       "event": {
-        "id": "ckapcmx25000shrpvk54uk5tq",
+        "id": "ckas82m3t000s8vpvuh9ixp6b",
         "time": 1385046854.282,
         "streamIds": [
           "heart"
@@ -4687,15 +4689,15 @@ API-Version: 1.5.4
         "tags": [],
         "type": "frequency/bpm",
         "content": 90,
-        "created": 1590583984.349,
-        "createdBy": "ckapcmx0l0001hrpvpgjpdplt",
-        "modified": 1590583984.349,
-        "modifiedBy": "ckapcmx0l0001hrpvpgjpdplt"
+        "created": 1590757717.097,
+        "createdBy": "ckas82m2300018vpvn8vg4lfj",
+        "modified": 1590757717.097,
+        "modifiedBy": "ckas82m2300018vpvn8vg4lfj"
       }
     },
     {
       "event": {
-        "id": "ckapcmx25000thrpvo5ren8z6",
+        "id": "ckas82m3t000t8vpv3vuj9o6q",
         "time": 1385046854.282,
         "streamIds": [
           "systolic"
@@ -4704,15 +4706,15 @@ API-Version: 1.5.4
         "tags": [],
         "type": "pressure/mmhg",
         "content": 120,
-        "created": 1590583984.349,
-        "createdBy": "ckapcmx0l0001hrpvpgjpdplt",
-        "modified": 1590583984.349,
-        "modifiedBy": "ckapcmx0l0001hrpvpgjpdplt"
+        "created": 1590757717.097,
+        "createdBy": "ckas82m2300018vpvn8vg4lfj",
+        "modified": 1590757717.097,
+        "modifiedBy": "ckas82m2300018vpvn8vg4lfj"
       }
     },
     {
       "event": {
-        "id": "ckapcmx25000uhrpvrlay42aa",
+        "id": "ckas82m3t000u8vpvut187lpa",
         "time": 1385046854.282,
         "streamIds": [
           "diastolic"
@@ -4721,10 +4723,10 @@ API-Version: 1.5.4
         "tags": [],
         "type": "pressure/mmhg",
         "content": 80,
-        "created": 1590583984.349,
-        "createdBy": "ckapcmx0l0001hrpvpgjpdplt",
-        "modified": 1590583984.349,
-        "modifiedBy": "ckapcmx0l0001hrpvpgjpdplt"
+        "created": 1590757717.097,
+        "createdBy": "ckas82m2300018vpvn8vg4lfj",
+        "modified": 1590757717.097,
+        "modifiedBy": "ckas82m2300018vpvn8vg4lfj"
       }
     }
   ]
@@ -4733,7 +4735,7 @@ API-Version: 1.5.4
   "results": [
     {
       "event": {
-        "id": "ckapcmx25000shrpvk54uk5tq",
+        "id": "ckas82m3t000s8vpvuh9ixp6b",
         "time": 1385046854.282,
         "streamIds": [
           "heart"
@@ -4742,15 +4744,15 @@ API-Version: 1.5.4
         "tags": [],
         "type": "frequency/bpm",
         "content": 90,
-        "created": 1590583984.349,
-        "createdBy": "ckapcmx0l0001hrpvpgjpdplt",
-        "modified": 1590583984.349,
-        "modifiedBy": "ckapcmx0l0001hrpvpgjpdplt"
+        "created": 1590757717.097,
+        "createdBy": "ckas82m2300018vpvn8vg4lfj",
+        "modified": 1590757717.097,
+        "modifiedBy": "ckas82m2300018vpvn8vg4lfj"
       }
     },
     {
       "event": {
-        "id": "ckapcmx25000thrpvo5ren8z6",
+        "id": "ckas82m3t000t8vpv3vuj9o6q",
         "time": 1385046854.282,
         "streamIds": [
           "systolic"
@@ -4759,15 +4761,15 @@ API-Version: 1.5.4
         "tags": [],
         "type": "pressure/mmhg",
         "content": 120,
-        "created": 1590583984.349,
-        "createdBy": "ckapcmx0l0001hrpvpgjpdplt",
-        "modified": 1590583984.349,
-        "modifiedBy": "ckapcmx0l0001hrpvpgjpdplt"
+        "created": 1590757717.097,
+        "createdBy": "ckas82m2300018vpvn8vg4lfj",
+        "modified": 1590757717.097,
+        "modifiedBy": "ckas82m2300018vpvn8vg4lfj"
       }
     },
     {
       "event": {
-        "id": "ckapcmx25000uhrpvrlay42aa",
+        "id": "ckas82m3t000u8vpvut187lpa",
         "time": 1385046854.282,
         "streamIds": [
           "diastolic"
@@ -4776,10 +4778,10 @@ API-Version: 1.5.4
         "tags": [],
         "type": "pressure/mmhg",
         "content": 80,
-        "created": 1590583984.349,
-        "createdBy": "ckapcmx0l0001hrpvpgjpdplt",
-        "modified": 1590583984.349,
-        "modifiedBy": "ckapcmx0l0001hrpvpgjpdplt"
+        "created": 1590757717.097,
+        "createdBy": "ckas82m2300018vpvn8vg4lfj",
+        "modified": 1590757717.097,
+        "modifiedBy": "ckas82m2300018vpvn8vg4lfj"
       }
     }
   ]
@@ -4791,7 +4793,7 @@ API-Version: 1.5.4
   "results": [
     {
       "event": {
-        "id": "ckapcmx25000shrpvk54uk5tq",
+        "id": "ckas82m3t000s8vpvuh9ixp6b",
         "time": 1385046854.282,
         "streamIds": [
           "heart"
@@ -4800,15 +4802,15 @@ API-Version: 1.5.4
         "tags": [],
         "type": "frequency/bpm",
         "content": 90,
-        "created": 1590583984.349,
-        "createdBy": "ckapcmx0l0001hrpvpgjpdplt",
-        "modified": 1590583984.349,
-        "modifiedBy": "ckapcmx0l0001hrpvpgjpdplt"
+        "created": 1590757717.097,
+        "createdBy": "ckas82m2300018vpvn8vg4lfj",
+        "modified": 1590757717.097,
+        "modifiedBy": "ckas82m2300018vpvn8vg4lfj"
       }
     },
     {
       "event": {
-        "id": "ckapcmx25000thrpvo5ren8z6",
+        "id": "ckas82m3t000t8vpv3vuj9o6q",
         "time": 1385046854.282,
         "streamIds": [
           "systolic"
@@ -4817,15 +4819,15 @@ API-Version: 1.5.4
         "tags": [],
         "type": "pressure/mmhg",
         "content": 120,
-        "created": 1590583984.349,
-        "createdBy": "ckapcmx0l0001hrpvpgjpdplt",
-        "modified": 1590583984.349,
-        "modifiedBy": "ckapcmx0l0001hrpvpgjpdplt"
+        "created": 1590757717.097,
+        "createdBy": "ckas82m2300018vpvn8vg4lfj",
+        "modified": 1590757717.097,
+        "modifiedBy": "ckas82m2300018vpvn8vg4lfj"
       }
     },
     {
       "event": {
-        "id": "ckapcmx25000uhrpvrlay42aa",
+        "id": "ckas82m3t000u8vpvut187lpa",
         "time": 1385046854.282,
         "streamIds": [
           "diastolic"
@@ -4834,10 +4836,10 @@ API-Version: 1.5.4
         "tags": [],
         "type": "pressure/mmhg",
         "content": 80,
-        "created": 1590583984.349,
-        "createdBy": "ckapcmx0l0001hrpvpgjpdplt",
-        "modified": 1590583984.349,
-        "modifiedBy": "ckapcmx0l0001hrpvpgjpdplt"
+        "created": 1590757717.097,
+        "createdBy": "ckas82m2300018vpvn8vg4lfj",
+        "modified": 1590757717.097,
+        "modifiedBy": "ckas82m2300018vpvn8vg4lfj"
       }
     }
   ]
@@ -4872,8 +4874,8 @@ Please use streamIds instead.</p>
 </div></td></tr><tr><th><code>modifiedBy</code></th><td><div class="header"><span class="type"><a href="#data-structure-identifier">identifier</a></span><span class="label label-default read-only">read-only</span></div><div class="description"><p>The id of the last access used to modify the event.</p>
 </div></td></tr></table></div><aside><div class="example"><p>A picture</p>
 <pre><code>{
-  "id": "ckapcmx250010hrpvx64g7a2l",
-  "time": 1590580384.349,
+  "id": "ckas82m3t00108vpvfvg9jxkv",
+  "time": 1590754117.097,
   "streamIds": [
     "diary"
   ],
@@ -4883,21 +4885,21 @@ Please use streamIds instead.</p>
   "content": null,
   "attachments": [
     {
-      "id": "ckapcmx250011hrpvbh8p7621",
+      "id": "ckas82m3t00118vpvzbazg4zs",
       "fileName": "photo.jpg",
       "type": "image/jpeg",
       "size": 2561,
-      "readToken": "ckapcmx250012hrpv2zpf0ged-OIkPU5YTYPWgaf30ijGckfteroo"
+      "readToken": "ckas82m3t00128vpvm9c3a4xj-5oGuVQTuRjsR6KHu902iuXtnKKf"
     }
   ],
-  "created": 1590580384.349,
-  "createdBy": "ckapcmx0l0004hrpv636r3ms0",
-  "modified": 1590580384.349,
-  "modifiedBy": "ckapcmx0l0004hrpv636r3ms0"
+  "created": 1590754117.097,
+  "createdBy": "ckas82m2400048vpv2h6x79gq",
+  "modified": 1590754117.097,
+  "modifiedBy": "ckas82m2400048vpv2h6x79gq"
 }</code></pre></div><div class="example"><p>An activity</p>
 <pre><code>{
-  "id": "ckapcmx25000nhrpv5ig47ud9",
-  "time": 1590583984.349,
+  "id": "ckas82m3t000n8vpvero8eyc2",
+  "time": 1590757717.097,
   "streamIds": [
     "jogging"
   ],
@@ -4905,13 +4907,13 @@ Please use streamIds instead.</p>
   "tags": [],
   "type": "activity/pryv",
   "content": null,
-  "created": 1590583984.349,
-  "createdBy": "ckapcmx0l0001hrpvpgjpdplt",
-  "modified": 1590583984.349,
-  "modifiedBy": "ckapcmx0l0001hrpvpgjpdplt"
+  "created": 1590757717.097,
+  "createdBy": "ckas82m2300018vpvn8vg4lfj",
+  "modified": 1590757717.097,
+  "modifiedBy": "ckas82m2300018vpvn8vg4lfj"
 }</code></pre></div><div class="example"><p>A position</p>
 <pre><code>{
-  "id": "ckapcmx250013hrpvwhrhicqc",
+  "id": "ckas82m3t00138vpvnhtbjjp3",
   "time": 1350373077.359,
   "streamIds": [
     "diary"
@@ -4923,10 +4925,10 @@ Please use streamIds instead.</p>
     "latitude": 40.714728,
     "longitude": -73.998672
   },
-  "created": 1590576784.349,
-  "createdBy": "ckapcmx0k0000hrpvgznk9zwc",
-  "modified": 1590576784.349,
-  "modifiedBy": "ckapcmx0k0000hrpvgznk9zwc"
+  "created": 1590750517.097,
+  "createdBy": "ckas82m2300008vpv21u021zi",
+  "modified": 1590750517.097,
+  "modifiedBy": "ckas82m2300008vpv21u021zi"
 }</code></pre></div></aside></section><!-- it's either:--><!-- !trusted & !preview--><!-- !preview & -full--><!-- -preview--><section id="data-structure-stream"><h2 id="stream">Stream</h2>
 <div class="content"><div class="meta"></div><div class="intro"><p>See also: <a href="/concepts/#streams">core concepts</a>.</p>
 </div><table class="definitions"><tr><th><code>id</code></th><td><div class="header"><span class="type"><a href="#data-structure-identifier">identifier</a></span><span class="label label-default unique">unique</span><span class="label label-default read-only">read-only (except at creation)</span></div><div class="description"><p>The identifier for the stream. Automatically generated if not set when creating the stream; <strong>slugified if necessary</strong>.</p>
@@ -4951,26 +4953,26 @@ Please use streamIds instead.</p>
         "name": "Jogging",
         "parentId": "sport",
         "children": [],
-        "created": 1527470094.6505432,
-        "createdBy": "ckapcmx0k0000hrpvgznk9zwc",
-        "modified": 1527470224.2780252,
-        "modifiedBy": "ckapcmx0k0000hrpvgznk9zwc"
+        "created": 1527643833.312335,
+        "createdBy": "ckas82m2300008vpv21u021zi",
+        "modified": 1527644095.8068404,
+        "modifiedBy": "ckas82m2300008vpv21u021zi"
       },
       {
         "id": "bicycling",
         "name": "Bicycling",
         "parentId": "sport",
         "children": [],
-        "created": 1527470094.6505432,
-        "createdBy": "ckapcmx0k0000hrpvgznk9zwc",
-        "modified": 1527470350.1079452,
-        "modifiedBy": "ckapcmx0k0000hrpvgznk9zwc"
+        "created": 1527643833.312335,
+        "createdBy": "ckas82m2300008vpv21u021zi",
+        "modified": 1527643906.7289753,
+        "modifiedBy": "ckas82m2300008vpv21u021zi"
       }
     ],
-    "created": 1527470080.349,
-    "createdBy": "ckapcmx0k0000hrpvgznk9zwc",
-    "modified": 1527470128.2062693,
-    "modifiedBy": "ckapcmx0k0000hrpvgznk9zwc"
+    "created": 1527643813.097,
+    "createdBy": "ckas82m2300008vpv21u021zi",
+    "modified": 1527644063.1660295,
+    "modifiedBy": "ckas82m2300008vpv21u021zi"
   },
   {
     "id": "work",
@@ -4978,82 +4980,82 @@ Please use streamIds instead.</p>
     "parentId": null,
     "children": [
       {
-        "id": "ckapcmx24000chrpv158igflx",
+        "id": "ckas82m3t000c8vpvsxrokazx",
         "name": "Noble Works Co.",
         "parentId": "work",
         "children": [
           {
-            "id": "ckapcmx24000ehrpv3a3a8oiq",
+            "id": "ckas82m3t000e8vpviw3l3z5o",
             "name": "Last Be First",
-            "parentId": "ckapcmx24000chrpv158igflx",
+            "parentId": "ckas82m3t000c8vpvsxrokazx",
             "children": [],
-            "created": 1527470132.3800714,
-            "createdBy": "ckapcmx0k0000hrpvgznk9zwc",
-            "modified": 1527470375.8224823,
-            "modifiedBy": "ckapcmx0k0000hrpvgznk9zwc"
+            "created": 1527643845.768597,
+            "createdBy": "ckas82m2300008vpv21u021zi",
+            "modified": 1527643862.3048942,
+            "modifiedBy": "ckas82m2300008vpv21u021zi"
           },
           {
-            "id": "ckapcmx25000fhrpvs1cf13eh",
+            "id": "ckas82m3t000f8vpvh0otpfam",
             "name": "Big Tree",
-            "parentId": "ckapcmx24000chrpv158igflx",
+            "parentId": "ckas82m3t000c8vpvsxrokazx",
             "children": [],
-            "created": 1527470132.3800714,
-            "createdBy": "ckapcmx0k0000hrpvgznk9zwc",
-            "modified": 1527470472.483438,
-            "modifiedBy": "ckapcmx0k0000hrpvgznk9zwc"
+            "created": 1527643845.768597,
+            "createdBy": "ckas82m2300008vpv21u021zi",
+            "modified": 1527644052.9463005,
+            "modifiedBy": "ckas82m2300008vpv21u021zi"
           },
           {
-            "id": "ckapcmx25000ghrpv0ra6nr01",
+            "id": "ckas82m3t000g8vpvd6sueewr",
             "name": "Inner Light",
-            "parentId": "ckapcmx24000chrpv158igflx",
+            "parentId": "ckas82m3t000c8vpvsxrokazx",
             "children": [],
-            "created": 1527470132.3800714,
-            "createdBy": "ckapcmx0k0000hrpvgznk9zwc",
-            "modified": 1527470378.5471952,
-            "modifiedBy": "ckapcmx0k0000hrpvgznk9zwc"
+            "created": 1527643845.768597,
+            "createdBy": "ckas82m2300008vpv21u021zi",
+            "modified": 1527644051.0919752,
+            "modifiedBy": "ckas82m2300008vpv21u021zi"
           }
         ],
-        "created": 1527470109.6221488,
-        "createdBy": "ckapcmx0k0000hrpvgznk9zwc",
-        "modified": 1527470243.3421118,
-        "modifiedBy": "ckapcmx0k0000hrpvgznk9zwc"
+        "created": 1527643824.394394,
+        "createdBy": "ckas82m2300008vpv21u021zi",
+        "modified": 1527644010.90485,
+        "modifiedBy": "ckas82m2300008vpv21u021zi"
       },
       {
-        "id": "ckapcmx24000dhrpvk7jm11a8",
+        "id": "ckas82m3t000d8vpvw8i5zryc",
         "name": "Freelancing",
         "parentId": "work",
         "children": [
           {
-            "id": "ckapcmx25000hhrpva3fiwcre",
+            "id": "ckas82m3t000h8vpv0oqfxxrz",
             "name": "Funky Veggies",
-            "parentId": "ckapcmx24000dhrpvk7jm11a8",
+            "parentId": "ckas82m3t000d8vpvw8i5zryc",
             "children": [],
-            "created": 1527470128.6000473,
-            "createdBy": "ckapcmx0k0000hrpvgznk9zwc",
-            "modified": 1527470223.855392,
-            "modifiedBy": "ckapcmx0k0000hrpvgznk9zwc"
+            "created": 1527643846.7346659,
+            "createdBy": "ckas82m2300008vpv21u021zi",
+            "modified": 1527644135.0790038,
+            "modifiedBy": "ckas82m2300008vpv21u021zi"
           },
           {
-            "id": "ckapcmx25000ihrpvd441pfm5",
+            "id": "ckas82m3t000i8vpv7sladw8f",
             "name": "Jojo Lapin & sons",
-            "parentId": "ckapcmx24000dhrpvk7jm11a8",
+            "parentId": "ckas82m3t000d8vpvw8i5zryc",
             "children": [],
-            "created": 1527470128.6000473,
-            "createdBy": "ckapcmx0k0000hrpvgznk9zwc",
-            "modified": 1527470347.7627547,
-            "modifiedBy": "ckapcmx0k0000hrpvgznk9zwc"
+            "created": 1527643846.7346659,
+            "createdBy": "ckas82m2300008vpv21u021zi",
+            "modified": 1527643923.281,
+            "modifiedBy": "ckas82m2300008vpv21u021zi"
           }
         ],
-        "created": 1527470109.6221488,
-        "createdBy": "ckapcmx0k0000hrpvgznk9zwc",
-        "modified": 1527470169.640634,
-        "modifiedBy": "ckapcmx0k0000hrpvgznk9zwc"
+        "created": 1527643824.394394,
+        "createdBy": "ckas82m2300008vpv21u021zi",
+        "modified": 1527643923.9380078,
+        "modifiedBy": "ckas82m2300008vpv21u021zi"
       }
     ],
-    "created": 1527470080.349,
-    "createdBy": "ckapcmx0k0000hrpvgznk9zwc",
-    "modified": 1527470358.5288036,
-    "modifiedBy": "ckapcmx0k0000hrpvgznk9zwc"
+    "created": 1527643813.097,
+    "createdBy": "ckas82m2300008vpv21u021zi",
+    "modified": 1527644046.0104733,
+    "modifiedBy": "ckas82m2300008vpv21u021zi"
   }
 ]</code></pre></div></aside></section><!-- it's either:--><!-- !trusted & !preview--><!-- !preview & -full--><!-- -preview--><section id="data-structure-access"><h2 id="access">Access</h2>
 <div class="content"><div class="meta"></div><div class="intro"><p>See also: <a href="/concepts/#accesses">core concepts</a>.</p>
@@ -5082,8 +5084,8 @@ will be deactivated.</p>
 </div></td></tr><tr><th><code>modifiedBy</code></th><td><div class="header"><span class="type"><a href="#data-structure-identifier">identifier</a></span><span class="label label-default read-only">read-only</span></div><div class="description"><p>The id of the last access used to modify the access.</p>
 </div></td></tr></table></div><aside><div class="example"><p>An app access</p>
 <pre><code>{
-  "id": "ckapcmx0l0001hrpvpgjpdplt",
-  "token": "ckapcmx0l0003hrpvolqt3u8n",
+  "id": "ckas82m2300018vpvn8vg4lfj",
+  "token": "ckas82m2400038vpvmb7enlqa",
   "type": "app",
   "name": "my-app-id",
   "permissions": [
@@ -5092,10 +5094,10 @@ will be deactivated.</p>
       "level": "contribute"
     }
   ],
-  "created": 1590497584.293,
-  "createdBy": "ckapcmx0k0000hrpvgznk9zwc",
-  "modified": 1590497584.293,
-  "modifiedBy": "ckapcmx0k0000hrpvgznk9zwc"
+  "created": 1590671317.036,
+  "createdBy": "ckas82m2300008vpv21u021zi",
+  "modified": 1590671317.036,
+  "modifiedBy": "ckas82m2300008vpv21u021zi"
 }</code></pre></div></aside></section><!-- it's either:--><!-- !trusted & !preview--><!-- !preview & -full--><!-- -preview--><section id="data-structure-followed-slice"><h2 id="followed-slice">Followed slice</h2>
 <div class="content"><div class="meta"><span class="label trusted-only">Trusted apps only</span></div><div class="intro"><p>See also: <a href="/concepts/#followed-slices">core concepts</a>.</p>
 </div><table class="definitions"><tr><th><code>id</code></th><td><div class="header"><span class="type"><a href="#data-structure-identifier">identifier</a></span><span class="label label-default unique">unique</span><span class="label label-default read-only">read-only</span></div><div class="description"><p>The server-assigned identifier for the followed slice.</p>
@@ -5125,13 +5127,13 @@ These logs can be fetched by presenting an authorization token, allowing to audi
 </div></td></tr><tr><th><code>errorId</code></th><td><div class="header"><span class="type">string</span><span class="label label-default optional">optional</span><span class="label label-default read-only">read-only</span></div><div class="description"><p>The identifier for the error resulting from the audited action, if any.</p>
 </div></td></tr></table></div><aside><div class="example"><p>A single audit log</p>
 <pre><code>{
-  "id": "ckapcmx2y001nhrpvysaq2hms",
+  "id": "ckas82m4o001n8vpvnokahdpy",
   "type": "audit/core",
   "time": 1561988300,
   "forwardedFor": "172.18.0.7",
   "action": "GET /events",
   "query": "streamId=diary",
-  "accessId": "ckapcmx2y001lhrpvrlb3btks",
+  "accessId": "ckas82m4o001l8vpv1nshc6fw",
   "status": 403,
   "errorMessage": "Access session has expired.",
   "errorId": "forbidden"
@@ -5230,8 +5232,8 @@ The first value corresponds to the first field, and so on.</p>
 </div></td></tr><tr><th><code>modifiedBy</code></th><td><div class="header"><span class="type"><a href="#data-structure-identifier">identifier</a></span><span class="label label-default read-only">read-only</span></div><div class="description"><p>The id of the last access used to modify the webhook.</p>
 </div></td></tr></table></div><aside><div class="example"><p>A simple Webhook</p>
 <pre><code>{
-  "id": "ckapcmx2t001ghrpvm8vzn512",
-  "accessId": "ckapcmx2t001ehrpvj2up77xo",
+  "id": "ckas82m4j001g8vpvyeg1wvtz",
+  "accessId": "ckas82m4j001e8vpvhlfojhxr",
   "url": "https://notifications.service.com/pryv",
   "minIntervalMs": 5000,
   "maxRetries": 5,
@@ -5241,22 +5243,22 @@ The first value corresponds to the first field, and so on.</p>
   "failCount": 0,
   "lastRun": {
     "status": 200,
-    "timestamp": 1590580384.373
+    "timestamp": 1590754117.123
   },
   "runs": [
     {
       "status": 200,
-      "timestamp": 1590580384.373
+      "timestamp": 1590754117.123
     },
     {
       "status": 200,
-      "timestamp": 1590576784.373
+      "timestamp": 1590750517.123
     }
   ],
-  "created": 1590497584.373,
-  "createdBy": "ckapcmx2t001ehrpvj2up77xo",
-  "modified": 1590497584.373,
-  "modifiedBy": "ckapcmx2t001ehrpvj2up77xo"
+  "created": 1590671317.123,
+  "createdBy": "ckas82m4j001e8vpvhlfojhxr",
+  "modified": 1590671317.123,
+  "modifiedBy": "ckas82m4j001e8vpvhlfojhxr"
 }</code></pre></div></aside></section><!-- it's either:--><!-- !trusted & !preview--><!-- !preview & -full--><!-- -preview--><section id="data-structure-item-deletion"><h2 id="item-deletion">Item deletion</h2>
 <div class="content"><div class="meta"></div><div class="intro"><p>A record of a deleted item for sync purposes.</p>
 </div><table class="definitions"><tr><th><code>id</code></th><td><div class="header"><span class="type"><a href="#data-structure-identifier">identifier</a></span></div><div class="description"><p>The identifier of the deleted item.</p>
