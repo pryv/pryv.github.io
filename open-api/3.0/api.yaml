@@ -1,7 +1,7 @@
 openapi: 3.0.0
 info:
   description: Description of Pryv.io API in Open API 3.0 standard format
-  version: 1.5.9
+  version: 1.5.4
   title: Pryv.io API
   contact:
     email: hsupport@pryv.com
@@ -753,7 +753,8 @@ paths:
                 - type: array
                   items: "[webhooks](#data-structure-webhook)"
     post:
-      description: Creates a new webhook. You can only create webhooks with app accesses.
+      description: Creates a new webhook. You can only create webhooks with `app` and
+        `shared` accesses.
       operationId: webhooks.create
       responses:
         "201":
@@ -784,8 +785,8 @@ paths:
                 - $ref: "#/components/schemas/webhook"
     put:
       description: >-
-        Modifies the webhook. You can only modify webhooks with the app access
-        that was used to create them, unless you are using a personal token.  
+        Modifies the webhook. You can only modify webhooks with the access that
+        was used to create them, unless you are using a personal token.  
 
         Updating the `state` to `active` resets the `currentRetries` counter.
       operationId: webhooks.update
@@ -806,7 +807,7 @@ paths:
               type: object
               properties: {}
     delete:
-      description: Deletes the specified webhook. You can only delete webhooks with the app
+      description: Deletes the specified webhook. You can only delete webhooks with the
         access that was used to create them, unless you are using a personal
         token.
       operationId: webhooks.delete
@@ -821,7 +822,7 @@ paths:
   "/webhooks/{id}/test":
     post:
       description: Sends a post request containing a message called `test` to the URL of
-        the specified webhook's `url`. You can only test webhooks with the app
+        the specified webhook's `url`. You can only test webhooks with the
         access that was used to create them, unless you are using a personal
         token.
       operationId: webhooks.test
