@@ -14,7 +14,7 @@ paths:
       description: >-
         Authenticates the user against the provided credentials, opening a
         personal access session. This is one of the only API methods that do not
-        expect an [auth parameter](#basics-authentication).   
+        expect an [auth parameter](#basics-authorization).   
 
         This method requires that the `appId` and `Origin` (or `Referer`) header comply with the [trusted app verification](#basics-trusted-apps-verification).
       operationId: auth.login
@@ -61,7 +61,7 @@ paths:
         the MFA challenge.
 
 
-        Requires a personal token as [authentication](#basics-authentication), which should be obtained during a prior [Login call](#methods-auth-auth-login).
+        Requires a personal token as [authentication](#basics-authorization), which should be obtained during a prior [Login call](#methods-auth-auth-login).
       operationId: mfa.activate
       responses:
         "302":
@@ -84,7 +84,7 @@ paths:
         a prior [MFA activation call](#methods-mfa-mfa-activate).
 
 
-        Requires a MFA session token as [authentication](#basics-authentication).
+        Requires a MFA session token as [authentication](#basics-authorization).
       operationId: mfa.confirm
       responses:
         "200":
@@ -110,7 +110,7 @@ paths:
         send a verification code by SMS).
 
 
-        Requires a MFA session token as [authentication](#basics-authentication).
+        Requires a MFA session token as [authentication](#basics-authorization).
       operationId: mfa.challenge
       responses:
         "200":
@@ -127,7 +127,7 @@ paths:
         call](#methods-mfa-mfa-challenge).
 
 
-        Requires a MFA session token as [authentication](#basics-authentication).
+        Requires a MFA session token as [authentication](#basics-authorization).
       operationId: mfa.verify
       responses:
         "200":
@@ -150,7 +150,7 @@ paths:
       description: |-
         Deactivate MFA for a given Pryv.io user.
 
-        Requires a personal token as [authentication](#basics-authentication).
+        Requires a personal token as [authentication](#basics-authorization).
       operationId: mfa.deactivate
       responses:
         "200":
@@ -1062,8 +1062,8 @@ paths:
   /account/reset-password:
     post:
       description: >-
-        Resets the user's password, authenticating the request with the given
-        reset token (see [request password
+        Resets the user's password, authorizing the request with the given reset
+        token (see [request password
         reset](#methods-account-account-requestPasswordReset) ).  
 
         This method requires that the `appId` and `Origin` (or `Referer`) header comply with the [trusted app verification](#basics-trusted-apps-verification).

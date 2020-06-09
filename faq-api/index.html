@@ -31,16 +31,16 @@ If you prefer storing this data in a separate account, keep in mind that the use
 <h2 id="streams">Streams</h2>
 <h3 id="is-the-stream-structure-declared-globally-or-at-the-level-of-each-user-account-">Is the stream structure declared globally or at the level of each user account ?</h3>
 <p>The stream structure is independent from one user account to another. It is declared and managed by apps: the stream structure can be created by the app when the user logs in for the first time for example.</p>
-<p>We advise you to maintain a list of streams as explained in our <a href="https://api.pryv.com/guides/data-modelling/#implementation">data modelling guide</a>.</p>
+<p>We advise you to maintain a list of streams as explained in our <a href="/guides/data-modelling/#implementation">data modelling guide</a>.</p>
 <h3 id="is-there-a-limit-in-the-number-of-child-streams-that-a-stream-can-have-">Is there a limit in the number of child streams that a stream can have ?</h3>
 <p>There is no limit to the number of substreams of a stream. As a general rule it is preferable to multiply the number of streams and to minimize the creation of different event types.</p>
 <p>For example, if you want to enter data measurements for different types of allergens, it is preferable to create one substream per allergen type (<code>Cereal crops</code>, <code>Pollen</code>, <code>Hazelnut Tree</code>, etc) with a single event type (<code>density/kg-m3</code>) instead of multiplying event types (<code>density/pollen</code>, <code>density/cereal</code>, etc) under a single stream <code>Allergens</code>.</p>
 <h2 id="event-types">Event Types</h2>
 <h3 id="how-can-i-define-custom-event-types-">How can I define custom event types?</h3>
-<p>You can define any custom type as long as it follows <a href="/event-types/#basics">this structure</a>. See <a href="https://api.pryv.com/customer-resources/pryv.io-setup/#customize-event-types-validation">How to customize event types</a> for more information.</p>
+<p>You can define any custom type as long as it follows <a href="/event-types/#basics">this structure</a>. See <a href="/customer-resources/pryv.io-setup/#customize-event-types-validation">How to customize event types</a> for more information.</p>
 <h3 id="can-i-limit-the-number-of-event-types-to-be-used-in-a-stream-">Can I limit the number of event types to be used in a stream ?</h3>
 <p>There is no limitation in terms of event types per stream. A stream acts like a “folder” in which you can put any type of information.
-If you wish to give a Pryv access token to an external service and to control its use of the access, you can give it a “limited” access type - <code>create-only</code> - which allows it to <strong>only</strong> create events in the streams (more information on the different permission levels <a href="https://api.pryv.com/reference/#access">here</a>).</p>
+If you wish to give a Pryv access token to an external service and to control its use of the access, you can give it a “limited” access type - <code>create-only</code> - which allows it to <strong>only</strong> create events in the streams (more information on the different permission levels <a href="/reference/#access">here</a>).</p>
 <h3 id="are-my-events-content-validated-">Are my events content validated?</h3>
 <p>The default set of validated types is defined in <a href="/event-types/">https://api.pryv.com/event-types</a>, they are validated upon creation and modification. To validate custom types, it is possible to provide a different source of event types, following the <a href="/event-types/#format-specification">JSON schema format</a>.</p>
 <h3 id="what-kind-of-validation-do-you-perform-">What kind of validation do you perform?</h3>
@@ -76,9 +76,9 @@ If you wish to give a Pryv access token to an external service and to control it
 This is useful for email authentication or if the user has lost his password.</p>
 <h2 id="authentication">Authentication</h2>
 <h3 id="how-does-the-authentication-flow-work-">How does the authentication flow work ?</h3>
-<p>You can check how to authorize your app <a href="https://api.pryv.com/reference/#authorizing-your-app">here</a>.</p>
+<p>You can check how to authenticate your app <a href="/reference/#authenticate-your-app">here</a>.</p>
 <p>We deliver our Pryv.io platform with &quot;default&quot; web apps for registration, login, password-reset and auth request. The code is available <a href="https://github.com/pryv/app-web-auth3">here</a>. </p>
-<p>We advise our customers to customize it, and we provide some <a href="https://api.pryv.com/customer-resources/pryv.io-setup/#customize-authorization-registration-and-reset-password-apps">guidelines</a> for the customization.</p>
+<p>We advise our customers to customize it, and we provide some <a href="/customer-resources/pryv.io-setup/#customize-authentication-registration-and-reset-password-apps">guidelines</a> for the customization.</p>
 <h3 id="i-m-getting-the-invalid-credentials-error-on-the-auth-login-call-although-my-fields-are-correct-">I&#39;m getting the &quot;invalid credentials&quot; error on the auth.login call although my fields are correct.</h3>
 <pre><code class="lang-json">{
     &quot;error&quot;: {
@@ -101,7 +101,7 @@ This is useful for email authentication or if the user has lost his password.</p
 <p>The Pryv.io login supports multi-factor authentication (MFA). See its API reference methods <a href="/reference/#multi-factor-authentication">here</a>.</p>
 <h2 id="account-granularity">Account granularity</h2>
 <h3 id="should-i-store-the-data-of-more-than-one-person-in-a-single-pryv-io-account-">Should I store the data of more than one person in a single Pryv.io account?</h3>
-<p>For compliance reasons, Pryv.io accounts are per-user. Storing multiple people data under the same account bypasses the authorization step which is the technical equivalent of consent.</p>
+<p>For compliance reasons, Pryv.io accounts are per-user. Storing multiple people data under the same account bypasses the authentication step which is the technical equivalent of consent.</p>
 <h2 id="access-sharing">Access sharing</h2>
 <h3 id="how-does-a-person-give-access-to-his-data-">How does a person give access to his data?</h3>
 <p>Using a token previously obtained, you can generate a new one using the <a href="/reference/#create-access">accesses.create</a> API call to generate a new token. The permission set associated to this token must be a subset of the permissions set of the access token used for the call.</p>
@@ -120,7 +120,7 @@ This is useful for email authentication or if the user has lost his password.</p
 <p>This can be done by using the auth request through a consent step or by generating a token directly through an API call using a token obtained previously.</p>
 <h3 id="how-does-an-access-delegation-work-">How does an access delegation work ?</h3>
 <p>It can happen that you would need an access delegation from your app users if they cannot connect on the app to authorize apps and grant access to their data for some period of time.</p>
-<p>You can send an auth request to your users at their first login to grant your app access to all or specific streams (see <a href="/reference/#authorizing-your-app">here</a> for more information on the auth request).</p>
+<p>You can send an auth request to your users at their first login to grant your app access to all or specific streams (see <a href="/reference/#authenticate-your-app">here</a> for more information on the auth request).</p>
 <p>This works as a delegation of access, and the “app” token will be able to generate sub-tokens of a “shared” type and give permission to data that was in its scope.</p>
 <h3 id="what-level-of-permissions-do-i-need-to-create-delete-modify-streams-in-a-user-s-account-">What level of permissions do I need to create/delete/modify streams in a user’s account ?</h3>
 <p>The access level “manage” on a stream gives you the permission to manipulate (read, create, modify, delete) all the substreams of this stream (see more details on the <strong>Access</strong> structure <a href="/reference/#access">here</a>).</p>

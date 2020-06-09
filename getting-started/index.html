@@ -17,7 +17,7 @@ projects. Throughout these steps, we will use our <a href="https://pryv.com/pryv
 <p>By registering on our Lab platform, you will have access to a Pryv.io user account in a fully-functional environment perfect for your first tests.</p>
 <ol>
 <li>Go to the <a href="https://sw.pryv.me/access/register.html">registration page</a>.</li>
-<li>Fill in the form, choose <a href="http://api.pryv.com/concepts/#servers">where you want to store your data</a> under &#39;Hosting&#39; and click on the &#39;<strong>Create</strong>&#39; button.</li>
+<li>Fill in the form, choose <a href="/concepts/#servers">where you want to store your data</a> under &#39;Hosting&#39; and click on the &#39;<strong>Create</strong>&#39; button.</li>
 </ol>
 <p><em>Data in Pryv.io has a geographical location that doesn&#39;t change. This makes it easier to control what legislations apply.</em></p>
 <p>Once this is done, you will receive a welcome email from the <strong>Pryv Lab</strong> with your account details. You can sign-in with your Pryv.io account on the following link:</p>
@@ -36,7 +36,7 @@ Once data is added to your account, you can select which streams to visualize on
 <p><img src="/assets/images/getting-started/dashboard_johann.png" alt="Johann Dashboard"></p>
 <h1 id="obtain-an-access-token">Obtain an Access Token</h1>
 <p>Now that your Pryv Lab account has been created, you can start adding data. In order to do so using code or API clients such as cURL or Postman, you need to obtain an access token.</p>
-<p>The easiest is to use the <strong>Pryv Access Token Generation</strong> page (which is a raw implementation of <a href="/reference/#authorizing-your-app">Pryv.io&#39;s oAuth-like process</a>).</p>
+<p>The easiest is to use the <strong>Pryv Access Token Generation</strong> page (which is a raw implementation of <a href="/reference/#authenticate-your-app">Pryv.io&#39;s oAuth-like process</a>).</p>
 <ol>
 <li>Go to <a href="https://api.pryv.com/app-web-access/?pryvServiceInfoUrl=https://reg.pryv.me/service/info">the Pryv Access Token Generator: https://api.pryv.com/app-web-access/</a></li>
 <li><p>Set up the required parameters :</p>
@@ -134,10 +134,10 @@ Events either have a type from the list of <a href="/event-types/#directory"><st
   &quot;time&quot;: 1528446260.693
 }
 </code></pre>
-<p>Pryv offers the possibility to manipulate a broad range of event types that can be all found in the <a href="http://api.pryv.com/event-types/"><strong>event type directory</strong></a>. </p>
+<p>Pryv offers the possibility to manipulate a broad range of event types that can be all found in the <a href="/event-types/"><strong>event type directory</strong></a>. </p>
 <p><strong>Basic event types</strong> include :</p>
 <ul>
-<li><a href="http://api.pryv.com/event-types/#numerical-types"><strong>numerical values</strong></a> to capture number values. For example, the type <code>density/kg-m3</code> can be used to record the density of a material. In the case of our user, we can use this type to reflect the exposure to specific allergens in his daily life.</li>
+<li><a href="/event-types/#numerical-types"><strong>numerical values</strong></a> to capture number values. For example, the type <code>density/kg-m3</code> can be used to record the density of a material. In the case of our user, we can use this type to reflect the exposure to specific allergens in his daily life.</li>
 </ul>
 <pre><code class="lang-json">{
   &quot;id&quot;: &quot;c3jkdjdt000ze64d8u9z4hap&quot;,
@@ -148,7 +148,7 @@ Events either have a type from the list of <a href="/event-types/#directory"><st
 }
 </code></pre>
 <ul>
-<li><a href="http://api.pryv.com/event-types/#complex-types"><strong>complex types</strong></a>, which will be relevant for specific activities and measurements. In the use case above, the type <code>blood-pressure/bpm-mmhg</code> can be used to record a blood pressure measurement. It will represent an object, the blood pressure measurement, that has three properties : the systolic and diastolic blood pressure stored in <strong>mmHg</strong>, and the heart rate in <strong>bpm</strong>.</li>
+<li><a href="/event-types/#complex-types"><strong>complex types</strong></a>, which will be relevant for specific activities and measurements. In the use case above, the type <code>blood-pressure/bpm-mmhg</code> can be used to record a blood pressure measurement. It will represent an object, the blood pressure measurement, that has three properties : the systolic and diastolic blood pressure stored in <strong>mmHg</strong>, and the heart rate in <strong>bpm</strong>.</li>
 </ul>
 <pre><code class="lang-json">{
   &quot;id&quot;: &quot;c4jghrjkj011ez46d8u4y3pah&quot;,
@@ -183,7 +183,7 @@ Events either have a type from the list of <a href="/event-types/#directory"><st
   ]
 }
 </code></pre>
-<p><strong>High-frequency series</strong> that can be used to collect a high volume of data. This data structure, described in the <a href="http://api.pryv.com/reference/#data-structure-high-frequency-series"><strong>corresponding section</strong></a>, is used for high frequency data to resolve issues with data density. In our example, it can be used for the smartwatch to collect GPS position in real-time of the user. 
+<p><strong>High-frequency series</strong> that can be used to collect a high volume of data. This data structure, described in the <a href="/reference/#data-structure-high-frequency-series"><strong>corresponding section</strong></a>, is used for high frequency data to resolve issues with data density. In our example, it can be used for the smartwatch to collect GPS position in real-time of the user. 
 <img src="/assets/images/getting-started/hf-event.png" alt="HF"></p>
 <p>This data will have the type <code>position/wgs84</code> :</p>
 <pre><code class="lang-json">{
@@ -231,7 +231,7 @@ This token should be stored permanently and securely in your application.</p>
 }
 </code></pre>
 <p>Thus, each access is defined by a &quot;name&quot;, a set of &quot;permissions&quot; and a &quot;type&quot; that is optional.</p>
-<p>Pryv.io distinguishes between three access types (&quot;shared&quot;, &quot;app&quot; and &quot;personal&quot;) which are explained in the <a href="http://api.pryv.com/concepts/#accesses">corresponding section</a>.</p>
+<p>Pryv.io distinguishes between three access types (&quot;shared&quot;, &quot;app&quot; and &quot;personal&quot;) which are explained in the <a href="/concepts/#accesses">corresponding section</a>.</p>
 <p>As you can see from the example above, each permission specifies a <code>streamId</code>, the id of the stream to which we want to give access, and an access <code>level</code>, which can be one of the following:</p>
 <ul>
 <li><code>read</code>: Enables users to view the stream and its contents (sub-streams and events).</li>
@@ -239,7 +239,7 @@ This token should be stored permanently and securely in your application.</p>
 <li><code>manage</code>: Enables users to fully control the stream. Can create, update, delete and move the stream.</li>
 <li><code>create-only</code>: Enables users to read the stream and create events on it and its children.</li>
 </ul>
-<p>A more exhaustive explanation of the concept of &quot;Access&quot; and the different &quot;levels&quot; of permissions can be found in the <a href="http://api.pryv.com/reference/#access">API reference</a>.</p>
+<p>A more exhaustive explanation of the concept of &quot;Access&quot; and the different &quot;levels&quot; of permissions can be found in the <a href="/reference/#access">API reference</a>.</p>
 <h1 id="what-next-">What Next?</h1>
 <p>This concludes our first tour of Pryv.io and some basic things you can do with it. Where to go from here?</p>
 <ul>
