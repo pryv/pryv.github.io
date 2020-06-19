@@ -37,7 +37,7 @@
 <p>In particular, the following variables should be replaced :</p>
 <ul>
 <li>the <strong>domain name</strong>, which will be called <code>${DOMAIN}</code>,</li>
-<li>the <strong>core machines hostings</strong>, identified with a <code>${HOSTING_NAME}</code>. In a Pryv.io platform, core machines are organized into clusters that we call hostings. Each of these has an identifier <code>${HOSTING_NAME}</code>, which can be found at the following URL: <a href="https://reg.${DOMAIN}/hostings">https://reg.${DOMAIN}/hostings</a>. The <code>${HOSTING_NAME}</code> are the keys of the object <code>regions:REGION_NAME:zones:ZONE_NAME:hostings</code>,</li>
+<li>the <strong>core machines hostings</strong>, identified with a <code>${HOSTING_NAME}</code>. In a Pryv.io platform, core machines are organized into clusters that we call hostings. Each of these has an identifier <code>${HOSTING_NAME}</code>, which can be found at the following URL: <a href="https://reg.${DOMAIN}/hostings">https://reg.${DOMAIN}/hostings</a>. The <code>${HOSTING_NAME}</code> are the keys of the object <code>regions:REGION_NAME:zones:ZONE_NAME:hostings</code>. For DNS-less setups, it is fixed as <code>hosting1</code>.</li>
 <li>the <strong>access token</strong> <code>${ACCESS_TOKEN}</code>, associated with a dedicated user account and that will be used in the API calls for healthchecks. The preparation chapter describes how to obtain it.</li>
 </ul>
 <h1 id="tools">Tools</h1>
@@ -60,7 +60,7 @@ This preparation phase describes how to create an account and obtain a non-expir
 <li><strong>password</strong> : healthmetrics</li>
 <li><strong>email</strong> : healthmetrics01@${DOMAIN}</li>
 </ul>
-<pre><code class="lang-json">curl -i -X POST -H &#39;Content-Type: application/json&#39; \
+<pre><code class="lang-bash">curl -i -X POST -H &#39;Content-Type: application/json&#39; \
     -d &#39;{&quot;hosting&quot;:&quot;${HOSTING_NAME}&quot;,
     &quot;username&quot;: &quot;healthmetrics01&quot;,
     &quot;password&quot;:&quot;healthmetrics01&quot;,
@@ -68,6 +68,16 @@ This preparation phase describes how to create an account and obtain a non-expir
     &quot;language&quot;: &quot;en&quot;,
     &quot;appid&quot;:&quot;pryv-metrics&quot;}&#39; \
     &quot;https://reg.${DOMAIN}/user/&quot;
+</code></pre>
+<p>for DNS-less, use:</p>
+<pre><code class="lang-bash">curl -i -X POST -H &#39;Content-Type: application/json&#39; \
+    -d &#39;{&quot;hosting&quot;:&quot;${HOSTING_NAME}&quot;,
+    &quot;username&quot;: &quot;healthmetrics01&quot;,
+    &quot;password&quot;:&quot;healthmetrics01&quot;,
+    &quot;email&quot;: &quot;healthmetrics01@${DOMAIN}&quot;,
+    &quot;language&quot;: &quot;en&quot;,
+    &quot;appid&quot;:&quot;pryv-metrics&quot;}&#39; \
+    &quot;https://${HOSTNAME}/reg/user/&quot;
 </code></pre>
 <p>If you are using a default configuration, you can use the default web app:</p>
 <ol>
@@ -83,7 +93,7 @@ This preparation phase describes how to create an account and obtain a non-expir
 <h2 id="create-token">Create token</h2>
 <p>In order to obtain a non-expirable access token, we must do 2 calls. First sign in with the user password to obtain a temporary personal token, and then use it to obtain a non-expirable one.</p>
 <p><strong>- Sign in:</strong></p>
-<pre><code class="lang-json">curl -i -H &quot;Content-Type: application/json&quot; \
+<pre><code class="lang-bash">curl -i -H &quot;Content-Type: application/json&quot; \
     -H &quot;Origin: https://sw.${DOMAIN}&quot; \
     -X POST \
     -d &#39;{&quot;username&quot;:&quot;healthmetrics01&quot;,
@@ -92,7 +102,7 @@ This preparation phase describes how to create an account and obtain a non-expir
     &quot;https://healthmetrics01.${DOMAIN}/auth/login&quot;
 </code></pre>
 <p>The response body should contain a valid personal token under the field <code>token</code>:</p>
-<pre><code class="lang-json">{
+<pre><code class="lang-bash">{
     &quot;token&quot;:&quot;${PERSONAL_TOKEN}&quot;,
     &quot;preferredLanguage&quot;:&quot;en&quot;,
     &quot;meta&quot;: {
@@ -102,7 +112,7 @@ This preparation phase describes how to create an account and obtain a non-expir
 }
 </code></pre>
 <p><strong>- Create token</strong></p>
-<pre><code class="lang-json">curl -i -X POST -H &#39;Content-Type: application/json&#39; \
+<pre><code class="lang-bash">curl -i -X POST -H &#39;Content-Type: application/json&#39; \
     -H &#39;Authorization: ${PERSONAL_TOKEN}&#39; \
     -d &#39;{&quot;name&quot;:&quot;metricsAccess&quot;,
     &quot;permissions&quot;:[{&quot;streamId&quot;:&quot;*&quot;,&quot;level&quot;:&quot;manage&quot;}]}&#39; \
@@ -134,7 +144,7 @@ This preparation phase describes how to create an account and obtain a non-expir
 </code></pre>
 <p>If you are using a default configuration, you can use the default web app:</p>
 <ol>
-<li>Go to <a href="https://api.pryv.com/app-web-access/?pryvServiceInfoUrl=https://reg.${DOMAIN}/service/info">https://api.pryv.com/app-web-access/?pryvServiceInfoUrl=https://reg.${DOMAIN}/service/info</a></li>
+<li>Go to <a href="https://api.pryv.com/app-web-access/?pryvServiceInfoUrl=https://reg.${DOMAIN}/service/info">https://api.pryv.com/app-web-access/?pryvServiceInfoUrl=https://reg.${DOMAIN}/service/info</a> (<a href="https://api.pryv.com/app-web-access/?pryvServiceInfoUrl=https://${HOSTNAME}/reg/service/info">https://api.pryv.com/app-web-access/?pryvServiceInfoUrl=https://${HOSTNAME}/reg/service/info</a> for DNS-less)</li>
 <li>Click on <code>Master Token</code>radio button</li>
 <li>Click on <code>Request Access</code> button</li>
 <li>Click on <code>Sign in</code> Pryv button</li>
@@ -148,8 +158,8 @@ This preparation phase describes how to create an account and obtain a non-expir
 <p>Run <code>Dig A healthmetrics01.${DOMAIN}</code></p>
 <p>The expected result: An answer.</p>
 <h2 id="register">Register</h2>
-<p>The call to perform: <strong>HTTP GET</strong> <code>https://reg.${DOMAIN}/healthmetrics01/check_username</code></p>
-<p>Run <code>curl https://reg.${DOMAIN}/healthmetrics01/check_username</code></p>
+<p>The call to perform: <strong>HTTP GET</strong> <code>https://reg.${DOMAIN}/healthmetrics01/check_username</code> (<code>https://${HOSTNAME}/reg/healthmetrics01/check_username</code> for DNS-less)</p>
+<p>Run <code>curl https://reg.${DOMAIN}/healthmetrics01/check_username</code> (<code>curl https://${HOSTNAME}/reg/healthmetrics01/check_username</code> for DNS-less)</p>
 <p>The expected result: <code>Status: 200</code></p>
 <h2 id="core">Core</h2>
 <p>Authorization header: <code>${ACCESS_TOKEN}</code></p>
