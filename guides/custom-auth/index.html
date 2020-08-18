@@ -31,7 +31,8 @@
 <p>You can already keep track of actions performed by clients against the Pryv.io API using the <a href="/reference/#audit-log">Pryv.io Audit Capabilities</a> that enable you to track when an access token was used for example. The Custom Auth step allows the Pryv.io platform to authenticate a user with more information than the access token.</p>
 <p>For example, if a Alice needs to access data from Bob in your Pryv.io platform, you can implement an authentication step that will allow you to verify the identity of user Alice when she tries to access data from Bob, and keep the identity of user Alice in the audit logs. The identity of the requester (Alice) can be verified through a custom auth step that you can add to your Pryv.io platform implementation as explained below.</p>
 <h3 id="what-is-the-custom-auth-step">What is the custom auth step</h3>
-<p>You can define a function that has access
+<p>You can define a function that will be run by Pryv.io after the authorization token verificiation.
+In this function, you have access to a context object which contains the fields described below, as well as the NodeJS core modules.
 The function you will implement to augment your Pryv.io platform with authentication capabilities will be part of the custom extension modules that need to be added in your platform configuration.<br>It is possible to extend the API and servers with your own code. Your custom auth step will allow you to use the information stored in the context to authenticate a user.  </p>
 <p>The available properties of the context are (as of now):</p>
 <ul>
