@@ -59,7 +59,7 @@ It describes what Webhooks are, why and how to use them on Pryv.io, illustrating
 </code></pre>
 <p>Providing only an event identifier in the webhook payload will force the recipients to make an API request to fetch the full resource, and will ensure that they are authorized to retrieve the information they are notified about with since they are required to use an authorization token.</p>
 <h3 id="separation-of-responsibility">Separation of responsibility</h3>
-<p>Importantly, only the app access used to create the webhook (or a personal one) can be used to modify it. This is meant to separate the responsibilities between the webhooks management and services that will consume the data following a notification.</p>
+<p>Importantly, only the access used to create the webhook (or a personal one) can be used to modify it. This is meant to separate the responsibilities between the webhooks management and services that will consume the data following a notification.</p>
 <p>Typically, a certain access will be used to setup one or multiple webhooks per user, while updated data will be fetched using a different set of permissions.</p>
 <h2 id="use-case-notify-of-a-new-document-uploaded-on-your-application">Use case : Notify of a new document uploaded on your application</h2>
 <p><em>In this section, we describe a real-life use case: the usage of webhooks notifications to alert a doctor when a patient of your app records a new health-related document.</em></p>
@@ -167,7 +167,7 @@ It does so by performing an HTTP GET request on the events from the streamId <co
 <p>The <code>maxRetries</code> parameter can be configured by the Pryv.io platform administrator.</p>
 <h3 id="reactivation">Reactivation</h3>
 <p>After a certain amount of consecutive failures to send a request, the webhook will be deactivated and no longer send requests when triggered. This will be indicated by the  <code>state</code> parameter which will be set to <code>inactive</code>.</p>
-<p>It will need to be manually reactivated using the <a href="/reference/#methods-webhooks-webhooks-update">webhooks.update</a> method with the app access that created it or a personal one.</p>
+<p>It will need to be manually reactivated using the <a href="/reference/#methods-webhooks-webhooks-update">webhooks.update</a> method with the access that created it or a personal one.</p>
 <h3 id="stats">Stats</h3>
 <p>Each time a webhook is run, it stores information about the HTTP response status and timestamp, respectively in the  <code>status</code> and <code>timestamp</code> fields of a <code>Run</code> object.</p>
 <p>A certain number of <code>runs</code> of a webhook is stored in the <code>runs</code> field of the Webhook in inverse chronological order (newest first). This parameter allows to monitor a webhook&#39;s health.</p>
@@ -175,7 +175,7 @@ It does so by performing an HTTP GET request on the events from the streamId <co
 <p>The number of times the Webhook has been run, including failures, is stored in the parameter <code>runCount</code> of the Webhook. Failures count is stored in <code>failCount</code>.</p>
 <p>The number of stored runs can be configured by the platform administrator.</p>
 <h3 id="deletion-of-the-original-access">Deletion of the original access</h3>
-<p>In case the app access that has created the webhook is deleted, it does not alter the webhook. It can still be modified using a personal access.</p>
+<p>In case the access that has created the webhook is deleted, it does not alter the webhook. It can still be modified using a personal access.</p>
 <h2 id="endpoint-setup">Endpoint setup</h2>
 <p><em>In this section, we present possible ways to identify the user from which the data change is originating in the webhook URL and to share a secret between your application and the webhook provider.</em></p>
 <h3 id="user-identification">User identification</h3>
