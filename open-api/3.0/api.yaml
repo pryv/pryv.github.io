@@ -1,7 +1,7 @@
 openapi: 3.0.0
 info:
   description: Description of Pryv.io API in Open API 3.0 standard format
-  version: 1.5.22
+  version: 1.6.0
   title: Pryv.io API
   contact:
     email: hsupport@pryv.com
@@ -9,6 +9,75 @@ info:
     name: MIT
     url: https://opensource.org/licenses/MIT
 paths:
+  /users:
+    post:
+      description: Creates a new user account. The method's parameters can be customized
+        with the [system streams
+        configuration](/customer-resources/system-streams/).
+      operationId: users.create
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                - type: string
+                - type: string
+                - type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                appId:
+                  description: Your app's unique identifier.
+                  type: string
+                username:
+                  description: The user's username.
+                  type: string
+                password:
+                  description: The user's password.
+                  type: string
+                email:
+                  description: The user's e-mail address, used for password retrieval.
+                  type: string
+                invitationToken:
+                  description: >-
+                    An invitation token, necessary when users registration is
+                    limited to a specific set of users.
+
+                    Platform administrators may limit users registration by configuring a list of authorized invitation tokens.
+
+                    If this is not the case, users registration is open to everyone and this parameter can be omitted.
+                  type: string
+                language:
+                  description: The user's preferred language as a 2-letter ISO language
+                    code.
+                  type: string
+                referer:
+                  description: A referer id potentially used for analytics.
+                  type: string
+  "/{username}/check_username":
+    get:
+      description: >-
+        For the cluster setup please use
+        [this](/reference-system/#check-username) API endpoint
+
+
+        Check the availability and validity of a given username.
+      operationId: username.check
+      parameters:
+        - name: username
+          description: The username to check.
+          required: true
+          in: query
+        - name: username
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                - type: boolean
   /auth/login:
     post:
       description: >-
@@ -235,9 +304,7 @@ paths:
           in: query
         - name: tags
           description: >-
-            **(DEPRECATED)**
-
-            Please use streamIds instead.
+            **(DEPRECATED)** Please use streamIds instead.
 
 
             If set, only events assigned to any of the listed tags will be returned.
@@ -603,11 +670,13 @@ paths:
                 - $ref: "#/components/schemas/item-deletion"
   /accesses:
     get:
-      description: |-
-        Gets manageable accesses. Only returns accesses that can
-        be managed by the requesting access and that are active when
-        making the request. To include accesses that have expired, use
-        the `includeExpired` parameter.
+      description: >-
+        Gets accesses that were created by your access token, unless you're
+        using a personal token then it returns all accesses.  
+
+        Only returns accesses that are active when making the request. To include accesses that have expired or were deleted, use
+
+        the `includeExpired` or `includeDeletions` parameters respectively.
       operationId: accesses.get
       parameters:
         - name: includeExpired
@@ -1038,7 +1107,10 @@ paths:
                 - type: object
   /account:
     get:
-      description: Retrieves the user's account information.
+      description: |-
+        **(DEPRECATED)** Please use events methods instead.  
+
+        Retrieves the user's account information.
       operationId: account.get
       responses:
         "200":
@@ -1047,7 +1119,10 @@ paths:
               schema:
                 - $ref: "#/components/schemas/account"
     put:
-      description: Modifies the user's account information.
+      description: |-
+        **(DEPRECATED)** Please use events methods instead.  
+
+        Modifies the user's account information.
       operationId: account.update
       responses:
         "200":
@@ -1150,8 +1225,7 @@ components:
         streamId:
           required: true
           description: |-
-            **(DEPRECATED)**
-            Please use streamIds instead.
+            **(DEPRECATED)** Please use streamIds instead.
 
             The id of the first element of the streamIds array.
           $ref: "#/components/schemas/identifier"
@@ -1176,8 +1250,7 @@ components:
           type: any type
         tags:
           description: |-
-            **(DEPRECATED)**
-            Please use streamIds instead.
+            **(DEPRECATED)** Please use streamIds instead.
 
             The tags associated with the event.
           type: array
