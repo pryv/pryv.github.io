@@ -711,19 +711,20 @@ Indeed, keep in mind that John needs to be able to access it anytime if it is co
 │   ├── Name (&quot;name/id&quot; events)
 │   ├── Hospital (&quot;name/id&quot; events)
 │   └── ...
-└── Patient accesses (&quot;credentials/pryvApiEndpoint&quot; events)
+└── Patient accesses (&quot;credentials/pryv-api-endpoint&quot; events)
 </code></pre>
-<p>Doctor Tom will need to keep all access tokens to his patients&#39; accounts in the dedicated stream <strong>&quot;Patient accesses&quot;</strong>.<br>Every time a patient grants him access to his data, the access token to his Pryv.io account will be saved in a <code>credentials/pryvApiEndpoint</code> event under the stream &quot;Patient accesses&quot; (see <a href="/guides/app-guidelines/">App guidelines</a> for why we use this format).   </p>
-<p>In the case of Linda, the following event will be created in the stream &quot;Patient accesses&quot; of Doctor Tom: </p>
+<p>Doctor Tom will need to keep all access tokens to his patients&#39; accounts in the dedicated stream <strong>&quot;Patient accesses&quot;</strong>.<br>Every time a patient grants him access to his data, the access token to his Pryv.io account will be saved in a <code>credentials/pryv-api-endpoint</code> event under the stream &quot;Patient accesses&quot; (see <a href="/guides/app-guidelines/">App guidelines</a> for why we use this format).  </p>
+<p>In the case of Linda, the following event will be created in the stream &quot;Patient accesses&quot; of Doctor Tom:  </p>
 <pre><code class="lang-json">{
     &quot;method&quot;: &quot;events.create&quot;,
     &quot;params&quot;: {
       &quot;streamIds&quot;: [&quot;patient-accesses&quot;],
-      &quot;type&quot;: &quot;credentials/pryvApiEndpoint&quot;,
+      &quot;type&quot;: &quot;credentials/pryv-api-endpoint&quot;,
       &quot;content&quot;: &quot;https://czuifgh567128lkj098w2dg@linda.pryv.me/&quot;
     }
   }
 </code></pre>
+<p>To access Linda&#39;s data, Doctor Tom will perform an <a href="/reference/#get-events">events.get</a> call on the stored Pryv API endpoint.</p>
 <p align="center">
 <img src="/assets/gifs/grandma-happy.gif" width="400" />
 </p></div><nav id="toc"></nav></div><footer id="page-footer"><nav class="navbar navbar-default"><div class="container-fluid"><div id="footer-nav"><ul class="nav navbar-nav"><li><a href="mailto:developers@pryv.com">Send a message</a></li><li><a href="https://github.com/pryv">GitHub</a></li><li><a href="https://pryv.com">pryv.com</a></li></ul></div></div></nav></footer><script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script><script src="/assets/bootstrap.min.js"></script><script src="/assets/js/toc.min.js"></script><!-- TOC generation--><script>jQuery(document).ready(function($) {
