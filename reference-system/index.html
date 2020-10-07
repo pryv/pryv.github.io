@@ -3,7 +3,7 @@
 <!--[if lt IE 9]>
   <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
   <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
-<![endif]--><link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Roboto:400,300,500,700,400italic|Roboto+Condensed:400,300,700"><link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/styles/docco.min.css"><link rel="stylesheet" type="text/css" href="/assets/fonts/ss-gizmo.min.css"><link rel="stylesheet" type="text/css" href="/assets/style.css"></head><body class="reference-system with-toc with-examples"><header id="page-header"><nav role="navigation" class="navbar navbar-default navbar-fixed-top"><div class="container-fluid"><div class="navbar-header"><a href="https://pryv.com" title="Pryv home" class="navbar-brand logo pryv-home"><img src="/assets/images/icon-home.svg" alt="Pryv home" height="50"></a><a href="/" title="Developers home" class="navbar-brand logo"><img src="/assets/images/logo-256-black.png" alt="Developers home"></a><button type="button" data-toggle="collapse" data-target="#main-nav" class="navbar-toggle"><span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button></div><div id="main-nav" class="collapse navbar-collapse"><ul class="nav navbar-nav"><li class="dropdown"><a href="#" data-toggle="dropdown" class="dropdown-toggle">Guides <b class="caret"></b></a><ul class="dropdown-menu"><li><a href="/getting-started/">Getting started</a></li><li><a href="/external-resources/">Apps &amp; Libs</a></li><li><a href="/concepts/">API concepts</a></li><li><a href="/guides/data-modelling/">Data modelling</a></li><li><a href="/guides/webhooks/">Webhooks</a></li><li><a href="/guides/custom-auth/">Custom auth</a></li><li><a href="/guides/app-guidelines/">App guidelines</a></li></ul></li><li class="dropdown"><a href="#" data-toggle="dropdown" class="dropdown-toggle">Reference <b class="caret"></b></a><ul class="dropdown-menu"><li><a href="/reference/">API reference</a></li><li><a href="/reference-admin/">Admin API reference</a></li><li class="active"><a href="/reference-system/">System API reference</a></li><li><a href="/event-types/">Event types</a></li><li><a href="/open-api/">Open API (Postman)</a></li><li><a href="/change-log/">API change log</a></li></ul></li><li class="dropdown"><a href="#" data-toggle="dropdown" class="dropdown-toggle">FAQ <b class="caret"></b></a><ul class="dropdown-menu"><li><a href="/faq-api/">API</a></li><li><a href="/faq-infra/">Infrastructure</a></li></ul></li><li><a href="https://support.pryv.com/hc/en-us/community/topics">Community</a></li><li><a href="https://github.com/pryv/open-pryv.io">Open Pryv.io</a></li><li><a href="/roadmap/">Roadmap</a></li></ul><div class="navbar-right"><p class="navbar-text version"><a href="/change-log/" title="View change log">API version: <strong>1.6.0</strong></a></p></div><form class="navbar-form navbar-right"><div class="form-group"><label for="examples-api">API:&nbsp;</label><select id="examples-api" class="form-control"><option value="pryv.me" selected="selected">Pryv Lab: ${username}.pryv.me</option><option value="DNS-less">DNS-less: ${hostname}/${username}</option><option value="Own">Own domain: ${username}.${domain}</option></select></div><div class="form-group"><label for="examples-format">&nbsp;Examples:&nbsp;</label><select id="examples-format" class="form-control"><option value="json" selected="selected">REST payload</option><option value="batch">Batch block</option><option value="http">cURL</option><option value="sockets">Socket.IO</option><option value="httpAuth">cURL auth</option></select></div></form></div></div></nav></header><div id="main-wrapper" class="container-fluid"><div id="main"><h1 class="page-title">System reference</h1><section id="basics"><h1 id="basics">Basics</h1>
+<![endif]--><link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Roboto:400,300,500,700,400italic|Roboto+Condensed:400,300,700"><link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/styles/docco.min.css"><link rel="stylesheet" type="text/css" href="/assets/fonts/ss-gizmo.min.css"><link rel="stylesheet" type="text/css" href="/assets/style.css"></head><body class="reference-system with-toc with-examples"><header id="page-header"><nav role="navigation" class="navbar navbar-default navbar-fixed-top"><div class="container-fluid"><div class="navbar-header"><a href="https://pryv.com" title="Pryv home" class="navbar-brand logo pryv-home"><img src="/assets/images/icon-home.svg" alt="Pryv home" height="50"></a><a href="/" title="Developers home" class="navbar-brand logo"><img src="/assets/images/logo-256-black.png" alt="Developers home"></a><button type="button" data-toggle="collapse" data-target="#main-nav" class="navbar-toggle"><span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button></div><div id="main-nav" class="collapse navbar-collapse"><ul class="nav navbar-nav"><li class="dropdown"><a href="#" data-toggle="dropdown" class="dropdown-toggle">Guides <b class="caret"></b></a><ul class="dropdown-menu"><li><a href="/getting-started/">Getting started</a></li><li><a href="/external-resources/">Apps &amp; Libs</a></li><li><a href="/concepts/">API concepts</a></li><li><a href="/guides/data-modelling/">Data modelling</a></li><li><a href="/guides/webhooks/">Webhooks</a></li><li><a href="/guides/custom-auth/">Custom auth</a></li><li><a href="/guides/app-guidelines/">App guidelines</a></li></ul></li><li class="dropdown"><a href="#" data-toggle="dropdown" class="dropdown-toggle">Reference <b class="caret"></b></a><ul class="dropdown-menu"><li><a href="/reference/">API reference</a></li><li><a href="/reference-admin/">Admin API reference</a></li><li class="active"><a href="/reference-system/">System API reference</a></li><li><a href="/event-types/">Event types</a></li><li><a href="/open-api/">Open API (Postman)</a></li><li><a href="/change-log/">API change log</a></li></ul></li><li class="dropdown"><a href="#" data-toggle="dropdown" class="dropdown-toggle">FAQ <b class="caret"></b></a><ul class="dropdown-menu"><li><a href="/faq-api/">API</a></li><li><a href="/faq-infra/">Infrastructure</a></li></ul></li><li><a href="https://support.pryv.com/hc/en-us/community/topics">Community</a></li><li><a href="https://github.com/pryv/open-pryv.io">Open Pryv.io</a></li><li><a href="/roadmap/">Roadmap</a></li></ul><div class="navbar-right"><p class="navbar-text version"><a href="/change-log/" title="View change log">API version: <strong>1.6.2</strong></a></p></div><form class="navbar-form navbar-right"><div class="form-group"><label for="examples-api">API:&nbsp;</label><select id="examples-api" class="form-control"><option value="pryv.me" selected="selected">Pryv Lab: ${username}.pryv.me</option><option value="DNS-less">DNS-less: ${hostname}/${username}</option><option value="Own">Own domain: ${username}.${domain}</option></select></div><div class="form-group"><label for="examples-format">&nbsp;Examples:&nbsp;</label><select id="examples-format" class="form-control"><option value="json" selected="selected">REST payload</option><option value="batch">Batch block</option><option value="http">cURL</option><option value="sockets">Socket.IO</option><option value="httpAuth">cURL auth</option></select></div></form></div></div></nav></header><div id="main-wrapper" class="container-fluid"><div id="main"><h1 class="page-title">System reference</h1><section id="basics"><h1 id="basics">Basics</h1>
 <div class="intro"><p>This document describes Pryv.io&#39;s <strong>system-level</strong> API, allowing developers to create and manage user accounts.</p>
 </div><!-- it's either:--><!-- !trusted & !preview--><!-- !preview & -full--><!-- -preview--><section id="basics-services-involved"><h2 id="services-involved">Services involved</h2>
 <div class="content"><div class="meta"></div><div class="intro"><p>Unlike user account data, which is fully managed by the core server hosting each account, managing the accounts themselves (e.g. retrieval, creation, deletion) is handled by the core servers <em>and</em> the central register server (AKA user account directory).</p>
@@ -49,7 +49,7 @@
       "language": "en",
       "invitationToken": "enjoy",
       "referer": "null",
-      "id": "ckfrxwzr60018yopvl8oamwet",
+      "id": "ckfzdn2jl0018o1pvh8krdl93",
       "registeredTimestamp": "1557743399558",
       "server": "core1.pryv.me",
       "registeredDate": "Mon, 13 May 2019 10:29:59 GMT"
@@ -60,7 +60,7 @@
       "language": "fr",
       "invitationToken": "enjoy",
       "referer": "null",
-      "id": "ckfrxwzr60019yopvl387vdjz",
+      "id": "ckfzdn2jl0019o1pv6mp4nh3n",
       "registeredTimestamp": "1536930239805",
       "server": "core2.pryv.me",
       "registeredDate": "Fri, 14 Sep 2018 13:03:59 GMT"
@@ -68,7 +68,7 @@
   ]
 }</code></pre></div><div class="tab-pane http"><pre><code>curl -i "https://<span class="api-reg-curl">reg.pryv.me</span>/admin/users"</code></pre><div class="step-marker">⬇</div><pre><code>HTTP/1.1 200 OK
 Content-Type: application/json; charset=utf-8
-API-Version: 1.6.0
+API-Version: 1.6.2
 
 {
   "users": [
@@ -78,7 +78,7 @@ API-Version: 1.6.0
       "language": "en",
       "invitationToken": "enjoy",
       "referer": "null",
-      "id": "ckfrxwzr60018yopvl8oamwet",
+      "id": "ckfzdn2jl0018o1pvh8krdl93",
       "registeredTimestamp": "1557743399558",
       "server": "core1.pryv.me",
       "registeredDate": "Mon, 13 May 2019 10:29:59 GMT"
@@ -89,7 +89,7 @@ API-Version: 1.6.0
       "language": "fr",
       "invitationToken": "enjoy",
       "referer": "null",
-      "id": "ckfrxwzr60019yopvl387vdjz",
+      "id": "ckfzdn2jl0019o1pv6mp4nh3n",
       "registeredTimestamp": "1536930239805",
       "server": "core2.pryv.me",
       "registeredDate": "Fri, 14 Sep 2018 13:03:59 GMT"
@@ -98,7 +98,7 @@ API-Version: 1.6.0
 }
 </code></pre></div><div class="tab-pane sockets"><pre>Only available for HTTP REST</pre></div><div class="tab-pane batch"><pre>Only available for HTTP REST</pre></div><div class="tab-pane httpAuth"><pre><code>curl -i "https://<span class="api-reg-curl">reg.pryv.me</span>/admin/users"</code></pre><div class="step-marker">⬇</div><pre><code>HTTP/1.1 200 OK
 Content-Type: application/json; charset=utf-8
-API-Version: 1.6.0
+API-Version: 1.6.2
 
 {
   "users": [
@@ -108,7 +108,7 @@ API-Version: 1.6.0
       "language": "en",
       "invitationToken": "enjoy",
       "referer": "null",
-      "id": "ckfrxwzr60018yopvl8oamwet",
+      "id": "ckfzdn2jl0018o1pvh8krdl93",
       "registeredTimestamp": "1557743399558",
       "server": "core1.pryv.me",
       "registeredDate": "Mon, 13 May 2019 10:29:59 GMT"
@@ -119,7 +119,7 @@ API-Version: 1.6.0
       "language": "fr",
       "invitationToken": "enjoy",
       "referer": "null",
-      "id": "ckfrxwzr60019yopvl387vdjz",
+      "id": "ckfzdn2jl0019o1pv6mp4nh3n",
       "registeredTimestamp": "1536930239805",
       "server": "core2.pryv.me",
       "registeredDate": "Fri, 14 Sep 2018 13:03:59 GMT"
@@ -140,7 +140,7 @@ API-Version: 1.6.0
   }
 }</code></pre></div><div class="tab-pane http"><pre><code>curl -i "https://<span class="api-reg-curl">reg.pryv.me</span>/admin/servers"</code></pre><div class="step-marker">⬇</div><pre><code>HTTP/1.1 200 OK
 Content-Type: application/json; charset=utf-8
-API-Version: 1.6.0
+API-Version: 1.6.2
 
 {
   "servers": {
@@ -150,7 +150,7 @@ API-Version: 1.6.0
 }
 </code></pre></div><div class="tab-pane sockets"><pre>Only available for HTTP REST</pre></div><div class="tab-pane batch"><pre>Only available for HTTP REST</pre></div><div class="tab-pane httpAuth"><pre><code>curl -i "https://<span class="api-reg-curl">reg.pryv.me</span>/admin/servers"</code></pre><div class="step-marker">⬇</div><pre><code>HTTP/1.1 200 OK
 Content-Type: application/json; charset=utf-8
-API-Version: 1.6.0
+API-Version: 1.6.2
 
 {
   "servers": {
@@ -176,7 +176,7 @@ API-Version: 1.6.0
       "language": "en",
       "invitationToken": "enjoy",
       "referer": "null",
-      "id": "ckfrxwzr60018yopvl8oamwet",
+      "id": "ckfzdn2jl0018o1pvh8krdl93",
       "registeredTimestamp": "1557743399558",
       "server": "core1.pryv.me",
       "registeredDate": "Mon, 13 May 2019 10:29:59 GMT"
@@ -184,7 +184,7 @@ API-Version: 1.6.0
   ]
 }</code></pre></div><div class="tab-pane http"><pre><code>curl -i "https://<span class="api-reg-curl">reg.pryv.me</span>/admin/servers/core1.pryv.me/users"</code></pre><div class="step-marker">⬇</div><pre><code>HTTP/1.1 200 OK
 Content-Type: application/json; charset=utf-8
-API-Version: 1.6.0
+API-Version: 1.6.2
 
 {
   "users": [
@@ -194,7 +194,7 @@ API-Version: 1.6.0
       "language": "en",
       "invitationToken": "enjoy",
       "referer": "null",
-      "id": "ckfrxwzr60018yopvl8oamwet",
+      "id": "ckfzdn2jl0018o1pvh8krdl93",
       "registeredTimestamp": "1557743399558",
       "server": "core1.pryv.me",
       "registeredDate": "Mon, 13 May 2019 10:29:59 GMT"
@@ -203,7 +203,7 @@ API-Version: 1.6.0
 }
 </code></pre></div><div class="tab-pane sockets"><pre>Only available for HTTP REST</pre></div><div class="tab-pane batch"><pre>Only available for HTTP REST</pre></div><div class="tab-pane httpAuth"><pre><code>curl -i "https://<span class="api-reg-curl">reg.pryv.me</span>/admin/servers/core1.pryv.me/users"</code></pre><div class="step-marker">⬇</div><pre><code>HTTP/1.1 200 OK
 Content-Type: application/json; charset=utf-8
-API-Version: 1.6.0
+API-Version: 1.6.2
 
 {
   "users": [
@@ -213,7 +213,7 @@ API-Version: 1.6.0
       "language": "en",
       "invitationToken": "enjoy",
       "referer": "null",
-      "id": "ckfrxwzr60018yopvl8oamwet",
+      "id": "ckfzdn2jl0018o1pvh8krdl93",
       "registeredTimestamp": "1557743399558",
       "server": "core1.pryv.me",
       "registeredDate": "Mon, 13 May 2019 10:29:59 GMT"
@@ -239,14 +239,14 @@ It can be 0 if <code>srcServerName</code> did not match any existing core server
   "count": 1
 }</code></pre></div><div class="tab-pane http"><pre><code>curl -i "https://<span class="api-reg-curl">reg.pryv.me</span>/admin/servers/core1.pryv.me/rename/core2.pryv.me"</code></pre><div class="step-marker">⬇</div><pre><code>HTTP/1.1 200 OK
 Content-Type: application/json; charset=utf-8
-API-Version: 1.6.0
+API-Version: 1.6.2
 
 {
   "count": 1
 }
 </code></pre></div><div class="tab-pane sockets"><pre>Only available for HTTP REST</pre></div><div class="tab-pane batch"><pre>Only available for HTTP REST</pre></div><div class="tab-pane httpAuth"><pre><code>curl -i "https://<span class="api-reg-curl">reg.pryv.me</span>/admin/servers/core1.pryv.me/rename/core2.pryv.me"</code></pre><div class="step-marker">⬇</div><pre><code>HTTP/1.1 200 OK
 Content-Type: application/json; charset=utf-8
-API-Version: 1.6.0
+API-Version: 1.6.2
 
 {
   "count": 1
@@ -288,7 +288,7 @@ API-Version: 1.6.0
   }
 }</code></pre></div><div class="tab-pane http"><pre><code>curl -i "https://<span class="api-reg-curl">reg.pryv.me</span>/hostings"</code></pre><div class="step-marker">⬇</div><pre><code>HTTP/1.1 200 OK
 Content-Type: application/json; charset=utf-8
-API-Version: 1.6.0
+API-Version: 1.6.2
 
 {
   "regions": {
@@ -319,7 +319,7 @@ API-Version: 1.6.0
 }
 </code></pre></div><div class="tab-pane sockets"><pre>Only available for HTTP REST</pre></div><div class="tab-pane batch"><pre>Only available for HTTP REST</pre></div><div class="tab-pane httpAuth"><pre><code>curl -i "https://<span class="api-reg-curl">reg.pryv.me</span>/hostings"</code></pre><div class="step-marker">⬇</div><pre><code>HTTP/1.1 200 OK
 Content-Type: application/json; charset=utf-8
-API-Version: 1.6.0
+API-Version: 1.6.2
 
 {
   "regions": {
@@ -392,7 +392,7 @@ API-Version: 1.6.0
   ]
 }</code></pre></div><div class="tab-pane http"><pre><code>curl -i "https://<span class="api-reg-curl">reg.pryv.me</span>/apps"</code></pre><div class="step-marker">⬇</div><pre><code>HTTP/1.1 200 OK
 Content-Type: application/json; charset=utf-8
-API-Version: 1.6.0
+API-Version: 1.6.2
 
 {
   "apps": [
@@ -432,7 +432,7 @@ API-Version: 1.6.0
 }
 </code></pre></div><div class="tab-pane sockets"><pre>Only available for HTTP REST</pre></div><div class="tab-pane batch"><pre>Only available for HTTP REST</pre></div><div class="tab-pane httpAuth"><pre><code>curl -i "https://<span class="api-reg-curl">reg.pryv.me</span>/apps"</code></pre><div class="step-marker">⬇</div><pre><code>HTTP/1.1 200 OK
 Content-Type: application/json; charset=utf-8
-API-Version: 1.6.0
+API-Version: 1.6.2
 
 {
   "apps": [
@@ -497,7 +497,7 @@ API-Version: 1.6.0
   }
 }</code></pre></div><div class="tab-pane http"><pre><code>curl -i "https://<span class="api-reg-curl">reg.pryv.me</span>/apps/${appid}"</code></pre><div class="step-marker">⬇</div><pre><code>HTTP/1.1 200 OK
 Content-Type: application/json; charset=utf-8
-API-Version: 1.6.0
+API-Version: 1.6.2
 
 {
   "app": {
@@ -519,7 +519,7 @@ API-Version: 1.6.0
 }
 </code></pre></div><div class="tab-pane sockets"><pre>Only available for HTTP REST</pre></div><div class="tab-pane batch"><pre>Only available for HTTP REST</pre></div><div class="tab-pane httpAuth"><pre><code>curl -i "https://<span class="api-reg-curl">reg.pryv.me</span>/apps/${appid}"</code></pre><div class="step-marker">⬇</div><pre><code>HTTP/1.1 200 OK
 Content-Type: application/json; charset=utf-8
-API-Version: 1.6.0
+API-Version: 1.6.2
 
 {
   "app": {
@@ -578,7 +578,7 @@ The result will be invalid for DNS-less setups.</p>
   "apiEndpoint": "https://user-123-abc.pryv.me/"
 }</code></pre></div><div class="tab-pane http"><pre><code>curl -i -X POST -H 'Content-Type: application/json' -d '{"appid":"default","hosting":"core1","username":"user-123-abc","password":"ChjUzDXwaTG2qdV","email":"joseph-brenner@pryv.me","invitationtoken":"o3in4o2","languageCode":"en","referer":"hospital-A"}' "https://<span class="api-reg-curl">reg.pryv.me</span>/user"</code></pre><div class="step-marker">⬇</div><pre><code>HTTP/1.1 200 OK
 Content-Type: application/json; charset=utf-8
-API-Version: 1.6.0
+API-Version: 1.6.2
 
 {
   "username": "user-123-abc",
@@ -587,7 +587,7 @@ API-Version: 1.6.0
 }
 </code></pre></div><div class="tab-pane sockets"><pre>Only available for HTTP REST</pre></div><div class="tab-pane batch"><pre>Only available for HTTP REST</pre></div><div class="tab-pane httpAuth"><pre><code>curl -i -X POST -H 'Content-Type: application/json' -d '{"appid":"default","hosting":"core1","username":"user-123-abc","password":"ChjUzDXwaTG2qdV","email":"joseph-brenner@pryv.me","invitationtoken":"o3in4o2","languageCode":"en","referer":"hospital-A"}' "https://<span class="api-reg-curl">reg.pryv.me</span>/user"</code></pre><div class="step-marker">⬇</div><pre><code>HTTP/1.1 200 OK
 Content-Type: application/json; charset=utf-8
-API-Version: 1.6.0
+API-Version: 1.6.2
 
 {
   "username": "user-123-abc",
@@ -614,14 +614,14 @@ the reserved usernames list configured within the register service.</p>
   "reserved": false
 }</code></pre></div><div class="tab-pane http"><pre><code>curl -i "https://<span class="api-reg-curl">reg.pryv.me</span>/user-123-abc/check_username"</code></pre><div class="step-marker">⬇</div><pre><code>HTTP/1.1 200 OK
 Content-Type: application/json; charset=utf-8
-API-Version: 1.6.0
+API-Version: 1.6.2
 
 {
   "reserved": false
 }
 </code></pre></div><div class="tab-pane sockets"><pre>Only available for HTTP REST</pre></div><div class="tab-pane batch"><pre>Only available for HTTP REST</pre></div><div class="tab-pane httpAuth"><pre><code>curl -i "https://<span class="api-reg-curl">reg.pryv.me</span>/user-123-abc/check_username"</code></pre><div class="step-marker">⬇</div><pre><code>HTTP/1.1 200 OK
 Content-Type: application/json; charset=utf-8
-API-Version: 1.6.0
+API-Version: 1.6.2
 
 {
   "reserved": false
@@ -635,7 +635,7 @@ API-Version: 1.6.0
   "reason": "RESERVED_USER_NAME"
 }</code></pre></div><div class="tab-pane http"><pre><code>curl -i "https://<span class="api-reg-curl">reg.pryv.me</span>/pryvpryv/check_username"</code></pre><div class="step-marker">⬇</div><pre><code>HTTP/1.1 200 OK
 Content-Type: application/json; charset=utf-8
-API-Version: 1.6.0
+API-Version: 1.6.2
 
 {
   "reserved": true,
@@ -643,7 +643,7 @@ API-Version: 1.6.0
 }
 </code></pre></div><div class="tab-pane sockets"><pre>Only available for HTTP REST</pre></div><div class="tab-pane batch"><pre>Only available for HTTP REST</pre></div><div class="tab-pane httpAuth"><pre><code>curl -i "https://<span class="api-reg-curl">reg.pryv.me</span>/pryvpryv/check_username"</code></pre><div class="step-marker">⬇</div><pre><code>HTTP/1.1 200 OK
 Content-Type: application/json; charset=utf-8
-API-Version: 1.6.0
+API-Version: 1.6.2
 
 {
   "reserved": true,
@@ -665,14 +665,14 @@ API-Version: 1.6.0
   "exists": false
 }</code></pre></div><div class="tab-pane http"><pre><code>curl -i "https://<span class="api-reg-curl">reg.pryv.me</span>/joseph-brenner@pryv.me/check_email"</code></pre><div class="step-marker">⬇</div><pre><code>HTTP/1.1 200 OK
 Content-Type: application/json; charset=utf-8
-API-Version: 1.6.0
+API-Version: 1.6.2
 
 {
   "exists": false
 }
 </code></pre></div><div class="tab-pane sockets"><pre>Only available for HTTP REST</pre></div><div class="tab-pane batch"><pre>Only available for HTTP REST</pre></div><div class="tab-pane httpAuth"><pre><code>curl -i "https://<span class="api-reg-curl">reg.pryv.me</span>/joseph-brenner@pryv.me/check_email"</code></pre><div class="step-marker">⬇</div><pre><code>HTTP/1.1 200 OK
 Content-Type: application/json; charset=utf-8
-API-Version: 1.6.0
+API-Version: 1.6.2
 
 {
   "exists": false
@@ -693,14 +693,14 @@ API-Version: 1.6.0
   "username": "user-123-abc"
 }</code></pre></div><div class="tab-pane http"><pre><code>curl -i "https://<span class="api-reg-curl">reg.pryv.me</span>/joseph-brenner@pryv.me/username"</code></pre><div class="step-marker">⬇</div><pre><code>HTTP/1.1 200 OK
 Content-Type: application/json; charset=utf-8
-API-Version: 1.6.0
+API-Version: 1.6.2
 
 {
   "username": "user-123-abc"
 }
 </code></pre></div><div class="tab-pane sockets"><pre>Only available for HTTP REST</pre></div><div class="tab-pane batch"><pre>Only available for HTTP REST</pre></div><div class="tab-pane httpAuth"><pre><code>curl -i "https://<span class="api-reg-curl">reg.pryv.me</span>/joseph-brenner@pryv.me/username"</code></pre><div class="step-marker">⬇</div><pre><code>HTTP/1.1 200 OK
 Content-Type: application/json; charset=utf-8
-API-Version: 1.6.0
+API-Version: 1.6.2
 
 {
   "username": "user-123-abc"
