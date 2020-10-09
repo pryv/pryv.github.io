@@ -1,0 +1,122 @@
+<!DOCTYPE html><html lang="en" class="no-js"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="description" property="og:description" content="Pryv API reference and resources for developers"><meta name="author" content="Pryv SA"><meta property="og:type" content="website"><meta name="image" property="og:image" content="/assets/images/logo-256.png"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Pryv.io Backup | Pryv API</title><link rel="icon" href="/assets/images/favicon-black.ico" type="image/x-icon"><link rel="apple-touch-icon" sizes="120x120" href="/assets/images/apple-touch-icon-120x120-black.png"><link rel="apple-touch-icon" sizes="152x152" href="/assets/images/apple-touch-icon-152x152-black.png"><link rel="apple-touch-icon" sizes="180x180" href="/assets/images/apple-touch-icon-180x180-black.png"><!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+<!--[if lt IE 9]>
+  <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+  <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+<![endif]--><link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Roboto:400,300,500,700,400italic|Roboto+Condensed:400,300,700"><link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/styles/docco.min.css"><link rel="stylesheet" type="text/css" href="/assets/fonts/ss-gizmo.min.css"><link rel="stylesheet" type="text/css" href="/assets/style.css"></head><body class="backup-platform with-toc"><header id="page-header"><nav role="navigation" class="navbar navbar-default navbar-fixed-top"><div class="container-fluid"><div class="navbar-header"><a href="https://pryv.com" title="Pryv home" class="navbar-brand logo pryv-home"><img src="/assets/images/icon-home.svg" alt="Pryv home" height="50"></a><a href="/" title="Developers home" class="navbar-brand logo"><img src="/assets/images/logo-256-black.png" alt="Developers home"></a><button type="button" data-toggle="collapse" data-target="#main-nav" class="navbar-toggle"><span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button></div><div id="main-nav" class="collapse navbar-collapse"><ul class="nav navbar-nav"><li class="dropdown"><a href="#" data-toggle="dropdown" class="dropdown-toggle">Guides <b class="caret"></b></a><ul class="dropdown-menu"><li><a href="/getting-started/">Getting started</a></li><li><a href="/external-resources/">Apps &amp; Libs</a></li><li><a href="/concepts/">API concepts</a></li><li><a href="/guides/data-modelling/">Data modelling</a></li><li><a href="/guides/webhooks/">Webhooks</a></li><li><a href="/guides/custom-auth/">Custom auth</a></li><li><a href="/guides/app-guidelines/">App guidelines</a></li></ul></li><li class="dropdown"><a href="#" data-toggle="dropdown" class="dropdown-toggle">Reference <b class="caret"></b></a><ul class="dropdown-menu"><li><a href="/reference/">API reference</a></li><li><a href="/reference-admin/">Admin API reference</a></li><li><a href="/reference-system/">System API reference</a></li><li><a href="/event-types/">Event types</a></li><li><a href="/open-api/">Open API (Postman)</a></li><li><a href="/change-log/">API change log</a></li></ul></li><li class="dropdown"><a href="#" data-toggle="dropdown" class="dropdown-toggle">FAQ <b class="caret"></b></a><ul class="dropdown-menu"><li><a href="/faq-api/">API</a></li><li><a href="/faq-infra/">Infrastructure</a></li></ul></li><li><a href="https://support.pryv.com/hc/en-us/community/topics">Community</a></li><li><a href="https://github.com/pryv/open-pryv.io">Open Pryv.io</a></li><li><a href="/roadmap/">Roadmap</a></li></ul><div class="navbar-right"><p class="navbar-text version"><a href="/change-log/" title="View change log">API version: <strong>1.6.2</strong></a></p></div></div></div></nav></header><div id="main-wrapper" class="container container-narrow"><div id="main"><h1 class="page-title">Pryv.io Backup</h1><h2 id="table-of-contents">Table of contents</h2>
+<ol>
+<li><a href="#introduction">Introduction</a></li>
+<li><a href="#backup">Backup</a><ol>
+<li><a href="#core">Core</a></li>
+<li><a href="#register">Register</a></li>
+<li><a href="#static-web">Static-web</a></li>
+</ol>
+</li>
+<li><a href="#restore">Restore</a><ol>
+<li><a href="#core">Core</a></li>
+<li><a href="#register">Register</a></li>
+<li><a href="#static-web">Static-web</a></li>
+</ol>
+</li>
+</ol>
+<h2 id="introduction">Introduction</h2>
+<p>This guide describes how to perform a backup of your Pryv.io platform and how to restore it in case of any data loss. You will have to backup user data as well as configuration files of each role: core, register, static-web.</p>
+<p>For the <a href="/concepts/#entreprise-license-open-source-license">Entreprise version</a>, we will refer to the root of your Pryv.io installation on each role (usually /var/pryv/${ROLE}/) as ${PRYV_CONF_ROOT}.</p>
+<p>For the <a href="https://github.com/pryv/open-pryv.io">open-source version of Pryv.io</a>, only the configuration files from the core will need to be backed up. </p>
+<h2 id="backup">Backup</h2>
+<p>You should first backup core data, starting with MongoDB.</p>
+<h3 id="core">Core</h3>
+<ul>
+<li><p>Run the following command to export the MongoDB data: 
+  <code>$ docker exec -t pryvio_mongodb /app/bin/mongodb/bin/mongodump -d pryv-node -o /app/backup/</code>
+The backup folder will be located at: <code>${PRYV_CONF_ROOT}/pryv/mongodb/backup/</code>.</p>
+</li>
+<li><p>Run the following command to export the InDuxDB data: 
+  <code>$ docker exec -t pryvio_influxdb /usr/bin/influxd backup -portable /var/backups/</code>
+The backup folder will be located at: <code>${PRYV_CONF_ROOT}/pryv/influxdb/backup/</code>.</p>
+</li>
+<li><p>Backup the ${PRYV_CONF_ROOT} folder except the following:</p>
+<ul>
+<li><code>${PRYV_CONF_ROOT}/pryv/mongodb/data/</code></li>
+<li><code>${PRYV_CONF_ROOT}/pryv/influxdb/data</code></li>
+<li><code>${PRYV_CONF_ROOT}/pryv/core/data/previews/</code></li>
+</ul>
+</li>
+</ul>
+<h3 id="register">Register</h3>
+<ul>
+<li>Backup the ${PRYV_CONF_ROOT} folder</li>
+</ul>
+<h3 id="static-web">Static-web</h3>
+<ul>
+<li>Backup the ${PRYV_CONF_ROOT} folder  </li>
+</ul>
+<p><em>Important notice: During the time of the backup, if user accounts are created between the core and register backup times, they won&#39;t be usable after a backup restoration. Attachments and High-frequency data created after the MongoDB backup won&#39;t be accessible as their corresponding Pryv.io events will not be available.</em></p>
+<h2 id="restore">Restore</h2>
+<p>Once you have backed up data, you can use it to restore your Pryv.io platform as described in the following procedure.</p>
+<h3 id="core">Core</h3>
+<ul>
+<li>Empty the contents of the ${PRYV_CONF_ROOT} folder </li>
+<li>Copy the backed up files under the ${PRYV_CONF_ROOT} folder </li>
+<li>Start the service </li>
+<li>Restore the MongoDB files: <code>$ docker exec -t pryvio_mongodb /app/bin/mongodb/bin/mongorestore /app/backup/</code></li>
+<li>Restore the InDuxDB files: <code>$ docker exec -t pryvio_influxdb /usr/bin/influxd restore -portable /pryv/backup/</code></li>
+</ul>
+<h3 id="register">Register</h3>
+<ul>
+<li>Empty the contents of the ${PRYV_CONF_ROOT} folder</li>
+<li>Copy the backed up files under the ${PRYV_CONF_ROOT} folder</li>
+<li>Start the service</li>
+</ul>
+<h3 id="static-web">Static-web</h3>
+<ul>
+<li>Empty the contents of the ${PRYV_CONF_ROOT} folder</li>
+<li>Copy the backed up files under the ${PRYV_CONF_ROOT} folder</li>
+<li>Start the service</li>
+</ul>
+</div><nav id="toc"></nav></div><footer id="page-footer"><nav class="navbar navbar-default"><div class="container-fluid"><div id="footer-nav"><ul class="nav navbar-nav"><li><a href="mailto:developers@pryv.com">Send a message</a></li><li><a href="https://github.com/pryv">GitHub</a></li><li><a href="https://pryv.com">pryv.com</a></li></ul></div></div></nav></footer><script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script><script src="/assets/bootstrap.min.js"></script><script src="/assets/js/toc.min.js"></script><!-- TOC generation--><script>jQuery(document).ready(function($) {
+  // Header is about 51 pixels. This equals to 'header + fuzz', fuzz was
+  // determined experimentally.
+  var offset = 90;
+
+  // Display TOC on the left side of the page.
+  $('#toc').toc({
+    selector: '#main h1:not(.page-title),#main h2,#main h3',
+    ulClass: 'nav'
+  });
+
+  // Synchronise scroll/click motion with TOC display.
+  $(document).ready(function() {
+    // NOTE This is done at onLoad since we need to wait for all CSS
+    // to appear.
+    $('body').scrollspy({
+      target: '#toc',
+      offset: offset
+    });
+    scrollBy(0, 1); // make it scroll to be sure scrollspy gets it
+    
+    // fix offset when navigating
+    $('#toc li a, a.toc-anchor').click(function (e) {
+      e.preventDefault();
+      var target = $(this).attr('href');
+      window.location.hash = target;
+      
+      $(target)[0].scrollIntoView();
+      if ($(window).scrollTop() + $(window).height() !== $(document).height()) {
+        //only adjust when not at bottom
+        scrollBy(0, -offset + 40);
+      }
+      return true;
+    });
+  
+  });
+});
+</script><!-- Code blocks highlighting--><script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/highlight.min.js"></script><script>hljs.initHighlightingOnLoad();
+</script><!-- Google Analytics--><script>var _gaq = _gaq || [];
+_gaq.push(['_setAccount', 'UA-36589447-2']);
+_gaq.push(['_trackPageview']);
+(function() {
+  var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+  ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+  var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+})();</script></body></html>
