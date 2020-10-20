@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"
+    integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+  <link rel="stylesheet" type="text/css" href="https://api.pryv.com/style/pryv.min.css">
+  <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Roboto:300,400">
+  <title>Food preferences</title>
+  <script src="https://pryv.github.io/lib-js/pryv.js"></script>
+  <script src="script.js"></script>
+</head>
+
+<body>
+  <div class="container">
+    <h1>Pryv consent request</h1>
+
+    <div class="card">
+      <div class="card-body">
+        <h2 class="card-title">Welcome</h2>
+        <span id="pryv-button"></span>
+        <br><br>
+        <label id="welcome-message">
+          Hello! You have received a consent request on your Pryv.io account.
+        </label>
+        <span id="please-login">
+          Please login.
+        </span>
+        <span id="logged-in" style="visibility: hidden">
+          <br>
+          <label>
+              Bob can now discover your food preferences in his Pryv.io account using this API endpoint.
+          </label>
+          <br>
+          <label id="apiEndpoint"></label>
+        </span>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    var connection = null;
+
+    var authSettings = {
+      spanButtonID: "pryv-button",
+      onStateChange: pryvAuthStateChange,
+      authRequest: {
+        requestingAppId: "Alice's food preferences",
+        requestedPermissions: [{
+          streamId: "nutrition",
+          defaultName: "Nutrition",
+          level: "read"
+        }],
+        clientData: {
+            "app-web-auth:description": {
+              type: "note/txt",
+              content: "Hi there! This is Bob. I'd really like to know more about what your tastes and preferences, and I'd need your approval to read personal information from your stream Nutrition. If you consent to share it with me, please click on Accept. \
+              \
+              You have a certain number of rights under the GDPR: the right to access personal data I may hold about you, the right to request that I amend any \ personal data which is incorrect or out-dated, and the right to request that I delete any personal information that I have about you. If you'd like to \ exercise any of these rights, please contact me at bob@privacy.com."
+            }
+        }
+      },
+    };
+    
+    function pryvAuthStateChange(state) { // called each time the authentication state changed
+      console.log('##pryvAuthStateChange', state);
+      if (state.id === Pryv.Browser.AuthStates.AUTHORIZED) {
+        document.getElementById('please-login').style.visibility = 'hidden';
+        document.getElementById('logged-in').style.visibility = 'visible';
+        document.getElementById('apiEndpoint').innerHTML = state.apiEndpoint;
+        
+        connection = new Pryv.Connection(state.apiEndpoint);
+        console.log('# Browser succeeded for user ' + connection.apiEndpoint);
+      }
+      if (state.id === Pryv.Browser.AuthStates.INITIALIZED) {
+        document.getElementById('please-login').style.visibility = 'visible';
+        document.getElementById('logged-in').style.visibility = 'hidden';
+        connection = null;
+        console.log('# Logout');
+      }
+  }
+    var serviceInfoUrl = 'https://reg.pryv.me/service/info';
+    (async function () {
+      var service = await Pryv.Browser.setupAuth(authSettings, serviceInfoUrl);
+    })();
+  </script>
+</body>
+
+</html>

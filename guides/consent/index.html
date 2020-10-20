@@ -1,0 +1,240 @@
+<!DOCTYPE html><html lang="en" class="no-js"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="description" property="og:description" content="Pryv API reference and resources for developers"><meta name="author" content="Pryv SA"><meta property="og:type" content="website"><meta name="image" property="og:image" content="/assets/images/logo-256.png"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Consent implementation with Pryv.io | Pryv API</title><link rel="icon" href="/assets/images/favicon-black.ico" type="image/x-icon"><link rel="apple-touch-icon" sizes="120x120" href="/assets/images/apple-touch-icon-120x120-black.png"><link rel="apple-touch-icon" sizes="152x152" href="/assets/images/apple-touch-icon-152x152-black.png"><link rel="apple-touch-icon" sizes="180x180" href="/assets/images/apple-touch-icon-180x180-black.png"><!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+<!--[if lt IE 9]>
+  <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+  <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+<![endif]--><link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Roboto:400,300,500,700,400italic|Roboto+Condensed:400,300,700"><link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/styles/docco.min.css"><link rel="stylesheet" type="text/css" href="/assets/fonts/ss-gizmo.min.css"><link rel="stylesheet" type="text/css" href="/assets/style.css"></head><body class="consent with-toc"><header id="page-header"><nav role="navigation" class="navbar navbar-default navbar-fixed-top"><div class="container-fluid"><div class="navbar-header"><a href="https://pryv.com" title="Pryv home" class="navbar-brand logo pryv-home"><img src="/assets/images/icon-home.svg" alt="Pryv home" height="50"></a><a href="/" title="Developers home" class="navbar-brand logo"><img src="/assets/images/logo-256-black.png" alt="Developers home"></a><button type="button" data-toggle="collapse" data-target="#main-nav" class="navbar-toggle"><span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button></div><div id="main-nav" class="collapse navbar-collapse"><ul class="nav navbar-nav"><li class="dropdown"><a href="#" data-toggle="dropdown" class="dropdown-toggle">Guides <b class="caret"></b></a><ul class="dropdown-menu"><li><a href="/getting-started/">Getting started</a></li><li><a href="/external-resources/">Apps &amp; Libs</a></li><li><a href="/concepts/">API concepts</a></li><li><a href="/guides/data-modelling/">Data modelling</a></li><li><a href="/guides/webhooks/">Webhooks</a></li><li><a href="/guides/custom-auth/">Custom auth</a></li><li><a href="/guides/consent/">Consent request</a></li><li><a href="/guides/app-guidelines/">App guidelines</a></li></ul></li><li class="dropdown"><a href="#" data-toggle="dropdown" class="dropdown-toggle">Reference <b class="caret"></b></a><ul class="dropdown-menu"><li><a href="/reference/">API reference</a></li><li><a href="/reference-admin/">Admin API reference</a></li><li><a href="/reference-system/">System API reference</a></li><li><a href="/event-types/">Event types</a></li><li><a href="/open-api/">Open API (Postman)</a></li><li><a href="/change-log/">API change log</a></li></ul></li><li class="dropdown"><a href="#" data-toggle="dropdown" class="dropdown-toggle">FAQ <b class="caret"></b></a><ul class="dropdown-menu"><li><a href="/faq-api/">API</a></li><li><a href="/faq-infra/">Infrastructure</a></li></ul></li><li><a href="https://support.pryv.com/hc/en-us/community/topics">Community</a></li><li><a href="https://github.com/pryv/open-pryv.io">Open Pryv.io</a></li><li><a href="/roadmap/">Roadmap</a></li></ul><div class="navbar-right"><p class="navbar-text version"><a href="/change-log/" title="View change log">API version: <strong>1.6.2</strong></a></p></div></div></div></nav></header><div id="main-wrapper" class="container container-narrow"><div id="main"><h1 class="page-title">Consent implementation with Pryv.io</h1><h2 id="table-of-contents">Table of contents</h2>
+<ol>
+<li><a href="#introduction">Introduction</a></li>
+<li><a href="#how-to-collect-consent-with-pryv-io">How to collect consent with Pryv.io</a><ol>
+<li><a href="#consent-request">Consent request</a></li>
+<li><a href="#hands-on-example">Hands-on example</a></li>
+</ol>
+</li>
+<li><a href="#references">References</a></li>
+</ol>
+<h2 id="introduction">Introduction</h2>
+<p>Managing consent is a critical issue for many developers when building personal data collecting applications. More than a checking-box option, it is what allows users to keep control over their personal information and businesses to keep track of data-related accesses and the purposes for which each data can be used. </p>
+<p>This guide describes how Pryv.io implements consent to satisfy existing and forthcoming data protection and privacy requirements.</p>
+<p><strong>Consent</strong> is one of the most challenging legal basis to satisfy, as it only allows you to collect data for specific purposes the data subject consented to; meaning that you must provide him with a clear explanation on what you are willing to do and obtain explicit permission. Pryv made it easy for you: in the next few paragraphs, we will show you how to achieve privacy by simply building your app on top of Pryv.io.</p>
+<h2 id="how-to-collect-consent-with-pryv-io">How to collect consent with Pryv.io</h2>
+<p>Privacy is embedded as default in Pryv, with dynamic consent as its cornerstone for organizations to account for privacy when building their products and apps on top of Pryv.io.</p>
+<h3 id="consent-request">Consent request</h3>
+<p>Data in Pryv.io accounts is organized in streams and events, and accesses are distributed over streams. This means that when you wish to collect/process particular data from your app user, you actually need to request access on the &quot;stream&quot; in which this particular data is located.  </p>
+<p>Let&#39;s keep things simple for now; thus, suffice to say that consent from the user will focus on &quot;streams&quot;. If you wish to learn more about the <strong>Pryv.io Data Model</strong>, you can do so in this <a href="https://api.pryv.com/guides/data-modelling/">tech guide</a> or <a href="https://www.youtube.com/watch?v=zl9RTf6JTps">this video</a>.</p>
+<p>With Pryv.io, we are aiming at implementing a way of collecting consent that is straightforward, transparent, and meets the very specific requirements of the regulation: <em>freely given, specific, informed and unambiguous</em> (<a href="https://gdpr.eu/article-4-definitions/">Article 4</a> of the GDPR).  </p>
+<p>Below are the step-by-step instructions on how to request consent from your user:</p>
+<ul>
+<li><p><strong>1</strong> Define the data you are collecting/processing, and check whether it falls under what legislation.</p>
+</li>
+<li><p><strong>2</strong> Structure your data into streams and events following our <a href="https://api.pryv.com/guides/data-modelling/">data modelling guide</a>.</p>
+</li>
+<li><p><strong>3</strong> You are now ready to authenticate your app and request consent from your users. We have created a sample web application available <a href="https://github.com/pryv/app-web-auth3">on Github</a> to register and authenticate your app users in a GDPR-compliant way by requesting their consent. You can test it <a href="https://api.pryv.com/app-web-access/?pryvServiceInfoUrl=https://reg.pryv.me/service/info">here</a>.  </p>
+</li>
+</ul>
+<p>You will need to customize a few parameters to adapt it to your needs and ensure that you collect data from your users in the right way. In the <a href="https://api.pryv.com/reference/#auth-request">auth request</a> that the app will perform, the parameter <code>clientData</code> will be the one containing the consent information:</p>
+<pre><code class="lang-json">{
+    &quot;app-web-auth:description&quot;:
+        {
+            &quot;type&quot;: &quot;note/txt&quot;,
+            &quot;content&quot;: &quot;This is a consent message.&quot;
+        }
+}
+</code></pre>
+<p>The consent request must follow very specific requirements that you need to keep in mind when customizing your consent message:</p>
+<ul>
+<li><p><strong>Consent must be informed</strong>: Your app users must be fully informed of the data processing before granting consent. This means that your consent message should notify them of:</p>
+<ul>
+<li>the name or title of the app/entity processing their data;</li>
+<li>the purpose and the lawful basis (or bases) for processing their data;</li>
+<li>the type of data that will be collected/processed. The concerned data streams will need to be described in the parameter <code>requestedPermissions</code> of the auth request; </li>
+<li>their rights to access, erasure, and withdrawal.</li>
+</ul>
+</li>
+<li><strong>Consent needs to be distinguishable</strong>: Consent cannot be included &quot;by default&quot; or implicitly in the terms and conditions. Your app users must be provided an opt-in method that requires them to explicitly answer the consent message by selecting the &quot;Reject&quot; or &quot;Accept&quot; button. You must separate your requests for consent from all other matters and make sure that the request is accessible and written in plain language for your app users. </li>
+</ul>
+<p>The parameter <code>requestedPermissions</code> of the auth request contains details about the data that will be collected, meaning the concerned streams from the user&#39;s Pryv.io account and the level of permission required on these streams (read, write, contribute or manage):</p>
+<pre><code class="lang-json">{
+    &quot;streamId&quot;: &quot;diary&quot;,
+    &quot;defaultName&quot;: &quot;Journal&quot;,
+    &quot;level&quot;: &quot;read&quot;
+}
+</code></pre>
+<ul>
+<li><strong>4</strong> Once the auth request has been sent, the web page will prompt the user to sign in using his Pryv.io credentials (or to create an account if he doesn&#39;t have one).</li>
+</ul>
+<p align="center">
+<img src="/assets/images/signin.png" />
+</p>
+
+<ul>
+<li><strong>5</strong> Once signed in, the consent message will appear.</li>
+</ul>
+<p align="center">
+<img src="/assets/images/consent_message.png" />
+</p>
+
+<p>If the user decides to &quot;Accept&quot; the consent request, the web page will open the authenticated Pryv API endpoint and grant access to the app on the requested streams:</p>
+<p align="center">
+<img src="/assets/images/apiendpoint.png" />
+</p>
+
+<ul>
+<li><strong>6</strong> You can view the created access by performing a <a href="https://api.pryv.com/reference/#access-info">getAccessInfo</a> call: <code>https://ckg9hiq4n008m1ld3uhaxi9yr@mariana.pryv.me/access-info</code>.</li>
+</ul>
+<p>This will return information about the access in use:</p>
+<pre><code class="lang-json">{
+    &quot;name&quot;: &quot;demo-request-consent&quot;,
+    &quot;type&quot;: &quot;app&quot;,
+    &quot;permissions&quot;: [
+        {
+            &quot;streamId&quot;: &quot;diary&quot;,
+            &quot;level&quot;: &quot;read&quot;
+        }
+    ],
+    &quot;clientData&quot;: {
+        &quot;app-web-auth:description&quot;: {
+            &quot;type&quot;: &quot;note/txt&quot;,
+            &quot;content&quot;: &quot;This is a consent message.&quot;
+        }
+    },
+    &quot;user&quot;: {
+        &quot;username&quot;: &quot;mariana&quot;
+    },
+    &quot;id&quot;: &quot;ckg9hiq4o008n1ld3xy7t46d6&quot;,
+    &quot;token&quot;: &quot;ckg9hiq4n008m1ld3uhaxi9yr&quot;,
+    &quot;created&quot;: 1602685422.023,
+    &quot;createdBy&quot;: &quot;ckbi19ena00p11xd3eemmdv2o&quot;,
+    &quot;modified&quot;: 1602685422.023,
+    &quot;modifiedBy&quot;: &quot;ckbi19ena00p11xd3eemmdv2o&quot;,
+    &quot;meta&quot;: {
+        &quot;apiVersion&quot;: &quot;1.6.2&quot;,
+        &quot;serverTime&quot;: 1602860299.642,
+        &quot;serial&quot;: &quot;2019061301&quot;
+    }
+}
+</code></pre>
+<h3 id="hands-on-example">Hands-on example</h3>
+<p>Let&#39;s illustrate the consent request process with a practical example. Bob wishes to invite Alice on a date to a restaurant but doesn&#39;t know her food preferences.
+He wants to request access on Alice&#39;s stream &quot;Nutrition&quot; to subtly analyze what she likes to eat...How can he do so?  </p>
+<ul>
+<li><p><strong>1</strong> As Alice&#39;s food preferences qualify as personal data under GDPR requirements, he will have to formulate a proper request to access them.</p>
+</li>
+<li><p><strong>2</strong> Both Alice and Bob already have their Pryv.io accounts settled and furnished with structured data (in streams and events).</p>
+</li>
+<li><p><strong>3</strong> The only thing Bob needs to do is customize the consent message, and send a request to Alice:</p>
+</li>
+</ul>
+<p>He must prepare the payload for the <a href="/reference/#auth-request">Auth request</a> containing:</p>
+<ul>
+<li>the streamId which data he wants to read in <code>requestedPermissions</code></li>
+<li>the consent message in <code>clientData</code></li>
+<li>an identifier for the request which will serve as the created access&#39; name in <code>requestingAppId</code></li>
+</ul>
+<p>The payload looks as following:</p>
+<pre><code class="lang-json">{
+    &quot;requestPermissions&quot;: [{
+        &quot;streamId&quot;: &quot;nutrition&quot;,
+        &quot;defaultName&quot;: &quot;Nutrition&quot;,
+        &quot;level&quot;: &quot;read&quot;
+    }],
+    &quot;clientData&quot;: {
+        &quot;app-web-auth:description&quot;: {
+            &quot;type&quot;: &quot;note/txt&quot;,
+            &quot;content&quot;: &quot;Hi there! This is Bob. I&#39;d really like to know more about what your tastes and preferences, and I&#39;d need your approval to read personal information from your stream Nutrition. If you consent to share it with me, please click on Accept. 
+
+            You have a certain number of rights under the GDPR: the right to access personal data I may hold about you, the right to request that I amend any personal data which is incorrect or out-dated, and the right to request that I delete any personal information that I have about you. If you&#39;d like to exercise any of these rights, please contact me at bob@privacy.com.&quot;
+        }
+    },
+    &quot;requestingAppId&quot;: &quot;Alice&#39;s food preferences&quot;
+}
+</code></pre>
+<ul>
+<li><strong>4</strong> He will send the request to Alice through a mobile or web app such as <a href="/guides/consent/request/">this one</a>.</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>Before sign in and consent request</th>
+<th>After sign-in and accepting consent request</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><img src="/assets/images/request-app-1.png" alt="app-1" style="zoom:50%;" /></td>
+<td><img src="/assets/images/request-app-2.png" alt="app-2" style="zoom:50%;" /></td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li><strong>5</strong> The web app will perform an <a href="/reference/#auth-request">Auth request</a>, prompting Alice for permissions to her data and presenting her with the consent message.</li>
+</ul>
+<p align="center">
+<img src="/assets/images/consent2.png" width="333" height="478"/>
+</p>
+
+<ul>
+<li><strong>6</strong> If she accepts, the app should send the obtained API endpoint to Bob (which was not done here).<br>In case Bob wants to save Alice&#39;s API endpoint along with other accesses that have been granted to him, he can do so as presented in <a href="/guides/data-modelling/#store-data-accesses">the chapter &quot;Store data accesses&quot; of the data modelling guide</a>.</li>
+</ul>
+<p>Bob is now ready to discover what Alice really likes...</p>
+<p align="center">
+<img src="/assets/images/bigmac.png" />
+</p>
+
+
+<h2 id="references">References</h2>
+<h3 id="data-privacy-requirements-and-legislation">Data privacy requirements and legislation</h3>
+<p>For more information about how the GDPR requirements affect Swiss companies, you can read our article <a href="https://www.pryv.com/2019/11/20/gdpr-swiss-dpa-e-privacy/">&quot;GDPR, Swiss DPA &amp; ePrivacy – what Swiss companies should know&quot;</a>.  </p>
+<h3 id="personal-data-scope">Personal data scope</h3>
+<p>You can find more information on what is defined as <strong>&quot;personal data&quot;</strong> in our <a href="https://api.pryv.com/faq-api/#personal-data">FAQ</a>.</p>
+<h3 id="data-modelling">Data modelling</h3>
+<p><strong>Pryv.io Data Model</strong> is summarized in <a href="https://www.youtube.com/watch?v=zl9RTf6JTps">this video</a>.
+To learn how to model your data into streams and events, you can check our <a href="https://api.pryv.com/guides/data-modelling/">tech guide</a> on data modelling.</p>
+<h3 id="web-app-examples">Web app examples</h3>
+<p>You can found our sample web apps in our <a href="https://github.com/pryv/app-web-examples">Github repository</a>.</p>
+</div><nav id="toc"></nav></div><footer id="page-footer"><nav class="navbar navbar-default"><div class="container-fluid"><div id="footer-nav"><ul class="nav navbar-nav"><li><a href="mailto:developers@pryv.com">Send a message</a></li><li><a href="https://github.com/pryv">GitHub</a></li><li><a href="https://pryv.com">pryv.com</a></li></ul></div></div></nav></footer><script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script><script src="/assets/bootstrap.min.js"></script><script src="/assets/js/toc.min.js"></script><!-- TOC generation--><script>jQuery(document).ready(function($) {
+  // Header is about 51 pixels. This equals to 'header + fuzz', fuzz was
+  // determined experimentally.
+  var offset = 90;
+
+  // Display TOC on the left side of the page.
+  $('#toc').toc({
+    selector: '#main h1:not(.page-title),#main h2,#main h3',
+    ulClass: 'nav'
+  });
+
+  // Synchronise scroll/click motion with TOC display.
+  $(document).ready(function() {
+    // NOTE This is done at onLoad since we need to wait for all CSS
+    // to appear.
+    $('body').scrollspy({
+      target: '#toc',
+      offset: offset
+    });
+    scrollBy(0, 1); // make it scroll to be sure scrollspy gets it
+    
+    // fix offset when navigating
+    $('#toc li a, a.toc-anchor').click(function (e) {
+      e.preventDefault();
+      var target = $(this).attr('href');
+      window.location.hash = target;
+      
+      $(target)[0].scrollIntoView();
+      if ($(window).scrollTop() + $(window).height() !== $(document).height()) {
+        //only adjust when not at bottom
+        scrollBy(0, -offset + 40);
+      }
+      return true;
+    });
+  
+  });
+});
+</script><!-- Code blocks highlighting--><script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/highlight.min.js"></script><script>hljs.initHighlightingOnLoad();
+</script><!-- Google Analytics--><script>var _gaq = _gaq || [];
+_gaq.push(['_setAccount', 'UA-36589447-2']);
+_gaq.push(['_trackPageview']);
+(function() {
+  var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+  ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+  var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+})();</script></body></html>
