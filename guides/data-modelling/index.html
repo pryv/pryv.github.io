@@ -98,53 +98,52 @@ What are &quot;Streams&quot; ?</p>
 </code></pre>
 <p>To add a <code>position/wgs84</code> event in the stream &quot;Position&quot;, two options are available:</p>
 <ul>
-<li><p><strong>Use the &quot;try and fail&quot; method (recommended)</strong></p>
-<pre><code class="lang-json">{
-res = events.create({&quot;streamIds&quot;: [&quot;position&quot;] ...}) 
+<li><strong>Use the &quot;try and fail&quot; method (recommended)</strong></li>
+</ul>
+<pre><code class="lang-javascript">res = events.create({&quot;streamIds&quot;: [&quot;position&quot;] ...})
 if (res.error.id == &quot;unknown-referenced-resource&quot;) {
- batchCall([
-   streams.create({&quot;id&quot;: &quot;smartwatch&quot;, ...}),
-   streams.create({&quot;id&quot;: &quot;position&quot;, ...}),
-   events.create({&quot;streamIds&quot;: [&quot;position&quot;] ...}) 
- ])
-}
+   batchCall([
+     streams.create({&quot;id&quot;: &quot;smartwatch&quot;, ...}),
+     streams.create({&quot;id&quot;: &quot;position&quot;, ...}),
+     events.create({&quot;streamIds&quot;: [&quot;position&quot;] ...})
+   ])
+ }
 </code></pre>
 <p>You <strong>try</strong> to add your event(s) in the desired stream, and if it <strong>fails</strong> you create the stream structure.  </p>
-</li>
-<li><p><strong>Create the whole stream structure before adding the event in the concerned stream</strong> (long and tedious)</p>
+<ul>
+<li><strong>Create the whole stream structure before adding the event in the concerned stream</strong> (long and tedious)</li>
+</ul>
 <pre><code class="lang-json">[
-{
-  &quot;method&quot;: &quot;streams.create&quot;,
-  &quot;params&quot;: {
-    &quot;id&quot;: &quot;smartwatch&quot;,
-    &quot;name&quot;: &quot;Smartwatch&quot;
-  }
-},
-{
-  &quot;method&quot;: &quot;streams.create&quot;,
-  &quot;params&quot;: {
-    &quot;id&quot;: &quot;position&quot;,
-    &quot;name&quot;: &quot;Position&quot;,
-    &quot;parentId&quot;: &quot;smartwatch&quot;
-  }
-},
-{
-  &quot;method&quot;: &quot;events.create&quot;,
-  &quot;params&quot;: {
-    &quot;streamIds&quot;: [
-      &quot;position&quot;
-    ],
-    &quot;type&quot;: &quot;position/wgs84&quot;,
-    &quot;content&quot;: {
-      &quot;latitude&quot;: 40.714728,
-      &quot;longitude&quot;: -73.998672
+  {
+    &quot;method&quot;: &quot;streams.create&quot;,
+    &quot;params&quot;: {
+      &quot;id&quot;: &quot;smartwatch&quot;,
+      &quot;name&quot;: &quot;Smartwatch&quot;
+    }
+  },
+  {
+    &quot;method&quot;: &quot;streams.create&quot;,
+    &quot;params&quot;: {
+      &quot;id&quot;: &quot;position&quot;,
+      &quot;name&quot;: &quot;Position&quot;,
+      &quot;parentId&quot;: &quot;smartwatch&quot;
+    }
+  },
+  {
+    &quot;method&quot;: &quot;events.create&quot;,
+    &quot;params&quot;: {
+      &quot;streamIds&quot;: [
+        &quot;position&quot;
+      ],
+      &quot;type&quot;: &quot;position/wgs84&quot;,
+      &quot;content&quot;: {
+        &quot;latitude&quot;: 40.714728,
+        &quot;longitude&quot;: -73.998672
+      }
     }
   }
-}
 ]
 </code></pre>
-</li>
-</ul>
 <h2 id="avoid-event-types-multiplication">Avoid event types multiplication</h2>
 <blockquote>
 <p>Everything should be made as simple as possible, but not simpler.<br><em>- Albert Einstein</em></p>
@@ -160,15 +159,15 @@ Two options are available to organize her stream structure:</p>
 </code></pre>
 <p>An intake of 500mg of paracetamol will be recorded this way:</p>
 <pre><code class="lang-json">{
-    &quot;method&quot;: &quot;events.create&quot;,
-    &quot;params&quot;: {
-      &quot;streamIds&quot;: [&quot;intake&quot;],
-      &quot;type&quot;: &quot;paracetamol/mg&quot;,
-      &quot;content&quot;: {
-        &quot;dose&quot;: 500
-      }
+  &quot;method&quot;: &quot;events.create&quot;,
+  &quot;params&quot;: {
+    &quot;streamIds&quot;: [&quot;intake&quot;],
+    &quot;type&quot;: &quot;paracetamol/mg&quot;,
+    &quot;content&quot;: {
+      &quot;dose&quot;: 500
     }
   }
+}
 </code></pre>
 <p>The problem is... Every time Grandma will need to add a new medication in her daily cocktail (and God knows she will, she&#39;s not getting younger), we will have to create a new event type to perform content validation. The detailed steps are explained in the <a href="https://github.com/pryv/data-types">Data Types Github repository</a>.</p>
 <h3 id="2-create-a-substream-per-medication-recommended-">2. Create a substream per medication (recommended)</h3>
@@ -179,15 +178,15 @@ Two options are available to organize her stream structure:</p>
 </code></pre>
 <p>An intake of 500mg of paracetamol will be recorded this way:</p>
 <pre><code class="lang-json">{
-    &quot;method&quot;: &quot;events.create&quot;,
-    &quot;params&quot;: {
-      &quot;streamIds&quot;: [&quot;paracetamol&quot;],
-      &quot;type&quot;: &quot;mass/mg&quot;,
-      &quot;content&quot;: {
-        &quot;dose&quot;: 500
-       }
+  &quot;method&quot;: &quot;events.create&quot;,
+  &quot;params&quot;: {
+    &quot;streamIds&quot;: [&quot;paracetamol&quot;],
+    &quot;type&quot;: &quot;mass/mg&quot;,
+    &quot;content&quot;: {
+      &quot;dose&quot;: 500
     }
   }
+}
 </code></pre>
 <p>This solution has the advantage of resolving the forementioned problem by providing an easily adaptable structure. Every time Grandma needs to add a new medication to her cocktail, we only need to create a new stream.</p>
 <p>As there is no limit to the number of substreams to a stream, it&#39;s only Grandma&#39;s health, incidentally. </p>
@@ -202,20 +201,26 @@ Two options are available to organize her stream structure:</p>
 <p>For example, let&#39;s say that you need to create a custom event type for your 12-lead ECG recording <code>ecg/12-lead-recording</code>. If you want to perform content validation and ensure that every time you retrieve a new event it has the right structure, the procedure is the following:</p>
 <ol>
 <li>Fork the <a href="https://github.com/pryv/data-types">Data Type Github repository</a></li>
-<li>Define your event type in a JSON file, in this case <code>ecg.json</code> file:<pre><code class="lang-json">{
-&quot;ecg&quot;: {
-&quot;formats&quot;: {
- &quot;12-lead-recording&quot;: {
-   &quot;description&quot;: &quot;Conventional 12-lead ECG measuring voltage with ten electrodes.&quot;,
-   &quot;type&quot;: &quot;number&quot;}}}
+<li>Define your event type in a JSON file, in this case <code>ecg.json</code> file:</li>
+</ol>
+<pre><code class="lang-json">{
+  &quot;ecg&quot;: {
+    &quot;formats&quot;: {
+      &quot;12-lead-recording&quot;: {
+        &quot;description&quot;: &quot;Conventional 12-lead ECG measuring voltage with ten electrodes.&quot;,
+        &quot;type&quot;: &quot;number&quot;
+      }
+    }
+  }
 }
 </code></pre>
-</li>
+<ol>
 <li><a href="https://github.com/pryv/data-types#data-types-validation">Validate</a> the JSON schema of your event type</li>
-<li>Publish these files on a webserver and indicate the <code>flat.json</code> file in the platform parameters :<pre><code class="lang-json">EVENT_TYPES_URL: &quot;https://api.pryv.com/event-types/flat.json&quot;
-</code></pre>
-The detailed steps can be found <a href="https://github.com/pryv/data-types#how-to-customize-your-data-types">here</a>.</li>
+<li>Publish these files on a webserver and indicate the <code>flat.json</code> file in the platform parameters :</li>
 </ol>
+<pre><code class="lang-json">EVENT_TYPES_URL: &quot;https://api.pryv.com/event-types/flat.json&quot;
+</code></pre>
+<p>The detailed steps can be found <a href="https://github.com/pryv/data-types#how-to-customize-your-data-types">here</a>.</p>
 <h2 id="share-a-single-event">Share a single event</h2>
 <p>Sometimes, your user might need to share a single event (and not a whole stream) with third parties. Pryv.io allows you to store an event in one or multiple streams, wich can facilitate the sharing of particular events.<br>How so ?  </p>
 <p>Let&#39;s take the example of your Grandma (again). She is storing her blood analysis results in a substream &quot;Blood&quot; under her &quot;Health&quot; profile. She usually shares the whole stream with her hematologist, but now she only needs to share her last blood analysis with her general practitioner.  </p>
@@ -233,16 +238,15 @@ The detailed steps can be found <a href="https://github.com/pryv/data-types#how-
 </code></pre>
 <p>You can then create an access for her doctor on the stream &quot;Blood Sharing&quot;:</p>
 <pre><code class="lang-json">{
-&quot;method&quot;: &quot;access.create&quot;,
-  &quot;params&quot;: {
-  &quot;type&quot;: &quot;shared&quot;,
-  &quot;name&quot;: &quot;For Grandma&#39;s doctor&quot;,
-  &quot;permissions&quot;: [
-    {
-    &quot;streamId&quot;: &quot;blood-sharing&quot;,
-    &quot;level&quot;: &quot;read&quot;
-  }
-]}
+  &quot;method&quot;: &quot;access.create&quot;,
+    &quot;params&quot;: {
+    &quot;type&quot;: &quot;shared&quot;,
+    &quot;name&quot;: &quot;For Grandma&#39;s doctor&quot;,
+    &quot;permissions&quot;: [{
+      &quot;streamId&quot;: &quot;blood-sharing&quot;,
+      &quot;level&quot;: &quot;read&quot;
+    }]
+}
 </code></pre>
 <p>This method allows to share particular events (e.g the &quot;blood-analysis-july&quot; event) with third parties, while retaining the original event in another stream.</p>
 <h2 id="handle-multiple-devices">Handle multiple devices</h2>
@@ -407,41 +411,41 @@ The <a href="/reference/#get-events">events.get</a> call:</p>
 <p>This allows to display all the events related to the ECG recording using the time reference:</p>
 <ol>
 <li>Set the same time reference for related events (here <code>1350373077.359</code>)</li>
-<li>Get all events occuring at the time <code>1350373077.359</code>:<pre><code class="lang-json">{
-&quot;method&quot;: &quot;events.get&quot;,
-&quot;params&quot;: {
-&quot;fromTime&quot;: 1350373077.359,
-&quot;toTime&quot;: 1350373077.359
-}
+<li>Get all events occuring at the time <code>1350373077.359</code>:</li>
+</ol>
+<pre><code class="lang-json">{
+  &quot;method&quot;: &quot;events.get&quot;,
+  &quot;params&quot;: {
+    &quot;fromTime&quot;: 1350373077.359,
+    &quot;toTime&quot;: 1350373077.359
+  }
 }
 </code></pre>
-</li>
-</ol>
 <p>The result:</p>
 <pre><code class="lang-json">{
-    &quot;events&quot;: [
-          {
-            &quot;id&quot;: &quot;ckdfruqua00127ppvue8jwrpk&quot;,
-            &quot;time&quot;: 1350373077.359,
-            &quot;streamIds&quot;: [&quot;ecg&quot;],
-            &quot;type&quot;: &quot;ecg/6-lead-recording&quot;,
-            &quot;content&quot;: {...},
-          },
-          {
-            &quot;id&quot;: &quot;ckdfruqua00107ppv0xeriki2&quot;,
-            &quot;time&quot;: 1350373077.359,
-            &quot;streamIds&quot;: [&quot;weight&quot;],
-            &quot;type&quot;: &quot;mass/kg&quot;,
-            &quot;content&quot;: 60,
-          },
-          {
-            &quot;id&quot;: &quot;ckdfruqs700017ppvj4rci1cg&quot;,
-            &quot;time&quot;: 1350373077.359,
-            &quot;streamIds&quot;: [&quot;devices&quot;],
-            &quot;type&quot;: &quot;ecg-device/parameters&quot;,
-            &quot;content&quot;: {...},
-          }
-    ]
+  &quot;events&quot;: [
+    {
+      &quot;id&quot;: &quot;ckdfruqua00127ppvue8jwrpk&quot;,
+      &quot;time&quot;: 1350373077.359,
+      &quot;streamIds&quot;: [&quot;ecg&quot;],
+      &quot;type&quot;: &quot;ecg/6-lead-recording&quot;,
+      &quot;content&quot;: {...},
+    },
+    {
+      &quot;id&quot;: &quot;ckdfruqua00107ppv0xeriki2&quot;,
+      &quot;time&quot;: 1350373077.359,
+      &quot;streamIds&quot;: [&quot;weight&quot;],
+      &quot;type&quot;: &quot;mass/kg&quot;,
+      &quot;content&quot;: 60,
+    },
+    {
+      &quot;id&quot;: &quot;ckdfruqs700017ppvj4rci1cg&quot;,
+      &quot;time&quot;: 1350373077.359,
+      &quot;streamIds&quot;: [&quot;devices&quot;],
+      &quot;type&quot;: &quot;ecg-device/parameters&quot;,
+      &quot;content&quot;: {...},
+    }
+  ]
 }
 </code></pre>
 <p>This will allow you to retrieve all time-related events to the ECG recording of your grandma: the weight associated to the recording, the device associated to the recording, etc.</p>
@@ -716,13 +720,13 @@ Indeed, keep in mind that John needs to be able to access it anytime if it is co
 <p>Doctor Tom will need to keep all access tokens to his patients&#39; accounts in the dedicated stream <strong>&quot;Patient accesses&quot;</strong>.<br>Every time a patient grants him access to his data, the access token to his Pryv.io account will be saved in a <code>credentials/pryv-api-endpoint</code> event under the stream &quot;Patient accesses&quot; (see <a href="/guides/app-guidelines/">App guidelines</a> for why we use this format).  </p>
 <p>In the case of Linda, the following event will be created in the stream &quot;Patient accesses&quot; of Doctor Tom:  </p>
 <pre><code class="lang-json">{
-    &quot;method&quot;: &quot;events.create&quot;,
-    &quot;params&quot;: {
-      &quot;streamIds&quot;: [&quot;patient-accesses&quot;],
-      &quot;type&quot;: &quot;credentials/pryv-api-endpoint&quot;,
-      &quot;content&quot;: &quot;https://czuifgh567128lkj098w2dg@linda.pryv.me/&quot;
-    }
+  &quot;method&quot;: &quot;events.create&quot;,
+  &quot;params&quot;: {
+    &quot;streamIds&quot;: [&quot;patient-accesses&quot;],
+    &quot;type&quot;: &quot;credentials/pryv-api-endpoint&quot;,
+    &quot;content&quot;: &quot;https://czuifgh567128lkj098w2dg@linda.pryv.me/&quot;
   }
+}
 </code></pre>
 <p>To access Linda&#39;s data, Doctor Tom will perform an <a href="/reference/#get-events">events.get</a> call on the stored Pryv API endpoint.</p>
 <p align="center">
