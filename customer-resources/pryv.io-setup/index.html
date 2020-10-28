@@ -47,7 +47,7 @@ It walks you through the different steps that have to be performed in order to s
 <p>You can monitor its status by setting up regular healthcheck API calls to the Pryv.io API.</p>
 <p>The procedure for the platform health monitoring is described in the <a href="/customer-resources/healthchecks">Pryv.io Healthchecks guide</a>.</p>
 <h2 id="customize-authentication-registration-and-reset-password-apps">Customize authentication, registration and reset password apps</h2>
-<p>In order to perform the <a href="/reference/#authenticate-your-app">authentication procedure</a>, a web page is necessary. We provide a template web app for this as well as for other functions such as registration and password reset. You can find the code repository on <a href="https://github.com/pryv/app-web-auth3">github.com/pryv/app-web-auth3</a>.</p>
+<p>In order to perform the <a href="/reference/#authenticate-your-app">authentication procedure</a>, a web page is necessary. We deliver Pryv.io platforms with a web app for this as well as for other functions such as registration and password reset. You can find the code repository on <a href="https://github.com/pryv/app-web-auth3">github.com/pryv/app-web-auth3</a>.</p>
 <p>In order to customize your own, we suggest that you fork this repository and host the web app on your environment. The easiest way to begin is to fork it on GitHub and host it using GitHub-pages.</p>
 <p>To use your own page, you will have to update the following platform variables:</p>
 <ul>
@@ -55,7 +55,7 @@ It walks you through the different steps that have to be performed in order to s
 <li>TRUSTED_APPS</li>
 </ul>
 <p>You will then need to provide your web page&#39;s URL in the <a href="/reference/#auth-request">Auth request</a> <code>authUrl</code> parameter, or if you want to make it default, change the <code>DEFAULT_AUTH_URL</code> in the platform variables.</p>
-<p><strong>We urge you to fork this web application even if you don&#39;t wish to customize it as it follows the versioning of the Pryv Lab platform and may incur breaking changes during updates.</strong></p>
+<p>Or if you wish to proxy your custom app-web-auth3 app through the <code>https://sw.DOMAIN/access/...</code> URL, you will only need to change the <code>APP_WEB_AUTH_URL</code> instead of all other changes.</p>
 <h3 id="gh-pages">GH pages</h3>
 <p>Make sure to implement the <a href="https://github.com/pryv/app-web-auth3/blob/master/README.md#fork-repository-for-github-pages">following change</a> on your fork.</p>
 <p>If you are hosting it on GitHub pages, you will need to adapt the platform variables as following:</p>
@@ -64,8 +64,11 @@ It walks you through the different steps that have to be performed in order to s
     - &quot;https://sw.DOMAIN/access/access.html&quot;
     - &quot;https://YOUR-GITHUB-ACCOUNT.github.io/app-web-auth3/access/access.html&quot;
 </code></pre>
-<p>If you wish to make it default, you must additionally set as following:</p>
+<p>If you wish to make it default, set:</p>
 <pre><code class="lang-yaml">  DEFAULT_AUTH_URL: &quot;https://YOUR-GITHUB-ACCOUNT.github.io/app-web-auth3/access/access.html&quot;
+</code></pre>
+<p>or if you wish to proxy it through <code>https://sw.DOMAIN/access/</code>, set:</p>
+<pre><code class="lang-yaml">  APP_WEB_AUTH_URL: &quot;https://YOUR-GITHUB-ACCOUNT.github.io/app-web-auth3/&quot;
 </code></pre>
 <h3 id="your-own-server">Your own server</h3>
 <p>If you are hosting it on your own server, you will need to adapt the platform variables as following:</p>
@@ -74,8 +77,11 @@ It walks you through the different steps that have to be performed in order to s
     - &quot;https://sw.DOMAIN/access/access.html&quot;
     - &quot;https://YOUR-SERVER-URL/access/access.html&quot;
 </code></pre>
-<p>If you wish to make it default, you must additionally set as following:</p>
+<p>If you wish to make it default, set:</p>
 <pre><code class="lang-yaml">  DEFAULT_AUTH_URL: &quot;https://YOUR-SERVER-URL/access/access.html&quot;
+</code></pre>
+<p>or if you wish to proxy it through <code>https://sw.DOMAIN/access/</code>, set:</p>
+<pre><code class="lang-yaml">  APP_WEB_AUTH_URL: &quot;https://YOUR-SERVER-URL/&quot;
 </code></pre>
 <h2 id="set-up-email-sending">Set up email sending</h2>
 <p>Pryv.io allows to send emails in two situations:</p>
