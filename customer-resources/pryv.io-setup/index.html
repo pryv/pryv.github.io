@@ -53,6 +53,8 @@ It walks you through the different steps that have to be performed in order to s
 <ul>
 <li>TRUSTED_AUTH_URLS</li>
 <li>TRUSTED_APPS</li>
+<li>PASSWORD_RESET_URL</li>
+<li>DEFAULT_AUTH_URL (optional)</li>
 </ul>
 <p>You will then need to provide your web page&#39;s URL in the <a href="/reference/#auth-request">Auth request</a> <code>authUrl</code> parameter, or if you want to make it default, change the <code>DEFAULT_AUTH_URL</code> in the platform variables.</p>
 <p>Or if you wish to proxy your custom app-web-auth3 app through the <code>https://sw.DOMAIN/access/...</code> URL, you will only need to change the <code>APP_WEB_AUTH_URL</code> instead of all other changes.</p>
@@ -63,11 +65,12 @@ It walks you through the different steps that have to be performed in order to s
   TRUSTED_AUTH_URLS:
     - &quot;https://sw.DOMAIN/access/access.html&quot;
     - &quot;https://YOUR-GITHUB-ACCOUNT.github.io/app-web-auth3/access/access.html&quot;
+  PASSWORD_RESET_URL: &quot;https://YOUR-GITHUB-ACCOUNT.github.io/app-web-auth3/access/reset-password.html&quot;
 </code></pre>
 <p>If you wish to make it default, set:</p>
 <pre><code class="lang-yaml">  DEFAULT_AUTH_URL: &quot;https://YOUR-GITHUB-ACCOUNT.github.io/app-web-auth3/access/access.html&quot;
 </code></pre>
-<p>or if you wish to proxy it through <code>https://sw.DOMAIN/access/</code>, set:</p>
+<p>or if you wish to proxy it through <code>https://sw.DOMAIN/access/</code>, <strong>only</strong> set:</p>
 <pre><code class="lang-yaml">  APP_WEB_AUTH_URL: &quot;https://YOUR-GITHUB-ACCOUNT.github.io/app-web-auth3/&quot;
 </code></pre>
 <h3 id="your-own-server">Your own server</h3>
@@ -76,11 +79,12 @@ It walks you through the different steps that have to be performed in order to s
   TRUSTED_AUTH_URLS:
     - &quot;https://sw.DOMAIN/access/access.html&quot;
     - &quot;https://YOUR-SERVER-URL/access/access.html&quot;
+  PASSWORD_RESET_URL: &quot;https://YOUR-SERVER-URL/access/reset-password.html&quot;
 </code></pre>
 <p>If you wish to make it default, set:</p>
 <pre><code class="lang-yaml">  DEFAULT_AUTH_URL: &quot;https://YOUR-SERVER-URL/access/access.html&quot;
 </code></pre>
-<p>or if you wish to proxy it through <code>https://sw.DOMAIN/access/</code>, set:</p>
+<p>or if you wish to proxy it through <code>https://sw.DOMAIN/access/</code>, <strong>only</strong> set:</p>
 <pre><code class="lang-yaml">  APP_WEB_AUTH_URL: &quot;https://YOUR-SERVER-URL/&quot;
 </code></pre>
 <h2 id="set-up-email-sending">Set up email sending</h2>
