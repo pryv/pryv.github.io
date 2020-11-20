@@ -1,0 +1,372 @@
+<!DOCTYPE html><html lang="en" class="no-js"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="description" property="og:description" content="Pryv API reference and resources for developers"><meta name="author" content="Pryv SA"><meta property="og:type" content="website"><meta name="image" property="og:image" content="/assets/images/logo-256.png"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Pryv.io infrastructure procurement | Pryv API</title><link rel="icon" href="/assets/images/favicon-black.ico" type="image/x-icon"><link rel="apple-touch-icon" sizes="120x120" href="/assets/images/apple-touch-icon-120x120-black.png"><link rel="apple-touch-icon" sizes="152x152" href="/assets/images/apple-touch-icon-152x152-black.png"><link rel="apple-touch-icon" sizes="180x180" href="/assets/images/apple-touch-icon-180x180-black.png"><!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+<!--[if lt IE 9]>
+  <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+  <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+<![endif]--><link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Roboto:400,300,500,700,400italic|Roboto+Condensed:400,300,700"><link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/styles/docco.min.css"><link rel="stylesheet" type="text/css" href="/assets/fonts/ss-gizmo.min.css"><link rel="stylesheet" type="text/css" href="/assets/style.css"></head><body class="pryv.io-infrastructure-procurement with-toc"><header id="page-header"><nav role="navigation" class="navbar navbar-default navbar-fixed-top"><div class="container-fluid"><div class="navbar-header"><a href="https://pryv.com" title="Pryv home" class="navbar-brand logo pryv-home"><img src="/assets/images/icon-home.svg" alt="Pryv home" height="50"></a><a href="/" title="Developers home" class="navbar-brand logo"><img src="/assets/images/logo-256-black.png" alt="Developers home"></a><button type="button" data-toggle="collapse" data-target="#main-nav" class="navbar-toggle"><span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button></div><div id="main-nav" class="collapse navbar-collapse"><ul class="nav navbar-nav"><li class="dropdown"><a href="#" data-toggle="dropdown" class="dropdown-toggle">Guides <b class="caret"></b></a><ul class="dropdown-menu"><li><a href="/getting-started/">Getting started</a></li><li><a href="/external-resources/">Apps &amp; Libs</a></li><li><a href="/concepts/">API concepts</a></li><li><a href="/guides/data-modelling/">Data modelling</a></li><li><a href="/guides/webhooks/">Webhooks</a></li><li><a href="/guides/custom-auth/">Custom auth</a></li><li><a href="/guides/consent/">Consent request</a></li><li><a href="/guides/app-guidelines/">App guidelines</a></li></ul></li><li class="dropdown"><a href="#" data-toggle="dropdown" class="dropdown-toggle">Reference <b class="caret"></b></a><ul class="dropdown-menu"><li><a href="/reference/">API reference</a></li><li><a href="/reference-admin/">Admin API reference</a></li><li><a href="/reference-system/">System API reference</a></li><li><a href="/event-types/">Event types</a></li><li><a href="/open-api/">Open API (Postman)</a></li><li><a href="/change-log/">API change log</a></li></ul></li><li class="dropdown"><a href="#" data-toggle="dropdown" class="dropdown-toggle">FAQ <b class="caret"></b></a><ul class="dropdown-menu"><li><a href="/faq-api/">API</a></li><li><a href="/faq-infra/">Infrastructure</a></li></ul></li><li><a href="https://support.pryv.com/hc/en-us/community/topics">Community</a></li><li><a href="https://github.com/pryv/open-pryv.io">Open Pryv.io</a></li><li><a href="/roadmap/">Roadmap</a></li></ul><div class="navbar-right"><p class="navbar-text version"><a href="/change-log/" title="View change log">API version: <strong>1.6.2</strong></a></p></div></div></div></nav></header><div id="main-wrapper" class="container container-narrow"><div id="main"><h1 class="page-title">Pryv.io infrastructure procurement</h1><p>In this document we address system administrators or equivalent that need to provision virtual machines and other web resources to run a Pryv.io platform.<br>It will guide you through the process of deciding which platform setup you require, what virtual machines to provision to host your Pryv.io platform, firewalling settings, OS compatibility and other operational concerns.</p>
+<h2 id="table-of-contents">Table of contents</h2>
+<ul>
+<li>1 <a href="#platform-setup">Platform setup</a></li>
+<li>2 <a href="#business-requirements">Business requirements</a></li>
+<li>3 <a href="#core-number-considerations">Core number considerations</a></li>
+<li>4 <a href="#system-requirements">System requirements</a></li>
+<li>5 <a href="#operational-concerns">Operational concerns</a></li>
+<li>6 <a href="#previous-version">Previous version</a></li>
+</ul>
+<h2 id="platform-setup">Platform setup</h2>
+<p>A Pryv.io platform is composed of 3 roles: register, core and static-web.</p>
+<ul>
+<li>The <strong>register</strong> component contains the DNS indicating the core machine for a user account.</li>
+<li>The <strong>core</strong> service stores user data.</li>
+<li>The <strong>static-web</strong> is used to proxy web applications over the same domain and holds default authentication and adminitration applications.</li>
+</ul>
+<p>Pryv.io can be deployed in various ways, depending on requirements of your business case. This ranges from a starting phase where all components live on one virtual machine in a single location to a deployment spanning many machines across the globe. The present document guides the implementor through the different stages of his project.</p>
+<h3 id="single-node-mode">Single-node mode</h3>
+<p><img src="/assets/images/infrastructure/single-node.svg" alt="single-node"></p>
+<p>The diagram above shows deployment of Pryv.io on a single node all services running on the same VM.</p>
+<h3 id="cluster-with-a-single-core">Cluster with a single core</h3>
+<p><img src="/assets/images/infrastructure/cluster-single-core.svg" alt="cluster-single-core"></p>
+<p>Here we install all roles on separate machines. This variant is useful for when you intend to quickly scale the number of users as shown in the following diagrams.</p>
+<h3 id="cluster-with-partitioning-for-load">Cluster with partitioning for load</h3>
+<p><img src="/assets/images/infrastructure/cluster-load.svg" alt="cluster-load"></p>
+<p>When partitioning for load, multiple <em>core</em> servers will receive user accounts in a round-robin fashion. Any number of users can coexist on a <em>core</em>, up to the extreme of 1 user per machine. Please refer to the <a href="#core-number-considerations">Core number considerations</a> section for how to compute the amount of cores you will need for your particular load. </p>
+<p>When partitioning for load, we recommend the creation of one or more follower nodes for <em>register</em> roles. This avoids creating a single point of failure (TODO improve reason here).</p>
+<h3 id="cluster-with-partitioning-for-geographical-compliance">Cluster with partitioning for geographical compliance</h3>
+<p><img src="/assets/images/infrastructure/cluster-compliance-zones.svg" alt="cluster-compliance-zones"></p>
+<p>The diagram above shows a Pryv.io system designed to partition data into multiple compliance zones. In practice, these will often correspond to countries (legislations) or smaller entities that handle data (and data privacy) differently.</p>
+<p>Being able to store data in different locations might even be the reason you&#39;re using Pryv.io. In systems where Pryv.io coexists with other server components it is important to apply the same logic to all the components - e.g. an SMTP server through which sensitive data transits would have to be deployed in multiple versions across compliance zones as well. Pryv offers consulting on the various legal and technical aspects of preserving user privacy and protecting data.</p>
+<p>Keep in mind that the granularity of distribution in this kind of scenario is always the user account. In extreme cases a compliance zone might contain data for a single user only.</p>
+<h2 id="business-requirements">Business Requirements</h2>
+<p>The size of any deployment will be determined by the business requirements that the Pryv.io infrastructure needs to meet. In this section, we aim to show what factors are relevant for designing a Pryv.io infrastructure. </p>
+<h3 id="granularity">Granularity</h3>
+<p>Pryv.io&#39;s fundamental entity is the user; data is kept vertically and not spread out. For this reason, the guidelines in this section will ask for requirements to be specified per user. </p>
+<h3 id="data-production">Data Production</h3>
+<table>
+<thead>
+<tr>
+<th>Metric</th>
+<th>Your Values Here</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Expected Write Requests Per Second (max rqps)</td>
+<td></td>
+</tr>
+<tr>
+<td>Attachment Writes (max MB/s)</td>
+<td></td>
+</tr>
+<tr>
+<td>Volume (data points per day)</td>
+<td></td>
+</tr>
+<tr>
+<td>Volume (MB per day)</td>
+<td></td>
+</tr>
+<tr>
+<td>Retention of data (years)</td>
+</tr>
+</tbody>
+</table>
+<p>The above table sums up the factors that influence the expected write load per user for your cluster. The first two metrics will influence the number of users that can be cohosted on a single core; the last two metrics will give you an estimation of disk space consumed per day per user. </p>
+<h3 id="data-consumption">Data Consumption</h3>
+<table>
+<thead>
+<tr>
+<th>Metric</th>
+<th>Your Values Here</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Expected Read Requests Per Second (max rqps)</td>
+<td></td>
+</tr>
+<tr>
+<td>Number of Points retrieved per Request (scalar)</td>
+<td></td>
+</tr>
+<tr>
+<td>Attachment Reads (max rqps)</td>
+<td></td>
+</tr>
+<tr>
+<td>Volume (data points per day)</td>
+<td></td>
+</tr>
+<tr>
+<td>Volume (MB per day)</td>
+</tr>
+</tbody>
+</table>
+<p>This table should help you to quantify the load generated by reading data back per user. </p>
+<h2 id="core-number-considerations">Core number considerations</h2>
+<p>This section aims to guide you through the sizing of your virtual machines, using the key metrics you compiled in the last section.</p>
+<p>Once a system gets bigger than a single node (see above), at least 3 machines will be required: one for the <em>static-web</em> role, one for <em>register</em> and one for <em>core</em>.</p>
+<p>If your system is distributed among multiple compliance zones, you will need at least one core per such zone. Inside of every compliance zone, the number of cores should be derived from the following maximum values for a single core: </p>
+<table>
+<thead>
+<tr>
+<th>Metric</th>
+<th>Max Performance of a Single Core</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Write Requests Per Second</td>
+<td>2000 requests per second</td>
+</tr>
+<tr>
+<td>Attachment Writes</td>
+<td>Depends heavily on network path<br />roughly speed of underlying storage system / 2</td>
+</tr>
+<tr>
+<td>Data Points Per Day</td>
+<td>Sustained write increases total data points per user, which will use more disk space.</td>
+</tr>
+<tr>
+<td>Volume (MB per day)</td>
+<td>See above.</td>
+</tr>
+<tr>
+<td>Expected Read Requests Per Second</td>
+<td>2000 requests per second<br />Latency has a long tail distribution, depending on your query.</td>
+</tr>
+<tr>
+<td>Number of Points retrieved per Request</td>
+<td>Big (&gt;10000 points) result sets should use paging.<br />See Read Requests per Second.</td>
+</tr>
+<tr>
+<td>Attachment Reads</td>
+<td>600 requests per second</td>
+</tr>
+</tbody>
+</table>
+<p>Additionally, you should consider load distribution across your user base. Depending on homogeneity, you might add safety margins to the above numbers to allow for inter-user differences.  </p>
+<p>Users will be assigned to the core that has the least amount of users in the same compliance zone. This results in a round-robin behaviour for a stable set of servers. In the presence of user deletion or when adding servers to an existing cluster, this will skew the distribution of users towards machines that have less users than the others.</p>
+<h2 id="system-requirements">System requirements</h2>
+<p>The previous section should have allowed you to calculate how many cores to deploy in each compliance zone. The purpose of this section is to give you specifications for each machine in the three roles.</p>
+<h3 id="operating-systems">Operating systems</h3>
+<p>Linux:</p>
+<ul>
+<li>Ubuntu 16.04, 18.04</li>
+</ul>
+<h3 id="docker">Docker</h3>
+<p>Docker versions:</p>
+<ul>
+<li>Docker v19</li>
+<li>Docker-compose 1.21</li>
+</ul>
+<h3 id="single-node">Single Node</h3>
+<table>
+<thead>
+<tr>
+<th>Aspect</th>
+<th>Minimal Requirement</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>RAM</td>
+<td>4</td>
+</tr>
+<tr>
+<td>CPU Cores</td>
+<td>2</td>
+</tr>
+<tr>
+<td>OS Disk</td>
+<td>15GB</td>
+</tr>
+<tr>
+<td>Data Disk</td>
+<td>Depending on storage needs</td>
+</tr>
+<tr>
+<td>Service ports</td>
+<td>tcp/443, udp/53</td>
+</tr>
+</tbody>
+</table>
+<h3 id="static-web">Static-web</h3>
+<table>
+<thead>
+<tr>
+<th>Aspect</th>
+<th>Minimal Requirement</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>RAM</td>
+<td>512 MB</td>
+</tr>
+<tr>
+<td>CPU Cores</td>
+<td>1</td>
+</tr>
+<tr>
+<td>OS Disk</td>
+<td>15GB</td>
+</tr>
+<tr>
+<td>Data Disk</td>
+<td>not needed</td>
+</tr>
+<tr>
+<td>Service ports</td>
+<td>tcp/443</td>
+</tr>
+</tbody>
+</table>
+<h3 id="register">Register</h3>
+<table>
+<thead>
+<tr>
+<th>Aspect</th>
+<th>Minimal Requirement</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>RAM</td>
+<td>2GB</td>
+</tr>
+<tr>
+<td>CPU Cores</td>
+<td>1</td>
+</tr>
+<tr>
+<td>OS Disk</td>
+<td>15GB</td>
+</tr>
+<tr>
+<td>Data Disk</td>
+<td>15GB</td>
+</tr>
+<tr>
+<td>Service ports</td>
+<td>tcp/443, udp/53</td>
+</tr>
+</tbody>
+</table>
+<p>If you foresee a big number of user accounts (&gt; 100&#39;000), please increase the data disk space.</p>
+<h3 id="core">Core</h3>
+<table>
+<thead>
+<tr>
+<th>Aspect</th>
+<th>Minimal Requirement</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>RAM</td>
+<td>4GB</td>
+</tr>
+<tr>
+<td>CPU Cores</td>
+<td>2</td>
+</tr>
+<tr>
+<td>OS Disk</td>
+<td>15GB</td>
+</tr>
+<tr>
+<td>Data Disk</td>
+<td>15GB</td>
+</tr>
+<tr>
+<td>Service ports</td>
+<td>tcp/443</td>
+</tr>
+</tbody>
+</table>
+<p>Here&#39;s a matrix that shows how various load situations affect the resource needs of your <em>core</em> server(s):</p>
+<table>
+<thead>
+<tr>
+<th>Load Situation</th>
+<th>Resource Needs</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Large data per user</td>
+<td>Data Disk Space: Increase per data usage predictions</td>
+</tr>
+<tr>
+<td>High Requests Per Second</td>
+<td>CPU Cores: Increase to at least 4</td>
+</tr>
+<tr>
+<td>Image uploads</td>
+<td>CPU Cores: Increase to at least 4. RAM: Increase depending on needs</td>
+</tr>
+</tbody>
+</table>
+<h2 id="operational-concerns">Operational Concerns</h2>
+<p>This section will introduce additional operational concerns not covered by your Pryv base installation. We recommend implementing measures to address these topics in order to guarantee safe operation and traceability of issues. </p>
+<h3 id="system-hardening">System Hardening</h3>
+<p>We recommend you follow a system hardening guide for the operating system of your choice. This should include installing firewalls, denying SSH access using passwords and other measures that form best practices. </p>
+<p>Administrators accessing a regulated system must themselves conform to the regulations and have received adequate training. </p>
+<h3 id="backups">Backups</h3>
+<p>See the <a href="backup">backup guide</a>. Making a copy of private user data is regulated by law. Please make sure you know the ramifications of making backup copies. </p>
+<h3 id="node-monitoring">Node Monitoring</h3>
+<p>Make sure you monitor key performance metrics of your Pryv nodes and keep a history of these metrics for later viewing. This helps in tracking down performance issues and is considered a best practice. Your metrics should include: </p>
+<ul>
+<li>Load, CPU (system, user, iowait, idle, load1, load5, load15)</li>
+<li>Disk (space left on devices, iops read and write)</li>
+<li>RAM (swapping activity, reserved, free)</li>
+<li>Network Interfaces (Packets, Bytes, Errors)</li>
+</ul>
+<h2 id="previous-version">Previous version</h2>
+<p>The previous version of this document, named &quot;Deployment design guide&quot; is still available <a href="/assets/docs/deployment_design_guide_v6.pdf">here</a>.</p>
+</div><nav id="toc"></nav></div><footer id="page-footer"><nav class="navbar navbar-default"><div class="container-fluid"><div id="footer-nav"><ul class="nav navbar-nav"><li><a href="mailto:developers@pryv.com">Send a message</a></li><li><a href="https://github.com/pryv">GitHub</a></li><li><a href="https://pryv.com">pryv.com</a></li></ul></div></div></nav></footer><script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script><script src="/assets/bootstrap.min.js"></script><script src="/assets/js/toc.min.js"></script><!-- TOC generation--><script>jQuery(document).ready(function($) {
+  // Header is about 51 pixels. This equals to 'header + fuzz', fuzz was
+  // determined experimentally.
+  var offset = 90;
+
+  // Display TOC on the left side of the page.
+  $('#toc').toc({
+    selector: '#main h1:not(.page-title),#main h2,#main h3',
+    ulClass: 'nav'
+  });
+
+  // Synchronise scroll/click motion with TOC display.
+  $(document).ready(function() {
+    // NOTE This is done at onLoad since we need to wait for all CSS
+    // to appear.
+    $('body').scrollspy({
+      target: '#toc',
+      offset: offset
+    });
+    scrollBy(0, 1); // make it scroll to be sure scrollspy gets it
+    
+    // fix offset when navigating
+    $('#toc li a, a.toc-anchor').click(function (e) {
+      e.preventDefault();
+      var target = $(this).attr('href');
+      window.location.hash = target;
+      
+      $(target)[0].scrollIntoView();
+      if ($(window).scrollTop() + $(window).height() !== $(document).height()) {
+        //only adjust when not at bottom
+        scrollBy(0, -offset + 40);
+      }
+      return true;
+    });
+  
+  });
+});
+</script><!-- Code blocks highlighting--><script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/highlight.min.js"></script><script>hljs.initHighlightingOnLoad();
+</script><!-- Google Analytics--><script>var _gaq = _gaq || [];
+_gaq.push(['_setAccount', 'UA-36589447-2']);
+_gaq.push(['_trackPageview']);
+(function() {
+  var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+  ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+  var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+})();</script></body></html>
