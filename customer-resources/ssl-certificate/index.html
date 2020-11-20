@@ -1,0 +1,120 @@
+<!DOCTYPE html><html lang="en" class="no-js"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="description" property="og:description" content="Pryv API reference and resources for developers"><meta name="author" content="Pryv SA"><meta property="og:type" content="website"><meta name="image" property="og:image" content="/assets/images/logo-256.png"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Pryv.io SSL Certificate | Pryv API</title><link rel="icon" href="/assets/images/favicon-black.ico" type="image/x-icon"><link rel="apple-touch-icon" sizes="120x120" href="/assets/images/apple-touch-icon-120x120-black.png"><link rel="apple-touch-icon" sizes="152x152" href="/assets/images/apple-touch-icon-152x152-black.png"><link rel="apple-touch-icon" sizes="180x180" href="/assets/images/apple-touch-icon-180x180-black.png"><!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+<!--[if lt IE 9]>
+  <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+  <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+<![endif]--><link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Roboto:400,300,500,700,400italic|Roboto+Condensed:400,300,700"><link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/styles/docco.min.css"><link rel="stylesheet" type="text/css" href="/assets/fonts/ss-gizmo.min.css"><link rel="stylesheet" type="text/css" href="/assets/style.css"></head><body class="ssl-certificate with-toc"><header id="page-header"><nav role="navigation" class="navbar navbar-default navbar-fixed-top"><div class="container-fluid"><div class="navbar-header"><a href="https://pryv.com" title="Pryv home" class="navbar-brand logo pryv-home"><img src="/assets/images/icon-home.svg" alt="Pryv home" height="50"></a><a href="/" title="Developers home" class="navbar-brand logo"><img src="/assets/images/logo-256-black.png" alt="Developers home"></a><button type="button" data-toggle="collapse" data-target="#main-nav" class="navbar-toggle"><span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button></div><div id="main-nav" class="collapse navbar-collapse"><ul class="nav navbar-nav"><li class="dropdown"><a href="#" data-toggle="dropdown" class="dropdown-toggle">Guides <b class="caret"></b></a><ul class="dropdown-menu"><li><a href="/getting-started/">Getting started</a></li><li><a href="/external-resources/">Apps &amp; Libs</a></li><li><a href="/concepts/">API concepts</a></li><li><a href="/guides/data-modelling/">Data modelling</a></li><li><a href="/guides/webhooks/">Webhooks</a></li><li><a href="/guides/custom-auth/">Custom auth</a></li><li><a href="/guides/consent/">Consent request</a></li><li><a href="/guides/app-guidelines/">App guidelines</a></li></ul></li><li class="dropdown"><a href="#" data-toggle="dropdown" class="dropdown-toggle">Reference <b class="caret"></b></a><ul class="dropdown-menu"><li><a href="/reference/">API reference</a></li><li><a href="/reference-admin/">Admin API reference</a></li><li><a href="/reference-system/">System API reference</a></li><li><a href="/event-types/">Event types</a></li><li><a href="/open-api/">Open API (Postman)</a></li><li><a href="/change-log/">API change log</a></li></ul></li><li class="dropdown"><a href="#" data-toggle="dropdown" class="dropdown-toggle">FAQ <b class="caret"></b></a><ul class="dropdown-menu"><li><a href="/faq-api/">API</a></li><li><a href="/faq-infra/">Infrastructure</a></li></ul></li><li><a href="https://support.pryv.com/hc/en-us/community/topics">Community</a></li><li><a href="https://github.com/pryv/open-pryv.io">Open Pryv.io</a></li><li><a href="/roadmap/">Roadmap</a></li></ul><div class="navbar-right"><p class="navbar-text version"><a href="/change-log/" title="View change log">API version: <strong>1.6.2</strong></a></p></div></div></div></nav></header><div id="main-wrapper" class="container container-narrow"><div id="main"><h1 class="page-title">Pryv.io SSL Certificate</h1><p>This document describes how to generate a wildcard SSL certificate using <a href="https://letsencrypt.org/">Let&#39;s Encrypt</a> and Pryv.io&#39;s DNS.</p>
+<p>The prerequisites for this are that you have <a href="/customer-resources/pryv.io-setup/#obtain-a-domain-name">obtained a domain name</a> and <a href="/customer-resources/pryv.io-setup/#set-the-platform-parameters">installed the Pryv.io platform</a>.</p>
+<h2 id="certbot-installation">Certbot Installation</h2>
+<ul>
+<li><a href="https://certbot.eff.org/lets-encrypt/ubuntuxenial-other">reference</a></li>
+</ul>
+<p>This procedure describes the commands for Ubuntu 16.04.<br>If you use another OS, use the reference link, choose <em>software: None of the above</em> and your OS and follow the installation instructions.</p>
+<pre><code class="lang-bash">sudo apt-get update
+sudo apt-get install software-properties-common
+sudo add-apt-repository ppa:certbot/certbot
+sudo apt-get update
+sudo apt-get install certbot
+</code></pre>
+<h2 id="generate-certificate-using-dns-validation">Generate certificate using DNS validation</h2>
+<ul>
+<li><a href="https://certbot.eff.org/docs/using.html#manual">Reference</a></li>
+</ul>
+<p>Make sure your DNS supports the Let&#39;s Encrypt CAA by verifying that it has this field in its platform variables:</p>
+<pre><code class="lang-yaml">  ADVANCED_API_SETTINGS:
+    optional: true
+    name: &quot;Advanced API settings&quot;
+    settings:
+      SSL_CAA_ISSUER:
+        value: letsencrypt.org
+        description: &quot;Certificate authority allowed to issue SSL certificates for this domain&quot;
+</code></pre>
+<p>If you are not familiar with this process, it is recommended to do a dry-run as the Let&#39;s Encrypt API has a call limit, which may block you in case of multiple failed attempts.<br>For this, append <code>--dry-run</code> to the command below. Once it works, simply repeat it without <code>--dry-run</code>.</p>
+<p>Launch the process using:  </p>
+<pre><code class="lang-bash">certbot certonly --manual --preferred-challenges dns
+</code></pre>
+<p>When prompted for the domain, enter <code>*.DOMAIN</code> and accept to share the IP address by pressing <code>ENTER</code>.</p>
+<p>Now, the CLI will ask you to set a certain key to the TXT Record <code>_acme-challenge</code>. Enter it in the platform variables by adding the following field as following:</p>
+<pre><code class="lang-yaml">  DNS_SETTINGS:
+    name: &quot;DNS settings&quot;
+    settings:
+      DNS_CUSTOM_ENTRIES:
+        description: &quot;Additional DNS entries. See the DNS configuration document: https://api.pryv.com/customer-resources/#documents.
+        Can be set to null if not used.&quot;
+        value:
+          _acme-challenge:
+            description: &quot;KEY&quot;
+</code></pre>
+<p>and reboot the follower and pryv services.</p>
+<p>Verify that the key is set by running:  </p>
+<pre><code class="lang-bash">dig @dns1.DOMAIN TXT _acme-challenge.DOMAIN
+</code></pre>
+<p>Once you get the right key, go back to the CLI and press ENTER.</p>
+<p>You should now have a certificate in <code>/etc/letsencrypt/live/DOMAIN/</code>.</p>
+<h2 id="reorganize-ssl-certificate-files">Reorganize SSL certificate files</h2>
+<p>Rename the files to match the NGINX settings:</p>
+<pre><code class="lang-bash">mv fullchain.pem DOMAIN-bundle.crt
+mv privkey.pem DOMAIN-key.pem
+</code></pre>
+<p>You might have to copy them as <code>live/</code> holds symbolic links</p>
+<p>Then copy them into:  </p>
+<pre><code class="lang-bash">${PRYV_CONF_ROOT}/config-leader/data/${ROLE}/nginx/conf/secret/
+</code></pre>
+<p>with <code>${ROLE}</code> being:</p>
+<ul>
+<li><code>singlenode</code></li>
+</ul>
+<p>OR</p>
+<ul>
+<li><code>core</code></li>
+<li><code>reg-master</code></li>
+<li><code>reg-slave</code></li>
+<li><code>static</code></li>
+</ul>
+<p>and reboot the follower and pryv services.</p>
+</div><nav id="toc"></nav></div><footer id="page-footer"><nav class="navbar navbar-default"><div class="container-fluid"><div id="footer-nav"><ul class="nav navbar-nav"><li><a href="mailto:developers@pryv.com">Send a message</a></li><li><a href="https://github.com/pryv">GitHub</a></li><li><a href="https://pryv.com">pryv.com</a></li></ul></div></div></nav></footer><script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script><script src="/assets/bootstrap.min.js"></script><script src="/assets/js/toc.min.js"></script><!-- TOC generation--><script>jQuery(document).ready(function($) {
+  // Header is about 51 pixels. This equals to 'header + fuzz', fuzz was
+  // determined experimentally.
+  var offset = 90;
+
+  // Display TOC on the left side of the page.
+  $('#toc').toc({
+    selector: '#main h1:not(.page-title),#main h2,#main h3',
+    ulClass: 'nav'
+  });
+
+  // Synchronise scroll/click motion with TOC display.
+  $(document).ready(function() {
+    // NOTE This is done at onLoad since we need to wait for all CSS
+    // to appear.
+    $('body').scrollspy({
+      target: '#toc',
+      offset: offset
+    });
+    scrollBy(0, 1); // make it scroll to be sure scrollspy gets it
+    
+    // fix offset when navigating
+    $('#toc li a, a.toc-anchor').click(function (e) {
+      e.preventDefault();
+      var target = $(this).attr('href');
+      window.location.hash = target;
+      
+      $(target)[0].scrollIntoView();
+      if ($(window).scrollTop() + $(window).height() !== $(document).height()) {
+        //only adjust when not at bottom
+        scrollBy(0, -offset + 40);
+      }
+      return true;
+    });
+  
+  });
+});
+</script><!-- Code blocks highlighting--><script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/highlight.min.js"></script><script>hljs.initHighlightingOnLoad();
+</script><!-- Google Analytics--><script>var _gaq = _gaq || [];
+_gaq.push(['_setAccount', 'UA-36589447-2']);
+_gaq.push(['_trackPageview']);
+(function() {
+  var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+  ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+  var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+})();</script></body></html>
