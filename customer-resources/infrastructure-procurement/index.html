@@ -18,23 +18,23 @@
 <ul>
 <li>The <strong>register</strong> component contains the DNS indicating the core machine for a user account.</li>
 <li>The <strong>core</strong> service stores user data.</li>
-<li>The <strong>static-web</strong> is used to proxy web applications over the same domain and holds default authentication and adminitration applications.</li>
+<li>The <strong>static-web</strong> is used to proxy web applications over the same domain and holds default authentication and administration applications.</li>
 </ul>
-<p>Pryv.io can be deployed in various ways, depending on requirements of your business case. This ranges from a starting phase where all components live on one virtual machine in a single location to a deployment spanning many machines across the globe. The present document guides the implementor through the different stages of his project.</p>
+<p>Pryv.io can be deployed in various ways, depending on requirements of your business case. This ranges from a starting phase where all components live on one virtual machine in a single location, to a deployment spanning many machines across the globe. The present document guides the implementor through the different stages of his project.</p>
 <h3 id="single-node-mode">Single-node mode</h3>
 <p><img src="/assets/images/infrastructure/single-node.svg" alt="single-node"></p>
-<p>The diagram above shows deployment of Pryv.io on a single node all services running on the same VM.</p>
+<p>The diagram above shows deployment of Pryv.io on a single node, all services running on the same VM.</p>
 <h3 id="cluster-with-a-single-core">Cluster with a single core</h3>
 <p><img src="/assets/images/infrastructure/cluster-single-core.svg" alt="cluster-single-core"></p>
 <p>Here we install all roles on separate machines. This variant is useful for when you intend to quickly scale the number of users as shown in the following diagrams.</p>
 <h3 id="cluster-with-partitioning-for-load">Cluster with partitioning for load</h3>
 <p><img src="/assets/images/infrastructure/cluster-load.svg" alt="cluster-load"></p>
 <p>When partitioning for load, multiple <em>core</em> servers will receive user accounts in a round-robin fashion. Any number of users can coexist on a <em>core</em>, up to the extreme of 1 user per machine. Please refer to the <a href="#core-number-considerations">Core number considerations</a> section for how to compute the amount of cores you will need for your particular load. </p>
-<p>When partitioning for load, we recommend the creation of one or more follower nodes for <em>register</em> roles. This avoids creating a single point of failure (TODO improve reason here).</p>
+<p>When partitioning for load, we recommend the creation of one or more follower nodes for <em>register</em> roles. This avoids creating a single point of failure.</p>
 <h3 id="cluster-with-partitioning-for-geographical-compliance">Cluster with partitioning for geographical compliance</h3>
 <p><img src="/assets/images/infrastructure/cluster-compliance-zones.svg" alt="cluster-compliance-zones"></p>
 <p>The diagram above shows a Pryv.io system designed to partition data into multiple compliance zones. In practice, these will often correspond to countries (legislations) or smaller entities that handle data (and data privacy) differently.</p>
-<p>Being able to store data in different locations might even be the reason you&#39;re using Pryv.io. In systems where Pryv.io coexists with other server components it is important to apply the same logic to all the components - e.g. an SMTP server through which sensitive data transits would have to be deployed in multiple versions across compliance zones as well. Pryv offers consulting on the various legal and technical aspects of preserving user privacy and protecting data.</p>
+<p>Being able to store data in different locations might even be the reason you&#39;re using Pryv.io. In systems where Pryv.io coexists with other server components, it is important to apply the same logic to all the components - e.g. an SMTP server through which sensitive data transits would have to be deployed in multiple versions across compliance zones as well. Pryv offers consulting on the various legal and technical aspects of preserving user privacy and protecting data.</p>
 <p>Keep in mind that the granularity of distribution in this kind of scenario is always the user account. In extreme cases a compliance zone might contain data for a single user only.</p>
 <h2 id="business-requirements">Business Requirements</h2>
 <p>The size of any deployment will be determined by the business requirements that the Pryv.io infrastructure needs to meet. In this section, we aim to show what factors are relevant for designing a Pryv.io infrastructure. </p>
@@ -170,7 +170,7 @@
 <tbody>
 <tr>
 <td>RAM</td>
-<td>4</td>
+<td>4 GB</td>
 </tr>
 <tr>
 <td>CPU Cores</td>
@@ -178,7 +178,7 @@
 </tr>
 <tr>
 <td>OS Disk</td>
-<td>15GB</td>
+<td>15 GB</td>
 </tr>
 <tr>
 <td>Data Disk</td>
@@ -209,7 +209,7 @@
 </tr>
 <tr>
 <td>OS Disk</td>
-<td>15GB</td>
+<td>15 GB</td>
 </tr>
 <tr>
 <td>Data Disk</td>
@@ -232,7 +232,7 @@
 <tbody>
 <tr>
 <td>RAM</td>
-<td>2GB</td>
+<td>2 GB</td>
 </tr>
 <tr>
 <td>CPU Cores</td>
@@ -240,11 +240,11 @@
 </tr>
 <tr>
 <td>OS Disk</td>
-<td>15GB</td>
+<td>15 GB</td>
 </tr>
 <tr>
 <td>Data Disk</td>
-<td>15GB</td>
+<td>15 GB</td>
 </tr>
 <tr>
 <td>Service ports</td>
@@ -264,7 +264,7 @@
 <tbody>
 <tr>
 <td>RAM</td>
-<td>4GB</td>
+<td>4 GB</td>
 </tr>
 <tr>
 <td>CPU Cores</td>
@@ -272,11 +272,11 @@
 </tr>
 <tr>
 <td>OS Disk</td>
-<td>15GB</td>
+<td>15 GB</td>
 </tr>
 <tr>
 <td>Data Disk</td>
-<td>15GB</td>
+<td>15 GB</td>
 </tr>
 <tr>
 <td>Service ports</td>
@@ -308,9 +308,9 @@
 </tbody>
 </table>
 <h2 id="operational-concerns">Operational Concerns</h2>
-<p>This section will introduce additional operational concerns not covered by your Pryv base installation. We recommend implementing measures to address these topics in order to guarantee safe operation and traceability of issues. </p>
+<p>This section will introduce additional operational concerns not covered by your Pryv.io base installation. We recommend implementing measures to address these topics in order to guarantee safe operation and traceability of issues. </p>
 <h3 id="system-hardening">System Hardening</h3>
-<p>We recommend you follow a system hardening guide for the operating system of your choice. This should include installing firewalls, denying SSH access using passwords and other measures that form best practices. </p>
+<p>We recommend you to follow a system hardening guide for the operating system of your choice. This should include installing firewalls, denying SSH access using passwords and other measures that form best practices. </p>
 <p>Administrators accessing a regulated system must themselves conform to the regulations and have received adequate training. </p>
 <h3 id="backups">Backups</h3>
 <p>See the <a href="backup">backup guide</a>. Making a copy of private user data is regulated by law. Please make sure you know the ramifications of making backup copies. </p>
