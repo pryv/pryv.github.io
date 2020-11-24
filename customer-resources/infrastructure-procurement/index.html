@@ -22,17 +22,17 @@
 </ul>
 <p>Pryv.io can be deployed in various ways, depending on requirements of your business case. This ranges from a starting phase where all components live on one virtual machine in a single location, to a deployment spanning many machines across the globe. The present document guides the implementor through the different stages of his project.</p>
 <h3 id="single-node-mode">Single-node mode</h3>
-<p><img src="/assets/images/infrastructure/single-node.svg" alt="single-node"></p>
+<p><img src="/assets/images/infrastructure/single-node-new.svg" alt="single-node"></p>
 <p>The diagram above shows deployment of Pryv.io on a single node, all services running on the same VM.</p>
 <h3 id="cluster-with-a-single-core">Cluster with a single core</h3>
-<p><img src="/assets/images/infrastructure/cluster-single-core.svg" alt="cluster-single-core"></p>
+<p><img src="/assets/images/infrastructure/single-core.svg" alt="cluster-single-core"></p>
 <p>Here we install all roles on separate machines. This variant is useful for when you intend to quickly scale the number of users as shown in the following diagrams.</p>
 <h3 id="cluster-with-partitioning-for-load">Cluster with partitioning for load</h3>
-<p><img src="/assets/images/infrastructure/cluster-load.svg" alt="cluster-load"></p>
+<p><img src="/assets/images/infrastructure/cluster.svg" alt="cluster-load"></p>
 <p>When partitioning for load, multiple <em>core</em> servers will receive user accounts in a round-robin fashion. Any number of users can coexist on a <em>core</em>, up to the extreme of 1 user per machine. Please refer to the <a href="#core-number-considerations">Core number considerations</a> section for how to compute the amount of cores you will need for your particular load. </p>
 <p>When partitioning for load, we recommend the creation of one or more follower nodes for <em>register</em> roles. This avoids creating a single point of failure.</p>
 <h3 id="cluster-with-partitioning-for-geographical-compliance">Cluster with partitioning for geographical compliance</h3>
-<p><img src="/assets/images/infrastructure/cluster-compliance-zones.svg" alt="cluster-compliance-zones"></p>
+<p><img src="/assets/images/infrastructure/cluster-compliance-zones-new.svg" alt="cluster-compliance-zones"></p>
 <p>The diagram above shows a Pryv.io system designed to partition data into multiple compliance zones. In practice, these will often correspond to countries (legislations) or smaller entities that handle data (and data privacy) differently.</p>
 <p>Being able to store data in different locations might even be the reason you&#39;re using Pryv.io. In systems where Pryv.io coexists with other server components, it is important to apply the same logic to all the components - e.g. an SMTP server through which sensitive data transits would have to be deployed in multiple versions across compliance zones as well. Pryv offers consulting on the various legal and technical aspects of preserving user privacy and protecting data.</p>
 <p>Keep in mind that the granularity of distribution in this kind of scenario is always the user account. In extreme cases a compliance zone might contain data for a single user only.</p>
