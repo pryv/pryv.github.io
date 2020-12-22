@@ -83,7 +83,7 @@ Modify the NGINX configuration on the static-web machine <code>static/nginx/site
 }
 </code></pre><h2 id="system-administrators">System administrators</h2>
 <h3 id="port-53-is-already-in-use-by-docker-s-embedded-dns-">Port 53 is already in use (by Docker&#39;s embedded DNS)</h3>
-<p>On some installations, the DNS container cannot be started because docker-compose attempts to bind on the same network interface and port as Docker&#39;s embedded DNS.<br>To fix this, you must specify the machine&#39;s public IP address in the docker-compose port mapping section of the DNS service as following:</p>
+<p>On some installations, the DNS container cannot be started because docker-compose attempts to bind on the same network interface and port as Docker&#39;s embedded DNS.<br>To fix this, you must specify the external network interface IP address (which may differ from the machine&#39;s public IP address, for example on AWS) in the docker-compose port mapping section of the DNS service as following:</p>
 <pre><code class="lang-yaml">ports:
     - &quot;EXTERNAL_INTERFACE_IP_ADDRESS:53:5353/udp&quot;
 </code></pre>
