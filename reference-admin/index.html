@@ -27,14 +27,14 @@
   "password": "my-secret-password"
 }</code></pre><div class="step-marker">⬇</div><pre><code>{
   "token": "eyJ1c2VybmFtZSI6ImlsaWEiLCJwZXJtaXNzaW9ucyI6eyJ1c2VycyI6WyJyZWFkIiwiY3JlYXRlIiwiZGVsZXRlIiwicmVzZXRQYXNzd29yZCIsImNoYW5nZVBlcm1pc3Npb25zIl0sInNldHRpbmdzIjpbInJlYWQiLCJ1cGRhdGUiXX0sImlhdCI6MTU5OTIyNDM4MywiZXhwIjoxNTk5MzEwNzgzfQ"
-}</code></pre></div><div class="tab-pane http"><pre><code></code></pre><div class="step-marker">⬇</div><pre><code>HTTP/1.1 200 OK
+}</code></pre></div><div class="tab-pane http"><pre><code>curl -i -X POST -H 'Content-Type: application/json' -d '{"username":"quaid","password":"my-secret-password"}' "https://<span class="api-admin-curl">lead.pryv.me</span>/auth/login"</code></pre><div class="step-marker">⬇</div><pre><code>HTTP/1.1 200 OK
 Content-Type: application/json; charset=utf-8
 API-Version: 1.6.7
 
 {
   "token": "eyJ1c2VybmFtZSI6ImlsaWEiLCJwZXJtaXNzaW9ucyI6eyJ1c2VycyI6WyJyZWFkIiwiY3JlYXRlIiwiZGVsZXRlIiwicmVzZXRQYXNzd29yZCIsImNoYW5nZVBlcm1pc3Npb25zIl0sInNldHRpbmdzIjpbInJlYWQiLCJ1cGRhdGUiXX0sImlhdCI6MTU5OTIyNDM4MywiZXhwIjoxNTk5MzEwNzgzfQ"
 }
-</code></pre></div><div class="tab-pane sockets"><pre>Only available for HTTP REST</pre></div><div class="tab-pane batch"><pre>Only available for HTTP REST</pre></div><div class="tab-pane httpAuth"><pre><code></code></pre><div class="step-marker">⬇</div><pre><code>HTTP/1.1 200 OK
+</code></pre></div><div class="tab-pane sockets"><pre>Only available for HTTP REST</pre></div><div class="tab-pane batch"><pre>Only available for HTTP REST</pre></div><div class="tab-pane httpAuth"><pre><code>curl -i -X POST -H 'Content-Type: application/json' -d '{"username":"quaid","password":"my-secret-password"}' "https://<span class="api-admin-curl">lead.pryv.me</span>/auth/login"</code></pre><div class="step-marker">⬇</div><pre><code>HTTP/1.1 200 OK
 Content-Type: application/json; charset=utf-8
 API-Version: 1.6.7
 
@@ -45,20 +45,708 @@ API-Version: 1.6.7
 </code></pre></div></div></div></aside></section><!-- it's either:--><!-- !trusted & !preview--><!-- !preview & -full--><!-- -preview--><section id="api-methods-auth-auth-logout" class="method"> <h3 id="logout-user">Logout user</h3>
 <div class="content"><div class="meta"><span class="http"><span class="label">HTTP-only</span><span class="label-value"><code>POST /auth/logout</code></span></span></div><div class="intro"><p>Terminates a session by invalidating its JSON web token (the user will have to login again). Simply provide the JSON web token in own of the <a href="/reference-admin/#authorization">the supported ways</a>, no request body is required.</p>
 </div><h4 id="result">Result</h4>
-<span class="http"><span class="label">HTTP</span><span class="label-value"><code>200 OK</code></span></span></div><aside><div class="example"><div class="tab-content"><div class="tab-pane json active"><pre><code>{}</code></pre><div class="step-marker">⬇</div><pre><code>{}</code></pre></div><div class="tab-pane http"><pre><code></code></pre><div class="step-marker">⬇</div><pre><code>HTTP/1.1 200 OK
+<span class="http"><span class="label">HTTP</span><span class="label-value"><code>200 OK</code></span></span></div><aside><div class="example"><div class="tab-content"><div class="tab-pane json active"><pre><code>{}</code></pre><div class="step-marker">⬇</div><pre><code>{}</code></pre></div><div class="tab-pane http"><pre><code>curl -i -X POST -H 'Content-Type: application/json' -d '{}' "https://<span class="api-admin-curl">lead.pryv.me</span>/auth/logout"</code></pre><div class="step-marker">⬇</div><pre><code>HTTP/1.1 200 OK
 Content-Type: application/json; charset=utf-8
 API-Version: 1.6.7
 
 {}
-</code></pre></div><div class="tab-pane sockets"><pre>Only available for HTTP REST</pre></div><div class="tab-pane batch"><pre>Only available for HTTP REST</pre></div><div class="tab-pane httpAuth"><pre><code></code></pre><div class="step-marker">⬇</div><pre><code>HTTP/1.1 200 OK
+</code></pre></div><div class="tab-pane sockets"><pre>Only available for HTTP REST</pre></div><div class="tab-pane batch"><pre>Only available for HTTP REST</pre></div><div class="tab-pane httpAuth"><pre><code>curl -i -X POST -H 'Content-Type: application/json' -d '{}' "https://<span class="api-admin-curl">lead.pryv.me</span>/auth/logout"</code></pre><div class="step-marker">⬇</div><pre><code>HTTP/1.1 200 OK
 Content-Type: application/json; charset=utf-8
 API-Version: 1.6.7
 
 {}
+
+</code></pre></div></div></div></aside></section></section><!-- it's either:--><!-- !trusted & !preview--><!-- !preview & -full--><!-- -preview--><section id="api-methods-admin-users"><h2 id="admin-users">Admin users</h2>
+<div class="content"><div class="meta"></div><div class="intro"><p>Methods for managing admin users.</p>
+</div></div><!-- it's either:--><!-- !trusted & !preview--><!-- !preview & -full--><!-- -preview--><section id="api-methods-admin-users-adminUsers-get" class="method"> <h3 id="retrieve-admin-users-information">Retrieve admin users information</h3>
+<div class="content"><div class="meta"><span class="http"><span class="label">HTTP-only</span><span class="label-value"><code>GET /users</code></span></span></div><div class="intro"><p>Retrieves the admin users information.</p>
+</div><h4 id="parameters">Parameters</h4>
+<h4 id="result">Result</h4>
+<span class="http"><span class="label">HTTP</span><span class="label-value"><code>200 OK</code></span></span><table class="definitions"><tr><th><code>users</code></th><td><div class="header"><span class="type">Array of <a href="#admin-user">admin users</a></span></div><div class="description"><p>The admin users information.</p>
+</div></td></tr></table></div><aside><div class="example"><p>Fetching admin users.</p>
+<div class="tab-content"><div class="tab-pane json active"><pre><code>{}</code></pre><div class="step-marker">⬇</div><pre><code>{
+  "users": [
+    {
+      "username": "admin",
+      "permissions": {
+        "users": [
+          "read",
+          "create",
+          "delete",
+          "resetPassword",
+          "changePermissions"
+        ],
+        "settings": [
+          "read",
+          "update"
+        ],
+        "platformUsers": [
+          "read",
+          "delete"
+        ]
+      }
+    },
+    {
+      "username": "harrytasker",
+      "permissions": {
+        "users": [
+          "read"
+        ],
+        "settings": [
+          "read",
+          "update"
+        ],
+        "platformUsers": [
+          "read",
+          "delete"
+        ]
+      }
+    }
+  ]
+}</code></pre></div><div class="tab-pane http"><pre><code>curl -i "https://<span class="api-admin-curl">lead.pryv.me</span>/users"</code></pre><div class="step-marker">⬇</div><pre><code>HTTP/1.1 200 OK
+Content-Type: application/json; charset=utf-8
+API-Version: 1.6.7
+
+{
+  "users": [
+    {
+      "username": "admin",
+      "permissions": {
+        "users": [
+          "read",
+          "create",
+          "delete",
+          "resetPassword",
+          "changePermissions"
+        ],
+        "settings": [
+          "read",
+          "update"
+        ],
+        "platformUsers": [
+          "read",
+          "delete"
+        ]
+      }
+    },
+    {
+      "username": "harrytasker",
+      "permissions": {
+        "users": [
+          "read"
+        ],
+        "settings": [
+          "read",
+          "update"
+        ],
+        "platformUsers": [
+          "read",
+          "delete"
+        ]
+      }
+    }
+  ]
+}
+</code></pre></div><div class="tab-pane sockets"><pre>Only available for HTTP REST</pre></div><div class="tab-pane batch"><pre>Only available for HTTP REST</pre></div><div class="tab-pane httpAuth"><pre><code>curl -i "https://<span class="api-admin-curl">lead.pryv.me</span>/users"</code></pre><div class="step-marker">⬇</div><pre><code>HTTP/1.1 200 OK
+Content-Type: application/json; charset=utf-8
+API-Version: 1.6.7
+
+{
+  "users": [
+    {
+      "username": "admin",
+      "permissions": {
+        "users": [
+          "read",
+          "create",
+          "delete",
+          "resetPassword",
+          "changePermissions"
+        ],
+        "settings": [
+          "read",
+          "update"
+        ],
+        "platformUsers": [
+          "read",
+          "delete"
+        ]
+      }
+    },
+    {
+      "username": "harrytasker",
+      "permissions": {
+        "users": [
+          "read"
+        ],
+        "settings": [
+          "read",
+          "update"
+        ],
+        "platformUsers": [
+          "read",
+          "delete"
+        ]
+      }
+    }
+  ]
+}
+
+</code></pre></div></div></div></aside></section><!-- it's either:--><!-- !trusted & !preview--><!-- !preview & -full--><!-- -preview--><section id="api-methods-admin-users-adminUsers-getOne" class="method"> <h3 id="retrieve-admin-user-information">Retrieve admin user information</h3>
+<div class="content"><div class="meta"><span class="http"><span class="label">HTTP-only</span><span class="label-value"><code>GET /users/{username}</code></span></span></div><div class="intro"><p>Retrieves the admin user&#39;s information.</p>
+</div><h4 id="parameters">Parameters</h4>
+<table class="definitions"><tr><th><code>username</code></th><td><div class="header"><span class="type">string</span><span class="http"><span class="label">HTTP</span><span class="label-value"><span>set in request path</span></span></span></div><div class="description"><p>The username of the admin user.</p>
+</div></td></tr></table><h4 id="result">Result</h4>
+<span class="http"><span class="label">HTTP</span><span class="label-value"><code>200 OK</code></span></span><table class="definitions"><tr><th><code>user</code></th><td><div class="header"><span class="type"><a href="#admin-user">admin user</a></span></div><div class="description"><p>The admin user&#39;s information.</p>
+</div></td></tr></table></div><aside><div class="example"><p>Fetching one admin user&#39;s information.</p>
+<div class="tab-content"><div class="tab-pane json active"><pre><code>{
+  "username": "harrytasker"
+}</code></pre><div class="step-marker">⬇</div><pre><code>{
+  "user": {
+    "username": "harrytasker",
+    "permissions": {
+      "users": [
+        "read"
+      ],
+      "settings": [
+        "read",
+        "update"
+      ],
+      "platformUsers": [
+        "read",
+        "delete"
+      ]
+    }
+  }
+}</code></pre></div><div class="tab-pane http"><pre><code>curl -i "https://<span class="api-admin-curl">lead.pryv.me</span>/users/harrytasker"</code></pre><div class="step-marker">⬇</div><pre><code>HTTP/1.1 200 OK
+Content-Type: application/json; charset=utf-8
+API-Version: 1.6.7
+
+{
+  "user": {
+    "username": "harrytasker",
+    "permissions": {
+      "users": [
+        "read"
+      ],
+      "settings": [
+        "read",
+        "update"
+      ],
+      "platformUsers": [
+        "read",
+        "delete"
+      ]
+    }
+  }
+}
+</code></pre></div><div class="tab-pane sockets"><pre>Only available for HTTP REST</pre></div><div class="tab-pane batch"><pre>Only available for HTTP REST</pre></div><div class="tab-pane httpAuth"><pre><code>curl -i "https://<span class="api-admin-curl">lead.pryv.me</span>/users/harrytasker"</code></pre><div class="step-marker">⬇</div><pre><code>HTTP/1.1 200 OK
+Content-Type: application/json; charset=utf-8
+API-Version: 1.6.7
+
+{
+  "user": {
+    "username": "harrytasker",
+    "permissions": {
+      "users": [
+        "read"
+      ],
+      "settings": [
+        "read",
+        "update"
+      ],
+      "platformUsers": [
+        "read",
+        "delete"
+      ]
+    }
+  }
+}
+
+</code></pre></div></div></div></aside></section><!-- it's either:--><!-- !trusted & !preview--><!-- !preview & -full--><!-- -preview--><section id="api-methods-admin-users-adminUsers-create" class="method"> <h3 id="create-an-admin-user">Create an admin user</h3>
+<div class="content"><div class="meta"><span class="http"><span class="label">HTTP-only</span><span class="label-value"><code>POST /users</code></span></span></div><div class="intro"><p>Creates an admin user.</p>
+</div><h4 id="parameters">Parameters</h4>
+<table class="definitions"><tr><th><code>username</code></th><td><div class="header"><span class="type">string</span></div><div class="description"><p>The username of the admin user.</p>
+</div></td></tr><tr><th><code>password</code></th><td><div class="header"><span class="type">string</span></div><div class="description"><p>The password of the admin user.</p>
+</div></td></tr><tr><th><code>permissions</code></th><td><div class="header"><span class="type">string</span></div><div class="description"><p>The <a href="#admin-permissions">permissions of the admin user</a>.</p>
+</div></td></tr></table><h4 id="result">Result</h4>
+<span class="http"><span class="label">HTTP</span><span class="label-value"><code>200 OK</code></span></span><table class="definitions"><tr><th><code>user</code></th><td><div class="header"><span class="type"><a href="#admin-user">admin user</a></span></div><div class="description"><p>The created admin user&#39;s information.</p>
+</div></td></tr></table></div><aside><div class="example"><p>Creating an admin user.</p>
+<div class="tab-content"><div class="tab-pane json active"><pre><code>{
+  "username": "harrytasker",
+  "permissions": {
+    "users": [
+      "read"
+    ],
+    "settings": [
+      "read",
+      "update"
+    ],
+    "platformUsers": [
+      "read",
+      "delete"
+    ]
+  }
+}</code></pre><div class="step-marker">⬇</div><pre><code>{
+  "user": {
+    "username": "harrytasker",
+    "permissions": {
+      "users": [
+        "read"
+      ],
+      "settings": [
+        "read",
+        "update"
+      ],
+      "platformUsers": [
+        "read",
+        "delete"
+      ]
+    }
+  }
+}</code></pre></div><div class="tab-pane http"><pre><code>curl -i -X POST -H 'Content-Type: application/json' -d '{"username":"harrytasker","permissions":{"users":["read"],"settings":["read","update"],"platformUsers":["read","delete"]}}' "https://<span class="api-admin-curl">lead.pryv.me</span>/users"</code></pre><div class="step-marker">⬇</div><pre><code>HTTP/1.1 200 OK
+Content-Type: application/json; charset=utf-8
+API-Version: 1.6.7
+
+{
+  "user": {
+    "username": "harrytasker",
+    "permissions": {
+      "users": [
+        "read"
+      ],
+      "settings": [
+        "read",
+        "update"
+      ],
+      "platformUsers": [
+        "read",
+        "delete"
+      ]
+    }
+  }
+}
+</code></pre></div><div class="tab-pane sockets"><pre>Only available for HTTP REST</pre></div><div class="tab-pane batch"><pre>Only available for HTTP REST</pre></div><div class="tab-pane httpAuth"><pre><code>curl -i -X POST -H 'Content-Type: application/json' -d '{"username":"harrytasker","permissions":{"users":["read"],"settings":["read","update"],"platformUsers":["read","delete"]}}' "https://<span class="api-admin-curl">lead.pryv.me</span>/users"</code></pre><div class="step-marker">⬇</div><pre><code>HTTP/1.1 200 OK
+Content-Type: application/json; charset=utf-8
+API-Version: 1.6.7
+
+{
+  "user": {
+    "username": "harrytasker",
+    "permissions": {
+      "users": [
+        "read"
+      ],
+      "settings": [
+        "read",
+        "update"
+      ],
+      "platformUsers": [
+        "read",
+        "delete"
+      ]
+    }
+  }
+}
+
+</code></pre></div></div></div></aside></section><!-- it's either:--><!-- !trusted & !preview--><!-- !preview & -full--><!-- -preview--><section id="api-methods-admin-users-adminUsers-updatePermissions" class="method"> <h3 id="update-an-admin-user-s-permissions">Update an admin user&#39;s permissions</h3>
+<div class="content"><div class="meta"><span class="http"><span class="label">HTTP-only</span><span class="label-value"><code>PUT /users/{username}/permissions</code></span></span></div><div class="intro"><p>Updates an admin user&#39;s permissions.</p>
+</div><h4 id="parameters">Parameters</h4>
+<table class="definitions"><tr><th><code>permissions</code></th><td><div class="header"><span class="type"><a href="#admin-permissions">admin permissions</a></span></div><div class="description"><p>The permissions of the admin user.</p>
+</div></td></tr></table><h4 id="result">Result</h4>
+<span class="http"><span class="label">HTTP</span><span class="label-value"><code>200 OK</code></span></span><table class="definitions"><tr><th><code>user</code></th><td><div class="header"><span class="type"><a href="#admin-user">admin user</a></span></div><div class="description"><p>The updated admin user&#39;s information.</p>
+</div></td></tr></table></div><aside><div class="example"><p>Updating an admin user&#39;s permissions.</p>
+<div class="tab-content"><div class="tab-pane json active"><pre><code>{
+  "permissions": {
+    "users": [
+      "read"
+    ],
+    "settings": [
+      "read",
+      "update"
+    ],
+    "platformUsers": [
+      "read",
+      "delete"
+    ]
+  }
+}</code></pre><div class="step-marker">⬇</div><pre><code>{
+  "user": {
+    "username": "harrytasker",
+    "permissions": {
+      "users": [
+        "read"
+      ],
+      "settings": [
+        "read",
+        "update"
+      ],
+      "platformUsers": [
+        "read",
+        "delete"
+      ]
+    }
+  }
+}</code></pre></div><div class="tab-pane http"><pre><code>curl -i -X PUT -H 'Content-Type: application/json' -d '{"permissions":{"users":["read"],"settings":["read","update"],"platformUsers":["read","delete"]}}' "https://<span class="api-admin-curl">lead.pryv.me</span>/users/${username}/permissions"</code></pre><div class="step-marker">⬇</div><pre><code>HTTP/1.1 200 OK
+Content-Type: application/json; charset=utf-8
+API-Version: 1.6.7
+
+{
+  "user": {
+    "username": "harrytasker",
+    "permissions": {
+      "users": [
+        "read"
+      ],
+      "settings": [
+        "read",
+        "update"
+      ],
+      "platformUsers": [
+        "read",
+        "delete"
+      ]
+    }
+  }
+}
+</code></pre></div><div class="tab-pane sockets"><pre>Only available for HTTP REST</pre></div><div class="tab-pane batch"><pre>Only available for HTTP REST</pre></div><div class="tab-pane httpAuth"><pre><code>curl -i -X PUT -H 'Content-Type: application/json' -d '{"permissions":{"users":["read"],"settings":["read","update"],"platformUsers":["read","delete"]}}' "https://<span class="api-admin-curl">lead.pryv.me</span>/users/${username}/permissions"</code></pre><div class="step-marker">⬇</div><pre><code>HTTP/1.1 200 OK
+Content-Type: application/json; charset=utf-8
+API-Version: 1.6.7
+
+{
+  "user": {
+    "username": "harrytasker",
+    "permissions": {
+      "users": [
+        "read"
+      ],
+      "settings": [
+        "read",
+        "update"
+      ],
+      "platformUsers": [
+        "read",
+        "delete"
+      ]
+    }
+  }
+}
+
+</code></pre></div></div></div></aside></section><!-- it's either:--><!-- !trusted & !preview--><!-- !preview & -full--><!-- -preview--><section id="api-methods-admin-users-adminUsers-resetPassword" class="method"> <h3 id="reset-an-admin-user-s-password">Reset an admin user&#39;s password</h3>
+<div class="content"><div class="meta"><span class="http"><span class="label">HTTP-only</span><span class="label-value"><code>POST /users/{username}/reset-password</code></span></span></div><div class="intro"><p>Resets an admin user&#39;s password.</p>
+</div><h4 id="parameters">Parameters</h4>
+<table class="definitions"><tr><th><code>username</code></th><td><div class="header"><span class="type">string</span><span class="http"><span class="label">HTTP</span><span class="label-value"><span>set in request path</span></span></span></div><div class="description"><p>The username of the admin user for whom to reset the password.</p>
+</div></td></tr></table><h4 id="result">Result</h4>
+<span class="http"><span class="label">HTTP</span><span class="label-value"><code>200 OK</code></span></span><table class="definitions"><tr><th><code>password</code></th><td><div class="header"><span class="type">string</span></div><div class="description"><p>The admin user&#39;s new password.</p>
+</div></td></tr></table></div><aside><div class="example"><p>Resetting an admin user&#39;s password.</p>
+<div class="tab-content"><div class="tab-pane json active"><pre><code>{
+  "username": "harrytasker"
+}</code></pre><div class="step-marker">⬇</div><pre><code>{
+  "password": "d89786faffda5c9"
+}</code></pre></div><div class="tab-pane http"><pre><code>curl -i -X POST -H 'Content-Type: application/json' -d '{}' "https://<span class="api-admin-curl">lead.pryv.me</span>/users/harrytasker/reset-password"</code></pre><div class="step-marker">⬇</div><pre><code>HTTP/1.1 200 OK
+Content-Type: application/json; charset=utf-8
+API-Version: 1.6.7
+
+{
+  "password": "d89786faffda5c9"
+}
+</code></pre></div><div class="tab-pane sockets"><pre>Only available for HTTP REST</pre></div><div class="tab-pane batch"><pre>Only available for HTTP REST</pre></div><div class="tab-pane httpAuth"><pre><code>curl -i -X POST -H 'Content-Type: application/json' -d '{}' "https://<span class="api-admin-curl">lead.pryv.me</span>/users/harrytasker/reset-password"</code></pre><div class="step-marker">⬇</div><pre><code>HTTP/1.1 200 OK
+Content-Type: application/json; charset=utf-8
+API-Version: 1.6.7
+
+{
+  "password": "d89786faffda5c9"
+}
+
+</code></pre></div></div></div></aside></section><!-- it's either:--><!-- !trusted & !preview--><!-- !preview & -full--><!-- -preview--><section id="api-methods-admin-users-adminUsers-delete" class="method"> <h3 id="delete-admin-user">Delete admin user</h3>
+<div class="content"><div class="meta"><span class="http"><span class="label">HTTP-only</span><span class="label-value"><code>DELETE /users/{username}</code></span></span></div><div class="intro"><p>Delete admin account.</p>
+</div><h4 id="parameters">Parameters</h4>
+<table class="definitions"><tr><th><code>username</code></th><td><div class="header"><span class="type">string</span><span class="http"><span class="label">HTTP</span><span class="label-value"><span>set in request path</span></span></span></div><div class="description"><p>The username of the admin user to delete.</p>
+</div></td></tr></table><h4 id="result">Result</h4>
+<span class="http"><span class="label">HTTP</span><span class="label-value"><code>200 OK</code></span></span><table class="definitions"><tr><th><code>username</code></th><td><div class="header"><span class="type">string</span></div><div class="description"><p>The username of the deleted platform user.</p>
+</div></td></tr></table></div><aside><div class="example"><p>Deleting an admin user</p>
+<div class="tab-content"><div class="tab-pane json active"><pre><code>{
+  "username": "harrytasker"
+}</code></pre><div class="step-marker">⬇</div><pre><code>{
+  "username": "harrytasker"
+}</code></pre></div><div class="tab-pane http"><pre><code>curl -i -X DELETE "https://<span class="api-admin-curl">lead.pryv.me</span>/users/harrytasker"</code></pre><div class="step-marker">⬇</div><pre><code>HTTP/1.1 200 OK
+Content-Type: application/json; charset=utf-8
+API-Version: 1.6.7
+
+{
+  "username": "harrytasker"
+}
+</code></pre></div><div class="tab-pane sockets"><pre>Only available for HTTP REST</pre></div><div class="tab-pane batch"><pre>Only available for HTTP REST</pre></div><div class="tab-pane httpAuth"><pre><code>curl -i -X DELETE "https://<span class="api-admin-curl">lead.pryv.me</span>/users/harrytasker"</code></pre><div class="step-marker">⬇</div><pre><code>HTTP/1.1 200 OK
+Content-Type: application/json; charset=utf-8
+API-Version: 1.6.7
+
+{
+  "username": "harrytasker"
+}
+
+</code></pre></div></div></div></aside></section></section><!-- it's either:--><!-- !trusted & !preview--><!-- !preview & -full--><!-- -preview--><section id="api-methods-platform-settings"><h2 id="platform-settings">Platform settings</h2>
+<div class="content"><div class="meta"></div><div class="intro"><p>Methods for managing platform settings.</p>
+</div></div><!-- it's either:--><!-- !trusted & !preview--><!-- !preview & -full--><!-- -preview--><section id="api-methods-platform-settings-settings-get" class="method"> <h3 id="retrieve-platform-settings">Retrieve platform settings</h3>
+<div class="content"><div class="meta"><span class="http"><span class="label">HTTP-only</span><span class="label-value"><code>GET /admin/settings</code></span></span></div><div class="intro"><p>Retrieves the platform settings.</p>
+</div><h4 id="result">Result</h4>
+<span class="http"><span class="label">HTTP</span><span class="label-value"><code>200 OK</code></span></span><table class="definitions"><tr><th><code>settings</code></th><td><div class="header"><span class="type">object</span></div><div class="description"><p>The platform settings.</p>
+</div></td></tr></table></div><aside><div class="example"><p>Fetching the platform settings. The result hereafter only display a small part of the settings.</p>
+<div class="tab-content"><div class="tab-pane json active"><pre><code>{}</code></pre><div class="step-marker">⬇</div><pre><code>{
+  "settings": {
+    "API_SETTINGS": {
+      "name": "API settings",
+      "settings": {
+        "EVENT_TYPES_URL": {
+          "value": "https://my-service/event-types/flat.json",
+          "description": "URL of the file listing the validated Event types. See: https://api.pryv.com/faq-api/#event-types"
+        },
+        "TRUSTED_APPS": {
+          "value": "*@https://*.DOMAIN*, *@https://pryv.github.io*, *@https://*.rec.la*",
+          "description": "Web pages authorized to run login API call.  See https://api.pryv.com/reference-full/#trusted-apps-verification.  You can remove the ones not related to your platform if you are not using Pryv's default apps The format is comma-separated list of {trusted-app-id}@{origin} pairs. Origins and appIds accept '*' wildcards, but never use wildcard appIds in production. Example: *@https://*.DOMAIN*, *@https://pryv.github.io*, *@https://*.rec.la*"
+        }
+      }
+    }
+  }
+}</code></pre></div><div class="tab-pane http"><pre><code>curl -i "https://<span class="api-admin-curl">lead.pryv.me</span>/admin/settings"</code></pre><div class="step-marker">⬇</div><pre><code>HTTP/1.1 200 OK
+Content-Type: application/json; charset=utf-8
+API-Version: 1.6.7
+
+{
+  "settings": {
+    "API_SETTINGS": {
+      "name": "API settings",
+      "settings": {
+        "EVENT_TYPES_URL": {
+          "value": "https://my-service/event-types/flat.json",
+          "description": "URL of the file listing the validated Event types. See: https://api.pryv.com/faq-api/#event-types"
+        },
+        "TRUSTED_APPS": {
+          "value": "*@https://*.DOMAIN*, *@https://pryv.github.io*, *@https://*.rec.la*",
+          "description": "Web pages authorized to run login API call.  See https://api.pryv.com/reference-full/#trusted-apps-verification.  You can remove the ones not related to your platform if you are not using Pryv's default apps The format is comma-separated list of {trusted-app-id}@{origin} pairs. Origins and appIds accept '*' wildcards, but never use wildcard appIds in production. Example: *@https://*.DOMAIN*, *@https://pryv.github.io*, *@https://*.rec.la*"
+        }
+      }
+    }
+  }
+}
+</code></pre></div><div class="tab-pane sockets"><pre>Only available for HTTP REST</pre></div><div class="tab-pane batch"><pre>Only available for HTTP REST</pre></div><div class="tab-pane httpAuth"><pre><code>curl -i "https://<span class="api-admin-curl">lead.pryv.me</span>/admin/settings"</code></pre><div class="step-marker">⬇</div><pre><code>HTTP/1.1 200 OK
+Content-Type: application/json; charset=utf-8
+API-Version: 1.6.7
+
+{
+  "settings": {
+    "API_SETTINGS": {
+      "name": "API settings",
+      "settings": {
+        "EVENT_TYPES_URL": {
+          "value": "https://my-service/event-types/flat.json",
+          "description": "URL of the file listing the validated Event types. See: https://api.pryv.com/faq-api/#event-types"
+        },
+        "TRUSTED_APPS": {
+          "value": "*@https://*.DOMAIN*, *@https://pryv.github.io*, *@https://*.rec.la*",
+          "description": "Web pages authorized to run login API call.  See https://api.pryv.com/reference-full/#trusted-apps-verification.  You can remove the ones not related to your platform if you are not using Pryv's default apps The format is comma-separated list of {trusted-app-id}@{origin} pairs. Origins and appIds accept '*' wildcards, but never use wildcard appIds in production. Example: *@https://*.DOMAIN*, *@https://pryv.github.io*, *@https://*.rec.la*"
+        }
+      }
+    }
+  }
+}
+
+</code></pre></div></div></div></aside></section><!-- it's either:--><!-- !trusted & !preview--><!-- !preview & -full--><!-- -preview--><section id="api-methods-platform-settings-settings-update" class="method"> <h3 id="update-platform-settings">Update platform settings</h3>
+<div class="content"><div class="meta"><span class="http"><span class="label">HTTP-only</span><span class="label-value"><code>PUT /admin/settings</code></span></span></div><div class="intro"><p>Updates the platform settings and saves them.</p>
+</div><h4 id="parameters">Parameters</h4>
+<table class="definitions"><tr><th><code>update</code></th><td><div class="header"><span class="type">object</span><span class="http"><span class="label">HTTP</span><span class="label-value"><span>request body</span></span></span></div><div class="description"><p>New values for the platform settings.</p>
+</div></td></tr></table><h4 id="result">Result</h4>
+<span class="http"><span class="label">HTTP</span><span class="label-value"><code>200 OK</code></span></span><table class="definitions"><tr><th><code>settings</code></th><td><div class="header"><span class="type">object</span></div><div class="description"><p>The updated platform settings.</p>
+</div></td></tr></table><h4 id="specific-errors">Specific errors</h4>
+<table class="definitions"><tr><th><code>invalid-input</code></th><td><div class="header"><span class="http"><span class="label">HTTP</span><span class="label-value"><code>400</code></span></span></div><div class="description"><p>The configuration format is invalid.</p>
+</div></td></tr></table></div><aside><div class="example"><p>Updating the <a href="/event-types/">event types</a> URL. The result hereafter only highlights the modified setting.</p>
+<div class="tab-content"><div class="tab-pane json active"><pre><code>{
+  "API_SETTINGS": {
+    "settings": {
+      "EVENT_TYPES_URL": {
+        "value": "https://my-service/event-types/flat.json"
+      }
+    }
+  }
+}</code></pre><div class="step-marker">⬇</div><pre><code>{
+  "settings": {
+    "API_SETTINGS": {
+      "name": "API settings",
+      "settings": {
+        "EVENT_TYPES_URL": {
+          "value": "https://my-service/event-types/flat.json",
+          "description": "URL of the file listing the validated Event types. See: https://api.pryv.com/faq-api/#event-types"
+        }
+      }
+    }
+  }
+}</code></pre></div><div class="tab-pane http"><pre><code>curl -i -X PUT -H 'Content-Type: application/json' -d '{"API_SETTINGS":{"settings":{"EVENT_TYPES_URL":{"value":"https://my-service/event-types/flat.json"}}}}' "https://<span class="api-admin-curl">lead.pryv.me</span>/admin/settings"</code></pre><div class="step-marker">⬇</div><pre><code>HTTP/1.1 200 OK
+Content-Type: application/json; charset=utf-8
+API-Version: 1.6.7
+
+{
+  "settings": {
+    "API_SETTINGS": {
+      "name": "API settings",
+      "settings": {
+        "EVENT_TYPES_URL": {
+          "value": "https://my-service/event-types/flat.json",
+          "description": "URL of the file listing the validated Event types. See: https://api.pryv.com/faq-api/#event-types"
+        }
+      }
+    }
+  }
+}
+</code></pre></div><div class="tab-pane sockets"><pre>Only available for HTTP REST</pre></div><div class="tab-pane batch"><pre>Only available for HTTP REST</pre></div><div class="tab-pane httpAuth"><pre><code>curl -i -X PUT -H 'Content-Type: application/json' -d '{"API_SETTINGS":{"settings":{"EVENT_TYPES_URL":{"value":"https://my-service/event-types/flat.json"}}}}' "https://<span class="api-admin-curl">lead.pryv.me</span>/admin/settings"</code></pre><div class="step-marker">⬇</div><pre><code>HTTP/1.1 200 OK
+Content-Type: application/json; charset=utf-8
+API-Version: 1.6.7
+
+{
+  "settings": {
+    "API_SETTINGS": {
+      "name": "API settings",
+      "settings": {
+        "EVENT_TYPES_URL": {
+          "value": "https://my-service/event-types/flat.json",
+          "description": "URL of the file listing the validated Event types. See: https://api.pryv.com/faq-api/#event-types"
+        }
+      }
+    }
+  }
+}
+
+</code></pre></div></div></div></aside></section><!-- it's either:--><!-- !trusted & !preview--><!-- !preview & -full--><!-- -preview--><section id="api-methods-platform-settings-settings-notify" class="method"> <h3 id="apply-settings-changes">Apply settings changes</h3>
+<div class="content"><div class="meta"><span class="http"><span class="label">HTTP-only</span><span class="label-value"><code>POST /admin/notify</code></span></span></div><div class="intro"><p>Reboots desired services with latest platform settings.</p>
+</div><h4 id="parameters">Parameters</h4>
+<table class="definitions"><tr><th><code>services</code></th><td><div class="header"><span class="type">array of strings</span><span class="label label-default optional">optional</span></div><div class="description"><p>The Pryv.io services to reboot. If empty, reboots all Pryv.io services. See your configuration&#39;s docker-compose file for the list of services.</p>
+</div></td></tr></table><h4 id="result">Result</h4>
+<span class="http"><span class="label">HTTP</span><span class="label-value"><code>200 OK</code></span></span><table class="definitions"><tr><th><code>successes</code></th><td><div class="header"><span class="type">array of machines</span></div><div class="description"><p>Machines successfully updated.</p>
+</div><table class="definitions"><tr><th><code>url</code></th><td><div class="header"><span class="type">string</span></div><div class="description"><p>The url of the machine.</p>
+</div></td></tr><tr><th><code>role</code></th><td><div class="header"><span class="type">string</span></div><div class="description"><p>The role of the machine (core, static, reg).</p>
+</div></td></tr></table></td></tr><tr><th><code>failures</code></th><td><div class="header"><span class="type">array of machines</span></div><div class="description"><p>Machines failed to update.</p>
+</div><table class="definitions"><tr><th><code>url</code></th><td><div class="header"><span class="type">string</span></div><div class="description"><p>The url of the machine.</p>
+</div></td></tr><tr><th><code>role</code></th><td><div class="header"><span class="type">string</span></div><div class="description"><p>The role of the machine (core, static, reg).</p>
+</div></td></tr><tr><th><code>error</code></th><td><div class="header"><span class="type">object</span></div><div class="description"><p>The error information.</p>
+</div></td></tr></table></td></tr></table></div><aside><div class="example"><p>Rebooting the DNS service with the latest settings.</p>
+<div class="tab-content"><div class="tab-pane json active"><pre><code>{
+  "services": [
+    "dns"
+  ]
+}</code></pre><div class="step-marker">⬇</div><pre><code>{
+  "successes": [
+    {
+      "url": "https://co1.pryv.li",
+      "role": "core"
+    },
+    {
+      "url": "config-follower:6000",
+      "role": "reg-master"
+    },
+    {
+      "url": "https://sw.pryv.li",
+      "role": "static"
+    }
+  ],
+  "failures": []
+}</code></pre></div><div class="tab-pane http"><pre><code>curl -i -X POST -H 'Content-Type: application/json' -d '{"services":["dns"]}' "https://<span class="api-admin-curl">lead.pryv.me</span>/admin/notify"</code></pre><div class="step-marker">⬇</div><pre><code>HTTP/1.1 200 OK
+Content-Type: application/json; charset=utf-8
+API-Version: 1.6.7
+
+{
+  "successes": [
+    {
+      "url": "https://co1.pryv.li",
+      "role": "core"
+    },
+    {
+      "url": "config-follower:6000",
+      "role": "reg-master"
+    },
+    {
+      "url": "https://sw.pryv.li",
+      "role": "static"
+    }
+  ],
+  "failures": []
+}
+</code></pre></div><div class="tab-pane sockets"><pre>Only available for HTTP REST</pre></div><div class="tab-pane batch"><pre>Only available for HTTP REST</pre></div><div class="tab-pane httpAuth"><pre><code>curl -i -X POST -H 'Content-Type: application/json' -d '{"services":["dns"]}' "https://<span class="api-admin-curl">lead.pryv.me</span>/admin/notify"</code></pre><div class="step-marker">⬇</div><pre><code>HTTP/1.1 200 OK
+Content-Type: application/json; charset=utf-8
+API-Version: 1.6.7
+
+{
+  "successes": [
+    {
+      "url": "https://co1.pryv.li",
+      "role": "core"
+    },
+    {
+      "url": "config-follower:6000",
+      "role": "reg-master"
+    },
+    {
+      "url": "https://sw.pryv.li",
+      "role": "static"
+    }
+  ],
+  "failures": []
+}
 
 </code></pre></div></div></div></aside></section></section><!-- it's either:--><!-- !trusted & !preview--><!-- !preview & -full--><!-- -preview--><section id="api-methods-platform-users"><h2 id="platform-users">Platform users</h2>
 <div class="content"><div class="meta"></div><div class="intro"><p>Methods for managing platform users.</p>
-</div></div><!-- it's either:--><!-- !trusted & !preview--><!-- !preview & -full--><!-- -preview--><section id="api-methods-platform-users-users-delete" class="method"> <h3 id="delete-user">Delete user</h3>
+</div></div><!-- it's either:--><!-- !trusted & !preview--><!-- !preview & -full--><!-- -preview--><section id="api-methods-platform-users-platformUsers-getOne" class="method"> <h3 id="retrieve-platform-user-information">Retrieve platform user information</h3>
+<div class="content"><div class="meta"><span class="http"><span class="label">HTTP-only</span><span class="label-value"><code>GET /platform-users/{username}</code></span></span></div><div class="intro"><p>Retrieves the platform user&#39;s information.</p>
+</div><h4 id="parameters">Parameters</h4>
+<table class="definitions"><tr><th><code>username</code></th><td><div class="header"><span class="type">string</span><span class="http"><span class="label">HTTP</span><span class="label-value"><span>set in request path</span></span></span></div><div class="description"><p>The username of the platform user.</p>
+</div></td></tr></table><h4 id="result">Result</h4>
+<span class="http"><span class="label">HTTP</span><span class="label-value"><code>200 OK</code></span></span><table class="definitions"><tr><th><code>user</code></th><td><div class="header"><span class="type"><a href="#platform-user">platform user</a></span></div><div class="description"><p>The platform user&#39;s information.</p>
+</div></td></tr></table></div><aside><div class="example"><p>Fetching the platform settings. The result hereafter only display a small part of the settings.</p>
+<div class="tab-content"><div class="tab-pane json active"><pre><code>{}</code></pre><div class="step-marker">⬇</div><pre><code>{
+  "user": {
+    "username": "aiuwvd981b298dn8",
+    "email": "jericho@pryv.com",
+    "language": "en",
+    "invitationToken": "undefined",
+    "referer": "null",
+    "id": "ck6j759f000011ps2octzo1ds",
+    "registeredTimestamp": "1581504836193",
+    "server": "co1.pryv.li",
+    "registeredDate": "Wed, 12 Feb 2020 10:53:56 GMT"
+  }
+}</code></pre></div><div class="tab-pane http"><pre><code>curl -i "https://<span class="api-admin-curl">lead.pryv.me</span>/platform-users/${username}"</code></pre><div class="step-marker">⬇</div><pre><code>HTTP/1.1 200 OK
+Content-Type: application/json; charset=utf-8
+API-Version: 1.6.7
+
+{
+  "user": {
+    "username": "aiuwvd981b298dn8",
+    "email": "jericho@pryv.com",
+    "language": "en",
+    "invitationToken": "undefined",
+    "referer": "null",
+    "id": "ck6j759f000011ps2octzo1ds",
+    "registeredTimestamp": "1581504836193",
+    "server": "co1.pryv.li",
+    "registeredDate": "Wed, 12 Feb 2020 10:53:56 GMT"
+  }
+}
+</code></pre></div><div class="tab-pane sockets"><pre>Only available for HTTP REST</pre></div><div class="tab-pane batch"><pre>Only available for HTTP REST</pre></div><div class="tab-pane httpAuth"><pre><code>curl -i "https://<span class="api-admin-curl">lead.pryv.me</span>/platform-users/${username}"</code></pre><div class="step-marker">⬇</div><pre><code>HTTP/1.1 200 OK
+Content-Type: application/json; charset=utf-8
+API-Version: 1.6.7
+
+{
+  "user": {
+    "username": "aiuwvd981b298dn8",
+    "email": "jericho@pryv.com",
+    "language": "en",
+    "invitationToken": "undefined",
+    "referer": "null",
+    "id": "ck6j759f000011ps2octzo1ds",
+    "registeredTimestamp": "1581504836193",
+    "server": "co1.pryv.li",
+    "registeredDate": "Wed, 12 Feb 2020 10:53:56 GMT"
+  }
+}
+
+</code></pre></div></div></div></aside></section><!-- it's either:--><!-- !trusted & !preview--><!-- !preview & -full--><!-- -preview--><section id="api-methods-platform-users-platformUsers-delete" class="method"> <h3 id="delete-user">Delete user</h3>
 <div class="content"><div class="meta"><span class="http"><span class="label">HTTP-only</span><span class="label-value"><code>DELETE /platform-users/{username}</code></span></span></div><div class="intro"><p>Delete user account from the Pryv.io platform. <strong>This deletion is final</strong>.</p>
 </div><h4 id="parameters">Parameters</h4>
 <table class="definitions"><tr><th><code>username</code></th><td><div class="header"><span class="type">string</span><span class="http"><span class="label">HTTP</span><span class="label-value"><span>set in request path</span></span></span></div><div class="description"><p>The username of the platform user to delete.</p>
@@ -69,14 +757,14 @@ API-Version: 1.6.7
   "username": "dutch"
 }</code></pre><div class="step-marker">⬇</div><pre><code>{
   "username": "dutch"
-}</code></pre></div><div class="tab-pane http"><pre><code>curl -i -X DELETE "https://${token}@<span class="api-curl">${username}.pryv.me</span>/platform-users/dutch"</code></pre><div class="step-marker">⬇</div><pre><code>HTTP/1.1 200 OK
+}</code></pre></div><div class="tab-pane http"><pre><code>curl -i -X DELETE "https://<span class="api-admin-curl">lead.pryv.me</span>/platform-users/dutch"</code></pre><div class="step-marker">⬇</div><pre><code>HTTP/1.1 200 OK
 Content-Type: application/json; charset=utf-8
 API-Version: 1.6.7
 
 {
   "username": "dutch"
 }
-</code></pre></div><div class="tab-pane sockets"><pre>Only available for HTTP REST</pre></div><div class="tab-pane batch"><pre>Only available for HTTP REST</pre></div><div class="tab-pane httpAuth"><pre><code>curl -i -X DELETE "https://<span class="api-curl">${username}.pryv.me</span>/platform-users/dutch?auth=${token}"</code></pre><div class="step-marker">⬇</div><pre><code>HTTP/1.1 200 OK
+</code></pre></div><div class="tab-pane sockets"><pre>Only available for HTTP REST</pre></div><div class="tab-pane batch"><pre>Only available for HTTP REST</pre></div><div class="tab-pane httpAuth"><pre><code>curl -i -X DELETE "https://<span class="api-admin-curl">lead.pryv.me</span>/platform-users/dutch"</code></pre><div class="step-marker">⬇</div><pre><code>HTTP/1.1 200 OK
 Content-Type: application/json; charset=utf-8
 API-Version: 1.6.7
 
@@ -84,7 +772,78 @@ API-Version: 1.6.7
   "username": "dutch"
 }
 
-</code></pre></div></div></div></aside></section></section></section></div><nav id="toc"></nav></div><footer id="page-footer"><nav class="navbar navbar-default"><div class="container-fluid"><div id="footer-nav"><ul class="nav navbar-nav"><li><a href="mailto:developers@pryv.com">Send a message</a></li><li><a href="https://github.com/pryv">GitHub</a></li><li><a href="https://pryv.com">pryv.com</a></li></ul></div></div></nav></footer><script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script><script src="/assets/bootstrap.min.js"></script><script src="/assets/js/toc.min.js"></script><!-- TOC generation--><script>jQuery(document).ready(function($) {
+</code></pre></div></div></div></aside></section></section></section><section id="data-structure"><h1 id="data-structure">Data structure</h1>
+<!-- it's either:--><!-- !trusted & !preview--><!-- !preview & -full--><!-- -preview--><section id="data-structure-admin-user"><h2 id="admin-user">Admin user</h2>
+<div class="content"><div class="meta"></div><div class="intro"><p>An admin user&#39;s information.</p>
+</div><table class="definitions"><tr><th><code>username</code></th><td><div class="header"><span class="type">string</span></div><div class="description"><p>An admin user&#39;s username.</p>
+</div></td></tr><tr><th><code>permissions</code></th><td><div class="header"><span class="type">array of strings</span></div><div class="description"><p>An <a href="#admin-permissions">admin user&#39;s permissions</a></p>
+</div></td></tr></table></div><aside><div class="example"><p>An admin user.</p>
+<pre><code>{
+  "username": "admin",
+  "permissions": {
+    "users": [
+      "read",
+      "create",
+      "delete",
+      "resetPassword",
+      "changePermissions"
+    ],
+    "settings": [
+      "read",
+      "update"
+    ],
+    "platformUsers": [
+      "read",
+      "delete"
+    ]
+  }
+}</code></pre></div></aside></section><!-- it's either:--><!-- !trusted & !preview--><!-- !preview & -full--><!-- -preview--><section id="data-structure-admin-permissions"><h2 id="admin-permissions">Admin permissions</h2>
+<div class="content"><div class="meta"></div><div class="intro"><p>An admin user&#39;s permissions.</p>
+</div><table class="definitions"><tr><th><code>users</code></th><td><div class="header"><span class="type">array of strings</span></div><div class="description"><p>Permissions over admin users.<br>Available permissions: <code>read</code>, <code>create</code>, <code>delete</code>, <code>resetPassword</code>, <code>changePermissions</code>.</p>
+</div></td></tr><tr><th><code>settings</code></th><td><div class="header"><span class="type">array of strings</span></div><div class="description"><p>Permissions over platform settings.<br>Available permissions: <code>read</code>, <code>update</code>.</p>
+</div></td></tr><tr><th><code>platformUsers</code></th><td><div class="header"><span class="type">array of strings</span></div><div class="description"><p>Permissions over platform users.<br>Available permissions: <code>read</code>, <code>delete</code>.</p>
+</div></td></tr></table></div><aside><div class="example"><p>An admin user.</p>
+<pre><code>{
+  "username": "admin",
+  "permissions": {
+    "users": [
+      "read",
+      "create",
+      "delete",
+      "resetPassword",
+      "changePermissions"
+    ],
+    "settings": [
+      "read",
+      "update"
+    ],
+    "platformUsers": [
+      "read",
+      "delete"
+    ]
+  }
+}</code></pre></div></aside></section><!-- it's either:--><!-- !trusted & !preview--><!-- !preview & -full--><!-- -preview--><section id="data-structure-platform-user"><h2 id="platform-user">Platform user</h2>
+<div class="content"><div class="meta"></div><div class="intro"><p>A platform user&#39;s information.</p>
+</div><table class="definitions"><tr><th><code>username</code></th><td><div class="header"><span class="type">string</span></div><div class="description"><p>The platform user&#39;s username.</p>
+</div></td></tr><tr><th><code>email</code></th><td><div class="header"><span class="type">string</span></div><div class="description"><p>The platform user&#39;s email.</p>
+</div></td></tr><tr><th><code>language</code></th><td><div class="header"><span class="type">string</span></div><div class="description"><p>The platform user&#39;s preferred language.</p>
+</div></td></tr><tr><th><code>invitationToken</code></th><td><div class="header"><span class="type">string</span></div><div class="description"><p>The invitation token provided at registration by the platform user.</p>
+</div></td></tr><tr><th><code>referer</code></th><td><div class="header"><span class="type">string</span></div><div class="description"><p>The referer provided at registration by the platform user.</p>
+</div></td></tr><tr><th><code>registeredTimestamp</code></th><td><div class="header"><span class="type">string</span></div><div class="description"><p>The UNIX timestamp of the platform user&#39;s registration.</p>
+</div></td></tr><tr><th><code>server</code></th><td><div class="header"><span class="type">string</span></div><div class="description"><p>The URL of the core machine where the platform user&#39;s data is stored.</p>
+</div></td></tr><tr><th><code>registeredDate</code></th><td><div class="header"><span class="type">string</span></div><div class="description"><p>The readable timestamp of the platform user&#39;s registration.</p>
+</div></td></tr></table></div><aside><div class="example"><p>A platform user.</p>
+<pre><code>{
+  "username": "aiuwvd981b298dn8",
+  "email": "jericho@pryv.com",
+  "language": "en",
+  "invitationToken": "undefined",
+  "referer": "null",
+  "id": "ck6j759f000011ps2octzo1ds",
+  "registeredTimestamp": "1581504836193",
+  "server": "co1.pryv.li",
+  "registeredDate": "Wed, 12 Feb 2020 10:53:56 GMT"
+}</code></pre></div></aside></section></section></div><nav id="toc"></nav></div><footer id="page-footer"><nav class="navbar navbar-default"><div class="container-fluid"><div id="footer-nav"><ul class="nav navbar-nav"><li><a href="mailto:developers@pryv.com">Send a message</a></li><li><a href="https://github.com/pryv">GitHub</a></li><li><a href="https://pryv.com">pryv.com</a></li></ul></div></div></nav></footer><script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script><script src="/assets/bootstrap.min.js"></script><script src="/assets/js/toc.min.js"></script><!-- TOC generation--><script>jQuery(document).ready(function($) {
   // Header is about 51 pixels. This equals to 'header + fuzz', fuzz was
   // determined experimentally.
   var offset = 90;
@@ -154,6 +913,8 @@ function setExamplesAPI(value) {
       $("span").siblings( ".api" ).text('{username}.{domain}');
       $("span").siblings( ".api-curl" ).text('${username}.${domain}');
       $("span").siblings( ".core-reg-curl" ).text('${core-subdomain}.${domain}');
+      $("span").siblings( ".api-admin" ).text('lead.{domain}');
+      $("span").siblings( ".api-admin-curl" ).text('lead.${domain}');
     break;
     default: // pryv.me
       $("span").siblings( ".api-user").text('');
@@ -163,6 +924,8 @@ function setExamplesAPI(value) {
       $("span").siblings( ".api" ).text('{username}.pryv.me');
       $("span").siblings( ".api-curl" ).text('${username}.pryv.me');
       $("span").siblings( ".core-reg-curl" ).text('${core-subdomain}.pryv.me');
+      $("span").siblings( ".api-admin" ).text('lead.pryv.me');
+      $("span").siblings( ".api-admin-curl" ).text('lead.pryv.me');
     break;
   }
   console.log('Switched to ' + value);

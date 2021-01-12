@@ -1,0 +1,232 @@
+openapi: 3.0.0
+info:
+  description: Description of Pryv.io System API in Open API 3.0 standard format
+  version: 1.6.7
+  title: Pryv.io System API
+  contact:
+    email: support@pryv.com
+  license:
+    name: MIT
+    url: https://opensource.org/licenses/MIT
+paths:
+  /admin/users:
+    get:
+      description: Get the list of all users registered on the platform.
+      operationId: users.get
+      parameters:
+        - name: toHTML
+          description: If `true`, format the resulting users list as HTML tables.
+          required: false
+          in: query
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                - type: array
+  /admin/servers:
+    get:
+      description: Get the list of all core servers with the number of users on them.
+      operationId: servers.get
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                - type: object
+  "/admin/servers/{serverName}/users":
+    get:
+      description: Get the list of all users registered on a specific core server.
+      operationId: servers.users.get
+      parameters:
+        - name: serverName
+          description: The name of the core server.
+          required: true
+          in: query
+        - name: serverName
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                - type: array
+  "/admin/servers/{srcServerName}/rename/{dstServerName}":
+    get:
+      description: Rename a core server, thus reassigning the users from srcServer to
+        dstServer.
+      operationId: servers.rename
+      parameters:
+        - name: srcServerName
+          description: The current name of the core server to rename.
+          required: true
+          in: query
+        - name: dstServerName
+          description: The new name of the core server.
+          required: true
+          in: query
+        - name: srcServerName
+        - name: dstServerName
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                - type: number
+        "400":
+          description: INVALID_DATA
+  /hostings:
+    get:
+      description: Get the list of all available hostings for data storage locations.
+      operationId: hostings.get
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                - type: Object
+  /apps:
+    get:
+      description: Retrieve the list of applications connected to the platform.
+      operationId: apps.get
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                - type: array
+  "/apps/{appid}":
+    get:
+      description: Retrieve information about a given application.
+      operationId: apps.getOne
+      parameters:
+        - name: appid
+          description: The id of the application to look for.
+          required: true
+          in: query
+        - name: appid
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                - type: object
+  /user:
+    post:
+      description: >-
+        **(DEPRECATED)** Please use the [new create user
+        method](/reference/#create-user).  
+
+
+        Creates a new user account on the specified core server.
+      operationId: users.create
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                - type: string
+                - type: string
+                - type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                appid:
+                  description: Your app's unique identifier.
+                  type: string
+                hosting:
+                  description: The name of the core server that should host the account,
+                    see [Get Hostings](#get-hostings).
+                  type: string
+                username:
+                  description: The user's username.
+                  type: string
+                password:
+                  description: The user's password.
+                  type: string
+                email:
+                  description: The user's e-mail address, used for password retrieval.
+                  type: string
+                invitationtoken:
+                  description: >-
+                    An invitation token, necessary when users registration is
+                    limited to a specific set of users.
+
+                    Platform administrators may limit users registration by configuring a list of authorized invitation tokens.
+
+                    If this is not the case, users registration is open to everyone and this parameter can be omitted.
+
+
+                    <span class="entreprise-tag"><span title="Entreprise License Only" class="label">Y</span></span>Available in entreprise only.
+                  type: string
+                languageCode:
+                  description: The user's preferred language as a 2-letter ISO language
+                    code.
+                  type: string
+                referer:
+                  description: A referer id potentially used for analytics.
+                  type: string
+  "/{username}/check_username":
+    get:
+      description: >-
+        For the single node mode please use [this](/reference/#check-username)
+        API endpoint.
+
+
+        Check the availability and validity of a given username.
+      operationId: username.check
+      parameters:
+        - name: username
+          description: The username to check.
+          required: true
+          in: query
+        - name: username
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                - type: boolean
+                - type: string
+        "400":
+          description: INVALID_USERNAME
+  "/{email}/check_email":
+    get:
+      description: Check the existence of an account's email.
+      operationId: emails.check
+      parameters:
+        - name: email
+          description: The email address to check.
+          required: true
+          in: query
+        - name: email
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                - type: boolean
+        "400":
+          description: INVALID_EMAIL
+  "/{email}/username":
+    get:
+      description: Get the username of a Pryv.io account according to the given email.
+      operationId: email.username.get
+      parameters:
+        - name: email
+          description: The email address to look for.
+          required: true
+          in: query
+        - name: email
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                - type: string
+        "404":
+          description: UNKNOWN_EMAIL
+components:
+  schemas: {}

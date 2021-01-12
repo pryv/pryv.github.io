@@ -1,0 +1,314 @@
+openapi: 3.0.0
+info:
+  description: Description of Pryv.io Admin API in Open API 3.0 standard format
+  version: 1.6.7
+  title: Pryv.io Admin API
+  contact:
+    email: support@pryv.com
+  license:
+    name: MIT
+    url: https://opensource.org/licenses/MIT
+paths:
+  /auth/login:
+    post:
+      description: Authenticates the user against the provided credentials.
+      operationId: auth.login
+      parameters:
+        - in: header
+          name: Origin
+          schema:
+            type: string
+            format: uri
+          required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                - type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  description: The user's username
+                  type: string
+                password:
+                  description: The user's password
+                  type: string
+  /auth/logout:
+    post:
+      description: Terminates a session by invalidating its JSON web token (the user will
+        have to login again). Simply provide the JSON web token in own of the
+        [the supported ways](/reference-admin/#authorization), no request body
+        is required.
+      operationId: auth.logout
+      responses:
+        "200": {}
+  /users:
+    get:
+      description: Retrieves the admin users information.
+      operationId: adminUsers.get
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                - type: Array of [admin users](#admin-user)
+    post:
+      description: Creates an admin user.
+      operationId: adminUsers.create
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                - type: "[admin user](#admin-user)"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  description: The username of the admin user.
+                  type: string
+                password:
+                  description: The password of the admin user.
+                  type: string
+                permissions:
+                  description: The [permissions of the admin user](#admin-permissions).
+                  type: string
+  "/users/{username}":
+    get:
+      description: Retrieves the admin user's information.
+      operationId: adminUsers.getOne
+      parameters:
+        - name: username
+          description: The username of the admin user.
+          required: true
+          in: query
+        - name: username
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                - type: "[admin user](#admin-user)"
+    delete:
+      description: Delete admin account.
+      operationId: adminUsers.delete
+      parameters:
+        - name: username
+          description: The username of the admin user to delete.
+          required: true
+          in: query
+        - name: username
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                - type: string
+  "/users/{username}/permissions":
+    put:
+      description: Updates an admin user's permissions.
+      operationId: adminUsers.updatePermissions
+      parameters:
+        - name: username
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                - type: "[admin user](#admin-user)"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                permissions:
+                  description: The permissions of the admin user.
+                  type: "[admin permissions](#admin-permissions)"
+  "/users/{username}/reset-password":
+    post:
+      description: Resets an admin user's password.
+      operationId: adminUsers.resetPassword
+      parameters:
+        - name: username
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                - type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties: {}
+  /admin/settings:
+    get:
+      description: Retrieves the platform settings.
+      operationId: settings.get
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                - type: object
+    put:
+      description: Updates the platform settings and saves them.
+      operationId: settings.update
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                - type: object
+        "400":
+          description: invalid-input
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties: {}
+  /admin/notify:
+    post:
+      description: Reboots desired services with latest platform settings.
+      operationId: settings.notify
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                - type: array
+                  items: machines
+                - type: array
+                  items: machines
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                services:
+                  description: The Pryv.io services to reboot. If empty, reboots all
+                    Pryv.io services. See your configuration's docker-compose
+                    file for the list of services.
+                  type: array of strings
+  "/platform-users/{username}":
+    get:
+      description: Retrieves the platform user's information.
+      operationId: platformUsers.getOne
+      parameters:
+        - name: username
+          description: The username of the platform user.
+          required: true
+          in: query
+        - name: username
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                - type: "[platform user](#platform-user)"
+    delete:
+      description: Delete user account from the Pryv.io platform. **This deletion is
+        final**.
+      operationId: platformUsers.delete
+      parameters:
+        - name: username
+          description: The username of the platform user to delete.
+          required: true
+          in: query
+        - name: username
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                - type: string
+components:
+  schemas:
+    admin-user:
+      type: object
+      properties:
+        username:
+          required: true
+          description: An admin user's username.
+          type: string
+        permissions:
+          required: true
+          description: An [admin user's permissions](#admin-permissions)
+          type: array
+          items:
+            type: strings
+    admin-permissions:
+      type: object
+      properties:
+        users:
+          required: true
+          description: >-
+            Permissions over admin users.  
+
+            Available permissions: `read`, `create`, `delete`, `resetPassword`, `changePermissions`.
+          type: array
+          items:
+            type: strings
+        settings:
+          required: true
+          description: |-
+            Permissions over platform settings.  
+            Available permissions: `read`, `update`.
+          type: array
+          items:
+            type: strings
+        platformUsers:
+          required: true
+          description: |-
+            Permissions over platform users.  
+            Available permissions: `read`, `delete`.
+          type: array
+          items:
+            type: strings
+    platform-user:
+      type: object
+      properties:
+        username:
+          required: true
+          description: The platform user's username.
+          type: string
+        email:
+          required: true
+          description: The platform user's email.
+          type: string
+        language:
+          required: true
+          description: The platform user's preferred language.
+          type: string
+        invitationToken:
+          required: true
+          description: The invitation token provided at registration by the platform user.
+          type: string
+        referer:
+          required: true
+          description: The referer provided at registration by the platform user.
+          type: string
+        registeredTimestamp:
+          required: true
+          description: The UNIX timestamp of the platform user's registration.
+          type: string
+        server:
+          required: true
+          description: The URL of the core machine where the platform user's data is stored.
+          type: string
+        registeredDate:
+          required: true
+          description: The readable timestamp of the platform user's registration.
+          type: string
