@@ -26,13 +26,40 @@ It walks you through the different steps that have to be performed in order to s
 <p>It will help you with the choice of your Pryv.io deployment (single node or cluster), and provide you with resources sizing considerations.  </p>
 <p>The system requirements for each machine are also specified.</p>
 <h2 id="obtain-a-domain-name">Obtain a domain name</h2>
-<p>Now that your machines are ordered, you need to register your own domain name.</p>
+<p>Now that your machines are ordered, you need to register your own domain name.  </p>
 <p>You can either:  </p>
 <ul>
-<li>obtain one yourself through a domain name registrar of your choice, make sure that you can configure your domain&#39;s name servers.</li>
+<li>obtain one yourself through a domain name registrar of your choice, make sure that you can configure your domain&#39;s <strong>DNS zone</strong>, including records of type A &amp; NS.</li>
 <li>or contact us directly to obtain a pryv.io subdomain, e.g. <strong><em>your-platform-name</em>.pryv.io</strong></li>
 </ul>
-<p>You will need to obtain an additional one for your staging development, and pre-production if you have one.</p>
+<p>You will have to define the following DNS Records:</p>
+<pre><code>dns1-pryv 1800 IN A ${YOUR-REG-MASTER-IP-ADDRESS}
+dns2-pryv 1800 IN A ${YOUR-REG-SLAVE-IP-ADDRESS}
+pryv 1800 IN NS dns1-pryv.${YOUR-DOMAIN}.
+pryv 1800 IN NS dns2-pryv.${YOUR-DOMAIN}.
+</code></pre><ul>
+<li><strong>If you have a <a href="/customer-resources/infrastructure-procurement/#cluster-with-a-single-core">single register machine</a></strong>, you can repeat the reg-master&#39;s IP address instead of the reg-slave one.</li>
+<li><strong>If you have a <a href="/customer-resources/infrastructure-procurement/#single-node-mode">single-node setup</a></strong>, you can use the machine&#39;s IP address instead of the register IP addresses.</li>
+</ul>
+<p>Your Pryv.io platform domain will then be <code>pryv.${YOUR-DOMAIN}</code>. For other environments such as staging, we suggest to define a similar subdomain:</p>
+<pre><code>dns1-pryv-staging 1800 IN A ${YOUR-REG-MASTER-IP-ADDRESS}
+dns2-pryv-staging 1800 IN A ${YOUR-REG-SLAVE-IP-ADDRESS}
+pryv-staging 1800 IN NS dns1-pryv.${YOUR-DOMAIN}.
+pryv-staging 1800 IN NS dns2-pryv.${YOUR-DOMAIN}.
+</code></pre><h3 id="expose-the-pryv-io-api-on-a-second-level-domain">Expose the Pryv.io API on a second-level domain</h3>
+<p>Using the aforementioned steps, your Pryv.io API will be exposed under a subdomain like <code>pryv.${YOUR-DOMAIN}</code>. If you wish to expose it on a <em>second-level domain</em> such as <code>my-pryv-domain.io</code>, you will have to:</p>
+<ul>
+<li>obtain a domain name through a registrar that allows to <strong>change name servers</strong></li>
+<li>use a second domain to define Type A DNS records pointing to your machine that you will provide as name servers by your registrar for your Pryv.io domain</li>
+</ul>
+<p>Second domain DNS Zone <code>${SECOND-DOMAIN}</code>:</p>
+<pre><code>dns1-pryv 1800 IN A ${YOUR-REG-MASTER-IP-ADDRESS}
+dns2-pryv 1800 IN A ${YOUR-REG-SLAVE-IP-ADDRESS}
+</code></pre><p>You will then define name servers for your Pryv.io domain as:</p>
+<ul>
+<li><code>dns1-pryv.${SECOND-DOMAIN}</code></li>
+<li><code>dns2-pryv.${SECOND-DOMAIN}</code></li>
+</ul>
 <h2 id="obtain-the-license-key-credentials-and-configuration-files">Obtain the license key, credentials and configuration files</h2>
 <p>In order to be able to run your Pryv.io instance, you will need to get a license key for your platform from Pryv and the credentials to pull the Docker images defined in the configuration files.</p>
 <h2 id="set-the-platform-parameters">Set the platform parameters</h2>
