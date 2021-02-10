@@ -46,7 +46,6 @@ Troubleshooting steps can be found at the end of this document in case of valida
 <h2 id="dns-checks-">DNS checks:</h2>
 <ul>
 <li>dig version 9.12.3+</li>
-<li>If you don&#39;t have access to <code>dig</code> or the right version, you can use <a href="https://toolbox.googleapps.com/apps/dig/">G Suite&#39;s Toolbox dig</a></li>
 </ul>
 <h2 id="http-checks-">HTTP checks:</h2>
 <ul>
@@ -55,15 +54,21 @@ Troubleshooting steps can be found at the end of this document in case of valida
 </ul>
 <h1 id="checklist">Checklist</h1>
 <h2 id="dns-is-set-as-domain-name-server">DNS is set as domain name server</h2>
-<p>Run <code>dig NS ${DOMAIN}</code>.</p>
-<p>The <code>ANSWER</code> section should exist and list 2 hostnames such as:  </p>
-<pre><code>;; ANSWER :
-${DOMAIN}.  SOME_TTL_NUMBER  IN  NS  dns1.${DOMAIN}.
-${DOMAIN}.  SOME_TTL_NUMBER  IN  NS  dns2.${DOMAIN}.
-</code></pre><p>If there is no <code>ANSWER</code> section, the name servers for the domain name <code>${DOMAIN}</code> are not defined or misconfigured.<br>Verify with your domain provider that the name servers are set correctly.</p>
+<p>Run the following command:</p>
+<pre><code>dig NS +trace +nodnssec ${DOMAIN}
+</code></pre><p>The <strong>2 last blocks</strong> should display hostnames that resolve to the machine running your Pryv.io DNS such as:  </p>
+<pre><code>${YOUR-DOMAIN}.        SOME_TTL_VALUE    IN    NS    dns1-pryv.${YOUR-DOMAIN}.
+${YOUR-DOMAIN}.        SOME_TTL_VALUE    IN    NS    dns2-pryv.${YOUR-DOMAIN}.
+</code></pre><p>The last block should be followed by a line indicating that it is coming from your Pryv.io DNS such as:</p>
+<pre><code>;; Received 123 bytes from ${YOUR-DNS-IP-ADDRESS}#53(dns1-pryv.${YOUR-DOMAIN}) in 15 ms
+</code></pre><ul>
+<li>If there are no blocks containing your machine&#39;s hostname, the name servers for the Pryv.io domain name <code>${DOMAIN}</code> are not defined or misconfigured. Verify with your domain provider that the name servers are set correctly.</li>
+<li>If there is a single block displaying your machine&#39;s hostname, then your Pryv.io DNS is not running. See <a href="#dns">DNS section</a>.</li>
+</ul>
 <h2 id="dns">DNS</h2>
-<p>Run <code>dig reg.${DOMAIN}</code>.</p>
-<p>The <code>ANSWER</code> section should exist and list a hostname such as:  </p>
+<p>Run the following command:  </p>
+<pre><code>dig reg.${DOMAIN}
+</code></pre><p>The <code>ANSWER</code> section should exist and list a hostname such as:  </p>
 <pre><code>;; ANSWER :
 reg.${DOMAIN}.  SOME_TTL_NUMBER  IN  A  ${REGISTER_MACHINE_IP_ADDRESS}
 </code></pre><p>If there is no <code>ANSWER</code> section, this means that the DNS is not running or is unreachable. See <a href="#dns">DNS section</a>.</p>
