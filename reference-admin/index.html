@@ -15,7 +15,7 @@
 </div><!-- it's either:--><!-- !trusted & !preview--><!-- !preview & -full--><!-- -preview--><section id="api-methods-auth"><h2 id="authentication">Authentication</h2>
 <div class="content"><div class="meta"></div><div class="intro"><p>Methods for authenticating admin users.</p>
 </div></div><!-- it's either:--><!-- !trusted & !preview--><!-- !preview & -full--><!-- -preview--><section id="api-methods-auth-auth-login" class="method"> <h3 id="login-user">Login user</h3>
-<div class="content"><div class="meta"><span class="http"><span class="label">HTTP-only</span><span class="label-value"><code>POST /auth/login</code></span></span></div><div class="intro"><p>Authenticates the user against the provided credentials.</p>
+<div class="content"><div class="meta"><span class="http"><span class="label">HTTP-only</span><span class="label-value"><code>POST <a href="/reference-system/#api-endpoint">{admin}</a>/auth/login</code></span></span></div><div class="intro"><p>Authenticates the user against the provided credentials.</p>
 </div><h4 id="parameters">Parameters</h4>
 <table class="definitions"><tr><th><code>username</code></th><td><div class="header"><span class="type">string</span></div><div class="description"><p>The user&#39;s username</p>
 </div></td></tr><tr><th><code>password</code></th><td><div class="header"><span class="type">string</span></div><div class="description"><p>The user&#39;s password</p>
@@ -23,7 +23,6 @@
 <span class="http"><span class="label">HTTP</span><span class="label-value"><code>200 OK</code></span></span><table class="definitions"><tr><th><code>token</code></th><td><div class="header"><span class="type">string</span></div><div class="description"><p>JSON web token to use for further API calls.</p>
 </div></td></tr></table></div><aside><div class="example"><p>Authenticating admin user</p>
 <div class="tab-content"><div class="tab-pane json active"><pre><code>{
-  "username": "quaid",
   "password": "my-secret-password"
 }</code></pre><div class="step-marker">⬇</div><pre><code>{
   "token": "eyJ1c2VybmFtZSI6ImlsaWEiLCJwZXJtaXNzaW9ucyI6eyJ1c2VycyI6WyJyZWFkIiwiY3JlYXRlIiwiZGVsZXRlIiwicmVzZXRQYXNzd29yZCIsImNoYW5nZVBlcm1pc3Npb25zIl0sInNldHRpbmdzIjpbInJlYWQiLCJ1cGRhdGUiXX0sImlhdCI6MTU5OTIyNDM4MywiZXhwIjoxNTk5MzEwNzgzfQ"
@@ -43,7 +42,7 @@ API-Version: 1.6.7
 }
 
 </code></pre></div></div></div></aside></section><!-- it's either:--><!-- !trusted & !preview--><!-- !preview & -full--><!-- -preview--><section id="api-methods-auth-auth-logout" class="method"> <h3 id="logout-user">Logout user</h3>
-<div class="content"><div class="meta"><span class="http"><span class="label">HTTP-only</span><span class="label-value"><code>POST /auth/logout</code></span></span></div><div class="intro"><p>Terminates a session by invalidating its JSON web token (the user will have to login again). Simply provide the JSON web token in own of the <a href="/reference-admin/#authorization">the supported ways</a>, no request body is required.</p>
+<div class="content"><div class="meta"><span class="http"><span class="label">HTTP-only</span><span class="label-value"><code>POST <a href="/reference-system/#api-endpoint">{admin}</a>/auth/logout</code></span></span></div><div class="intro"><p>Terminates a session by invalidating its JSON web token (the user will have to login again). Simply provide the JSON web token in own of the <a href="/reference-admin/#authorization">the supported ways</a>, no request body is required.</p>
 </div><h4 id="result">Result</h4>
 <span class="http"><span class="label">HTTP</span><span class="label-value"><code>200 OK</code></span></span></div><aside><div class="example"><div class="tab-content"><div class="tab-pane json active"><pre><code>{}</code></pre><div class="step-marker">⬇</div><pre><code>{}</code></pre></div><div class="tab-pane http"><pre><code>curl -i -X POST -H 'Content-Type: application/json' -d '{}' "https://<span class="api-admin-curl">lead.pryv.me</span>/auth/logout"</code></pre><div class="step-marker">⬇</div><pre><code>HTTP/1.1 200 OK
 Content-Type: application/json; charset=utf-8
@@ -59,7 +58,7 @@ API-Version: 1.6.7
 </code></pre></div></div></div></aside></section></section><!-- it's either:--><!-- !trusted & !preview--><!-- !preview & -full--><!-- -preview--><section id="api-methods-admin-users"><h2 id="admin-users">Admin users</h2>
 <div class="content"><div class="meta"></div><div class="intro"><p>Methods for managing admin users.</p>
 </div></div><!-- it's either:--><!-- !trusted & !preview--><!-- !preview & -full--><!-- -preview--><section id="api-methods-admin-users-adminUsers-get" class="method"> <h3 id="retrieve-admin-users-information">Retrieve admin users information</h3>
-<div class="content"><div class="meta"><span class="http"><span class="label">HTTP-only</span><span class="label-value"><code>GET /users</code></span></span></div><div class="intro"><p>Retrieves the admin users information.</p>
+<div class="content"><div class="meta"><span class="http"><span class="label">HTTP-only</span><span class="label-value"><code>GET <a href="/reference-system/#api-endpoint">{admin}</a>/users</code></span></span></div><div class="intro"><p>Retrieves the admin users information.</p>
 </div><h4 id="parameters">Parameters</h4>
 <h4 id="result">Result</h4>
 <span class="http"><span class="label">HTTP</span><span class="label-value"><code>200 OK</code></span></span><table class="definitions"><tr><th><code>users</code></th><td><div class="header"><span class="type">Array of <a href="#admin-user">admin users</a></span></div><div class="description"><p>The admin users information.</p>
@@ -193,15 +192,13 @@ API-Version: 1.6.7
 }
 
 </code></pre></div></div></div></aside></section><!-- it's either:--><!-- !trusted & !preview--><!-- !preview & -full--><!-- -preview--><section id="api-methods-admin-users-adminUsers-getOne" class="method"> <h3 id="retrieve-admin-user-information">Retrieve admin user information</h3>
-<div class="content"><div class="meta"><span class="http"><span class="label">HTTP-only</span><span class="label-value"><code>GET /users/{username}</code></span></span></div><div class="intro"><p>Retrieves the admin user&#39;s information.</p>
+<div class="content"><div class="meta"><span class="http"><span class="label">HTTP-only</span><span class="label-value"><code>GET <a href="/reference-system/#api-endpoint">{admin}</a>/users/{username}</code></span></span></div><div class="intro"><p>Retrieves the admin user&#39;s information.</p>
 </div><h4 id="parameters">Parameters</h4>
 <table class="definitions"><tr><th><code>username</code></th><td><div class="header"><span class="type">string</span><span class="http"><span class="label">HTTP</span><span class="label-value"><span>set in request path</span></span></span></div><div class="description"><p>The username of the admin user.</p>
 </div></td></tr></table><h4 id="result">Result</h4>
 <span class="http"><span class="label">HTTP</span><span class="label-value"><code>200 OK</code></span></span><table class="definitions"><tr><th><code>user</code></th><td><div class="header"><span class="type"><a href="#admin-user">admin user</a></span></div><div class="description"><p>The admin user&#39;s information.</p>
 </div></td></tr></table></div><aside><div class="example"><p>Fetching one admin user&#39;s information.</p>
-<div class="tab-content"><div class="tab-pane json active"><pre><code>{
-  "username": "harrytasker"
-}</code></pre><div class="step-marker">⬇</div><pre><code>{
+<div class="tab-content"><div class="tab-pane json active"><pre><code>{}</code></pre><div class="step-marker">⬇</div><pre><code>{
   "user": {
     "username": "harrytasker",
     "permissions": {
@@ -264,7 +261,7 @@ API-Version: 1.6.7
 }
 
 </code></pre></div></div></div></aside></section><!-- it's either:--><!-- !trusted & !preview--><!-- !preview & -full--><!-- -preview--><section id="api-methods-admin-users-adminUsers-create" class="method"> <h3 id="create-an-admin-user">Create an admin user</h3>
-<div class="content"><div class="meta"><span class="http"><span class="label">HTTP-only</span><span class="label-value"><code>POST /users</code></span></span></div><div class="intro"><p>Creates an admin user.</p>
+<div class="content"><div class="meta"><span class="http"><span class="label">HTTP-only</span><span class="label-value"><code>POST <a href="/reference-system/#api-endpoint">{admin}</a>/users</code></span></span></div><div class="intro"><p>Creates an admin user.</p>
 </div><h4 id="parameters">Parameters</h4>
 <table class="definitions"><tr><th><code>username</code></th><td><div class="header"><span class="type">string</span></div><div class="description"><p>The username of the admin user.</p>
 </div></td></tr><tr><th><code>password</code></th><td><div class="header"><span class="type">string</span></div><div class="description"><p>The password of the admin user.</p>
@@ -273,7 +270,6 @@ API-Version: 1.6.7
 <span class="http"><span class="label">HTTP</span><span class="label-value"><code>200 OK</code></span></span><table class="definitions"><tr><th><code>user</code></th><td><div class="header"><span class="type"><a href="#admin-user">admin user</a></span></div><div class="description"><p>The created admin user&#39;s information.</p>
 </div></td></tr></table></div><aside><div class="example"><p>Creating an admin user.</p>
 <div class="tab-content"><div class="tab-pane json active"><pre><code>{
-  "username": "harrytasker",
   "permissions": {
     "users": [
       "read"
@@ -350,7 +346,7 @@ API-Version: 1.6.7
 }
 
 </code></pre></div></div></div></aside></section><!-- it's either:--><!-- !trusted & !preview--><!-- !preview & -full--><!-- -preview--><section id="api-methods-admin-users-adminUsers-updatePermissions" class="method"> <h3 id="update-an-admin-user-s-permissions">Update an admin user&#39;s permissions</h3>
-<div class="content"><div class="meta"><span class="http"><span class="label">HTTP-only</span><span class="label-value"><code>PUT /users/{username}/permissions</code></span></span></div><div class="intro"><p>Updates an admin user&#39;s permissions.</p>
+<div class="content"><div class="meta"><span class="http"><span class="label">HTTP-only</span><span class="label-value"><code>PUT <a href="/reference-system/#api-endpoint">{admin}</a>/users/{username}/permissions</code></span></span></div><div class="intro"><p>Updates an admin user&#39;s permissions.</p>
 </div><h4 id="parameters">Parameters</h4>
 <table class="definitions"><tr><th><code>permissions</code></th><td><div class="header"><span class="type"><a href="#admin-permissions">admin permissions</a></span></div><div class="description"><p>The permissions of the admin user.</p>
 </div></td></tr></table><h4 id="result">Result</h4>
@@ -433,15 +429,13 @@ API-Version: 1.6.7
 }
 
 </code></pre></div></div></div></aside></section><!-- it's either:--><!-- !trusted & !preview--><!-- !preview & -full--><!-- -preview--><section id="api-methods-admin-users-adminUsers-resetPassword" class="method"> <h3 id="reset-an-admin-user-s-password">Reset an admin user&#39;s password</h3>
-<div class="content"><div class="meta"><span class="http"><span class="label">HTTP-only</span><span class="label-value"><code>POST /users/{username}/reset-password</code></span></span></div><div class="intro"><p>Resets an admin user&#39;s password.</p>
+<div class="content"><div class="meta"><span class="http"><span class="label">HTTP-only</span><span class="label-value"><code>POST <a href="/reference-system/#api-endpoint">{admin}</a>/users/{username}/reset-password</code></span></span></div><div class="intro"><p>Resets an admin user&#39;s password.</p>
 </div><h4 id="parameters">Parameters</h4>
 <table class="definitions"><tr><th><code>username</code></th><td><div class="header"><span class="type">string</span><span class="http"><span class="label">HTTP</span><span class="label-value"><span>set in request path</span></span></span></div><div class="description"><p>The username of the admin user for whom to reset the password.</p>
 </div></td></tr></table><h4 id="result">Result</h4>
 <span class="http"><span class="label">HTTP</span><span class="label-value"><code>200 OK</code></span></span><table class="definitions"><tr><th><code>password</code></th><td><div class="header"><span class="type">string</span></div><div class="description"><p>The admin user&#39;s new password.</p>
 </div></td></tr></table></div><aside><div class="example"><p>Resetting an admin user&#39;s password.</p>
-<div class="tab-content"><div class="tab-pane json active"><pre><code>{
-  "username": "harrytasker"
-}</code></pre><div class="step-marker">⬇</div><pre><code>{
+<div class="tab-content"><div class="tab-pane json active"><pre><code>{}</code></pre><div class="step-marker">⬇</div><pre><code>{
   "password": "d89786faffda5c9"
 }</code></pre></div><div class="tab-pane http"><pre><code>curl -i -X POST -H 'Content-Type: application/json' -d '{}' "https://<span class="api-admin-curl">lead.pryv.me</span>/users/harrytasker/reset-password"</code></pre><div class="step-marker">⬇</div><pre><code>HTTP/1.1 200 OK
 Content-Type: application/json; charset=utf-8
@@ -459,15 +453,13 @@ API-Version: 1.6.7
 }
 
 </code></pre></div></div></div></aside></section><!-- it's either:--><!-- !trusted & !preview--><!-- !preview & -full--><!-- -preview--><section id="api-methods-admin-users-adminUsers-delete" class="method"> <h3 id="delete-admin-user">Delete admin user</h3>
-<div class="content"><div class="meta"><span class="http"><span class="label">HTTP-only</span><span class="label-value"><code>DELETE /users/{username}</code></span></span></div><div class="intro"><p>Delete admin account.</p>
+<div class="content"><div class="meta"><span class="http"><span class="label">HTTP-only</span><span class="label-value"><code>DELETE <a href="/reference-system/#api-endpoint">{admin}</a>/users/{username}</code></span></span></div><div class="intro"><p>Delete admin account.</p>
 </div><h4 id="parameters">Parameters</h4>
 <table class="definitions"><tr><th><code>username</code></th><td><div class="header"><span class="type">string</span><span class="http"><span class="label">HTTP</span><span class="label-value"><span>set in request path</span></span></span></div><div class="description"><p>The username of the admin user to delete.</p>
 </div></td></tr></table><h4 id="result">Result</h4>
 <span class="http"><span class="label">HTTP</span><span class="label-value"><code>200 OK</code></span></span><table class="definitions"><tr><th><code>username</code></th><td><div class="header"><span class="type">string</span></div><div class="description"><p>The username of the deleted platform user.</p>
 </div></td></tr></table></div><aside><div class="example"><p>Deleting an admin user</p>
-<div class="tab-content"><div class="tab-pane json active"><pre><code>{
-  "username": "harrytasker"
-}</code></pre><div class="step-marker">⬇</div><pre><code>{
+<div class="tab-content"><div class="tab-pane json active"><pre><code>{}</code></pre><div class="step-marker">⬇</div><pre><code>{
   "username": "harrytasker"
 }</code></pre></div><div class="tab-pane http"><pre><code>curl -i -X DELETE "https://<span class="api-admin-curl">lead.pryv.me</span>/users/harrytasker"</code></pre><div class="step-marker">⬇</div><pre><code>HTTP/1.1 200 OK
 Content-Type: application/json; charset=utf-8
@@ -487,7 +479,7 @@ API-Version: 1.6.7
 </code></pre></div></div></div></aside></section></section><!-- it's either:--><!-- !trusted & !preview--><!-- !preview & -full--><!-- -preview--><section id="api-methods-platform-settings"><h2 id="platform-settings">Platform settings</h2>
 <div class="content"><div class="meta"></div><div class="intro"><p>Methods for managing platform settings.</p>
 </div></div><!-- it's either:--><!-- !trusted & !preview--><!-- !preview & -full--><!-- -preview--><section id="api-methods-platform-settings-settings-get" class="method"> <h3 id="retrieve-platform-settings">Retrieve platform settings</h3>
-<div class="content"><div class="meta"><span class="http"><span class="label">HTTP-only</span><span class="label-value"><code>GET /admin/settings</code></span></span></div><div class="intro"><p>Retrieves the platform settings.</p>
+<div class="content"><div class="meta"><span class="http"><span class="label">HTTP-only</span><span class="label-value"><code>GET <a href="/reference-system/#api-endpoint">{admin}</a>/admin/settings</code></span></span></div><div class="intro"><p>Retrieves the platform settings.</p>
 </div><h4 id="result">Result</h4>
 <span class="http"><span class="label">HTTP</span><span class="label-value"><code>200 OK</code></span></span><table class="definitions"><tr><th><code>settings</code></th><td><div class="header"><span class="type">object</span></div><div class="description"><p>The platform settings.</p>
 </div></td></tr></table></div><aside><div class="example"><p>Fetching the platform settings. The result hereafter only display a small part of the settings.</p>
@@ -551,7 +543,7 @@ API-Version: 1.6.7
 }
 
 </code></pre></div></div></div></aside></section><!-- it's either:--><!-- !trusted & !preview--><!-- !preview & -full--><!-- -preview--><section id="api-methods-platform-settings-settings-update" class="method"> <h3 id="update-platform-settings">Update platform settings</h3>
-<div class="content"><div class="meta"><span class="http"><span class="label">HTTP-only</span><span class="label-value"><code>PUT /admin/settings</code></span></span></div><div class="intro"><p>Updates the platform settings and saves them.</p>
+<div class="content"><div class="meta"><span class="http"><span class="label">HTTP-only</span><span class="label-value"><code>PUT <a href="/reference-system/#api-endpoint">{admin}</a>/admin/settings</code></span></span></div><div class="intro"><p>Updates the platform settings and saves them.</p>
 </div><h4 id="parameters">Parameters</h4>
 <table class="definitions"><tr><th><code>update</code></th><td><div class="header"><span class="type">object</span><span class="http"><span class="label">HTTP</span><span class="label-value"><span>request body</span></span></span></div><div class="description"><p>New values for the platform settings.</p>
 </div></td></tr></table><h4 id="result">Result</h4>
@@ -615,7 +607,7 @@ API-Version: 1.6.7
 }
 
 </code></pre></div></div></div></aside></section><!-- it's either:--><!-- !trusted & !preview--><!-- !preview & -full--><!-- -preview--><section id="api-methods-platform-settings-settings-notify" class="method"> <h3 id="apply-settings-changes">Apply settings changes</h3>
-<div class="content"><div class="meta"><span class="http"><span class="label">HTTP-only</span><span class="label-value"><code>POST /admin/notify</code></span></span></div><div class="intro"><p>Reboots desired services with latest platform settings.</p>
+<div class="content"><div class="meta"><span class="http"><span class="label">HTTP-only</span><span class="label-value"><code>POST <a href="/reference-system/#api-endpoint">{admin}</a>/admin/notify</code></span></span></div><div class="intro"><p>Reboots desired services with latest platform settings.</p>
 </div><h4 id="parameters">Parameters</h4>
 <table class="definitions"><tr><th><code>services</code></th><td><div class="header"><span class="type">array of strings</span><span class="label label-default optional">optional</span></div><div class="description"><p>The Pryv.io services to reboot. If empty, reboots all Pryv.io services. See your configuration&#39;s docker-compose file for the list of services.</p>
 </div></td></tr></table><h4 id="result">Result</h4>
@@ -693,7 +685,7 @@ API-Version: 1.6.7
 </code></pre></div></div></div></aside></section></section><!-- it's either:--><!-- !trusted & !preview--><!-- !preview & -full--><!-- -preview--><section id="api-methods-platform-users"><h2 id="platform-users">Platform users</h2>
 <div class="content"><div class="meta"></div><div class="intro"><p>Methods for managing platform users.</p>
 </div></div><!-- it's either:--><!-- !trusted & !preview--><!-- !preview & -full--><!-- -preview--><section id="api-methods-platform-users-platformUsers-getOne" class="method"> <h3 id="retrieve-platform-user-information">Retrieve platform user information</h3>
-<div class="content"><div class="meta"><span class="http"><span class="label">HTTP-only</span><span class="label-value"><code>GET /platform-users/{username}</code></span></span></div><div class="intro"><p>Retrieves the platform user&#39;s information.</p>
+<div class="content"><div class="meta"><span class="http"><span class="label">HTTP-only</span><span class="label-value"><code>GET <a href="/reference-system/#api-endpoint">{admin}</a>/platform-users/{username}</code></span></span></div><div class="intro"><p>Retrieves the platform user&#39;s information.</p>
 </div><h4 id="parameters">Parameters</h4>
 <table class="definitions"><tr><th><code>username</code></th><td><div class="header"><span class="type">string</span><span class="http"><span class="label">HTTP</span><span class="label-value"><span>set in request path</span></span></span></div><div class="description"><p>The username of the platform user.</p>
 </div></td></tr></table><h4 id="result">Result</h4>
@@ -747,15 +739,13 @@ API-Version: 1.6.7
 }
 
 </code></pre></div></div></div></aside></section><!-- it's either:--><!-- !trusted & !preview--><!-- !preview & -full--><!-- -preview--><section id="api-methods-platform-users-platformUsers-delete" class="method"> <h3 id="delete-user">Delete user</h3>
-<div class="content"><div class="meta"><span class="http"><span class="label">HTTP-only</span><span class="label-value"><code>DELETE /platform-users/{username}</code></span></span></div><div class="intro"><p>Delete user account from the Pryv.io platform. <strong>This deletion is final</strong>.</p>
+<div class="content"><div class="meta"><span class="http"><span class="label">HTTP-only</span><span class="label-value"><code>DELETE <a href="/reference-system/#api-endpoint">{admin}</a>/platform-users/{username}</code></span></span></div><div class="intro"><p>Delete user account from the Pryv.io platform. <strong>This deletion is final</strong>.</p>
 </div><h4 id="parameters">Parameters</h4>
 <table class="definitions"><tr><th><code>username</code></th><td><div class="header"><span class="type">string</span><span class="http"><span class="label">HTTP</span><span class="label-value"><span>set in request path</span></span></span></div><div class="description"><p>The username of the platform user to delete.</p>
 </div></td></tr></table><h4 id="result">Result</h4>
 <span class="http"><span class="label">HTTP</span><span class="label-value"><code>200 OK</code></span></span><table class="definitions"><tr><th><code>username</code></th><td><div class="header"><span class="type">string</span></div><div class="description"><p>The username of the deleted platform user.</p>
 </div></td></tr></table></div><aside><div class="example"><p>Deleting a platform user</p>
-<div class="tab-content"><div class="tab-pane json active"><pre><code>{
-  "username": "dutch"
-}</code></pre><div class="step-marker">⬇</div><pre><code>{
+<div class="tab-content"><div class="tab-pane json active"><pre><code>{}</code></pre><div class="step-marker">⬇</div><pre><code>{
   "username": "dutch"
 }</code></pre></div><div class="tab-pane http"><pre><code>curl -i -X DELETE "https://<span class="api-admin-curl">lead.pryv.me</span>/platform-users/dutch"</code></pre><div class="step-marker">⬇</div><pre><code>HTTP/1.1 200 OK
 Content-Type: application/json; charset=utf-8
