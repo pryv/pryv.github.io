@@ -21,21 +21,24 @@
 </ol>
 <h2 id="introduction">Introduction</h2>
 <p>This guide describes how to perform a backup of your Pryv.io platform and how to restore it in case of any data loss. You will have to backup user data as well as configuration files of each role: core, register, static-web.</p>
-<p>We will refer to the root of your Pryv.io installation on each role (usually /var/pryv/) as ${PRYV_CONF_ROOT}.</p>
+<p>We will refer to the root of your Pryv.io installation on each role (usually <code>/var/pryv/</code>) as <code>${PRYV_CONF_ROOT}</code>.</p>
 <h2 id="backup">Backup</h2>
 <p>You should first backup core data, starting with MongoDB.</p>
 <h3 id="core">Core</h3>
 <ul>
-<li><p>Run the following command to export the MongoDB data: 
-  <code>$ docker exec -t pryvio_mongodb /app/bin/mongodb/bin/mongodump -d pryv-node -o /app/backup/</code>
-The backup folder will be located at: <code>${PRYV_CONF_ROOT}/pryv/mongodb/backup/</code>.</p>
-</li>
-<li><p>Run the following command to export the InfluxDB data: 
-  <code>$ docker exec -t pryvio_influxdb /usr/bin/influxd backup -portable /pryv/backup/</code>
-The backup folder will be located at: <code>${PRYV_CONF_ROOT}/pryv/influxdb/backup/</code>.</p>
-</li>
-<li><p>Backup the ${PRYV_CONF_ROOT} folder except the following:</p>
+<li>Run the following command to export the MongoDB data:  </li>
+</ul>
+<pre><code class="lang-bash">docker exec -t pryvio_mongodb /app/bin/mongodb/bin/mongodump -d pryv-node -o /app/backup/
+</code></pre>
+<p>The backup folder will be located at: <code>${PRYV_CONF_ROOT}/pryv/mongodb/backup/</code>.</p>
 <ul>
+<li>Run the following command to export the InfluxDB data:  </li>
+</ul>
+<pre><code class="lang-bash">docker exec -t pryvio_influxdb /usr/bin/influxd backup -portable /pryv/backup/
+</code></pre>
+<p>The backup folder will be located at: <code>${PRYV_CONF_ROOT}/pryv/influxdb/backup/</code>.</p>
+<ul>
+<li>Backup the ${PRYV_CONF_ROOT} folder except the following:<ul>
 <li><code>${PRYV_CONF_ROOT}/pryv/mongodb/data/</code></li>
 <li><code>${PRYV_CONF_ROOT}/pryv/influxdb/data</code></li>
 <li><code>${PRYV_CONF_ROOT}/pryv/core/data/previews/</code></li>
@@ -44,11 +47,11 @@ The backup folder will be located at: <code>${PRYV_CONF_ROOT}/pryv/influxdb/back
 </ul>
 <h3 id="register">Register</h3>
 <ul>
-<li>Backup the ${PRYV_CONF_ROOT} folder</li>
+<li>Backup the <code>${PRYV_CONF_ROOT}</code> folder</li>
 </ul>
 <h3 id="static-web">Static-web</h3>
 <ul>
-<li>Backup the ${PRYV_CONF_ROOT} folder  </li>
+<li>Backup the <code>${PRYV_CONF_ROOT}</code> folder  </li>
 </ul>
 <h3 id="important-notice">Important notice</h3>
 <p>During the time of the backup, if user accounts are created between the core and register backup times, they won&#39;t be usable after a backup restoration. Attachments and High-frequency data created after the MongoDB backup won&#39;t be accessible as their corresponding Pryv.io events will not be available.</p>
@@ -56,22 +59,28 @@ The backup folder will be located at: <code>${PRYV_CONF_ROOT}/pryv/influxdb/back
 <p>Once you have backed up data, you can use it to restore your Pryv.io platform as described in the following procedure.</p>
 <h3 id="core">Core</h3>
 <ul>
-<li>Empty the contents of the ${PRYV_CONF_ROOT} folder  </li>
-<li>Copy the backed up files under the ${PRYV_CONF_ROOT} folder  </li>
+<li>Empty the contents of the <code>${PRYV_CONF_ROOT}</code> folder  </li>
+<li>Copy the backed up files under the <code>${PRYV_CONF_ROOT}</code> folder  </li>
 <li>Start the service  </li>
-<li>Restore the MongoDB files: <code>$ docker exec -t pryvio_mongodb /app/bin/mongodb/bin/mongorestore /app/backup/</code>  </li>
-<li>Restore the InDuxDB files: <code>$ docker exec -t pryvio_influxdb /usr/bin/influxd restore -portable /pryv/backup/</code>  </li>
+<li>Restore the MongoDB files:</li>
 </ul>
+<pre><code class="lang-bash">docker exec -t pryvio_mongodb /app/bin/mongodb/bin/mongorestore /app/backup/
+</code></pre>
+<ul>
+<li>Restore the InDuxDB files:  </li>
+</ul>
+<pre><code class="lang-bash">docker exec -t pryvio_influxdb /usr/bin/influxd restore -portable /pryv/backup/
+</code></pre>
 <h3 id="register">Register</h3>
 <ul>
-<li>Empty the contents of the ${PRYV_CONF_ROOT} folder  </li>
-<li>Copy the backed up files under the ${PRYV_CONF_ROOT} folder  </li>
+<li>Empty the contents of the <code>${PRYV_CONF_ROOT}</code> folder  </li>
+<li>Copy the backed up files under the <code>${PRYV_CONF_ROOT}</code> folder  </li>
 <li>Start the service  </li>
 </ul>
 <h3 id="static-web">Static-web</h3>
 <ul>
-<li>Empty the contents of the ${PRYV_CONF_ROOT} folder  </li>
-<li>Copy the backed up files under the ${PRYV_CONF_ROOT} folder  </li>
+<li>Empty the contents of the <code>${PRYV_CONF_ROOT}</code> folder  </li>
+<li>Copy the backed up files under <code>the ${PRYV_CONF_ROOT}</code> folder  </li>
 <li>Start the service  </li>
 </ul>
 </div><nav id="toc"></nav></div><footer id="page-footer"><nav class="navbar navbar-default"><div class="container-fluid"><div id="footer-nav"><ul class="nav navbar-nav"><li><a href="mailto:developers@pryv.com">Send a message</a></li><li><a href="https://github.com/pryv">GitHub</a></li><li><a href="https://pryv.com">pryv.com</a></li></ul></div></div></nav></footer><script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script><script src="/assets/bootstrap.min.js"></script><script src="/assets/js/toc.min.js"></script><!-- TOC generation--><script>jQuery(document).ready(function($) {
