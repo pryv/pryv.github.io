@@ -11,12 +11,13 @@
 <li>3 <a href="#event-types">Event types</a></li>
 <li>4 <a href="#other-data-structures">Other data structures</a></li>
 <li>5 <a href="#api-methods">API methods</a></li>
-<li>6 <a href="#user-creation">User creation</a></li>
-<li>7 <a href="#authentication">Authentication</a></li>
-<li>8 <a href="#account-granularity">Account granularity</a></li>
-<li>9 <a href="#access-sharing">Access sharing</a></li>
-<li>10 <a href="#notification-system">Notification system</a></li>
-<li>11 <a href="#do-you-have-a-test-setup-where-i-could-experiment-with-your-api-">Test setup</a></li>
+<li>7 <a href="#synchronization">Synchronization</a></li>
+<li>8 <a href="#user-creation">User creation</a></li>
+<li>9 <a href="#authentication">Authentication</a></li>
+<li>10 <a href="#account-granularity">Account granularity</a></li>
+<li>11 <a href="#access-sharing">Access sharing</a></li>
+<li>12 <a href="#notification-system">Notification system</a></li>
+<li>13 <a href="#do-you-have-a-test-setup-where-i-could-experiment-with-your-api-">Test setup</a></li>
 </ul>
 <h2 id="personal-data">Personal data</h2>
 <h3 id="we-are-using-medical-devices-to-collect-data-from-our-users-is-technical-data-from-these-devices-also-part-of-personal-data-of-the-user-">We are using medical devices to collect data from our users. Is technical data from these devices also part of “personal” data of the user ?</h3>
@@ -61,6 +62,21 @@ If you wish to give a Pryv access token to an external service and to control it
 </ul>
 <h3 id="what-is-the-exact-structure-of-the-create-attachment-call-">What is the exact structure of the create attachment call?</h3>
 <p>If you are having issues creating the package for the create attachment call with the client/framework/library you are using, you can print the details of the call by using cURL with the <code>-v</code> verbose option.</p>
+<h2 id="synchronization">Synchronization</h2>
+<h3 id="how-to-keep-events-in-local-cache-up-to-date-">How to keep events in local cache up to date?</h3>
+<p>The <a href="/reference/#get-events">events.get API method</a> offers the <code>modifiedSince</code> and <code>includeDeletions</code> parameters to synchronize a set of events.<br>As the default parameters return the last 20 events, we should perform synchronization on a time range, which can be very big if needed.</p>
+<ol>
+<li>Initialize your events cache with an <code>events.get</code> call and a time range with <code>fromTime</code> and <code>toTime</code>.  </li>
+<li>When you receive the events, loop into them to find the latest <code>event.modified</code> value.</li>
+<li>Store this value in a variable we call <code>anchor</code> and add a very small number to it, for example: <code>0.0000001</code>.</li>
+<li>To synchronize the events you just need to call <code>events.get</code> with a time range and <code>&amp;modifiedSince={anchor}&amp;includeDeletions=true</code> query parameters.</li>
+</ol>
+<p>The companion JavaScript library <a href="https://github.com/pryv/lib-js-monitor">Monitor</a> implements this pattern.  </p>
+<h4 id="limitation">Limitation</h4>
+<p>Note that if you have an <a href="/reference/#access">access</a> with permissions on a certain set of streams (we&#39;ll call this a &quot;scope&quot;), you will not be able to detect events that are leaving this scope.<br>For example, let&#39;s say you have permissions on the streamId <code>diary</code>. If some client changes its streamIds by removing <code>diary</code>, you will not be able to detect this change.</p>
+<h3 id="how-can-i-setup-an-automatic-synchronization-of-my-events-and-streams-cache">How can I setup an &quot;Automatic&quot; synchronization of my Events and Streams cache</h3>
+<p>By coupling the precedent logic with a <a href="/faq-api/#notification-system">Notification System</a></p>
+<p>If you use the <a href="https://github.com/pryv/lib-js">Pryv JavaScript Library</a>, it can be used in combination with our <a href="https://github.com/pryv/lib-js-monitor">Monitor</a> and <a href="https://github.com/pryv/lib-js-socket.io">Socket.io</a> add-ons to have &quot;near real-time&quot; updates.</p>
 <h2 id="user-creation">User creation</h2>
 <h3 id="is-there-an-api-call-for-user-creation-">Is there an API call for user creation?</h3>
 <p>The API call for user creation is defined in <a href="/reference-system/#account-creation">API system reference</a>, please contact us for more information.</p>
