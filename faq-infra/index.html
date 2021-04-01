@@ -98,7 +98,11 @@ sudo apt install docker-compose
 <h3 id="why-is-container-xyz-not-running-">Why is container XYZ not running?</h3>
 <p>By default, our containers write logs into <code>stdout</code>, the reason for a failure can be printed using <code>docker logs ${CONTAINER_NAME}</code>.</p>
 <h3 id="permission-denied-error">Permission denied error</h3>
-<p>During deployment, it is possible that some folders have only write permissions for root. Our containerized apps are run by UID <code>9999:9999</code>, so this can be fixed by running <code>chown -R 9999:9999 ${FOLDER}</code> from the host machine.</p>
+<p>During deployment and update, it is possible that some folders have incorrect permissions, preventing the Pryv.io process to read configuration and data files.<br>The corresponding error can be found in the container logs using:</p>
+<pre><code>docker logs -f --tail 50 pryvio_${CONTAINER_NAME}
+</code></pre><p>It should have a message similar to:</p>
+<pre><code>Error: EACCES: permission denied
+</code></pre><p>This can be fixed by running the provided <code>ensure-permissions-${ROLE}</code> script. If necessary, reboot the Pryv.io services as well.</p>
 <h3 id="how-do-i-reset-data-on-my-pryv-io-platform-">How do I reset data on my Pryv.io platform?</h3>
 <p>This step will erase all data from your platform. Perform this at your own risk and make sure that you know what you are doing.</p>
 <p>To erase all data on the platform, you need to delete the contents of the data folders and reboot the services.</p>
