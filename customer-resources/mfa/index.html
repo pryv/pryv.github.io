@@ -1,0 +1,123 @@
+<!DOCTYPE html><html lang="en" class="no-js"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="description" property="og:description" content="Pryv API reference and resources for developers"><meta name="author" content="Pryv SA"><meta property="og:type" content="website"><meta name="image" property="og:image" content="/assets/images/logo-256.png"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Pryv.io Multi-Factor Authentication configuration | Pryv API</title><link rel="icon" href="/assets/images/favicon-black.ico" type="image/x-icon"><link rel="apple-touch-icon" sizes="120x120" href="/assets/images/apple-touch-icon-120x120-black.png"><link rel="apple-touch-icon" sizes="152x152" href="/assets/images/apple-touch-icon-152x152-black.png"><link rel="apple-touch-icon" sizes="180x180" href="/assets/images/apple-touch-icon-180x180-black.png"><!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+<!--[if lt IE 9]>
+  <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+  <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+<![endif]--><link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Roboto:400,300,500,700,400italic|Roboto+Condensed:400,300,700"><link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/styles/docco.min.css"><link rel="stylesheet" type="text/css" href="/assets/fonts/ss-gizmo.min.css"><link rel="stylesheet" type="text/css" href="/assets/style.css"></head><body class="MFA configuration with-toc"><header id="page-header"><nav role="navigation" class="navbar navbar-default navbar-fixed-top"><div class="container-fluid"><div class="navbar-header"><a href="https://pryv.com" title="Pryv home" class="navbar-brand logo pryv-home"><img src="/assets/images/icon-home.svg" alt="Pryv home" height="50"></a><a href="/" title="Developers home" class="navbar-brand logo"><img src="/assets/images/logo-256-black.png" alt="Developers home"></a><button type="button" data-toggle="collapse" data-target="#main-nav" class="navbar-toggle"><span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button></div><div id="main-nav" class="collapse navbar-collapse"><ul class="nav navbar-nav"><li class="dropdown"><a href="#" data-toggle="dropdown" class="dropdown-toggle">Guides <b class="caret"></b></a><ul class="dropdown-menu"><li><a href="/getting-started/">Getting started</a></li><li><a href="/external-resources/">Apps &amp; Libs</a></li><li><a href="/concepts/">API concepts</a></li><li><a href="/guides/data-modelling/">Data modelling</a></li><li><a href="/guides/webhooks/">Webhooks</a></li><li><a href="/guides/custom-auth/">Custom auth</a></li><li><a href="/guides/consent/">Consent request</a></li><li><a href="/guides/app-guidelines/">App guidelines</a></li></ul></li><li class="dropdown"><a href="#" data-toggle="dropdown" class="dropdown-toggle">Reference <b class="caret"></b></a><ul class="dropdown-menu"><li><a href="/reference/">API reference</a></li><li><a href="/reference-admin/">Admin API reference</a></li><li><a href="/reference-system/">System API reference</a></li><li><a href="/event-types/">Event types</a></li><li><a href="/open-api/">Open API (Postman)</a></li><li><a href="/change-log/">API change log</a></li></ul></li><li class="dropdown"><a href="#" data-toggle="dropdown" class="dropdown-toggle">FAQ <b class="caret"></b></a><ul class="dropdown-menu"><li><a href="/faq-api/">API</a></li><li><a href="/faq-infra/">Infrastructure</a></li></ul></li><li><a href="https://support.pryv.com/hc/en-us/community/topics">Community</a></li><li><a href="https://github.com/pryv/open-pryv.io">Open Pryv.io</a></li><li><a href="/roadmap/">Roadmap</a></li></ul><div class="navbar-right"><p class="navbar-text version"><a href="/change-log/" title="View change log">API version: <strong>1.6.7</strong></a></p></div></div></div></nav></header><div id="main-wrapper" class="container container-narrow"><div id="main"><h1 class="page-title">Pryv.io Multi-Factor Authentication configuration</h1><p>This document describes how to configure Multi-Factor Authentication (MFA) for the Pryv.io <a href="https://api.pryv.com/reference/#login-user">auth.login</a> API method.</p>
+<p>The prerequisite for this is to have an external communication service to send messages over another channel, such as email or SMS.<br>Depending on your service&#39;s capabilities, you will use either the <strong>single</strong> or <strong>challenge-verify</strong> mode.</p>
+<h2 id="mode">Mode</h2>
+<p>The <strong>single</strong> mode is meant when your communication service only supports sending messages. If it supports creating a challenge and verifying it, you can also use <strong>challenge-verify</strong>.  </p>
+<p>In <strong>single</strong> mode, the Pryv.io MFA service will generate a secret code, send it to your communication service upon <a href="/reference/#activate-mfa">activation</a> and <a href="/reference/#trigger-mfa-challenge">challenge</a>, then verify it itself during <a href="/reference/#confirm-mfa-activation">confirmation</a> and <a href="/reference/#verify-mfa-challenge">verification</a>.  </p>
+<p>In <strong>challenge-verify</strong> mode, the Pryv.io MFA service will query the communication service to generate and send a code and forward it for verification.</p>
+<p>The MFA settings are to be set either directly through the platform settings configuration file <code>platform.yml</code> or through the admin panel.</p>
+<h2 id="single">Single</h2>
+<p>The single mode is meant to be used when you are using a </p>
+<h2 id="endpoints">Endpoints</h2>
+<h3 id="configuration">Configuration</h3>
+<p>For single and <strong>challenge-verify</strong> mode, you will have to define how endpoints will be contacted. The configuration for an endpoint looks like this:</p>
+<pre><code class="lang-yaml">url: &#39;https://api.smsapi.com/mfa/codes?language={{ language }}&#39;
+method: &#39;POST&#39;
+body: &#39;{&quot;phone&quot;:&quot;{{ phone }}&quot;}&#39;
+headers:
+  authorization: &#39;Bearer: your-communcation-service-token&#39;
+  &#39;content-type&#39;: &#39;application/json&#39;
+</code></pre>
+<p>When you will trigger the endpoint, it will make the request according to your settings.</p>
+<h3 id="profile">Profile</h3>
+<p>When activating MFA for a user account, variables provided in the request body at <a href="/reference/#activate-mfa">activation</a> will be saved in the user&#39;s account. These variables will be substituted in the <code>url</code>, <code>body</code> and <code>headers</code> fields as described below.</p>
+<p>Example MFA profile:</p>
+<pre><code class="lang-yaml">language: &#39;en&#39;
+phone: &#39;41791231212&#39;
+</code></pre>
+<h3 id="parameters">Parameters</h3>
+<h4 id="url">url</h4>
+<p>You can provide the URL, with the query parameters here as a string. Variables are substituted in the string.</p>
+<h4 id="method">method</h4>
+<p>Currently supports HTTP POST and GET methods</p>
+<h4 id="body">body</h4>
+<p>The request body that will be sent as a string. Variables are substituted in the string.</p>
+<h4 id="headers">headers</h4>
+<p>The request headers that will be sent in the HTTP request. Variables are substituted in the values of these headers are substituted.<br>As the request body is a string, you will have to provide the corresponding <code>content-type</code> header.</p>
+<h2 id="examples">Examples</h2>
+<h3 id="sms-api">SMS API</h3>
+<p>Reference: <a href="https://www.smsapi.com/docs/#15-sms-authenticator">https://www.smsapi.com/docs/#15-sms-authenticator</a></p>
+<h4 id="config">Config</h4>
+<pre><code class="lang-yaml">mode: &#39;challenge-verify&#39;
+endpoints:
+  challenge:
+    url: &#39;https://api.smsapi.com/mfa/codes&#39;
+    method: &#39;POST&#39;
+    body: &#39;{&quot;phone_number&quot;:&quot;{{ number }}&quot;}&#39;
+    headers:
+      authorization: &#39;Bearer: your-api-key&#39;
+      &#39;content-type&#39;: &#39;application/json&#39;
+  verify:
+    url: &#39;https://api.smsapi.com/mfa/codes/verifications&#39;
+    method: &#39;POST&#39;
+    body: &#39;{&quot;phone_number&quot;:&quot;{{ number }}&quot;}&#39;
+    headers:
+      authorization: &#39;Bearer: your-api-key&#39;
+      &#39;content-type&#39;: &#39;application/json&#39;
+</code></pre>
+<h4 id="profile">Profile</h4>
+<pre><code class="lang-yaml">number: &#39;41791231212
+</code></pre>
+<h3 id="sms-mode">SMS mode</h3>
+<p>Reference: <a href="https://www.smsmode.com/api-sms/">https://www.smsmode.com/api-sms/</a></p>
+<h4 id="config">Config</h4>
+<pre><code class="lang-yaml">mode: &#39;single&#39;
+endpoints:
+  single:
+    url: &#39;https://api.smsmode.com/http/1.6/sendSMS.do?accessToken=your-api-key&amp;message={{ message }}&amp;emetteur=Pryv%20Lab&amp;numero={{ number }}&#39;
+    method: &#39;GET&#39;
+</code></pre>
+<h4 id="profile">Profile</h4>
+<pre><code class="lang-yaml">message: &#39;Your Pryv Lab MFA code is: {{ token }}&#39;
+number: &#39;41791231212&#39;
+</code></pre>
+</div><nav id="toc"></nav></div><footer id="page-footer"><nav class="navbar navbar-default"><div class="container-fluid"><div id="footer-nav"><ul class="nav navbar-nav"><li><a href="mailto:developers@pryv.com">Send a message</a></li><li><a href="https://github.com/pryv">GitHub</a></li><li><a href="https://pryv.com">pryv.com</a></li></ul></div></div></nav></footer><script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script><script src="/assets/bootstrap.min.js"></script><script src="/assets/js/toc.min.js"></script><!-- TOC generation--><script>jQuery(document).ready(function($) {
+  // Header is about 51 pixels. This equals to 'header + fuzz', fuzz was
+  // determined experimentally.
+  var offset = 90;
+
+  // Display TOC on the left side of the page.
+  $('#toc').toc({
+    selector: '#main h1:not(.page-title),#main h2,#main h3',
+    ulClass: 'nav'
+  });
+
+  // Synchronise scroll/click motion with TOC display.
+  $(document).ready(function() {
+    // NOTE This is done at onLoad since we need to wait for all CSS
+    // to appear.
+    $('body').scrollspy({
+      target: '#toc',
+      offset: offset
+    });
+    scrollBy(0, 1); // make it scroll to be sure scrollspy gets it
+    
+    // fix offset when navigating
+    $('#toc li a, a.toc-anchor').click(function (e) {
+      e.preventDefault();
+      var target = $(this).attr('href');
+      window.location.hash = target;
+      
+      $(target)[0].scrollIntoView();
+      if ($(window).scrollTop() + $(window).height() !== $(document).height()) {
+        //only adjust when not at bottom
+        scrollBy(0, -offset + 40);
+      }
+      return true;
+    });
+  
+  });
+});
+</script><!-- Code blocks highlighting--><script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/highlight.min.js"></script><script>hljs.initHighlightingOnLoad();
+</script><!-- Google Analytics--><script>var _gaq = _gaq || [];
+_gaq.push(['_setAccount', 'UA-36589447-2']);
+_gaq.push(['_trackPageview']);
+(function() {
+  var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+  ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+  var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+})();</script></body></html>
