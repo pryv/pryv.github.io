@@ -32,19 +32,19 @@
 </ul>
 <p>The last option will probably the easiest to implement. It offers good protection against disks being stolen from the datacenter, while not increasing overall system complexity by much.</p>
 <h3 id="self-managed-top-domain">Self-managed top-domain</h3>
-<p>The DNS running on the registry must resolve all requests for the domain. Entries in the top-domain will look like:</p>
+<p>The DNS running on the register must resolve all requests for the domain. Entries in the top-domain will look like:</p>
 <pre><code>ns1-${DOMAIN} TTL_SECONDS IN A ${IP_ADDRESS_REGISTER_MACHINE_1}
 ns2-${DOMAIN} TTL_SECONDS IN A ${IP_ADDRESS_REGISTER_MACHINE_2}
 
 ${DOMAIN}    TTL_SECONDS IN NS ns1-${DOMAIN}
 ${DOMAIN}    TTL_SECONDS IN NS ns2-${DOMAIN}
-</code></pre><p>On single node or PoC installations, you will have only one registry, both Type A entries for the machine will point to the same IP address:</p>
+</code></pre><p>On single node or PoC installations, you will have only one register, both Type A entries for the machine will point to the same IP address:</p>
 <pre><code>ns1-${DOMAIN} TTL_SECONDS IN A ${IP_ADDRESS_REGISTER_MACHINE_1}
 ns2-${DOMAIN} TTL_SECONDS IN A ${IP_ADDRESS_REGISTER_MACHINE_1}
 
 ${DOMAIN}    TTL_SECONDS IN NS ns1-${DOMAIN}
 ${DOMAIN}    TTL_SECONDS IN NS ns2-${DOMAIN}
-</code></pre><p>You can verify that the registry is set to resolve DNS queries for your domain using: <code>dig NS ${DOMAIN}</code>. The answer section must include:</p>
+</code></pre><p>You can verify that the register is set to resolve DNS queries for your domain using: <code>dig NS ${DOMAIN}</code>. The answer section must include:</p>
 <pre><code>${DOMAIN}        ${TTL_SECONDS}    IN        NS        ns1-${DOMAIN}.${TOP_DOMAIN}
 ${DOMAIN}        ${TTL_SECONDS}    IN        NS        ns2-${DOMAIN}.${TOP_DOMAIN}
 </code></pre><h2 id="customize-registration-login-password-reset-pages">Customize registration, login, password-reset pages</h2>
@@ -106,17 +106,21 @@ sudo apt install docker-compose
 <h3 id="how-do-i-reset-data-on-my-pryv-io-platform-">How do I reset data on my Pryv.io platform?</h3>
 <p>This step will erase all data from your platform. Perform this at your own risk and make sure that you know what you are doing.</p>
 <p>To erase all data on the platform, you need to delete the contents of the data folders and reboot the services.</p>
-<p>On the registry master:</p>
+<p>On the register master:</p>
 <pre><code>cd ${PRYV_CONF_ROOT}
-./stop-containers
-rm -rf reg-master/redis/data/*
-./run-reg-master
+./stop-config-leader
+./stop-pryv
+rm -rf pryv/redis/data/*
+rm -rf config-leader/database/*
+./run-config-leader
+./run-pryv
 </code></pre><p>On core:</p>
 <pre><code>cd ${PRYV_CONF_ROOT}
-./stop-containers
-rm -rf core/core/data/*
-rm -rf core/mongodb/data/*
-./run-core
+./stop-pryv
+rm -rf pryv/core/data/*
+rm -rf pryv/mongodb/data/*
+rm -rf pryv/influxdb/data/*
+./run-pryv
 </code></pre><h3 id="how-can-i-use-the-demo-dashboard-app-_app-web_-on-my-pryv-io-platform-">How can I use the demo dashboard app (<em>app-web</em>) on my Pryv.io platform?</h3>
 <p>App-web is hosted on GitHub pages and can be used for your Pryv.io platform as described in <a href="https://github.com/pryv/app-web#usage">its documentation</a>.</p>
 </div><nav id="toc"></nav></div><footer id="page-footer"><nav class="navbar navbar-default"><div class="container-fluid"><div id="footer-nav"><ul class="nav navbar-nav"><li><a href="mailto:developers@pryv.com">Send a message</a></li><li><a href="https://github.com/pryv">GitHub</a></li><li><a href="https://pryv.com">pryv.com</a></li></ul></div></div></nav></footer><script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script><script src="/assets/bootstrap.min.js"></script><script src="/assets/js/toc.min.js"></script><!-- TOC generation--><script>jQuery(document).ready(function($) {
