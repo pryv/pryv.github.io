@@ -1,7 +1,7 @@
 openapi: 3.0.0
 info:
   description: Description of Open-Pryv.io API in Open API 3.0 standard format
-  version: 1.6.20
+  version: 1.7.0
   title: Open-Pryv.io API
   contact:
     email: support@pryv.com
@@ -9,56 +9,6 @@ info:
     name: MIT
     url: https://opensource.org/licenses/MIT
 paths:
-  /users:
-    post:
-      description: Creates a new user account. The method's parameters can be customized
-        with the [system streams
-        configuration](/customer-resources/system-streams/).
-      operationId: users.create
-      responses:
-        "200":
-          content:
-            application/json:
-              schema:
-                - type: string
-                - type: string
-      requestBody:
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                appId:
-                  description: Your app's unique identifier.
-                  type: string
-                username:
-                  description: The user's username.
-                  type: string
-                password:
-                  description: The user's password.
-                  type: string
-                email:
-                  description: The user's e-mail address, used for password retrieval.
-                  type: string
-                invitationToken:
-                  description: >-
-                    An invitation token, necessary when users registration is
-                    limited to a specific set of users.
-
-                    Platform administrators may limit users registration by configuring a list of authorized invitation tokens.
-
-                    If this is not the case, users registration is open to everyone and this parameter can be omitted.
-
-
-                    <span class="entreprise-tag"><span title="Entreprise License Only" class="label">Y</span></span>Available in entreprise only.
-                  type: string
-                language:
-                  description: The user's preferred language as a 2-letter ISO language
-                    code.
-                  type: string
-                referer:
-                  description: A referer id potentially used for analytics.
-                  type: string
   /auth/login:
     post:
       description: >-
@@ -881,6 +831,10 @@ components:
         trashed:
           description: "`true` if the event is in the trash."
           type: boolean
+        integrity:
+          readOnly: true
+          description: Integrity check for event object.
+          $ref: "#/components/schemas/integrity"
         created:
           readOnly: true
           required: true
@@ -999,9 +953,9 @@ components:
           readOnly: (except at creation)
           required: true
           description: 'Ignored for personal accesses. If permission levels conflict (e.g.
-            stream set to "manage" and child stream set to "contribute"), only
-            the highest level is considered. Each permission object has the
-            following structure:'
+            stream set to "manage" and child stream set to "contribute"), the
+            child stream level applies. Each permission object has the following
+            structure:'
           type: array
           items:
             type: permission objects
@@ -1032,6 +986,10 @@ components:
           readOnly: (except at creation)
           description: Additional client data for the access.
           $ref: "#/components/schemas/key-value"
+        integrity:
+          readOnly: true
+          description: Integrity check for access object.
+          $ref: "#/components/schemas/integrity"
         created:
           readOnly: true
           required: true
@@ -1323,3 +1281,4 @@ components:
       type: string
     timestamp:
       type: number
+    integrity: {}

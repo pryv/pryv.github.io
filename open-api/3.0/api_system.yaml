@@ -1,7 +1,7 @@
 openapi: 3.0.0
 info:
   description: Description of Pryv.io System API in Open API 3.0 standard format
-  version: 1.6.20
+  version: 1.7.0
   title: Pryv.io System API
   contact:
     email: support@pryv.com
@@ -110,14 +110,15 @@ paths:
             application/json:
               schema:
                 - type: object
-  /user:
+  /users:
     post:
       description: >-
-        **(DEPRECATED)** Please use the [new create user
-        method](/reference/#create-user).  
+        Creates a new user account. The method's parameters can be customized
+        with the [system streams
+        configuration](/customer-resources/system-streams/).
 
 
-        Creates a new user account on the specified core server.
+        Before Pryv.io 1.6, this route was served by the register server on `/user`
       operationId: users.create
       responses:
         "200":
@@ -126,19 +127,14 @@ paths:
               schema:
                 - type: string
                 - type: string
-                - type: string
       requestBody:
         content:
           application/json:
             schema:
               type: object
               properties:
-                appid:
+                appId:
                   description: Your app's unique identifier.
-                  type: string
-                hosting:
-                  description: The name of the core server that should host the account,
-                    see [Get Hostings](#get-hostings).
                   type: string
                 username:
                   description: The user's username.
@@ -149,7 +145,7 @@ paths:
                 email:
                   description: The user's e-mail address, used for password retrieval.
                   type: string
-                invitationtoken:
+                invitationToken:
                   description: >-
                     An invitation token, necessary when users registration is
                     limited to a specific set of users.
@@ -161,7 +157,7 @@ paths:
 
                     <span class="entreprise-tag"><span title="Entreprise License Only" class="label">Y</span></span>Available in entreprise only.
                   type: string
-                languageCode:
+                language:
                   description: The user's preferred language as a 2-letter ISO language
                     code.
                   type: string
@@ -212,7 +208,9 @@ paths:
           description: INVALID_EMAIL
   "/{email}/username":
     get:
-      description: Get the username of a Pryv.io account according to the given email.
+      description: Get the username of a Pryv.io account according to the given email. This
+        API method can be disabled in the [platform
+        configuration](https://api.pryv.com/reference-admin/#platform-settings).
       operationId: email.username.get
       parameters:
         - name: email
@@ -228,5 +226,54 @@ paths:
                 - type: string
         "404":
           description: UNKNOWN_EMAIL
+  /cores:
+    get:
+      description: Get the core of a Pryv.io account according to the given username or
+        email. You must provide **only** one of them.
+      operationId: cores.get
+      parameters:
+        - name: username
+          description: The username to look for.
+          required: true
+          in: query
+        - name: email
+          description: >-
+            The email to look for. When using the email parameter, you will
+            always get a core returned, even if no such email is registered.   
+
+            This is meant to prevent email discovery.
+          required: true
+          in: query
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                - type: object
+  "/users/{username}":
+    delete:
+      description: >-
+        Deletes a user account. This method must be enabled in the platform
+        configuration. You should fetch the URL of the core where the user data
+        is stored using the [Get core](#get-core) method.  
+
+        - When performed by the account owner, this method requires a personal token.
+
+        - For platform administrators, please refer to [its Delete user method](/reference-admin/#delete-user).
+
+        - For Open Pryv.io users, this method requires to provide the [auth:adminAccessKey](https://github.com/pryv/open-pryv.io#config) as `Authorization` header.
+      operationId: users.delete
+      parameters:
+        - name: username
+          description: The username of the account to delete.
+          required: true
+          in: query
+        - name: username
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                - type: object
 components:
   schemas: {}

@@ -3,7 +3,7 @@
 <!--[if lt IE 9]>
   <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
   <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
-<![endif]--><link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Roboto:400,300,500,700,400italic|Roboto+Condensed:400,300,700"><link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/styles/docco.min.css"><link rel="stylesheet" type="text/css" href="/assets/fonts/ss-gizmo.min.css"><link rel="stylesheet" type="text/css" href="/assets/style.css"></head><body class="reference-admin with-toc with-examples"><header id="page-header"><nav role="navigation" class="navbar navbar-default navbar-fixed-top"><div class="container-fluid"><div class="navbar-header"><a href="https://pryv.com" title="Pryv home" class="navbar-brand logo pryv-home"><img src="/assets/images/icon-home.svg" alt="Pryv home" height="50"></a><a href="/" title="Developers home" class="navbar-brand logo"><img src="/assets/images/logo-256-black.png" alt="Developers home"></a><button type="button" data-toggle="collapse" data-target="#main-nav" class="navbar-toggle"><span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button></div><div id="main-nav" class="collapse navbar-collapse"><ul class="nav navbar-nav"><li class="dropdown"><a href="#" data-toggle="dropdown" class="dropdown-toggle">Guides <b class="caret"></b></a><ul class="dropdown-menu"><li><a href="/getting-started/">Getting started</a></li><li><a href="/external-resources/">Apps &amp; Libs</a></li><li><a href="/concepts/">API concepts</a></li><li><a href="/guides/data-modelling/">Data modelling</a></li><li><a href="/guides/webhooks/">Webhooks</a></li><li><a href="/guides/custom-auth/">Custom auth</a></li><li><a href="/guides/consent/">Consent request</a></li><li><a href="/guides/app-guidelines/">App guidelines</a></li></ul></li><li class="dropdown"><a href="#" data-toggle="dropdown" class="dropdown-toggle">Reference <b class="caret"></b></a><ul class="dropdown-menu"><li><a href="/reference/">API reference</a></li><li class="active"><a href="/reference-admin/">Admin API reference</a></li><li><a href="/reference-system/">System API reference</a></li><li><a href="/event-types/">Event types</a></li><li><a href="/open-api/">Open API (Postman)</a></li><li><a href="/change-log/">API change log</a></li></ul></li><li class="dropdown"><a href="#" data-toggle="dropdown" class="dropdown-toggle">FAQ <b class="caret"></b></a><ul class="dropdown-menu"><li><a href="/faq-api/">API</a></li><li><a href="/faq-infra/">Infrastructure</a></li></ul></li><li><a href="https://support.pryv.com/hc/en-us/community/topics">Community</a></li><li><a href="https://github.com/pryv/open-pryv.io">Open Pryv.io</a></li><li><a href="/roadmap/">Roadmap</a></li></ul><div class="navbar-right"><p class="navbar-text version"><a href="/change-log/" title="View change log">API version: <strong>1.6.20</strong></a></p></div><form class="navbar-form navbar-right"><div class="form-group"><label for="examples-api">API:&nbsp;</label><select id="examples-api" class="form-control"><option value="pryv.me" selected="selected">Pryv Lab: ${username}.pryv.me</option><option value="DNS-less">DNS-less: ${hostname}/${username}</option><option value="Own">Own domain: ${username}.${domain}</option></select></div><div class="form-group"><label for="examples-format">&nbsp;Format:&nbsp;</label><select id="examples-format" class="form-control"><option value="json" selected="selected">REST payload</option><option value="batch">Batch block</option><option value="http">cURL</option><option value="sockets">Socket.IO</option><option value="httpAuth">cURL auth</option></select></div></form></div></div></nav></header><div id="main-wrapper" class="container-fluid"><div id="main"><h1 class="page-title">Admin reference</h1><section id="basics"><h1 id="basics">Basics</h1>
+<![endif]--><link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Roboto:400,300,500,700,400italic|Roboto+Condensed:400,300,700"><link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/styles/docco.min.css"><link rel="stylesheet" type="text/css" href="/assets/fonts/ss-gizmo.min.css"><link rel="stylesheet" type="text/css" href="/assets/style.css"></head><body class="reference-admin with-toc with-examples"><header id="page-header"><nav role="navigation" class="navbar navbar-default navbar-fixed-top"><div class="container-fluid"><div class="navbar-header"><a href="https://pryv.com" title="Pryv home" class="navbar-brand logo pryv-home"><img src="/assets/images/icon-home.svg" alt="Pryv home" height="50"></a><a href="/" title="Developers home" class="navbar-brand logo"><img src="/assets/images/logo-256-black.png" alt="Developers home"></a><button type="button" data-toggle="collapse" data-target="#main-nav" class="navbar-toggle"><span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button></div><div id="main-nav" class="collapse navbar-collapse"><ul class="nav navbar-nav"><li class="dropdown"><a href="#" data-toggle="dropdown" class="dropdown-toggle">Guides <b class="caret"></b></a><ul class="dropdown-menu"><li><a href="/getting-started/">Getting started</a></li><li><a href="/external-resources/">Apps &amp; Libs</a></li><li><a href="/concepts/">API concepts</a></li><li><a href="/guides/data-modelling/">Data modelling</a></li><li><a href="/guides/webhooks/">Webhooks</a></li><li><a href="/guides/custom-auth/">Custom auth</a></li><li><a href="/guides/consent/">Consent request</a></li><li><a href="/guides/app-guidelines/">App guidelines</a></li><li><a href="/guides/audit-logs/">Audit logs</a></li></ul></li><li class="dropdown"><a href="#" data-toggle="dropdown" class="dropdown-toggle">Reference <b class="caret"></b></a><ul class="dropdown-menu"><li><a href="/reference/">API reference</a></li><li class="active"><a href="/reference-admin/">Admin API reference</a></li><li><a href="/reference-system/">System API reference</a></li><li><a href="/event-types/">Event types</a></li><li><a href="/open-api/">Open API (Postman)</a></li><li><a href="/change-log/">API change log</a></li></ul></li><li class="dropdown"><a href="#" data-toggle="dropdown" class="dropdown-toggle">FAQ <b class="caret"></b></a><ul class="dropdown-menu"><li><a href="/faq-api/">API</a></li><li><a href="/faq-infra/">Infrastructure</a></li></ul></li><li><a href="https://support.pryv.com/hc/en-us/community/topics">Community</a></li><li><a href="https://github.com/pryv/open-pryv.io">Open Pryv.io</a></li><li><a href="/roadmap/">Roadmap</a></li></ul><div class="navbar-right"><p class="navbar-text version"><a href="/change-log/" title="View change log">API version: <strong>1.7.0</strong></a></p></div><form class="navbar-form navbar-right"><div class="form-group"><label for="examples-api">API:&nbsp;</label><select id="examples-api" class="form-control"><option value="pryv.me" selected="selected">Pryv Lab: ${username}.pryv.me</option><option value="DNS-less">DNS-less: ${hostname}/${username}</option><option value="Own">Own domain: ${username}.${domain}</option></select></div><div class="form-group"><label for="examples-format">&nbsp;Format:&nbsp;</label><select id="examples-format" class="form-control"><option value="json" selected="selected">REST payload</option><option value="batch">Batch block</option><option value="http">cURL</option><option value="sockets">Socket.IO</option><option value="httpAuth">cURL auth</option></select></div></form></div></div></nav></header><div id="main-wrapper" class="container-fluid"><div id="main"><h1 class="page-title">Admin reference</h1><section id="basics"><h1 id="basics">Basics</h1>
 <div class="intro"><p>This document describes Pryv.io&#39;s <strong>administration</strong> API, allowing to configure the platform parameters and manage platform users.<br>This service is only available with an <a href="https://api.pryv.com/concepts/#entreprise-license-open-source-license"><strong>Entreprise license</strong></a>.</p>
 </div><!-- it's either:--><!-- !trusted & !preview--><!-- !preview & -full--><!-- -preview--><section id="basics-admin-service"><h2 id="administration-service">Administration service</h2>
 <div class="content"><div class="meta"></div><div class="intro"><p>The administration service has its own API and authentication mechanism.</p>
@@ -15,7 +15,7 @@
 </div><!-- it's either:--><!-- !trusted & !preview--><!-- !preview & -full--><!-- -preview--><section id="api-methods-auth"><h2 id="authentication">Authentication</h2>
 <div class="content"><div class="meta"></div><div class="intro"><p>Methods for authenticating admin users.</p>
 </div></div><!-- it's either:--><!-- !trusted & !preview--><!-- !preview & -full--><!-- -preview--><section id="api-methods-auth-auth-login" class="method"> <h3 id="login-user">Login user</h3>
-<div class="content"><div class="meta"><span class="http"><span class="label">HTTP-only</span><span class="label-value"><code>POST <a href="/reference-system/#api-endpoint">{admin}</a>/auth/login</code></span></span></div><div class="intro"><p>Authenticates the user against the provided credentials.</p>
+<div class="content"><div class="meta"><span onclick="location='/reference/#method-ids'" class="method-id"><span title="Method Id" class="label">id</span><span class="label-value"><code>auth.login</code></span></span><span class="http"><span class="label">HTTP-only</span><span class="label-value"><code>POST <a href="/reference-system/#api-endpoint">{admin}</a>/auth/login</code></span></span></div><div class="intro"><p>Authenticates the user against the provided credentials.</p>
 </div><h4 id="parameters">Parameters</h4>
 <table class="definitions"><tr><th><code>username</code></th><td><div class="header"><span class="type">string</span></div><div class="description"><p>The user&#39;s username</p>
 </div></td></tr><tr><th><code>password</code></th><td><div class="header"><span class="type">string</span></div><div class="description"><p>The user&#39;s password</p>
@@ -28,37 +28,37 @@
   "token": "eyJ1c2VybmFtZSI6ImlsaWEiLCJwZXJtaXNzaW9ucyI6eyJ1c2VycyI6WyJyZWFkIiwiY3JlYXRlIiwiZGVsZXRlIiwicmVzZXRQYXNzd29yZCIsImNoYW5nZVBlcm1pc3Npb25zIl0sInNldHRpbmdzIjpbInJlYWQiLCJ1cGRhdGUiXX0sImlhdCI6MTU5OTIyNDM4MywiZXhwIjoxNTk5MzEwNzgzfQ"
 }</code></pre></div><div class="tab-pane http"><pre><code>curl -i -X POST -H 'Content-Type: application/json' -d '{"username":"quaid","password":"my-secret-password"}' "https://<span class="api-admin-curl">lead.pryv.me</span>/auth/login"</code></pre><div class="step-marker">⬇</div><pre><code>HTTP/1.1 200 OK
 Content-Type: application/json; charset=utf-8
-API-Version: 1.6.20
+API-Version: 1.7.0
 
 {
   "token": "eyJ1c2VybmFtZSI6ImlsaWEiLCJwZXJtaXNzaW9ucyI6eyJ1c2VycyI6WyJyZWFkIiwiY3JlYXRlIiwiZGVsZXRlIiwicmVzZXRQYXNzd29yZCIsImNoYW5nZVBlcm1pc3Npb25zIl0sInNldHRpbmdzIjpbInJlYWQiLCJ1cGRhdGUiXX0sImlhdCI6MTU5OTIyNDM4MywiZXhwIjoxNTk5MzEwNzgzfQ"
 }
 </code></pre></div><div class="tab-pane sockets"><pre>Only available for HTTP REST</pre></div><div class="tab-pane batch"><pre>Only available for HTTP REST</pre></div><div class="tab-pane httpAuth"><pre><code>curl -i -X POST -H 'Content-Type: application/json' -d '{"username":"quaid","password":"my-secret-password"}' "https://<span class="api-admin-curl">lead.pryv.me</span>/auth/login"</code></pre><div class="step-marker">⬇</div><pre><code>HTTP/1.1 200 OK
 Content-Type: application/json; charset=utf-8
-API-Version: 1.6.20
+API-Version: 1.7.0
 
 {
   "token": "eyJ1c2VybmFtZSI6ImlsaWEiLCJwZXJtaXNzaW9ucyI6eyJ1c2VycyI6WyJyZWFkIiwiY3JlYXRlIiwiZGVsZXRlIiwicmVzZXRQYXNzd29yZCIsImNoYW5nZVBlcm1pc3Npb25zIl0sInNldHRpbmdzIjpbInJlYWQiLCJ1cGRhdGUiXX0sImlhdCI6MTU5OTIyNDM4MywiZXhwIjoxNTk5MzEwNzgzfQ"
 }
 
 </code></pre></div></div></div></aside></section><!-- it's either:--><!-- !trusted & !preview--><!-- !preview & -full--><!-- -preview--><section id="api-methods-auth-auth-logout" class="method"> <h3 id="logout-user">Logout user</h3>
-<div class="content"><div class="meta"><span class="http"><span class="label">HTTP-only</span><span class="label-value"><code>POST <a href="/reference-system/#api-endpoint">{admin}</a>/auth/logout</code></span></span></div><div class="intro"><p>Terminates a session by invalidating its JSON web token (the user will have to login again). Simply provide the JSON web token in own of the <a href="/reference-admin/#authorization">the supported ways</a>, no request body is required.</p>
+<div class="content"><div class="meta"><span onclick="location='/reference/#method-ids'" class="method-id"><span title="Method Id" class="label">id</span><span class="label-value"><code>auth.logout</code></span></span><span class="http"><span class="label">HTTP-only</span><span class="label-value"><code>POST <a href="/reference-system/#api-endpoint">{admin}</a>/auth/logout</code></span></span></div><div class="intro"><p>Terminates a session by invalidating its JSON web token (the user will have to login again). Simply provide the JSON web token in own of the <a href="/reference-admin/#authorization">the supported ways</a>, no request body is required.</p>
 </div><h4 id="result">Result</h4>
 <span class="http"><span class="label">HTTP</span><span class="label-value"><code>200 OK</code></span></span></div><aside><div class="example"><div class="tab-content"><div class="tab-pane json active"><pre><code>{}</code></pre><div class="step-marker">⬇</div><pre><code>{}</code></pre></div><div class="tab-pane http"><pre><code>curl -i -X POST -H 'Content-Type: application/json' -d '{}' "https://<span class="api-admin-curl">lead.pryv.me</span>/auth/logout"</code></pre><div class="step-marker">⬇</div><pre><code>HTTP/1.1 200 OK
 Content-Type: application/json; charset=utf-8
-API-Version: 1.6.20
+API-Version: 1.7.0
 
 {}
 </code></pre></div><div class="tab-pane sockets"><pre>Only available for HTTP REST</pre></div><div class="tab-pane batch"><pre>Only available for HTTP REST</pre></div><div class="tab-pane httpAuth"><pre><code>curl -i -X POST -H 'Content-Type: application/json' -d '{}' "https://<span class="api-admin-curl">lead.pryv.me</span>/auth/logout"</code></pre><div class="step-marker">⬇</div><pre><code>HTTP/1.1 200 OK
 Content-Type: application/json; charset=utf-8
-API-Version: 1.6.20
+API-Version: 1.7.0
 
 {}
 
 </code></pre></div></div></div></aside></section></section><!-- it's either:--><!-- !trusted & !preview--><!-- !preview & -full--><!-- -preview--><section id="api-methods-admin-users"><h2 id="admin-users">Admin users</h2>
 <div class="content"><div class="meta"></div><div class="intro"><p>Methods for managing admin users.</p>
 </div></div><!-- it's either:--><!-- !trusted & !preview--><!-- !preview & -full--><!-- -preview--><section id="api-methods-admin-users-adminUsers-get" class="method"> <h3 id="retrieve-admin-users-information">Retrieve admin users information</h3>
-<div class="content"><div class="meta"><span class="http"><span class="label">HTTP-only</span><span class="label-value"><code>GET <a href="/reference-system/#api-endpoint">{admin}</a>/users</code></span></span></div><div class="intro"><p>Retrieves the admin users information.</p>
+<div class="content"><div class="meta"><span onclick="location='/reference/#method-ids'" class="method-id"><span title="Method Id" class="label">id</span><span class="label-value"><code>adminUsers.get</code></span></span><span class="http"><span class="label">HTTP-only</span><span class="label-value"><code>GET <a href="/reference-system/#api-endpoint">{admin}</a>/users</code></span></span></div><div class="intro"><p>Retrieves the admin users information.</p>
 </div><h4 id="parameters">Parameters</h4>
 <h4 id="result">Result</h4>
 <span class="http"><span class="label">HTTP</span><span class="label-value"><code>200 OK</code></span></span><table class="definitions"><tr><th><code>users</code></th><td><div class="header"><span class="type">Array of <a href="#admin-user">admin users</a></span></div><div class="description"><p>The admin users information.</p>
@@ -104,7 +104,7 @@ API-Version: 1.6.20
   ]
 }</code></pre></div><div class="tab-pane http"><pre><code>curl -i "https://<span class="api-admin-curl">lead.pryv.me</span>/users"</code></pre><div class="step-marker">⬇</div><pre><code>HTTP/1.1 200 OK
 Content-Type: application/json; charset=utf-8
-API-Version: 1.6.20
+API-Version: 1.7.0
 
 {
   "users": [
@@ -148,7 +148,7 @@ API-Version: 1.6.20
 }
 </code></pre></div><div class="tab-pane sockets"><pre>Only available for HTTP REST</pre></div><div class="tab-pane batch"><pre>Only available for HTTP REST</pre></div><div class="tab-pane httpAuth"><pre><code>curl -i "https://<span class="api-admin-curl">lead.pryv.me</span>/users"</code></pre><div class="step-marker">⬇</div><pre><code>HTTP/1.1 200 OK
 Content-Type: application/json; charset=utf-8
-API-Version: 1.6.20
+API-Version: 1.7.0
 
 {
   "users": [
@@ -192,7 +192,7 @@ API-Version: 1.6.20
 }
 
 </code></pre></div></div></div></aside></section><!-- it's either:--><!-- !trusted & !preview--><!-- !preview & -full--><!-- -preview--><section id="api-methods-admin-users-adminUsers-getOne" class="method"> <h3 id="retrieve-admin-user-information">Retrieve admin user information</h3>
-<div class="content"><div class="meta"><span class="http"><span class="label">HTTP-only</span><span class="label-value"><code>GET <a href="/reference-system/#api-endpoint">{admin}</a>/users/{username}</code></span></span></div><div class="intro"><p>Retrieves the admin user&#39;s information.</p>
+<div class="content"><div class="meta"><span onclick="location='/reference/#method-ids'" class="method-id"><span title="Method Id" class="label">id</span><span class="label-value"><code>adminUsers.getOne</code></span></span><span class="http"><span class="label">HTTP-only</span><span class="label-value"><code>GET <a href="/reference-system/#api-endpoint">{admin}</a>/users/{username}</code></span></span></div><div class="intro"><p>Retrieves the admin user&#39;s information.</p>
 </div><h4 id="parameters">Parameters</h4>
 <table class="definitions"><tr><th><code>username</code></th><td><div class="header"><span class="type">string</span><span class="http"><span class="label">HTTP</span><span class="label-value"><span>set in request path</span></span></span></div><div class="description"><p>The username of the admin user.</p>
 </div></td></tr></table><h4 id="result">Result</h4>
@@ -217,7 +217,7 @@ API-Version: 1.6.20
   }
 }</code></pre></div><div class="tab-pane http"><pre><code>curl -i "https://<span class="api-admin-curl">lead.pryv.me</span>/users/harrytasker"</code></pre><div class="step-marker">⬇</div><pre><code>HTTP/1.1 200 OK
 Content-Type: application/json; charset=utf-8
-API-Version: 1.6.20
+API-Version: 1.7.0
 
 {
   "user": {
@@ -239,7 +239,7 @@ API-Version: 1.6.20
 }
 </code></pre></div><div class="tab-pane sockets"><pre>Only available for HTTP REST</pre></div><div class="tab-pane batch"><pre>Only available for HTTP REST</pre></div><div class="tab-pane httpAuth"><pre><code>curl -i "https://<span class="api-admin-curl">lead.pryv.me</span>/users/harrytasker"</code></pre><div class="step-marker">⬇</div><pre><code>HTTP/1.1 200 OK
 Content-Type: application/json; charset=utf-8
-API-Version: 1.6.20
+API-Version: 1.7.0
 
 {
   "user": {
@@ -261,7 +261,7 @@ API-Version: 1.6.20
 }
 
 </code></pre></div></div></div></aside></section><!-- it's either:--><!-- !trusted & !preview--><!-- !preview & -full--><!-- -preview--><section id="api-methods-admin-users-adminUsers-create" class="method"> <h3 id="create-an-admin-user">Create an admin user</h3>
-<div class="content"><div class="meta"><span class="http"><span class="label">HTTP-only</span><span class="label-value"><code>POST <a href="/reference-system/#api-endpoint">{admin}</a>/users</code></span></span></div><div class="intro"><p>Creates an admin user.</p>
+<div class="content"><div class="meta"><span onclick="location='/reference/#method-ids'" class="method-id"><span title="Method Id" class="label">id</span><span class="label-value"><code>adminUsers.create</code></span></span><span class="http"><span class="label">HTTP-only</span><span class="label-value"><code>POST <a href="/reference-system/#api-endpoint">{admin}</a>/users</code></span></span></div><div class="intro"><p>Creates an admin user.</p>
 </div><h4 id="parameters">Parameters</h4>
 <table class="definitions"><tr><th><code>username</code></th><td><div class="header"><span class="type">string</span></div><div class="description"><p>The username of the admin user.</p>
 </div></td></tr><tr><th><code>password</code></th><td><div class="header"><span class="type">string</span></div><div class="description"><p>The password of the admin user.</p>
@@ -302,7 +302,7 @@ API-Version: 1.6.20
   }
 }</code></pre></div><div class="tab-pane http"><pre><code>curl -i -X POST -H 'Content-Type: application/json' -d '{"username":"harrytasker","permissions":{"users":["read"],"settings":["read","update"],"platformUsers":["read","delete"]}}' "https://<span class="api-admin-curl">lead.pryv.me</span>/users"</code></pre><div class="step-marker">⬇</div><pre><code>HTTP/1.1 200 OK
 Content-Type: application/json; charset=utf-8
-API-Version: 1.6.20
+API-Version: 1.7.0
 
 {
   "user": {
@@ -324,7 +324,7 @@ API-Version: 1.6.20
 }
 </code></pre></div><div class="tab-pane sockets"><pre>Only available for HTTP REST</pre></div><div class="tab-pane batch"><pre>Only available for HTTP REST</pre></div><div class="tab-pane httpAuth"><pre><code>curl -i -X POST -H 'Content-Type: application/json' -d '{"username":"harrytasker","permissions":{"users":["read"],"settings":["read","update"],"platformUsers":["read","delete"]}}' "https://<span class="api-admin-curl">lead.pryv.me</span>/users"</code></pre><div class="step-marker">⬇</div><pre><code>HTTP/1.1 200 OK
 Content-Type: application/json; charset=utf-8
-API-Version: 1.6.20
+API-Version: 1.7.0
 
 {
   "user": {
@@ -346,7 +346,7 @@ API-Version: 1.6.20
 }
 
 </code></pre></div></div></div></aside></section><!-- it's either:--><!-- !trusted & !preview--><!-- !preview & -full--><!-- -preview--><section id="api-methods-admin-users-adminUsers-updatePermissions" class="method"> <h3 id="update-an-admin-user-s-permissions">Update an admin user&#39;s permissions</h3>
-<div class="content"><div class="meta"><span class="http"><span class="label">HTTP-only</span><span class="label-value"><code>PUT <a href="/reference-system/#api-endpoint">{admin}</a>/users/{username}/permissions</code></span></span></div><div class="intro"><p>Updates an admin user&#39;s permissions.</p>
+<div class="content"><div class="meta"><span onclick="location='/reference/#method-ids'" class="method-id"><span title="Method Id" class="label">id</span><span class="label-value"><code>adminUsers.updatePermissions</code></span></span><span class="http"><span class="label">HTTP-only</span><span class="label-value"><code>PUT <a href="/reference-system/#api-endpoint">{admin}</a>/users/{username}/permissions</code></span></span></div><div class="intro"><p>Updates an admin user&#39;s permissions.</p>
 </div><h4 id="parameters">Parameters</h4>
 <table class="definitions"><tr><th><code>permissions</code></th><td><div class="header"><span class="type"><a href="#admin-permissions">admin permissions</a></span></div><div class="description"><p>The permissions of the admin user.</p>
 </div></td></tr></table><h4 id="result">Result</h4>
@@ -385,7 +385,7 @@ API-Version: 1.6.20
   }
 }</code></pre></div><div class="tab-pane http"><pre><code>curl -i -X PUT -H 'Content-Type: application/json' -d '{"permissions":{"users":["read"],"settings":["read","update"],"platformUsers":["read","delete"]}}' "https://<span class="api-admin-curl">lead.pryv.me</span>/users/${username}/permissions"</code></pre><div class="step-marker">⬇</div><pre><code>HTTP/1.1 200 OK
 Content-Type: application/json; charset=utf-8
-API-Version: 1.6.20
+API-Version: 1.7.0
 
 {
   "user": {
@@ -407,7 +407,7 @@ API-Version: 1.6.20
 }
 </code></pre></div><div class="tab-pane sockets"><pre>Only available for HTTP REST</pre></div><div class="tab-pane batch"><pre>Only available for HTTP REST</pre></div><div class="tab-pane httpAuth"><pre><code>curl -i -X PUT -H 'Content-Type: application/json' -d '{"permissions":{"users":["read"],"settings":["read","update"],"platformUsers":["read","delete"]}}' "https://<span class="api-admin-curl">lead.pryv.me</span>/users/${username}/permissions"</code></pre><div class="step-marker">⬇</div><pre><code>HTTP/1.1 200 OK
 Content-Type: application/json; charset=utf-8
-API-Version: 1.6.20
+API-Version: 1.7.0
 
 {
   "user": {
@@ -429,7 +429,7 @@ API-Version: 1.6.20
 }
 
 </code></pre></div></div></div></aside></section><!-- it's either:--><!-- !trusted & !preview--><!-- !preview & -full--><!-- -preview--><section id="api-methods-admin-users-adminUsers-resetPassword" class="method"> <h3 id="reset-an-admin-user-s-password">Reset an admin user&#39;s password</h3>
-<div class="content"><div class="meta"><span class="http"><span class="label">HTTP-only</span><span class="label-value"><code>POST <a href="/reference-system/#api-endpoint">{admin}</a>/users/{username}/reset-password</code></span></span></div><div class="intro"><p>Resets an admin user&#39;s password.</p>
+<div class="content"><div class="meta"><span onclick="location='/reference/#method-ids'" class="method-id"><span title="Method Id" class="label">id</span><span class="label-value"><code>adminUsers.resetPassword</code></span></span><span class="http"><span class="label">HTTP-only</span><span class="label-value"><code>POST <a href="/reference-system/#api-endpoint">{admin}</a>/users/{username}/reset-password</code></span></span></div><div class="intro"><p>Resets an admin user&#39;s password.</p>
 </div><h4 id="parameters">Parameters</h4>
 <table class="definitions"><tr><th><code>username</code></th><td><div class="header"><span class="type">string</span><span class="http"><span class="label">HTTP</span><span class="label-value"><span>set in request path</span></span></span></div><div class="description"><p>The username of the admin user for whom to reset the password.</p>
 </div></td></tr></table><h4 id="result">Result</h4>
@@ -439,21 +439,21 @@ API-Version: 1.6.20
   "password": "d89786faffda5c9"
 }</code></pre></div><div class="tab-pane http"><pre><code>curl -i -X POST -H 'Content-Type: application/json' -d '{}' "https://<span class="api-admin-curl">lead.pryv.me</span>/users/harrytasker/reset-password"</code></pre><div class="step-marker">⬇</div><pre><code>HTTP/1.1 200 OK
 Content-Type: application/json; charset=utf-8
-API-Version: 1.6.20
+API-Version: 1.7.0
 
 {
   "password": "d89786faffda5c9"
 }
 </code></pre></div><div class="tab-pane sockets"><pre>Only available for HTTP REST</pre></div><div class="tab-pane batch"><pre>Only available for HTTP REST</pre></div><div class="tab-pane httpAuth"><pre><code>curl -i -X POST -H 'Content-Type: application/json' -d '{}' "https://<span class="api-admin-curl">lead.pryv.me</span>/users/harrytasker/reset-password"</code></pre><div class="step-marker">⬇</div><pre><code>HTTP/1.1 200 OK
 Content-Type: application/json; charset=utf-8
-API-Version: 1.6.20
+API-Version: 1.7.0
 
 {
   "password": "d89786faffda5c9"
 }
 
 </code></pre></div></div></div></aside></section><!-- it's either:--><!-- !trusted & !preview--><!-- !preview & -full--><!-- -preview--><section id="api-methods-admin-users-adminUsers-delete" class="method"> <h3 id="delete-admin-user">Delete admin user</h3>
-<div class="content"><div class="meta"><span class="http"><span class="label">HTTP-only</span><span class="label-value"><code>DELETE <a href="/reference-system/#api-endpoint">{admin}</a>/users/{username}</code></span></span></div><div class="intro"><p>Delete admin account.</p>
+<div class="content"><div class="meta"><span onclick="location='/reference/#method-ids'" class="method-id"><span title="Method Id" class="label">id</span><span class="label-value"><code>adminUsers.delete</code></span></span><span class="http"><span class="label">HTTP-only</span><span class="label-value"><code>DELETE <a href="/reference-system/#api-endpoint">{admin}</a>/users/{username}</code></span></span></div><div class="intro"><p>Delete admin account.</p>
 </div><h4 id="parameters">Parameters</h4>
 <table class="definitions"><tr><th><code>username</code></th><td><div class="header"><span class="type">string</span><span class="http"><span class="label">HTTP</span><span class="label-value"><span>set in request path</span></span></span></div><div class="description"><p>The username of the admin user to delete.</p>
 </div></td></tr></table><h4 id="result">Result</h4>
@@ -463,14 +463,14 @@ API-Version: 1.6.20
   "username": "harrytasker"
 }</code></pre></div><div class="tab-pane http"><pre><code>curl -i -X DELETE "https://<span class="api-admin-curl">lead.pryv.me</span>/users/harrytasker"</code></pre><div class="step-marker">⬇</div><pre><code>HTTP/1.1 200 OK
 Content-Type: application/json; charset=utf-8
-API-Version: 1.6.20
+API-Version: 1.7.0
 
 {
   "username": "harrytasker"
 }
 </code></pre></div><div class="tab-pane sockets"><pre>Only available for HTTP REST</pre></div><div class="tab-pane batch"><pre>Only available for HTTP REST</pre></div><div class="tab-pane httpAuth"><pre><code>curl -i -X DELETE "https://<span class="api-admin-curl">lead.pryv.me</span>/users/harrytasker"</code></pre><div class="step-marker">⬇</div><pre><code>HTTP/1.1 200 OK
 Content-Type: application/json; charset=utf-8
-API-Version: 1.6.20
+API-Version: 1.7.0
 
 {
   "username": "harrytasker"
@@ -479,7 +479,7 @@ API-Version: 1.6.20
 </code></pre></div></div></div></aside></section></section><!-- it's either:--><!-- !trusted & !preview--><!-- !preview & -full--><!-- -preview--><section id="api-methods-platform-settings"><h2 id="platform-settings">Platform settings</h2>
 <div class="content"><div class="meta"></div><div class="intro"><p>Methods for managing platform settings.</p>
 </div></div><!-- it's either:--><!-- !trusted & !preview--><!-- !preview & -full--><!-- -preview--><section id="api-methods-platform-settings-settings-get" class="method"> <h3 id="retrieve-platform-settings">Retrieve platform settings</h3>
-<div class="content"><div class="meta"><span class="http"><span class="label">HTTP-only</span><span class="label-value"><code>GET <a href="/reference-system/#api-endpoint">{admin}</a>/admin/settings</code></span></span></div><div class="intro"><p>Retrieves the platform settings.</p>
+<div class="content"><div class="meta"><span onclick="location='/reference/#method-ids'" class="method-id"><span title="Method Id" class="label">id</span><span class="label-value"><code>settings.get</code></span></span><span class="http"><span class="label">HTTP-only</span><span class="label-value"><code>GET <a href="/reference-system/#api-endpoint">{admin}</a>/admin/settings</code></span></span></div><div class="intro"><p>Retrieves the platform settings.</p>
 </div><h4 id="result">Result</h4>
 <span class="http"><span class="label">HTTP</span><span class="label-value"><code>200 OK</code></span></span><table class="definitions"><tr><th><code>settings</code></th><td><div class="header"><span class="type">object</span></div><div class="description"><p>The platform settings.</p>
 </div></td></tr></table></div><aside><div class="example"><p>Fetching the platform settings. The result hereafter only display a small part of the settings.</p>
@@ -501,7 +501,7 @@ API-Version: 1.6.20
   }
 }</code></pre></div><div class="tab-pane http"><pre><code>curl -i "https://<span class="api-admin-curl">lead.pryv.me</span>/admin/settings"</code></pre><div class="step-marker">⬇</div><pre><code>HTTP/1.1 200 OK
 Content-Type: application/json; charset=utf-8
-API-Version: 1.6.20
+API-Version: 1.7.0
 
 {
   "settings": {
@@ -522,7 +522,7 @@ API-Version: 1.6.20
 }
 </code></pre></div><div class="tab-pane sockets"><pre>Only available for HTTP REST</pre></div><div class="tab-pane batch"><pre>Only available for HTTP REST</pre></div><div class="tab-pane httpAuth"><pre><code>curl -i "https://<span class="api-admin-curl">lead.pryv.me</span>/admin/settings"</code></pre><div class="step-marker">⬇</div><pre><code>HTTP/1.1 200 OK
 Content-Type: application/json; charset=utf-8
-API-Version: 1.6.20
+API-Version: 1.7.0
 
 {
   "settings": {
@@ -543,7 +543,7 @@ API-Version: 1.6.20
 }
 
 </code></pre></div></div></div></aside></section><!-- it's either:--><!-- !trusted & !preview--><!-- !preview & -full--><!-- -preview--><section id="api-methods-platform-settings-settings-update" class="method"> <h3 id="update-platform-settings">Update platform settings</h3>
-<div class="content"><div class="meta"><span class="http"><span class="label">HTTP-only</span><span class="label-value"><code>PUT <a href="/reference-system/#api-endpoint">{admin}</a>/admin/settings</code></span></span></div><div class="intro"><p>Updates the platform settings and saves them.</p>
+<div class="content"><div class="meta"><span onclick="location='/reference/#method-ids'" class="method-id"><span title="Method Id" class="label">id</span><span class="label-value"><code>settings.update</code></span></span><span class="http"><span class="label">HTTP-only</span><span class="label-value"><code>PUT <a href="/reference-system/#api-endpoint">{admin}</a>/admin/settings</code></span></span></div><div class="intro"><p>Updates the platform settings and saves them.</p>
 </div><h4 id="parameters">Parameters</h4>
 <table class="definitions"><tr><th><code>update</code></th><td><div class="header"><span class="type">object</span><span class="http"><span class="label">HTTP</span><span class="label-value"><span>request body</span></span></span></div><div class="description"><p>New values for the platform settings.</p>
 </div></td></tr></table><h4 id="result">Result</h4>
@@ -573,7 +573,7 @@ API-Version: 1.6.20
   }
 }</code></pre></div><div class="tab-pane http"><pre><code>curl -i -X PUT -H 'Content-Type: application/json' -d '{"API_SETTINGS":{"settings":{"EVENT_TYPES_URL":{"value":"https://my-service/event-types/flat.json"}}}}' "https://<span class="api-admin-curl">lead.pryv.me</span>/admin/settings"</code></pre><div class="step-marker">⬇</div><pre><code>HTTP/1.1 200 OK
 Content-Type: application/json; charset=utf-8
-API-Version: 1.6.20
+API-Version: 1.7.0
 
 {
   "settings": {
@@ -590,7 +590,7 @@ API-Version: 1.6.20
 }
 </code></pre></div><div class="tab-pane sockets"><pre>Only available for HTTP REST</pre></div><div class="tab-pane batch"><pre>Only available for HTTP REST</pre></div><div class="tab-pane httpAuth"><pre><code>curl -i -X PUT -H 'Content-Type: application/json' -d '{"API_SETTINGS":{"settings":{"EVENT_TYPES_URL":{"value":"https://my-service/event-types/flat.json"}}}}' "https://<span class="api-admin-curl">lead.pryv.me</span>/admin/settings"</code></pre><div class="step-marker">⬇</div><pre><code>HTTP/1.1 200 OK
 Content-Type: application/json; charset=utf-8
-API-Version: 1.6.20
+API-Version: 1.7.0
 
 {
   "settings": {
@@ -607,7 +607,7 @@ API-Version: 1.6.20
 }
 
 </code></pre></div></div></div></aside></section><!-- it's either:--><!-- !trusted & !preview--><!-- !preview & -full--><!-- -preview--><section id="api-methods-platform-settings-settings-notify" class="method"> <h3 id="apply-settings-changes">Apply settings changes</h3>
-<div class="content"><div class="meta"><span class="http"><span class="label">HTTP-only</span><span class="label-value"><code>POST <a href="/reference-system/#api-endpoint">{admin}</a>/admin/notify</code></span></span></div><div class="intro"><p>Reboots desired services with latest platform settings.</p>
+<div class="content"><div class="meta"><span onclick="location='/reference/#method-ids'" class="method-id"><span title="Method Id" class="label">id</span><span class="label-value"><code>settings.notify</code></span></span><span class="http"><span class="label">HTTP-only</span><span class="label-value"><code>POST <a href="/reference-system/#api-endpoint">{admin}</a>/admin/notify</code></span></span></div><div class="intro"><p>Reboots desired services with latest platform settings.</p>
 </div><h4 id="parameters">Parameters</h4>
 <table class="definitions"><tr><th><code>services</code></th><td><div class="header"><span class="type">array of strings</span><span class="label label-default optional">optional</span></div><div class="description"><p>The Pryv.io services to reboot. If empty, reboots all Pryv.io services. See your configuration&#39;s docker-compose file for the list of services.</p>
 </div></td></tr></table><h4 id="result">Result</h4>
@@ -641,7 +641,7 @@ API-Version: 1.6.20
   "failures": []
 }</code></pre></div><div class="tab-pane http"><pre><code>curl -i -X POST -H 'Content-Type: application/json' -d '{"services":["dns"]}' "https://<span class="api-admin-curl">lead.pryv.me</span>/admin/notify"</code></pre><div class="step-marker">⬇</div><pre><code>HTTP/1.1 200 OK
 Content-Type: application/json; charset=utf-8
-API-Version: 1.6.20
+API-Version: 1.7.0
 
 {
   "successes": [
@@ -662,7 +662,7 @@ API-Version: 1.6.20
 }
 </code></pre></div><div class="tab-pane sockets"><pre>Only available for HTTP REST</pre></div><div class="tab-pane batch"><pre>Only available for HTTP REST</pre></div><div class="tab-pane httpAuth"><pre><code>curl -i -X POST -H 'Content-Type: application/json' -d '{"services":["dns"]}' "https://<span class="api-admin-curl">lead.pryv.me</span>/admin/notify"</code></pre><div class="step-marker">⬇</div><pre><code>HTTP/1.1 200 OK
 Content-Type: application/json; charset=utf-8
-API-Version: 1.6.20
+API-Version: 1.7.0
 
 {
   "successes": [
@@ -682,10 +682,238 @@ API-Version: 1.6.20
   "failures": []
 }
 
+</code></pre></div></div></div></aside></section><!-- it's either:--><!-- !trusted & !preview--><!-- !preview & -full--><!-- -preview--><section id="api-methods-platform-settings-migrations-get" class="method"> <h3 id="retrieve-platform-migrations">Retrieve platform migrations</h3>
+<div class="content"><div class="meta"><span onclick="location='/reference/#method-ids'" class="method-id"><span title="Method Id" class="label">id</span><span class="label-value"><code>migrations.get</code></span></span><span class="http"><span class="label">HTTP-only</span><span class="label-value"><code>GET <a href="/reference-system/#api-endpoint">{admin}</a>/admin/migrations</code></span></span></div><div class="intro"><p>Retrieves the available platform settings migrations. To apply them use <a href="#apply-configuration-migrations">Apply configuration migrations</a>.</p>
+</div><h4 id="result">Result</h4>
+<span class="http"><span class="label">HTTP</span><span class="label-value"><code>200 OK</code></span></span><table class="definitions"><tr><th><code>migrations</code></th><td><div class="header"><span class="type">array of migrations</span></div><div class="description"><p>Available migrations.</p>
+</div><table class="definitions"><tr><th><code>versionsFrom</code></th><td><div class="header"><span class="type">array of versions</span></div><div class="description"><p>The list of versions it upgrades from.</p>
+</div></td></tr><tr><th><code>versionTo</code></th><td><div class="header"><span class="type">string</span></div><div class="description"><p>The version it upgrades to.</p>
+</div></td></tr></table></td></tr></table></div><aside><div class="example"><p>Fetching available migrations for platform version 1.6.17</p>
+<div class="tab-content"><div class="tab-pane json active"><pre><code>{}</code></pre><div class="step-marker">⬇</div><pre><code>{
+  "migrations": [
+    {
+      "versionsFrom": [
+        "1.6.15",
+        "1.6.16",
+        "1.6.17",
+        "1.6.18",
+        "1.6.19",
+        "1.6.20"
+      ],
+      "versionTo": "1.6.21"
+    },
+    {
+      "versionsFrom": [
+        "1.6.21"
+      ],
+      "versionTo": "1.6.22"
+    },
+    {
+      "versionsFrom": [
+        "1.6.22"
+      ],
+      "versionTo": "1.6.23"
+    },
+    {
+      "versionsFrom": [
+        "1.6.23"
+      ],
+      "versionTo": "1.7.0"
+    }
+  ]
+}</code></pre></div><div class="tab-pane http"><pre><code>curl -i "https://<span class="api-admin-curl">lead.pryv.me</span>/admin/migrations"</code></pre><div class="step-marker">⬇</div><pre><code>HTTP/1.1 200 OK
+Content-Type: application/json; charset=utf-8
+API-Version: 1.7.0
+
+{
+  "migrations": [
+    {
+      "versionsFrom": [
+        "1.6.15",
+        "1.6.16",
+        "1.6.17",
+        "1.6.18",
+        "1.6.19",
+        "1.6.20"
+      ],
+      "versionTo": "1.6.21"
+    },
+    {
+      "versionsFrom": [
+        "1.6.21"
+      ],
+      "versionTo": "1.6.22"
+    },
+    {
+      "versionsFrom": [
+        "1.6.22"
+      ],
+      "versionTo": "1.6.23"
+    },
+    {
+      "versionsFrom": [
+        "1.6.23"
+      ],
+      "versionTo": "1.7.0"
+    }
+  ]
+}
+</code></pre></div><div class="tab-pane sockets"><pre>Only available for HTTP REST</pre></div><div class="tab-pane batch"><pre>Only available for HTTP REST</pre></div><div class="tab-pane httpAuth"><pre><code>curl -i "https://<span class="api-admin-curl">lead.pryv.me</span>/admin/migrations"</code></pre><div class="step-marker">⬇</div><pre><code>HTTP/1.1 200 OK
+Content-Type: application/json; charset=utf-8
+API-Version: 1.7.0
+
+{
+  "migrations": [
+    {
+      "versionsFrom": [
+        "1.6.15",
+        "1.6.16",
+        "1.6.17",
+        "1.6.18",
+        "1.6.19",
+        "1.6.20"
+      ],
+      "versionTo": "1.6.21"
+    },
+    {
+      "versionsFrom": [
+        "1.6.21"
+      ],
+      "versionTo": "1.6.22"
+    },
+    {
+      "versionsFrom": [
+        "1.6.22"
+      ],
+      "versionTo": "1.6.23"
+    },
+    {
+      "versionsFrom": [
+        "1.6.23"
+      ],
+      "versionTo": "1.7.0"
+    }
+  ]
+}
+
+</code></pre></div></div></div></aside></section><!-- it's either:--><!-- !trusted & !preview--><!-- !preview & -full--><!-- -preview--><section id="api-methods-platform-settings-migrations-apply" class="method"> <h3 id="apply-configuration-migrations">Apply configuration migrations</h3>
+<div class="content"><div class="meta"><span onclick="location='/reference/#method-ids'" class="method-id"><span title="Method Id" class="label">id</span><span class="label-value"><code>migrations.apply</code></span></span><span class="http"><span class="label">HTTP-only</span><span class="label-value"><code>POST <a href="/reference-system/#api-endpoint">{admin}</a>/admin/migrations/apply</code></span></span></div><div class="intro"><p>Apply the available platform configuration migrations. This will upgrade your platform.yml file to the latest available version. Use <a href="#retrieve-platform-migrations">Retrieve platform migrations</a> to see available migrations.</p>
+</div><h4 id="result">Result</h4>
+<span class="http"><span class="label">HTTP</span><span class="label-value"><code>200 OK</code></span></span><table class="definitions"><tr><th><code>migrations</code></th><td><div class="header"><span class="type">array of migrations</span></div><div class="description"><p>Available migrations.</p>
+</div><table class="definitions"><tr><th><code>versionsFrom</code></th><td><div class="header"><span class="type">array of versions</span></div><div class="description"><p>The list of versions it upgrades from.</p>
+</div></td></tr><tr><th><code>versionTo</code></th><td><div class="header"><span class="type">string</span></div><div class="description"><p>The version it upgrades to.</p>
+</div></td></tr></table></td></tr></table></div><aside><div class="example"><p>Applying available migrations from platform version 1.6.17 to 1.7.0</p>
+<div class="tab-content"><div class="tab-pane json active"><pre><code>{}</code></pre><div class="step-marker">⬇</div><pre><code>{
+  "migrations": [
+    {
+      "versionsFrom": [
+        "1.6.15",
+        "1.6.16",
+        "1.6.17",
+        "1.6.18",
+        "1.6.19",
+        "1.6.20"
+      ],
+      "versionTo": "1.6.21"
+    },
+    {
+      "versionsFrom": [
+        "1.6.21"
+      ],
+      "versionTo": "1.6.22"
+    },
+    {
+      "versionsFrom": [
+        "1.6.22"
+      ],
+      "versionTo": "1.6.23"
+    },
+    {
+      "versionsFrom": [
+        "1.6.23"
+      ],
+      "versionTo": "1.7.0"
+    }
+  ]
+}</code></pre></div><div class="tab-pane http"><pre><code>curl -i -X POST -H 'Content-Type: application/json' -d '{}' "https://<span class="api-admin-curl">lead.pryv.me</span>/admin/migrations/apply"</code></pre><div class="step-marker">⬇</div><pre><code>HTTP/1.1 200 OK
+Content-Type: application/json; charset=utf-8
+API-Version: 1.7.0
+
+{
+  "migrations": [
+    {
+      "versionsFrom": [
+        "1.6.15",
+        "1.6.16",
+        "1.6.17",
+        "1.6.18",
+        "1.6.19",
+        "1.6.20"
+      ],
+      "versionTo": "1.6.21"
+    },
+    {
+      "versionsFrom": [
+        "1.6.21"
+      ],
+      "versionTo": "1.6.22"
+    },
+    {
+      "versionsFrom": [
+        "1.6.22"
+      ],
+      "versionTo": "1.6.23"
+    },
+    {
+      "versionsFrom": [
+        "1.6.23"
+      ],
+      "versionTo": "1.7.0"
+    }
+  ]
+}
+</code></pre></div><div class="tab-pane sockets"><pre>Only available for HTTP REST</pre></div><div class="tab-pane batch"><pre>Only available for HTTP REST</pre></div><div class="tab-pane httpAuth"><pre><code>curl -i -X POST -H 'Content-Type: application/json' -d '{}' "https://<span class="api-admin-curl">lead.pryv.me</span>/admin/migrations/apply"</code></pre><div class="step-marker">⬇</div><pre><code>HTTP/1.1 200 OK
+Content-Type: application/json; charset=utf-8
+API-Version: 1.7.0
+
+{
+  "migrations": [
+    {
+      "versionsFrom": [
+        "1.6.15",
+        "1.6.16",
+        "1.6.17",
+        "1.6.18",
+        "1.6.19",
+        "1.6.20"
+      ],
+      "versionTo": "1.6.21"
+    },
+    {
+      "versionsFrom": [
+        "1.6.21"
+      ],
+      "versionTo": "1.6.22"
+    },
+    {
+      "versionsFrom": [
+        "1.6.22"
+      ],
+      "versionTo": "1.6.23"
+    },
+    {
+      "versionsFrom": [
+        "1.6.23"
+      ],
+      "versionTo": "1.7.0"
+    }
+  ]
+}
+
 </code></pre></div></div></div></aside></section></section><!-- it's either:--><!-- !trusted & !preview--><!-- !preview & -full--><!-- -preview--><section id="api-methods-platform-users"><h2 id="platform-users">Platform users</h2>
 <div class="content"><div class="meta"></div><div class="intro"><p>Methods for managing platform users.</p>
 </div></div><!-- it's either:--><!-- !trusted & !preview--><!-- !preview & -full--><!-- -preview--><section id="api-methods-platform-users-platformUsers-getOne" class="method"> <h3 id="retrieve-platform-user-information">Retrieve platform user information</h3>
-<div class="content"><div class="meta"><span class="http"><span class="label">HTTP-only</span><span class="label-value"><code>GET <a href="/reference-system/#api-endpoint">{admin}</a>/platform-users/{username}</code></span></span></div><div class="intro"><p>Retrieves the platform user&#39;s information.</p>
+<div class="content"><div class="meta"><span onclick="location='/reference/#method-ids'" class="method-id"><span title="Method Id" class="label">id</span><span class="label-value"><code>platformUsers.getOne</code></span></span><span class="http"><span class="label">HTTP-only</span><span class="label-value"><code>GET <a href="/reference-system/#api-endpoint">{admin}</a>/platform-users/{username}</code></span></span></div><div class="intro"><p>Retrieves the platform user&#39;s information.</p>
 </div><h4 id="parameters">Parameters</h4>
 <table class="definitions"><tr><th><code>username</code></th><td><div class="header"><span class="type">string</span><span class="http"><span class="label">HTTP</span><span class="label-value"><span>set in request path</span></span></span></div><div class="description"><p>The username of the platform user.</p>
 </div></td></tr></table><h4 id="result">Result</h4>
@@ -705,7 +933,7 @@ API-Version: 1.6.20
   }
 }</code></pre></div><div class="tab-pane http"><pre><code>curl -i "https://<span class="api-admin-curl">lead.pryv.me</span>/platform-users/${username}"</code></pre><div class="step-marker">⬇</div><pre><code>HTTP/1.1 200 OK
 Content-Type: application/json; charset=utf-8
-API-Version: 1.6.20
+API-Version: 1.7.0
 
 {
   "user": {
@@ -722,7 +950,7 @@ API-Version: 1.6.20
 }
 </code></pre></div><div class="tab-pane sockets"><pre>Only available for HTTP REST</pre></div><div class="tab-pane batch"><pre>Only available for HTTP REST</pre></div><div class="tab-pane httpAuth"><pre><code>curl -i "https://<span class="api-admin-curl">lead.pryv.me</span>/platform-users/${username}"</code></pre><div class="step-marker">⬇</div><pre><code>HTTP/1.1 200 OK
 Content-Type: application/json; charset=utf-8
-API-Version: 1.6.20
+API-Version: 1.7.0
 
 {
   "user": {
@@ -739,7 +967,7 @@ API-Version: 1.6.20
 }
 
 </code></pre></div></div></div></aside></section><!-- it's either:--><!-- !trusted & !preview--><!-- !preview & -full--><!-- -preview--><section id="api-methods-platform-users-platformUsers-delete" class="method"> <h3 id="delete-user">Delete user</h3>
-<div class="content"><div class="meta"><span class="http"><span class="label">HTTP-only</span><span class="label-value"><code>DELETE <a href="/reference-system/#api-endpoint">{admin}</a>/platform-users/{username}</code></span></span></div><div class="intro"><p>Delete user account from the Pryv.io platform. <strong>This deletion is final</strong>.</p>
+<div class="content"><div class="meta"><span onclick="location='/reference/#method-ids'" class="method-id"><span title="Method Id" class="label">id</span><span class="label-value"><code>platformUsers.delete</code></span></span><span class="http"><span class="label">HTTP-only</span><span class="label-value"><code>DELETE <a href="/reference-system/#api-endpoint">{admin}</a>/platform-users/{username}</code></span></span></div><div class="intro"><p>Delete user account from the Pryv.io platform. <strong>This deletion is final</strong>.</p>
 </div><h4 id="parameters">Parameters</h4>
 <table class="definitions"><tr><th><code>username</code></th><td><div class="header"><span class="type">string</span><span class="http"><span class="label">HTTP</span><span class="label-value"><span>set in request path</span></span></span></div><div class="description"><p>The username of the platform user to delete.</p>
 </div></td></tr></table><h4 id="result">Result</h4>
@@ -749,33 +977,33 @@ API-Version: 1.6.20
   "username": "dutch"
 }</code></pre></div><div class="tab-pane http"><pre><code>curl -i -X DELETE "https://<span class="api-admin-curl">lead.pryv.me</span>/platform-users/dutch"</code></pre><div class="step-marker">⬇</div><pre><code>HTTP/1.1 200 OK
 Content-Type: application/json; charset=utf-8
-API-Version: 1.6.20
+API-Version: 1.7.0
 
 {
   "username": "dutch"
 }
 </code></pre></div><div class="tab-pane sockets"><pre>Only available for HTTP REST</pre></div><div class="tab-pane batch"><pre>Only available for HTTP REST</pre></div><div class="tab-pane httpAuth"><pre><code>curl -i -X DELETE "https://<span class="api-admin-curl">lead.pryv.me</span>/platform-users/dutch"</code></pre><div class="step-marker">⬇</div><pre><code>HTTP/1.1 200 OK
 Content-Type: application/json; charset=utf-8
-API-Version: 1.6.20
+API-Version: 1.7.0
 
 {
   "username": "dutch"
 }
 
 </code></pre></div></div></div></aside></section><!-- it's either:--><!-- !trusted & !preview--><!-- !preview & -full--><!-- -preview--><section id="api-methods-platform-users-platformUsers-deactivateMFA" class="method"> <h3 id="deactivate-mfa-for-user">Deactivate MFA for user</h3>
-<div class="content"><div class="meta"><span class="http"><span class="label">HTTP-only</span><span class="label-value"><code>DELETE <a href="/reference-system/#api-endpoint">{admin}</a>/platform-users/{username}/mfa</code></span></span></div><div class="intro"><p>Deactivate MFA for a user account from the Pryv.io platform.</p>
+<div class="content"><div class="meta"><span onclick="location='/reference/#method-ids'" class="method-id"><span title="Method Id" class="label">id</span><span class="label-value"><code>platformUsers.deactivateMFA</code></span></span><span class="http"><span class="label">HTTP-only</span><span class="label-value"><code>DELETE <a href="/reference-system/#api-endpoint">{admin}</a>/platform-users/{username}/mfa</code></span></span></div><div class="intro"><p>Deactivate MFA for a user account from the Pryv.io platform.</p>
 </div><h4 id="parameters">Parameters</h4>
 <table class="definitions"><tr><th><code>username</code></th><td><div class="header"><span class="type">string</span><span class="http"><span class="label">HTTP</span><span class="label-value"><span>set in request path</span></span></span></div><div class="description"><p>The username of the platform user for whom to deactivate MFA.</p>
 </div></td></tr></table><h4 id="result">Result</h4>
 <span class="http"><span class="label">HTTP</span><span class="label-value"><code>204 No Content</code></span></span></div><aside><div class="example"><p>Deactivating MFA for a platform user</p>
 <div class="tab-content"><div class="tab-pane json active"><pre><code>{}</code></pre><div class="step-marker">⬇</div><pre><code>{}</code></pre></div><div class="tab-pane http"><pre><code>curl -i -X DELETE "https://<span class="api-admin-curl">lead.pryv.me</span>/platform-users/palmer/mfa"</code></pre><div class="step-marker">⬇</div><pre><code>HTTP/1.1 204 No Content
 Content-Type: application/json; charset=utf-8
-API-Version: 1.6.20
+API-Version: 1.7.0
 
 {}
 </code></pre></div><div class="tab-pane sockets"><pre>Only available for HTTP REST</pre></div><div class="tab-pane batch"><pre>Only available for HTTP REST</pre></div><div class="tab-pane httpAuth"><pre><code>curl -i -X DELETE "https://<span class="api-admin-curl">lead.pryv.me</span>/platform-users/palmer/mfa"</code></pre><div class="step-marker">⬇</div><pre><code>HTTP/1.1 204 No Content
 Content-Type: application/json; charset=utf-8
-API-Version: 1.6.20
+API-Version: 1.7.0
 
 {}
 

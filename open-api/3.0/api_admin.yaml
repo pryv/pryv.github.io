@@ -1,7 +1,7 @@
 openapi: 3.0.0
 info:
   description: Description of Pryv.io Admin API in Open API 3.0 standard format
-  version: 1.6.20
+  version: 1.7.0
   title: Pryv.io Admin API
   contact:
     email: support@pryv.com
@@ -202,6 +202,32 @@ paths:
                     Pryv.io services. See your configuration's docker-compose
                     file for the list of services.
                   type: array of strings
+  /admin/migrations:
+    get:
+      description: Retrieves the available platform settings migrations. To apply them use
+        [Apply configuration migrations](#apply-configuration-migrations).
+      operationId: migrations.get
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                - type: array
+                  items: migrations
+  /admin/migrations/apply:
+    post:
+      description: Apply the available platform configuration migrations. This will upgrade
+        your platform.yml file to the latest available version. Use [Retrieve
+        platform migrations](#retrieve-platform-migrations) to see available
+        migrations.
+      operationId: migrations.apply
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                - type: array
+                  items: migrations
   "/platform-users/{username}":
     get:
       description: Retrieves the platform user's information.
@@ -234,6 +260,18 @@ paths:
             application/json:
               schema:
                 - type: string
+  "/platform-users/{username}/mfa":
+    delete:
+      description: Deactivate MFA for a user account from the Pryv.io platform.
+      operationId: platformUsers.deactivateMFA
+      parameters:
+        - name: username
+          description: The username of the platform user for whom to deactivate MFA.
+          required: true
+          in: query
+        - name: username
+      responses:
+        "204": {}
 components:
   schemas:
     admin-user:
