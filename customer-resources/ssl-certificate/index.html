@@ -8,6 +8,9 @@
 <h2 id="automatic-generation-with-pryv-io-1-7-4-or-later">Automatic generation with Pryv.io 1.7.4 or later</h2>
 <p>If you are runnng Pryv.io 1.7.4 or later, you can simply run the <code>renew-ssl-certificate</code> script provided with <a href="https://api.pryv.com/config-template-pryv.io/">the configuration files</a> to generate a SSL certificate for your Pryv.io platform.</p>
 <p>Otherwise, follow this guide.</p>
+<h3 id="dns-check-failure-error-servers-are-not-reachable">DNS check failure: Error: Servers are not reachable</h3>
+<p>If you encounter this error, your network settings might prevent the <code>renewl-ssl-certificate</code> tool from peforming the pre-check of DNS challenge, namely the node process inside the <code>pryvio_ssl_certificate</code> container cannot get an answer from the <code>pryvio_dns</code> container.</p>
+<p>You can simply skip this by modifying the <code>acme:skipDnsChecks</code> parameter in <code>config-leader/ssl/conf/ssl-certificate.yml</code>. You can also increase the value of the time allocated for the DNS container(s) to reboot by increasing the <code>acme:dnsRebootWaitMs</code> parameter. On machines with limited resources, you can increase this value to <code>10000</code> (10 seconds).</p>
 <h2 id="certbot-installation">Certbot Installation</h2>
 <ul>
 <li><a href="https://certbot.eff.org/lets-encrypt/ubuntuxenial-other">Reference</a></li>
