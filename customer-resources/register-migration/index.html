@@ -23,8 +23,7 @@
 <h2 id="-optional-backup-redis-data">(optional) backup Redis data</h2>
 <p>As we will use Redis replication, it is recommended to backup the database. Make a copy of the data located in <code>${PRYV_CONF_ROOT}/pryv/redis/data/</code>.</p>
 <h2 id="transfer-user-data">Transfer user data</h2>
-<p>User data migration has a down time which we&#39;ll call <em>cold</em> migration. To limit its duration, we transfer the bulk of the data from <em>source</em> to <em>dest</em> prior to the <em>cold</em> migration using <code>rsync</code>.
-The <em>cold</em> migration consists of syncing the most recent data changes. After this, services will be started on <em>dest</em> and the <code>nginx</code> process on <em>source</em> will proxy calls while DNS entries are updated.</p>
+<p>User data migration has a down time which we&#39;ll call <em>cold</em> migration. After this, services will be started on <em>dest</em> and the <code>nginx</code> process on <em>source</em> will proxy calls while DNS entries are updated.</p>
 <p>1- Create an SSH key pair using:  </p>
 <pre><code class="lang-bash">ssh-keygen -t rsa -b 4096 -C &quot;migration@remote&quot;
 </code></pre>
@@ -37,9 +36,7 @@ The <em>cold</em> migration consists of syncing the most recent data changes. Af
   ${USERNAME}@${SOURCE_MACHINE}:${PRYV_CONF_ROOT}/pryv/redis/data/ \
   ${PRYV_CONF_ROOT}/pryv/redis/data
 </code></pre>
-<p>5- If needed, Repeat step 2 to sync the biggest bulk of the data prior to the <em>cold</em> migration</p>
-<p>6- Shutdown services on <em>source</em>: <code>${PRYV_CONF_ROOT}/stop-pryv</code></p>
-<p>7- Make last sync by executing steps 2</p>
+<p>5- Shutdown services on <em>source</em>: <code>${PRYV_CONF_ROOT}/stop-pryv</code></p>
 <p>If you wish to reactivate service on the <em>source</em> machine, simply reboot the stopped services: <code>${PRYV_CONF_ROOT}/run-pryv</code>.</p>
 <h2 id="set-nginx-proxying">Set NGINX proxying</h2>
 <p>Since the DNS changes will take some time to come into effect, the NGINX process on <em>source</em> will be set to proxy to the <em>dest</em> machine.
@@ -50,15 +47,42 @@ The following steps describe the configuration changes to make NGINX proxy calls
 <pre><code class="lang-nginx">upstream register_server {
   server register:9000 max_fails=3 fail_timeout=30s;
 }
+
+upstream mail_server {
+  server mail:9000 max_fails=3 fail_timeout=30s;
+}
+
+upstream leader_server {
+  server config-leader:7000 max_fails=3 fail_timeout=30s;
+}
+
+upstream admin_panel_server {
+  server admin_panel:80;
+}
 </code></pre>
 <p>with</p>
 <pre><code class="lang-nginx">upstream register_server {
   server ${DEST_REGISTER_IP_ADDRESS}:443;
 }
+
+upstream mail_server {
+  server ${DEST_REGISTER_IP_ADDRESS}:443;
+}
+
+upstream leader_server {
+  server ${DEST_REGISTER_IP_ADDRESS}:443;
+}
+
+upstream admin_panel_server {
+  server ${DEST_REGISTER_IP_ADDRESS}:80;
+}
 </code></pre>
 <p>Change proxy protocol from <code>http</code> to <code>https</code></p>
 <ul>
 <li>Change: <code>http://register_server</code> to <code>https://register_server</code></li>
+<li>Change: <code>http://mail_server</code> to <code>https://mail_server</code></li>
+<li>Change: <code>http://leader_server</code> to <code>https://leader_server</code></li>
+<li>Change: <code>http://admin_panel_server</code> to <code>https://admin_panel_server</code></li>
 </ul>
 <p>Run <code>${PRYV_CONF_ROOT}/run-pryv</code></p>
 <p>As we are currently using docker-compose to specify the mounted volumes (containing the NGINX config), we just boot all services, even if they will unused as NGINX is proxying to the <em>dest</em> machine.</p>
