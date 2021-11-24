@@ -28,27 +28,38 @@
 </code></pre>
 <p>2- Copy the private one to <code>${PATH_TO_PRIVATE_KEY}</code> in <em>dest</em></p>
 <p>3- Add the public one in <code>~/.ssh/authorized_keys</code> on <em>source</em>.</p>
-<p>4- Transfer Mongo data: on <em>dest</em>, run: </p>
+<p>4- On <em>source</em>, create a dump of the MongoDB database:</p>
+<pre><code class="lang-bash">docker exec -t pryvio_mongodb /app/bin/mongodb/bin/mongodump -d pryv-node -o /app/backup/
+</code></pre>
+<p>The backup folder will be located at: <code>${PRYV_CONF_ROOT}/pryv/mongodb/backup/</code>.</p>
+<p>5- Transfer Mongo data: on <em>dest</em>, run: </p>
 <pre><code class="lang-bash">time rsync --verbose --copy-links \
   --archive --compress --delete -e \
   &quot;ssh -i ${PATH_TO_PRIVATE_KEY}&quot; \
-  ${USERNAME}@${SOURCE_MACHINE}:${PRYV_CONF_ROOT}/pryv/mongodb/data/ \
-  ${PRYV_CONF_ROOT}/pryv/mongodb/data/
+  ${USERNAME}@${SOURCE_MACHINE}:${PRYV_CONF_ROOT}/pryv/mongodb/backup/ \
+  ${PRYV_CONF_ROOT}/pryv/mongodb/backup/
 </code></pre>
-<p>5- Transfer other user data: on <em>dest</em>, run:  </p>
+<p>6- Transfer other user data: on <em>dest</em>, run:  </p>
 <pre><code class="lang-bash">time rsync --verbose --copy-links \
   --archive --compress --delete -e \
   &quot;ssh -i ${PATH_TO_PRIVATE_KEY}&quot; \
   ${USERNAME}@${SOURCE_MACHINE}:${PRYV_CONF_ROOT}/pryv/core/data/ \
   ${PRYV_CONF_ROOT}/pryv/core/data
 </code></pre>
-<p>6- If needed, Repeat steps 2-3 to sync the biggest bulk of the data prior to the <em>cold</em> migration</p>
 <p>7- Shutdown services on <em>source</em>: <code>${PRYV_CONF_ROOT}/stop-pryv</code></p>
-<p>8- Make last sync by executing steps 2-3</p>
 <p>If you wish to reactivate service on the <em>source</em> machine, simply reboot the stopped services: <code>${PRYV_CONF_ROOT}/run-pryv</code> </p>
 <h2 id="launch-services-on-dest-">Launch services on <em>dest</em></h2>
-<p>Launch services: run <code>${PRYV_CONF_ROOT}/run-pryv</code></p>
-<p>and verify that it is running correctly as described in the <a href="/customer-resources/platform-validation/#core">core validation guide</a>.</p>
+<ol>
+<li><p>Launch services: run <code>${PRYV_CONF_ROOT}/run-pryv</code></p>
+</li>
+<li><p>Restore MongoDB files, run:</p>
+</li>
+</ol>
+<pre><code class="lang-bash">docker exec -t pryvio_mongodb /app/bin/mongodb/bin/mongorestore /app/backup/
+</code></pre>
+<ol>
+<li>and verify that it is running correctly as described in the <a href="/customer-resources/platform-validation/#core">core validation guide</a>.</li>
+</ol>
 <h2 id="set-nginx-redirection-for-core-on-source-">Set NGINX redirection for core on <em>source</em></h2>
 <p>Since the DNS changes will take some time to come into effect, the NGINX process on <em>source</em> will be set to proxy to the <em>dest</em> machine.<br>The following steps describe the configuration changes to make NGINX proxy calls to the <em>dest</em> core. It is advised to comment out the old setting inline using <code>#</code> in order to rollback easily in case of need.</p>
 <ul>
@@ -116,7 +127,7 @@ upstream preview_server {
 <h2 id="verify">Verify</h2>
 <p>Log onto an account and verify that the data has been moved. You can monitor the services logs (<code>doker logs ${CONTAINER_NAME}</code>, which can be found using <code>docker ps</code>) to ensure that data is accessed on the new machine.</p>
 <h2 id="update-core-server-ip-address-on-register">Update core server IP address on Register</h2>
-<p>SSH to the reg-master machine and edit <strong>manually</strong> (don&#39;t use the admin pane) the following parameters:</p>
+<p>SSH to the reg-master machine and edit <strong>manually</strong> (don&#39;t use the admin panel) the following parameters:</p>
 <p>in <code>${PRYV_CONF_ROOT}/config-leader/conf/platform.yml</code>:</p>
 <pre><code class="lang-yaml">vars:
   MACHINES_AND_PLATFORM_SETTINGS:
