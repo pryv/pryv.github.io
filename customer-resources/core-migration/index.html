@@ -96,6 +96,10 @@ upstream hfs_server {
 upstream preview_server {
   server preview:9000 max_fails=3 fail_timeout=30s;
 }
+
+upstream mfa_server {
+  server mfa:7000 max_fails=3 fail_timeout=30s;
+}
 </code></pre>
 <p>with</p>
 <pre><code class="lang-nginx">upstream core_server {
@@ -113,6 +117,10 @@ upstream hfs_server {
 upstream preview_server {
   server ${DEST_CORE_IP_ADDRESS}:443;
 }
+
+upstream mfa_server {
+  server ${DEST_CORE_IP_ADDRESS}:443;
+}
 </code></pre>
 <p>In the same file, change the proxy protocol from <code>http</code> to <code>https</code></p>
 <ul>
@@ -120,6 +128,7 @@ upstream preview_server {
 <li>Change: <code>http://websocket_server</code> to <code>http://websocket_server</code></li>
 <li>Change: <code>http://hfs_server</code> to <code>https://hfs_server</code></li>
 <li>Change: <code>http://preview_server</code> to <code>https://preview_server</code></li>
+<li>Change: <code>http://mfa_server</code> to <code>https://mfa_server</code></li>
 </ul>
 <h2 id="reload-nginx-on-source-">Reload NGINX on <em>source</em></h2>
 <p>run <code>${PRYV_CONF_ROOT}/run-pryv</code></p>
