@@ -1,71 +1,145 @@
-<!DOCTYPE html><html lang="en" class="no-js"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="description" property="og:description" content="Pryv API reference and resources for developers"><meta name="author" content="Pryv SA"><meta property="og:type" content="website"><meta name="image" property="og:image" content="/assets/images/logo-256.png"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Pryv.io core migration | Pryv API</title><link rel="icon" href="/assets/images/favicon-black.ico" type="image/x-icon"><link rel="apple-touch-icon" sizes="120x120" href="/assets/images/apple-touch-icon-120x120-black.png"><link rel="apple-touch-icon" sizes="152x152" href="/assets/images/apple-touch-icon-152x152-black.png"><link rel="apple-touch-icon" sizes="180x180" href="/assets/images/apple-touch-icon-180x180-black.png"><!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+<!DOCTYPE html><html class="no-js" lang="en"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="description" property="og:description" content="Pryv API reference and resources for developers"><meta name="author" content="Pryv SA"><meta property="og:type" content="website"><meta name="image" property="og:image" content="/assets/images/logo-256.png"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Pryv.io core migration | Pryv API</title><link rel="icon" href="/assets/images/favicon-black.ico" type="image/x-icon"><link rel="apple-touch-icon" sizes="120x120" href="/assets/images/apple-touch-icon-120x120-black.png"><link rel="apple-touch-icon" sizes="152x152" href="/assets/images/apple-touch-icon-152x152-black.png"><link rel="apple-touch-icon" sizes="180x180" href="/assets/images/apple-touch-icon-180x180-black.png"><!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
 <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
 <!--[if lt IE 9]>
   <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
   <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
-<![endif]--><link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Roboto:400,300,500,700,400italic|Roboto+Condensed:400,300,700"><link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/styles/docco.min.css"><link rel="stylesheet" type="text/css" href="/assets/fonts/ss-gizmo.min.css"><link rel="stylesheet" type="text/css" href="/assets/style.css"></head><body class="core-migration with-toc"><header id="page-header"><nav role="navigation" class="navbar navbar-default navbar-fixed-top"><div class="container-fluid"><div class="navbar-header"><a href="https://pryv.com" title="Pryv home" class="navbar-brand logo pryv-home"><img src="/assets/images/icon-home.svg" alt="Pryv home" height="50"></a><a href="/" title="Developers home" class="navbar-brand logo"><img src="/assets/images/logo-256-black.png" alt="Developers home"></a><button type="button" data-toggle="collapse" data-target="#main-nav" class="navbar-toggle"><span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button></div><div id="main-nav" class="collapse navbar-collapse"><ul class="nav navbar-nav"><li class="dropdown"><a href="#" data-toggle="dropdown" class="dropdown-toggle">Guides <b class="caret"></b></a><ul class="dropdown-menu"><li><a href="/getting-started/">Getting started</a></li><li><a href="/external-resources/">Apps &amp; Libs</a></li><li><a href="/concepts/">API concepts</a></li><li><a href="/guides/data-modelling/">Data modelling</a></li><li><a href="/guides/webhooks/">Webhooks</a></li><li><a href="/guides/custom-auth/">Custom auth</a></li><li><a href="/guides/consent/">Consent request</a></li><li><a href="/guides/app-guidelines/">App guidelines</a></li><li><a href="/guides/audit-logs/">Audit logs</a></li></ul></li><li class="dropdown"><a href="#" data-toggle="dropdown" class="dropdown-toggle">Reference <b class="caret"></b></a><ul class="dropdown-menu"><li><a href="/reference/">API reference</a></li><li><a href="/reference-admin/">Admin API reference</a></li><li><a href="/reference-system/">System API reference</a></li><li><a href="/event-types/">Event types</a></li><li><a href="/open-api/">Open API (Postman)</a></li><li><a href="/change-log/">API change log</a></li></ul></li><li class="dropdown"><a href="#" data-toggle="dropdown" class="dropdown-toggle">FAQ <b class="caret"></b></a><ul class="dropdown-menu"><li><a href="/faq-api/">API</a></li><li><a href="/faq-infra/">Infrastructure</a></li></ul></li><li><a href="https://support.pryv.com/hc/en-us/community/topics">Community</a></li><li><a href="https://github.com/pryv/open-pryv.io">Open Pryv.io</a></li><li><a href="/customer-resources/">Entreprise</a></li><li><a href="/roadmap/">Roadmap</a></li></ul><div class="navbar-right"><p class="navbar-text version"><a href="/change-log/" title="View change log">API version: <strong>1.7.0</strong></a></p></div></div></div></nav></header><div id="main-wrapper" class="container container-narrow"><div id="main"><h1 class="page-title">Pryv.io core migration</h1><h2 id="table-of-contents">Table of contents</h2>
+<![endif]--><link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Roboto:400,300,500,700,400italic|Roboto+Condensed:400,300,700"><link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/styles/docco.min.css"><link rel="stylesheet" type="text/css" href="/assets/fonts/ss-gizmo.min.css"><link rel="stylesheet" type="text/css" href="/assets/style.css"></head><body class="core-migration with-toc"><header id="page-header"><nav class="navbar navbar-default navbar-fixed-top" role="navigation"><div class="container-fluid"><div class="navbar-header"><a class="navbar-brand logo pryv-home" href="https://pryv.com" title="Pryv home"><img src="/assets/images/icon-home.svg" alt="Pryv home" height="50"></a><a class="navbar-brand logo" href="/" title="Developers home"><img src="/assets/images/logo-256-black.png" alt="Developers home"></a><button class="navbar-toggle" type="button" data-toggle="collapse" data-target="#main-nav"><span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button></div><div class="collapse navbar-collapse" id="main-nav"><ul class="nav navbar-nav"><li class="dropdown"><a class="dropdown-toggle" href="#" data-toggle="dropdown">Guides <b class="caret"></b></a><ul class="dropdown-menu"><li><a href="/getting-started/">Getting started</a></li><li><a href="/external-resources/">Apps &amp; Libs</a></li><li><a href="/concepts/">API concepts</a></li><li><a href="/guides/data-modelling/">Data modelling</a></li><li><a href="/guides/webhooks/">Webhooks</a></li><li><a href="/guides/custom-auth/">Custom auth</a></li><li><a href="/guides/consent/">Consent request</a></li><li><a href="/guides/app-guidelines/">App guidelines</a></li><li><a href="/guides/audit-logs/">Audit logs</a></li></ul></li><li class="dropdown"><a class="dropdown-toggle" href="#" data-toggle="dropdown">Reference <b class="caret"></b></a><ul class="dropdown-menu"><li><a href="/reference/">API reference</a></li><li><a href="/reference-admin/">Admin API reference</a></li><li><a href="/reference-system/">System API reference</a></li><li><a href="/event-types/">Event types</a></li><li><a href="/open-api/">Open API (Postman)</a></li><li><a href="/change-log/">API change log</a></li></ul></li><li class="dropdown"><a class="dropdown-toggle" href="#" data-toggle="dropdown">FAQ <b class="caret"></b></a><ul class="dropdown-menu"><li><a href="/faq-api/">API</a></li><li><a href="/faq-infra/">Infrastructure</a></li></ul></li><li><a href="https://support.pryv.com/hc/en-us/community/topics">Community</a></li><li><a href="https://github.com/pryv/open-pryv.io">Open Pryv.io</a></li><li><a href="/customer-resources/">Entreprise</a></li><li><a href="/roadmap/">Roadmap</a></li></ul><div class="navbar-right"><p class="navbar-text version"><a href="/change-log/" title="View change log">API version: <strong>1.7.0</strong></a></p></div></div></div></nav></header><div class="container container-narrow" id="main-wrapper"><div id="main"><h1 class="page-title" id="pryvio-core-migration"><!--pryvio-core-migration-->Pryv.io core migration</h1><h2 id="table-of-contents-"><!--table-of-contents--->Table of contents <!-- omit in toc --></h2>
 <ol>
 <li><a href="#summary">Summary</a></li>
-<li><a href="#-optional-create-user-s-with-specific-data-on-source-for-post-migration-verification"><em>(Optional)</em> Create user(s) with specific data on source for post-migration verification</a></li>
-<li><a href="#deploy-and-launch-services-on-the-destination-machine">Deploy and launch services on the destination machine</a></li>
-<li><a href="#transfer-user-data-from-source-to-dest-">Transfer user data from <em>source</em> to <em>dest</em></a></li>
-<li><a href="#launch-services-on-dest-">Launch services on <em>dest</em></a></li>
-<li><a href="#set-nginx-redirection-for-core-on-source-">Set NGINX redirection for core on <em>source</em></a></li>
-<li><a href="#reload-nginx-on-source-">Reload NGINX on <em>source</em></a></li>
+<li><a href="#optional-create-users-with-specific-data-on-source-for-post-migration-verification"><em>(Optional)</em> Create user(s) with specific data on source for post-migration verification</a></li>
+<li><a href="#setup-dest-machine">Setup <em>dest</em> machine</a></li>
+<li><a href="#transfer-data">Transfer data</a>
+<ol>
+<li><a href="#transfer-config-data-and-fetch-docker-images">Transfer config data and fetch docker images</a></li>
+<li><a href="#transfer-user-data-from-source-to-dest">Transfer user data from <em>source</em> to <em>dest</em></a></li>
+</ol>
+</li>
+<li><a href="#launch-services-on-dest">Launch services on <em>dest</em></a></li>
+<li><a href="#set-nginx-redirection-for-core-on-source">Set NGINX redirection for core on <em>source</em></a></li>
+<li><a href="#reload-nginx-on-source">Reload NGINX on <em>source</em></a></li>
 <li><a href="#verify">Verify</a></li>
-<li><a href="#update-core-server-ip-address-on-register">Update core server IP address on Register</a></li>
+<li><a href="#update-core-server-ip-address-on-register">Update core server IP address on register</a></li>
 </ol>
-<h2 id="summary">Summary</h2>
+<h2 id="summary"><!--summary-->Summary</h2>
 <p>We copy the data from the old core to the new one then set the old core to proxy to the new one so we can use it during the DNS propagation phase.</p>
-<h2 id="-optional-create-user-s-with-specific-data-on-source-for-post-migration-verification"><em>(Optional)</em> Create user(s) with specific data on source for post-migration verification</h2>
-<p>Generate a few events and streams by hand for a naked eye comparison for data transferred after the migration.  </p>
-<h2 id="deploy-and-launch-services-on-the-destination-machine">Deploy and launch services on the destination machine</h2>
-<p>We assume that a core service is already deployed (config present, docker images downloaded) on the <em>dest</em> machine.  </p>
-<h2 id="transfer-user-data-from-source-to-dest-">Transfer user data from <em>source</em> to <em>dest</em></h2>
-<p>User data migration has a down time which we&#39;ll call <em>cold</em> migration. To limit its duration, we transfer the bulk of the data from <em>source</em> to <em>dest</em> prior to the <em>cold</em> migration using <code>rsync</code>.<br>The <em>cold</em> migration consists of syncing the most recent data changes. After this, services will be started on <em>dest</em> and the <code>nginx</code> process on <em>source</em> will proxy calls while DNS entries are updated.</p>
-<p>1- Create an SSH key pair using the following command: </p>
-<pre><code class="lang-bash">ssh-keygen -t rsa -b 4096 -C &quot;migration@remote&quot;
-</code></pre>
-<p>2- Copy the private one to <code>${PATH_TO_PRIVATE_KEY}</code> in <em>dest</em></p>
-<p>3- Add the public one in <code>~/.ssh/authorized_keys</code> on <em>source</em>.</p>
-<p>4- On <em>source</em>, create a dump of the MongoDB database:</p>
-<pre><code class="lang-bash">docker exec -t pryvio_mongodb /app/bin/mongodb/bin/mongodump -d pryv-node -o /app/backup/
-</code></pre>
-<p>The backup folder will be located at: <code>${PRYV_CONF_ROOT}/pryv/mongodb/backup/</code>.</p>
-<p>5- Transfer Mongo data: on <em>dest</em>, run: </p>
-<pre><code class="lang-bash">time rsync --verbose --copy-links \
-  --archive --compress --delete -e \
-  &quot;ssh -i ${PATH_TO_PRIVATE_KEY}&quot; \
-  ${USERNAME}@${SOURCE_MACHINE}:${PRYV_CONF_ROOT}/pryv/mongodb/backup/ \
-  ${PRYV_CONF_ROOT}/pryv/mongodb/backup/
-</code></pre>
-<p>6- Transfer other user data: on <em>dest</em>, run:  </p>
-<pre><code class="lang-bash">time rsync --verbose --copy-links \
-  --archive --compress --delete -e \
-  &quot;ssh -i ${PATH_TO_PRIVATE_KEY}&quot; \
-  ${USERNAME}@${SOURCE_MACHINE}:${PRYV_CONF_ROOT}/pryv/core/data/ \
-  ${PRYV_CONF_ROOT}/pryv/core/data
-</code></pre>
-<p>7- Shutdown services on <em>source</em>: <code>${PRYV_CONF_ROOT}/stop-pryv</code></p>
-<p>If you wish to reactivate service on the <em>source</em> machine, simply reboot the stopped services: <code>${PRYV_CONF_ROOT}/run-pryv</code> </p>
-<h2 id="launch-services-on-dest-">Launch services on <em>dest</em></h2>
+<h2 id="optional-create-users-with-specific-data-on-source-for-post-migration-verification"><!--optional-create-users-with-specific-data-on-source-for-post-migration-verification--><em>(Optional)</em> Create user(s) with specific data on source for post-migration verification</h2>
+<p>Generate a few events and streams by hand for a naked eye comparison for data transferred after the migration.</p>
+<h2 id="setup-dest-machine"><!--setup-dest-machine-->Setup <em>dest</em> machine</h2>
+<p>We assume that you have installed <code>docker</code> and <code>docker-compose</code> on the <em>dest</em> machine and have authenticated yourself with our private Docker repository.</p>
+<h2 id="transfer-data"><!--transfer-data-->Transfer data</h2>
+<p>We will be transfering data using rsync, therefore, we setup a pair of keys for this:</p>
 <ol>
-<li><p>Launch services: run <code>${PRYV_CONF_ROOT}/run-pryv</code></p>
+<li>
+<p>Create an SSH key pair using the following command:</p>
+<pre><code class="language-bash">ssh-keygen -t rsa -b 4096 -C &quot;migration@remote&quot;
+</code></pre>
 </li>
-<li><p>Restore MongoDB files, run:</p>
+<li>
+<p>Copy the private one to <code>${PATH_TO_PRIVATE_KEY}</code> in <em>source</em></p>
+</li>
+<li>
+<p>Add the public one in <code>~/.ssh/authorized_keys</code> on <em>dest</em></p>
 </li>
 </ol>
-<pre><code class="lang-bash">docker exec -t pryvio_mongodb /app/bin/mongodb/bin/mongorestore /app/backup/
+<h3 id="transfer-config-data-and-fetch-docker-images"><!--transfer-config-data-and-fetch-docker-images-->Transfer config data and fetch docker images</h3>
+<ol start="4">
+<li>
+<p>Transfer config data: on <em>source</em>, run:</p>
+<pre><code class="language-bash">time rsync --verbose --copy-links \
+    --archive --compress -e \
+  &quot;ssh -i ${PATH_TO_PRIVATE_KEY}&quot; \
+    ${PRYV_CONF_ROOT}/config-follower \
+    ${USERNAME}@${DEST_MACHINE}:${PRYV_CONF_ROOT}/config-follower/
 </code></pre>
-<ol>
-<li>and verify that it is running correctly as described in the <a href="/customer-resources/platform-validation/#core">core validation guide</a>.</li>
+<p>(You may have to go via your home user directory on <em>dest</em> first if permission issues arise.)</p>
+</li>
+<li>
+<p>Fetch docker images on <em>dest</em> by running:</p>
+<pre><code class="language-bash">${PRYV_CONF_ROOT}/run-config-follower
+${PRYV_CONF_ROOT}/run-pryv
+</code></pre>
+</li>
+<li>
+<p>Shutdown Pryv services prior to transferring user data:</p>
+<pre><code class="language-bash">${PRYV_CONF_ROOT}/stop-pryv
+</code></pre>
+</li>
 </ol>
-<h2 id="set-nginx-redirection-for-core-on-source-">Set NGINX redirection for core on <em>source</em></h2>
-<p>Since the DNS changes will take some time to come into effect, the NGINX process on <em>source</em> will be set to proxy to the <em>dest</em> machine.<br>The following steps describe the configuration changes to make NGINX proxy calls to the <em>dest</em> core. It is advised to comment out the old setting inline using <code>#</code> in order to rollback easily in case of need.</p>
+<h3 id="transfer-user-data-from-source-to-dest"><!--transfer-user-data-from-source-to-dest-->Transfer user data from <em>source</em> to <em>dest</em></h3>
+<ol start="7">
+<li>
+<p>Shutdown NGINX on <em>source</em> to prevent new information from arriving: <code>docker stop pryvio_nginx</code></p>
+</li>
+<li>
+<p>On <em>source</em>, create a dump of the MongoDB database:</p>
+<pre><code class="language-bash">docker exec -t pryvio_mongodb /app/bin/mongodb/bin/mongodump -d pryv-node -o /app/backup/
+</code></pre>
+<p>The backup folder will be located at: <code>${PRYV_CONF_ROOT}/pryv/mongodb/backup/</code></p>
+</li>
+<li>
+<p>Transfer Mongo data: on <em>source</em>, run:</p>
+<pre><code class="language-bash">time rsync --verbose --copy-links \
+     --archive --compress -e \
+  &quot;ssh -i ${PATH_TO_PRIVATE_KEY}&quot; \
+     ${PRYV_CONF_ROOT}/pryv/mongodb/backup \
+     ${USERNAME}@${DEST_MACHINE}:${PRYV_CONF_ROOT}/pryv/mongodb/backup/ 
+</code></pre>
+<p>(You may have to go via your home user directory on <em>dest</em> first if permission issues arise.)</p>
+</li>
+<li>
+<p>On <em>source</em>, create a dump of the InfluxDB database:</p>
+<pre><code class="language-bash">docker exec -t pryvio_influxdb /usr/bin/influxd backup -portable /pryv/backup/
+</code></pre>
+<p>The backup folder will be located at: <code>${PRYV_CONF_ROOT}/pryv/influxdb/backup/</code></p>
+</li>
+<li>
+<p>Transfer InfluxDB data: on <em>source</em>, run:</p>
+<pre><code class="language-bash">time rsync --verbose --copy-links \
+     --archive --compress -e \
+  &quot;ssh -i ${PATH_TO_PRIVATE_KEY}&quot; \
+     ${PRYV_CONF_ROOT}/pryv/influxdb/backup \
+     ${USERNAME}@${DEST_MACHINE}:${PRYV_CONF_ROOT}/pryv/influxdb/backup/ 
+</code></pre>
+<p>(Same comment as previous step about permissions.)</p>
+</li>
+<li>
+<p>Transfer other user data: on <em>source</em>, run:</p>
+<pre><code class="language-bash">time rsync --verbose --copy-links \
+     --archive --compress -e \
+  &quot;ssh -i ${PATH_TO_PRIVATE_KEY}&quot; \
+     ${PRYV_CONF_ROOT}/pryv/core/data \
+     ${USERNAME}@${DEST_MACHINE}:${PRYV_CONF_ROOT}/pryv/core/data/
+</code></pre>
+<p>(Same comment as previous step about permissions.)</p>
+</li>
+<li>
+<p>On <em>dest</em>, run <code>./ensure-permissions-core</code> script to help with enforcing correct permissions on data and log folders</p>
+</li>
+</ol>
+<p>If you wish to reactivate service on the <em>source</em> machine, simply reboot the stopped services: <code>${PRYV_CONF_ROOT}/run-pryv</code></p>
+<h2 id="launch-services-on-dest"><!--launch-services-on-dest-->Launch services on <em>dest</em></h2>
+<ol>
+<li>
+<p>Launch services: run <code>${PRYV_CONF_ROOT}/run-pryv</code></p>
+</li>
+<li>
+<p>Restore MongoDB files, run:</p>
+<pre><code class="language-bash">docker exec -t pryvio_mongodb /app/bin/mongodb/bin/mongorestore /app/backup/
+</code></pre>
+</li>
+<li>
+<p>Restore the InDuxDB files:</p>
+<pre><code class="language-bash">docker exec -t pryvio_influxdb /usr/bin/influxd restore -portable /pryv/backup/
+</code></pre>
+</li>
+</ol>
+<h2 id="set-nginx-redirection-for-core-on-source"><!--set-nginx-redirection-for-core-on-source-->Set NGINX redirection for core on <em>source</em></h2>
+<p>Since the DNS changes will take some time to come into effect, the NGINX process on <em>source</em> will be set to proxy to the <em>dest</em> machine.<br>
+The following steps describe the configuration changes to make NGINX proxy calls to the <em>dest</em> core. It is advised to comment out the old setting inline using <code>#</code> in order to rollback easily in case of need.</p>
 <ul>
-<li>In <code>${PRYV_CONF_ROOT}/pryv/nginx/conf/site-443.conf</code>, Replace the following:</li>
-</ul>
-<pre><code class="lang-nginx">upstream core_server {
+<li>
+<p>In <code>${PRYV_CONF_ROOT}/pryv/nginx/conf/site-443.conf</code>, Replace the following:</p>
+<pre><code class="language-nginx">upstream core_server {
   server core:3000 max_fails=3 fail_timeout=30s;
   server core:3001 max_fails=3 fail_timeout=30s;
   server core:3002 max_fails=3 fail_timeout=30s;
@@ -102,7 +176,7 @@ upstream mfa_server {
 }
 </code></pre>
 <p>with</p>
-<pre><code class="lang-nginx">upstream core_server {
+<pre><code class="language-nginx">upstream core_server {
   server ${DEST_CORE_IP_ADDRESS}:443;
 }
 
@@ -122,7 +196,9 @@ upstream mfa_server {
   server ${DEST_CORE_IP_ADDRESS}:443;
 }
 </code></pre>
-<p>In the same file, change the proxy protocol from <code>http</code> to <code>https</code></p>
+</li>
+<li>
+<p>In the same file, change the proxy protocol from <code>http</code> to <code>https</code>:</p>
 <ul>
 <li>Change: <code>http://core_server</code> to <code>https://core_server</code></li>
 <li>Change: <code>http://websocket_server</code> to <code>http://websocket_server</code></li>
@@ -130,15 +206,17 @@ upstream mfa_server {
 <li>Change: <code>http://preview_server</code> to <code>https://preview_server</code></li>
 <li>Change: <code>http://mfa_server</code> to <code>https://mfa_server</code></li>
 </ul>
-<h2 id="reload-nginx-on-source-">Reload NGINX on <em>source</em></h2>
-<p>run <code>${PRYV_CONF_ROOT}/run-pryv</code></p>
-<p>As we are currently using docker-compose to specify the mounted volumes (containing the NGINX config), we just boot all services, even if they won&#39;t be used as NGINX is proxying to the <em>dest</em> machine.</p>
-<h2 id="verify">Verify</h2>
+</li>
+</ul>
+<h2 id="reload-nginx-on-source"><!--reload-nginx-on-source-->Reload NGINX on <em>source</em></h2>
+<p>Run <code>${PRYV_CONF_ROOT}/run-pryv</code></p>
+<p>As we are currently using docker-compose to specify the mounted volumes (containing the NGINX config), we just boot all services, even if they won&#x2019;t be used as NGINX is proxying to the <em>dest</em> machine.</p>
+<h2 id="verify"><!--verify-->Verify</h2>
 <p>Log onto an account and verify that the data has been moved. You can monitor the services logs (<code>doker logs ${CONTAINER_NAME}</code>, which can be found using <code>docker ps</code>) to ensure that data is accessed on the new machine.</p>
-<h2 id="update-core-server-ip-address-on-register">Update core server IP address on Register</h2>
-<p>SSH to the reg-master machine and edit <strong>manually</strong> (don&#39;t use the admin panel) the following parameters:</p>
-<p>in <code>${PRYV_CONF_ROOT}/config-leader/conf/platform.yml</code>:</p>
-<pre><code class="lang-yaml">vars:
+<h2 id="update-core-server-ip-address-on-register"><!--update-core-server-ip-address-on-register-->Update core server IP address on register</h2>
+<p>SSH to the reg-master machine and edit <strong>manually</strong> (don&#x2019;t use the admin panel) the following parameters:</p>
+<p>In <code>${PRYV_CONF_ROOT}/config-leader/conf/platform.yml</code>:</p>
+<pre><code class="language-yaml">vars:
   MACHINES_AND_PLATFORM_SETTINGS:
     name: &quot;Machines and platform settings&quot;
     settings:
@@ -151,7 +229,7 @@ upstream mfa_server {
               ip: CHANGE_ME # change its IP address to the new one
 </code></pre>
 <p>Then reboot config-follower and the pryv-services on all register machines:</p>
-<pre><code class="lang-bash">${PRYV_CONF_ROOT}/restart-config-follower
+<pre><code class="language-bash">${PRYV_CONF_ROOT}/restart-config-follower
 ${PRYV_CONF_ROOT}/restart-pryv
 </code></pre>
 </div><nav id="toc"></nav></div><footer id="page-footer"><nav class="navbar navbar-default"><div class="container-fluid"><div id="footer-nav"><ul class="nav navbar-nav"><li><a href="mailto:developers@pryv.com">Send a message</a></li><li><a href="https://github.com/pryv">GitHub</a></li><li><a href="https://pryv.com">pryv.com</a></li></ul></div></div></nav></footer><script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script><script src="/assets/bootstrap.min.js"></script><script src="/assets/js/toc.min.js"></script><!-- TOC generation--><script>jQuery(document).ready(function($) {

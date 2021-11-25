@@ -1,51 +1,46 @@
-<!DOCTYPE html><html lang="en" class="no-js"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="description" property="og:description" content="Pryv API reference and resources for developers"><meta name="author" content="Pryv SA"><meta property="og:type" content="website"><meta name="image" property="og:image" content="/assets/images/logo-256.png"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Pryv.io Webhooks | Pryv API</title><link rel="icon" href="/assets/images/favicon-black.ico" type="image/x-icon"><link rel="apple-touch-icon" sizes="120x120" href="/assets/images/apple-touch-icon-120x120-black.png"><link rel="apple-touch-icon" sizes="152x152" href="/assets/images/apple-touch-icon-152x152-black.png"><link rel="apple-touch-icon" sizes="180x180" href="/assets/images/apple-touch-icon-180x180-black.png"><!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+<!DOCTYPE html><html class="no-js" lang="en"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="description" property="og:description" content="Pryv API reference and resources for developers"><meta name="author" content="Pryv SA"><meta property="og:type" content="website"><meta name="image" property="og:image" content="/assets/images/logo-256.png"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Pryv.io Webhooks | Pryv API</title><link rel="icon" href="/assets/images/favicon-black.ico" type="image/x-icon"><link rel="apple-touch-icon" sizes="120x120" href="/assets/images/apple-touch-icon-120x120-black.png"><link rel="apple-touch-icon" sizes="152x152" href="/assets/images/apple-touch-icon-152x152-black.png"><link rel="apple-touch-icon" sizes="180x180" href="/assets/images/apple-touch-icon-180x180-black.png"><!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
 <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
 <!--[if lt IE 9]>
   <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
   <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
-<![endif]--><link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Roboto:400,300,500,700,400italic|Roboto+Condensed:400,300,700"><link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/styles/docco.min.css"><link rel="stylesheet" type="text/css" href="/assets/fonts/ss-gizmo.min.css"><link rel="stylesheet" type="text/css" href="/assets/style.css"></head><body class="webhooks with-toc"><header id="page-header"><nav role="navigation" class="navbar navbar-default navbar-fixed-top"><div class="container-fluid"><div class="navbar-header"><a href="https://pryv.com" title="Pryv home" class="navbar-brand logo pryv-home"><img src="/assets/images/icon-home.svg" alt="Pryv home" height="50"></a><a href="/" title="Developers home" class="navbar-brand logo"><img src="/assets/images/logo-256-black.png" alt="Developers home"></a><button type="button" data-toggle="collapse" data-target="#main-nav" class="navbar-toggle"><span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button></div><div id="main-nav" class="collapse navbar-collapse"><ul class="nav navbar-nav"><li class="dropdown"><a href="#" data-toggle="dropdown" class="dropdown-toggle">Guides <b class="caret"></b></a><ul class="dropdown-menu"><li><a href="/getting-started/">Getting started</a></li><li><a href="/external-resources/">Apps &amp; Libs</a></li><li><a href="/concepts/">API concepts</a></li><li><a href="/guides/data-modelling/">Data modelling</a></li><li><a href="/guides/webhooks/">Webhooks</a></li><li><a href="/guides/custom-auth/">Custom auth</a></li><li><a href="/guides/consent/">Consent request</a></li><li><a href="/guides/app-guidelines/">App guidelines</a></li><li><a href="/guides/audit-logs/">Audit logs</a></li></ul></li><li class="dropdown"><a href="#" data-toggle="dropdown" class="dropdown-toggle">Reference <b class="caret"></b></a><ul class="dropdown-menu"><li><a href="/reference/">API reference</a></li><li><a href="/reference-admin/">Admin API reference</a></li><li><a href="/reference-system/">System API reference</a></li><li><a href="/event-types/">Event types</a></li><li><a href="/open-api/">Open API (Postman)</a></li><li><a href="/change-log/">API change log</a></li></ul></li><li class="dropdown"><a href="#" data-toggle="dropdown" class="dropdown-toggle">FAQ <b class="caret"></b></a><ul class="dropdown-menu"><li><a href="/faq-api/">API</a></li><li><a href="/faq-infra/">Infrastructure</a></li></ul></li><li><a href="https://support.pryv.com/hc/en-us/community/topics">Community</a></li><li><a href="https://github.com/pryv/open-pryv.io">Open Pryv.io</a></li><li><a href="/customer-resources/">Entreprise</a></li><li><a href="/roadmap/">Roadmap</a></li></ul><div class="navbar-right"><p class="navbar-text version"><a href="/change-log/" title="View change log">API version: <strong>1.7.0</strong></a></p></div></div></div></nav></header><div id="main-wrapper" class="container container-narrow"><div id="main"><h1 class="page-title">Pryv.io Webhooks</h1><p>In this guide we address developers that wish to implement notified systems with Webhooks.
+<![endif]--><link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Roboto:400,300,500,700,400italic|Roboto+Condensed:400,300,700"><link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/styles/docco.min.css"><link rel="stylesheet" type="text/css" href="/assets/fonts/ss-gizmo.min.css"><link rel="stylesheet" type="text/css" href="/assets/style.css"></head><body class="webhooks with-toc"><header id="page-header"><nav class="navbar navbar-default navbar-fixed-top" role="navigation"><div class="container-fluid"><div class="navbar-header"><a class="navbar-brand logo pryv-home" href="https://pryv.com" title="Pryv home"><img src="/assets/images/icon-home.svg" alt="Pryv home" height="50"></a><a class="navbar-brand logo" href="/" title="Developers home"><img src="/assets/images/logo-256-black.png" alt="Developers home"></a><button class="navbar-toggle" type="button" data-toggle="collapse" data-target="#main-nav"><span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button></div><div class="collapse navbar-collapse" id="main-nav"><ul class="nav navbar-nav"><li class="dropdown"><a class="dropdown-toggle" href="#" data-toggle="dropdown">Guides <b class="caret"></b></a><ul class="dropdown-menu"><li><a href="/getting-started/">Getting started</a></li><li><a href="/external-resources/">Apps &amp; Libs</a></li><li><a href="/concepts/">API concepts</a></li><li><a href="/guides/data-modelling/">Data modelling</a></li><li><a href="/guides/webhooks/">Webhooks</a></li><li><a href="/guides/custom-auth/">Custom auth</a></li><li><a href="/guides/consent/">Consent request</a></li><li><a href="/guides/app-guidelines/">App guidelines</a></li><li><a href="/guides/audit-logs/">Audit logs</a></li></ul></li><li class="dropdown"><a class="dropdown-toggle" href="#" data-toggle="dropdown">Reference <b class="caret"></b></a><ul class="dropdown-menu"><li><a href="/reference/">API reference</a></li><li><a href="/reference-admin/">Admin API reference</a></li><li><a href="/reference-system/">System API reference</a></li><li><a href="/event-types/">Event types</a></li><li><a href="/open-api/">Open API (Postman)</a></li><li><a href="/change-log/">API change log</a></li></ul></li><li class="dropdown"><a class="dropdown-toggle" href="#" data-toggle="dropdown">FAQ <b class="caret"></b></a><ul class="dropdown-menu"><li><a href="/faq-api/">API</a></li><li><a href="/faq-infra/">Infrastructure</a></li></ul></li><li><a href="https://support.pryv.com/hc/en-us/community/topics">Community</a></li><li><a href="https://github.com/pryv/open-pryv.io">Open Pryv.io</a></li><li><a href="/customer-resources/">Entreprise</a></li><li><a href="/roadmap/">Roadmap</a></li></ul><div class="navbar-right"><p class="navbar-text version"><a href="/change-log/" title="View change log">API version: <strong>1.7.0</strong></a></p></div></div></div></nav></header><div class="container container-narrow" id="main-wrapper"><div id="main"><h1 class="page-title" id="pryvio-webhooks"><!--pryvio-webhooks-->Pryv.io Webhooks</h1><p>In this guide we address developers that wish to implement notified systems with Webhooks.
 It describes what Webhooks are, why and how to use them on Pryv.io, illustrating it with a common use case.</p>
-<h2 id="table-of-contents">Table of contents</h2>
+<h2 id="table-of-contents-"><!--table-of-contents--->Table of contents <!-- omit in toc --></h2>
+<!-- no toc -->
 <ol>
 <li><a href="#introduction">Introduction</a></li>
-<li><a href="#pryv-io-webhooks">Pryv.io Webhooks</a><ol>
+<li><a href="#pryv-io-webhooks">Pryv.io Webhooks</a></li>
 <li><a href="#what-are-webhooks-">What are Webhooks?</a></li>
 <li><a href="#why-using-webhooks-">Why using Webhooks?</a></li>
-<li><a href="#why-only-notify-of-changes-">Why only notify of changes?</a> </li>
+<li><a href="#why-only-notify-of-changes-">Why only notify of changes?</a></li>
 <li><a href="#separation-of-responsibility">Separation of responsibility</a></li>
-</ol>
-</li>
 <li><a href="#use-case-notify-of-a-new-document-uploaded-on-your-application">Use case: Notify of a new document uploaded on your application</a></li>
 <li><a href="#hands-on-example">Hands-on example</a></li>
-<li><a href="#pryv-io-webhooks-features">Pryv.io Webhooks features</a><ol>
-<li><a href="#frequency-limit">Frequency limit</a> </li>
-<li><a href="#retries">Retries</a> </li>
-<li><a href="#reactivation">Reactivation</a> </li>
-<li><a href="#stats">Stats</a> </li>
+<li><a href="#pryv-io-webhooks-features">Pryv.io Webhooks features</a></li>
+<li><a href="#frequency-limit">Frequency limit</a></li>
+<li><a href="#retries">Retries</a></li>
+<li><a href="#reactivation">Reactivation</a></li>
+<li><a href="#stats">Stats</a></li>
 <li><a href="#deletion-of-the-original-access">Deletion of the original access</a></li>
-</ol>
-</li>
-<li><a href="#endpoint-setup">Endpoint setup</a><ol>
+<li><a href="#endpoint-setup">Endpoint setup</a></li>
 <li><a href="#user-identification">User identification</a></li>
 <li><a href="#endpoint-testing">Endpoint testing</a></li>
 <li><a href="#webhook-authorization">Webhook authorization</a></li>
-</ol>
-</li>
 <li><a href="#events-synchronization">Events synchronization</a></li>
 <li><a href="#conclusion">Conclusion</a></li>
 </ol>
-<h2 id="introduction">Introduction</h2>
-<p>Webhooks are a reliable system for real time streaming and push notifications to external services as your users&#39; data is created and modified. </p>
+<h2 id="introduction"><!--introduction-->Introduction</h2>
+<p>Webhooks are a reliable system for real time streaming and push notifications to external services as your users&#x2019; data is created and modified.</p>
 <p>The Pryv.io webhooks allow to automatically push subscriber data to your service whenever a certain event occurs and ensures that the data you are using in any process or algorithms of your service is up-to-date.</p>
-<h2 id="pryv-io-webhooks">Pryv.io Webhooks</h2>
-<h3 id="what-are-webhooks-">What are Webhooks ?</h3>
+<h2 id="pryvio-webhooks-1"><!--pryvio-webhooks-1-->Pryv.io Webhooks</h2>
+<h3 id="what-are-webhooks-"><!--what-are-webhooks--->What are Webhooks ?</h3>
 <p>Webhooks are by definition a way to set up push notifications to an external service. It is triggered by data changes in an account that one wishes to be alerted of, mostly in order to act on it.</p>
-<h3 id="why-using-webhooks-">Why using Webhooks ?</h3>
+<h3 id="why-using-webhooks-"><!--why-using-webhooks--->Why using Webhooks ?</h3>
 <p>Notification systems are used to receive updates of data changes in real-time. In addition to the Socket.io transport, we have added webhooks to allow push notifications.</p>
 <p>You can now setup notifications without requiring to establish a connection and maintain it on the client-side. It is recommended for infrequent data updates and scales better for a high volume of users as it is more resource efficient.</p>
-<h3 id="why-only-notify-of-changes-">Why only notify of changes?</h3>
+<h3 id="why-only-notify-of-changes"><!--why-only-notify-of-changes-->Why only notify of changes?</h3>
 <p>Webhooks work through notifications of data changes: in other words, the modified data in itself is not directly shared with the external service, but only the type of resource that was altered as shown on the example below :</p>
-<pre><code class="lang-json">{
+<pre><code class="language-json">{
   &quot;messages&quot;: [
     &quot;eventsChanged&quot;,
     &quot;streamsChanged&quot;
@@ -58,34 +53,35 @@ It describes what Webhooks are, why and how to use them on Pryv.io, illustrating
 }
 </code></pre>
 <p>Providing only an event identifier in the webhook payload will force the recipients to make an API request to fetch the full resource, and will ensure that they are authorized to retrieve the information they are notified about with since they are required to use an authorization token.</p>
-<h3 id="separation-of-responsibility">Separation of responsibility</h3>
+<h3 id="separation-of-responsibility"><!--separation-of-responsibility-->Separation of responsibility</h3>
 <p>Importantly, only the access used to create the webhook (or a personal one) can be used to modify it. This is meant to separate the responsibilities between the webhooks management and services that will consume the data following a notification.</p>
 <p>Typically, a certain access will be used to setup one or multiple webhooks per user, while updated data will be fetched using a different set of permissions.</p>
-<h2 id="use-case-notify-of-a-new-document-uploaded-on-your-application">Use case : Notify of a new document uploaded on your application</h2>
+<h2 id="use-case--notify-of-a-new-document-uploaded-on-your-application"><!--use-case--notify-of-a-new-document-uploaded-on-your-application-->Use case : Notify of a new document uploaded on your application</h2>
 <p><em>In this section, we describe a real-life use case: the usage of webhooks notifications to alert a doctor when a patient of your app records a new health-related document.</em></p>
-<p>Let’s imagine that you have created an application storing its data on a Pryv.io platform that enables to connect patients with doctors and you want to be able to notify a doctor when his patients upload a new document related to their health on the app.  </p>
-<p>The app created a webhook to notify the doctor&#39;s service of data changes on Ana&#39;s account.</p>
-<p>The patient Ana has provided access to information on the stream <code>Health</code> with Dr. Tom by creating a <code>read</code> level access (see more information about access types <a href="/reference/#access">here</a>) and sending it to the doctor&#39;s service using the app.
+<p>Let&#x2019;s imagine that you have created an application storing its data on a Pryv.io platform that enables to connect patients with doctors and you want to be able to notify a doctor when his patients upload a new document related to their health on the app.</p>
+<p>The app created a webhook to notify the doctor&#x2019;s service of data changes on Ana&#x2019;s account.</p>
+<p>The patient Ana has provided access to information on the stream <code>Health</code> with Dr. Tom by creating a <code>read</code> level access (see more information about access types <a href="/reference/#access">here</a>) and sending it to the doctor&#x2019;s service using the app.
 This allows Ana to post new events (data, picture, scan, audio file, etc) related to her health on this stream and her doctor to consult it.</p>
-<p>What we need is to track every time Ana adds a new event in the stream <code>Health</code>, and notify Dr. Tom with the name of the patient and the type of the data (picture, number of steps, blood pressure, audio file, scan, etc...).</p>
-<p>Let&#39;s say that the patient Ana just uploaded her daily number of steps on the stream <code>Health</code>.</p>
-<p>In this case, the data change in the stream <code>Health</code> triggers the webhook that will send a push notification to the doctor&#39;s service. The service will then retrieve information (patient name and event type) from the stream <code>Health</code> on the Pryv.io platform using the <code>read</code> level access and directly send a notification to the doctor on his mobile app.
-This notification message will contain information about the <em>patient name</em> and the <em>type of event</em> she posted on the platform : &quot;The patient <em>Ana</em> has uploaded a new event of type <em>count/steps</em>&quot;.</p>
-<p>You can easily visualize the whole process on the following schema:  </p>
+<p>What we need is to track every time Ana adds a new event in the stream <code>Health</code>, and notify Dr. Tom with the name of the patient and the type of the data (picture, number of steps, blood pressure, audio file, scan, etc&#x2026;).</p>
+<p>Let&#x2019;s say that the patient Ana just uploaded her daily number of steps on the stream <code>Health</code>.</p>
+<p>In this case, the data change in the stream <code>Health</code> triggers the webhook that will send a push notification to the doctor&#x2019;s service. The service will then retrieve information (patient name and event type) from the stream <code>Health</code> on the Pryv.io platform using the <code>read</code> level access and directly send a notification to the doctor on his mobile app.
+This notification message will contain information about the <em>patient name</em> and the <em>type of event</em> she posted on the platform : &#x201C;The patient <em>Ana</em> has uploaded a new event of type <em>count/steps</em>&#x201D;.</p>
+<p>You can easily visualize the whole process on the following schema:</p>
 <p><img src="/assets/images/webhooks_pryv_1.png" alt="Webhook structure in Pryv"></p>
 <ol>
-<li>Your app needs to create a webhook that will notify the doctor&#39;s web service every time a data change occurs in the stream <code>Health</code>.</li>
-<li>Your app must also provide the doctor&#39;s service with a <code>read</code> access token to retrieve information about the events posted in the stream <code>Health</code>.</li>
+<li>Your app needs to create a webhook that will notify the doctor&#x2019;s web service every time a data change occurs in the stream <code>Health</code>.</li>
+<li>Your app must also provide the doctor&#x2019;s service with a <code>read</code> access token to retrieve information about the events posted in the stream <code>Health</code>.</li>
 <li>Ana records her daily number of steps, creating an event on the stream <code>Health</code> on the Pryv.io platform.</li>
-<li>As new data has been posted in the stream <code>Health</code>, the webhook notifies the doctor&#39;s service.</li>
+<li>As new data has been posted in the stream <code>Health</code>, the webhook notifies the doctor&#x2019;s service.</li>
 <li>The service retrieves events since the last change using the <code>read</code> token.</li>
 <li>It performs the implemented process: it sends a message to Dr. Tom on his mobile app notifying him that a certain patient <code>Ana</code> has posted a new file of type <code>count/steps</code>.</li>
 </ol>
-<h2 id="hands-on-example">Hands-on example</h2>
+<h2 id="hands-on-example"><!--hands-on-example-->Hands-on example</h2>
 <p><em>In this section, we will describe how to perform the previous example step-by-step using the Pryv Lab platform.</em></p>
 <p>Based on the previous use case (see the schema above), these are the steps to follow to setup event notifications with webhooks:</p>
-<p>If needed, create a new user account on the Pryv Lab platform <a href="https://sw.pryv.me/access/register.html">here</a> and obtain a token to create a webhook and store data into your account. You can generate an access token from the <a href="https://api.pryv.com/app-web-access/?pryvServiceInfoUrl=https://reg.pryv.me/service/info">Pryv Access Token Generator</a>.<br>You can set the permissions and leave other parameters unchanged:  </p>
-<pre><code class="lang-json">[
+<p>If needed, create a new user account on the Pryv Lab platform <a href="https://sw.pryv.me/access/register.html">here</a> and obtain a token to create a webhook and store data into your account. You can generate an access token from the <a href="https://api.pryv.com/app-web-access/?pryvServiceInfoUrl=https://reg.pryv.me/service/info">Pryv Access Token Generator</a>.<br>
+You can set the permissions and leave other parameters unchanged:</p>
+<pre><code class="language-json">[
   {
     &quot;streamId&quot;: &quot;health&quot;,
     &quot;defaultName&quot;: &quot;Health&quot;,
@@ -94,116 +90,126 @@ This notification message will contain information about the <em>patient name</e
 ]
 </code></pre>
 <ol>
-<li><p>You then need to create the webhook by making an API call on the <a href="/reference/#create-webhook">webhooks.create</a> route with the necessary parameters. In particular, you need to provide the URL over which the HTTP POST requests will be made (see <a href="#user-identification">User identification</a> on how to allow the service to identify the webhook&#39;s account).<br>For example:  </p>
-<pre><code class="lang-json">{
- &quot;url&quot;: &quot;https://notifications.service.com/pryv/my-pryv-username&quot;
+<li>You then need to create the webhook by making an API call on the <a href="/reference/#create-webhook">webhooks.create</a> route with the necessary parameters. In particular, you need to provide the URL over which the HTTP POST requests will be made (see <a href="#user-identification">User identification</a> on how to allow the service to identify the webhook&#x2019;s account).<br>
+For example:</li>
+</ol>
+<pre><code class="language-json">{
+    &quot;url&quot;: &quot;https://notifications.service.com/pryv/my-pryv-username&quot;
 }
 </code></pre>
-</li>
-<li><p>You should then provide an Access token to the notified service so that it can retrieve new data when changes occur. You can generate an access token from the <a href="https://api.pryv.com/app-web-access/?pryvServiceInfoUrl=https://reg.pryv.me/service/info">Pryv Access Token Generator</a>.<br>You can set the permissions and leave other parameters unchanged:  </p>
-<pre><code class="lang-json">[
- {
-   &quot;streamId&quot;: &quot;health&quot;,
-   &quot;defaultName&quot;: &quot;Health&quot;,
-   &quot;level&quot;: &quot;read&quot;
- }
+<ol start="2">
+<li>You should then provide an Access token to the notified service so that it can retrieve new data when changes occur. You can generate an access token from the <a href="https://api.pryv.com/app-web-access/?pryvServiceInfoUrl=https://reg.pryv.me/service/info">Pryv Access Token Generator</a>.<br>
+You can set the permissions and leave other parameters unchanged:</li>
+</ol>
+<pre><code class="language-json">[
+    {
+      &quot;streamId&quot;: &quot;health&quot;,
+      &quot;defaultName&quot;: &quot;Health&quot;,
+      &quot;level&quot;: &quot;read&quot;
+    }
 ]
 </code></pre>
-</li>
-<li><p>When your user adds new data to the platform, events related to his health are created and added to the <code>Health</code> stream using the <a href="/reference/#create-event">events.create</a> method.<br>You can use the following parameters for a <code>count/steps</code> event:</p>
-<pre><code class="lang-json">{
- &quot;streamId&quot;: &quot;health&quot;,
- &quot;type&quot;: &quot;count/steps&quot;,
- &quot;content&quot;: 10000
-}
-</code></pre>
-</li>
-<li><p>Once the event is created, the webhook is triggered. It notifies the external service that an <code>eventsChanged</code> has occured in the user account by sending an HTTP POST request to the provided webhook URL.<br>The request payload will look like this:  </p>
-<pre><code class="lang-json">{
- &quot;messages&quot;: [
-   &quot;eventsChanged&quot;
- ],
- &quot;meta&quot;: {
-   &quot;apiVersion&quot;: &quot;1.7.0&quot;,
-   &quot;serial&quot;: &quot;20190802&quot;,
-   &quot;serverTime&quot;: 1586254000.213
- }
-}
-</code></pre>
-</li>
-<li><p>As soon as the server receives the HTTP POST request on the URL, it must retrieve the events since the last change from the Pryv.io platform using the provided token.
-It does so by performing an HTTP GET request on the events from the streamId <code>health</code> using the <a href="/reference/#get-events">events.get</a> method with the <code>modifiedSince</code> parameter set.<br>The API response should look like this:</p>
-<pre><code class="lang-json">{
- &quot;events&quot;: [
-   {
-     &quot;id&quot;: &quot;ck8pqobvr000voopvtlw9ct83&quot;,
-     &quot;time&quot;: 1586254000.167,
-     &quot;streamIds&quot;: [&quot;health&quot;],
-     &quot;streamId&quot;: &quot;health&quot;,
-     &quot;tags&quot;: [],
-     &quot;type&quot;: &quot;count/steps&quot;,
-     &quot;content&quot;: 10000,
-     &quot;created&quot;: 1586254000.167,
-     &quot;createdBy&quot;: &quot;ck8pqobua0001oopvu6fhd3a2&quot;,
-     &quot;modified&quot;: 1586254000.167,
-     &quot;modifiedBy&quot;: &quot;ck8pqobua0001oopvu6fhd3a2&quot;
-   } 
- ]
-}
-</code></pre>
-</li>
-<li><p>The server processes the data as configured. It must retrieve the information about the patient name and the type of the event that he posted (<code>count/steps</code> in this case).<br>It sends then a notification message to Dr. Tom about the new event that was posted in the stream <code>Health</code>.</p>
-</li>
+<ol start="3">
+<li>When your user adds new data to the platform, events related to his health are created and added to the <code>Health</code> stream using the <a href="/reference/#create-event">events.create</a> method.<br>
+You can use the following parameters for a <code>count/steps</code> event:</li>
 </ol>
-<h2 id="pryv-io-webhooks-features">Pryv.io Webhooks features</h2>
+<pre><code class="language-json">{
+    &quot;streamId&quot;: &quot;health&quot;,
+    &quot;type&quot;: &quot;count/steps&quot;,
+    &quot;content&quot;: 10000
+}
+</code></pre>
+<ol start="4">
+<li>Once the event is created, the webhook is triggered. It notifies the external service that an <code>eventsChanged</code> has occured in the user account by sending an HTTP POST request to the provided webhook URL.<br>
+The request payload will look like this:</li>
+</ol>
+<pre><code class="language-json">{
+    &quot;messages&quot;: [
+      &quot;eventsChanged&quot;
+    ],
+    &quot;meta&quot;: {
+      &quot;apiVersion&quot;: &quot;1.7.0&quot;,
+      &quot;serial&quot;: &quot;20190802&quot;,
+      &quot;serverTime&quot;: 1586254000.213
+    }
+}
+</code></pre>
+<ol start="5">
+<li>As soon as the server receives the HTTP POST request on the URL, it must retrieve the events since the last change from the Pryv.io platform using the provided token.
+It does so by performing an HTTP GET request on the events from the streamId <code>health</code> using the <a href="/reference/#get-events">events.get</a> method with the <code>modifiedSince</code> parameter set.<br>
+The API response should look like this:</li>
+</ol>
+<pre><code class="language-json">{
+    &quot;events&quot;: [
+      {
+        &quot;id&quot;: &quot;ck8pqobvr000voopvtlw9ct83&quot;,
+        &quot;time&quot;: 1586254000.167,
+        &quot;streamIds&quot;: [&quot;health&quot;],
+        &quot;streamId&quot;: &quot;health&quot;,
+        &quot;tags&quot;: [],
+        &quot;type&quot;: &quot;count/steps&quot;,
+        &quot;content&quot;: 10000,
+        &quot;created&quot;: 1586254000.167,
+        &quot;createdBy&quot;: &quot;ck8pqobua0001oopvu6fhd3a2&quot;,
+        &quot;modified&quot;: 1586254000.167,
+        &quot;modifiedBy&quot;: &quot;ck8pqobua0001oopvu6fhd3a2&quot;
+      } 
+    ]
+}
+</code></pre>
+<ol start="6">
+<li>The server processes the data as configured. It must retrieve the information about the patient name and the type of the event that he posted (<code>count/steps</code> in this case).<br>
+It sends then a notification message to Dr. Tom about the new event that was posted in the stream <code>Health</code>.</li>
+</ol>
+<h2 id="pryvio-webhooks-features"><!--pryvio-webhooks-features-->Pryv.io Webhooks features</h2>
 <p><em>In this section, we give an overview of all the features of the Pryv.io Webhooks.</em></p>
-<h3 id="frequency-limit">Frequency limit</h3>
+<h3 id="frequency-limit"><!--frequency-limit-->Frequency limit</h3>
 <p>In case you are dealing with possibly frequent data changes, you might encounter a surge of data changes. In order to avoid notifying the external service too often, webhook executions have a frequency limit <code>minIntervalMs</code>. If multiple changes of different resources occur during a short interval, they will be bundled in the <code>messages</code> array of the webhook request payload.</p>
 <p>The <code>minIntervalMs</code> parameter can be configured by the Pryv.io platform administrator.</p>
-<h3 id="retries">Retries</h3>
+<h3 id="retries"><!--retries-->Retries</h3>
 <p>In case of failure to send an HTTP POST request, such as a response status outside the 200-299 range  or timeout, the webhook will retry the request at exponentially increasing intervals.</p>
 <p>This backpressure mechanism is in place to allow the external service to stabilise in case it becomes overloaded.</p>
 <p>The number of retries that the webhook will attempt is indicated in its <code>maxRetries</code> field. You can monitor its current retry attempt using the <code>currentRetries</code> field.</p>
 <p>The <code>maxRetries</code> parameter can be configured by the Pryv.io platform administrator.</p>
-<h3 id="reactivation">Reactivation</h3>
+<h3 id="reactivation"><!--reactivation-->Reactivation</h3>
 <p>After a certain amount of consecutive failures to send a request, the webhook will be deactivated and no longer send requests when triggered. This will be indicated by the  <code>state</code> parameter which will be set to <code>inactive</code>.</p>
 <p>It will need to be manually reactivated using the <a href="/reference/#methods-webhooks-webhooks-update">webhooks.update</a> method with the access that created it or a personal one.</p>
-<h3 id="stats">Stats</h3>
+<h3 id="stats"><!--stats-->Stats</h3>
 <p>Each time a webhook is run, it stores information about the HTTP response status and timestamp, respectively in the  <code>status</code> and <code>timestamp</code> fields of a <code>Run</code> object.</p>
-<p>A certain number of <code>runs</code> of a webhook is stored in the <code>runs</code> field of the Webhook in inverse chronological order (newest first). This parameter allows to monitor a webhook&#39;s health.</p>
+<p>A certain number of <code>runs</code> of a webhook is stored in the <code>runs</code> field of the Webhook in inverse chronological order (newest first). This parameter allows to monitor a webhook&#x2019;s health.</p>
 <p>The latest execution stats can be conveniently accessed in the <code>lastRun</code> field.</p>
 <p>The number of times the Webhook has been run, including failures, is stored in the parameter <code>runCount</code> of the Webhook. Failures count is stored in <code>failCount</code>.</p>
 <p>The number of stored runs can be configured by the platform administrator.</p>
-<h3 id="deletion-of-the-original-access">Deletion of the original access</h3>
+<h3 id="deletion-of-the-original-access"><!--deletion-of-the-original-access-->Deletion of the original access</h3>
 <p>In case the access that has created the webhook is deleted, it does not alter the webhook. It can still be modified using a personal access.</p>
-<h2 id="endpoint-setup">Endpoint setup</h2>
+<h2 id="endpoint-setup"><!--endpoint-setup-->Endpoint setup</h2>
 <p><em>In this section, we present possible ways to identify the user from which the data change is originating in the webhook URL and to share a secret between your application and the webhook provider.</em></p>
-<h3 id="user-identification">User identification</h3>
+<h3 id="user-identification"><!--user-identification-->User identification</h3>
 <p>In order to identify the account which triggered the webhook notification, it is recommended to use the <code>url</code> of the webhook. It is possible to store the Pryv.io API endpoint in the URL path or query parameters:</p>
 <p>In the path:</p>
-<pre><code class="lang-json">{
+<pre><code class="language-json">{
   &quot;url&quot;: &quot;https://my-notifications.com/stefan.pryv.me&quot;
 }
 </code></pre>
 <p>In the query parameters:</p>
-<pre><code class="lang-json">{
+<pre><code class="language-json">{
   &quot;url&quot;: &quot;https://my-notifications.com/?apiEndpoint=stefan.pryv.me&quot;
 }
 </code></pre>
-<h3 id="endpoint-testing">Endpoint testing</h3>
-<p>In order to test that your service&#39;s endpoint is reachable by the webhook calls, we offer the <a href="/reference/#test-webhook">webhooks.test</a> API method that triggers the webhook execution.</p>
-<h3 id="webhook-authorization">Webhook authorization</h3>
+<h3 id="endpoint-testing"><!--endpoint-testing-->Endpoint testing</h3>
+<p>In order to test that your service&#x2019;s endpoint is reachable by the webhook calls, we offer the <a href="/reference/#test-webhook">webhooks.test</a> API method that triggers the webhook execution.</p>
+<h3 id="webhook-authorization"><!--webhook-authorization-->Webhook authorization</h3>
 <p>You might need to include a shared secret between your application and the webhook provider in order to control the API usage of your external service.</p>
-<p>You can add a &quot;shared secret&quot; to the Pryv.io webhooks that your application trusts. This means that when you will be receiving a webhook notification, you can validate the provided secret and discard the request if it is not trustworthy.</p>
-<p>This secret can be provided in the same way as the username, illustrated above. In this example, we use the path parameter to store the secret:  </p>
-<pre><code class="lang-json">{
+<p>You can add a &#x201C;shared secret&#x201D; to the Pryv.io webhooks that your application trusts. This means that when you will be receiving a webhook notification, you can validate the provided secret and discard the request if it is not trustworthy.</p>
+<p>This secret can be provided in the same way as the username, illustrated above. In this example, we use the path parameter to store the secret:</p>
+<pre><code class="language-json">{
   &quot;url&quot;: &quot;https://my-notifications.com/stefan.pryv.me/my-secret&quot;
 }
 </code></pre>
-<h2 id="events-synchronization">Events synchronization</h2>
-<p>In order to make sure that the events data you fetch following a webhook notification contains only the new changes, it is recommended to keep track of the timestamps of your requests.  Each Pryv.io API response contains <a href="/reference/#in-method-results">Metadata</a> whose <code>serverTime</code> you should save at each request.  </p>
+<h2 id="events-synchronization"><!--events-synchronization-->Events synchronization</h2>
+<p>In order to make sure that the events data you fetch following a webhook notification contains only the new changes, it is recommended to keep track of the timestamps of your requests.  Each Pryv.io API response contains <a href="/reference/#in-method-results">Metadata</a> whose <code>serverTime</code> you should save at each request.</p>
 <p>Following a notification, you can <a href="/reference/#get-events">retrieve the events</a> using the <code>modifiedSince</code> parameter set to the <code>serverTime</code> of your last request.</p>
-<h2 id="conclusion">Conclusion</h2>
+<h2 id="conclusion"><!--conclusion-->Conclusion</h2>
 <p>If you wish to set up a Pryv.io webhook or get more information on the data structure, please refer to <a href="/reference/#webhook">its data structure reference</a>, while the methods relative to webhooks can be found in the <a href="/reference/#webhooks">API methods section</a>.</p>
 </div><nav id="toc"></nav></div><footer id="page-footer"><nav class="navbar navbar-default"><div class="container-fluid"><div id="footer-nav"><ul class="nav navbar-nav"><li><a href="mailto:developers@pryv.com">Send a message</a></li><li><a href="https://github.com/pryv">GitHub</a></li><li><a href="https://pryv.com">pryv.com</a></li></ul></div></div></nav></footer><script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script><script src="/assets/bootstrap.min.js"></script><script src="/assets/js/toc.min.js"></script><!-- TOC generation--><script>jQuery(document).ready(function($) {
   // Header is about 51 pixels. This equals to 'header + fuzz', fuzz was

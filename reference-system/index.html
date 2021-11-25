@@ -1,28 +1,29 @@
-<!DOCTYPE html><html lang="en" class="no-js"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="description" property="og:description" content="Pryv API reference and resources for developers"><meta name="author" content="Pryv SA"><meta property="og:type" content="website"><meta name="image" property="og:image" content="/assets/images/logo-256.png"><meta name="viewport" content="width=device-width, initial-scale=1"><title>System reference | Pryv API</title><link rel="icon" href="/assets/images/favicon-black.ico" type="image/x-icon"><link rel="apple-touch-icon" sizes="120x120" href="/assets/images/apple-touch-icon-120x120-black.png"><link rel="apple-touch-icon" sizes="152x152" href="/assets/images/apple-touch-icon-152x152-black.png"><link rel="apple-touch-icon" sizes="180x180" href="/assets/images/apple-touch-icon-180x180-black.png"><!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+<!DOCTYPE html><html class="no-js" lang="en"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="description" property="og:description" content="Pryv API reference and resources for developers"><meta name="author" content="Pryv SA"><meta property="og:type" content="website"><meta name="image" property="og:image" content="/assets/images/logo-256.png"><meta name="viewport" content="width=device-width, initial-scale=1"><title>System reference | Pryv API</title><link rel="icon" href="/assets/images/favicon-black.ico" type="image/x-icon"><link rel="apple-touch-icon" sizes="120x120" href="/assets/images/apple-touch-icon-120x120-black.png"><link rel="apple-touch-icon" sizes="152x152" href="/assets/images/apple-touch-icon-152x152-black.png"><link rel="apple-touch-icon" sizes="180x180" href="/assets/images/apple-touch-icon-180x180-black.png"><!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
 <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
 <!--[if lt IE 9]>
   <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
   <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
-<![endif]--><link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Roboto:400,300,500,700,400italic|Roboto+Condensed:400,300,700"><link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/styles/docco.min.css"><link rel="stylesheet" type="text/css" href="/assets/fonts/ss-gizmo.min.css"><link rel="stylesheet" type="text/css" href="/assets/style.css"></head><body class="reference-system with-toc with-examples"><header id="page-header"><nav role="navigation" class="navbar navbar-default navbar-fixed-top"><div class="container-fluid"><div class="navbar-header"><a href="https://pryv.com" title="Pryv home" class="navbar-brand logo pryv-home"><img src="/assets/images/icon-home.svg" alt="Pryv home" height="50"></a><a href="/" title="Developers home" class="navbar-brand logo"><img src="/assets/images/logo-256-black.png" alt="Developers home"></a><button type="button" data-toggle="collapse" data-target="#main-nav" class="navbar-toggle"><span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button></div><div id="main-nav" class="collapse navbar-collapse"><ul class="nav navbar-nav"><li class="dropdown"><a href="#" data-toggle="dropdown" class="dropdown-toggle">Guides <b class="caret"></b></a><ul class="dropdown-menu"><li><a href="/getting-started/">Getting started</a></li><li><a href="/external-resources/">Apps &amp; Libs</a></li><li><a href="/concepts/">API concepts</a></li><li><a href="/guides/data-modelling/">Data modelling</a></li><li><a href="/guides/webhooks/">Webhooks</a></li><li><a href="/guides/custom-auth/">Custom auth</a></li><li><a href="/guides/consent/">Consent request</a></li><li><a href="/guides/app-guidelines/">App guidelines</a></li><li><a href="/guides/audit-logs/">Audit logs</a></li></ul></li><li class="dropdown"><a href="#" data-toggle="dropdown" class="dropdown-toggle">Reference <b class="caret"></b></a><ul class="dropdown-menu"><li><a href="/reference/">API reference</a></li><li><a href="/reference-admin/">Admin API reference</a></li><li class="active"><a href="/reference-system/">System API reference</a></li><li><a href="/event-types/">Event types</a></li><li><a href="/open-api/">Open API (Postman)</a></li><li><a href="/change-log/">API change log</a></li></ul></li><li class="dropdown"><a href="#" data-toggle="dropdown" class="dropdown-toggle">FAQ <b class="caret"></b></a><ul class="dropdown-menu"><li><a href="/faq-api/">API</a></li><li><a href="/faq-infra/">Infrastructure</a></li></ul></li><li><a href="https://support.pryv.com/hc/en-us/community/topics">Community</a></li><li><a href="https://github.com/pryv/open-pryv.io">Open Pryv.io</a></li><li><a href="/customer-resources/">Entreprise</a></li><li><a href="/roadmap/">Roadmap</a></li></ul><div class="navbar-right"><p class="navbar-text version"><a href="/change-log/" title="View change log">API version: <strong>1.7.0</strong></a></p></div><form class="navbar-form navbar-right"><div class="form-group"><label for="examples-api">API:&nbsp;</label><select id="examples-api" class="form-control"><option value="pryv.me" selected="selected">Pryv Lab: ${username}.pryv.me</option><option value="DNS-less">DNS-less: ${hostname}/${username}</option><option value="Own">Own domain: ${username}.${domain}</option></select></div><div class="form-group"><label for="examples-format">&nbsp;Format:&nbsp;</label><select id="examples-format" class="form-control"><option value="json" selected="selected">REST payload</option><option value="batch">Batch block</option><option value="http">cURL</option><option value="sockets">Socket.IO</option><option value="httpAuth">cURL auth</option></select></div></form></div></div></nav></header><div id="main-wrapper" class="container-fluid"><div id="main"><h1 class="page-title">System reference</h1><section id="basics"><h1 id="basics">Basics</h1>
-<div class="intro"><p>This document describes Pryv.io&#39;s <strong>system-level</strong> API, allowing developers to create and manage user accounts.</p>
-</div><!-- it's either:--><!-- !trusted & !preview--><!-- !preview & -full--><!-- -preview--><section id="basics-services-involved"><h2 id="services-involved">Services involved</h2>
-<div class="content"><div class="meta"></div><div class="intro"><p>Unlike user account data, which is fully managed by the core server hosting each account, managing the accounts themselves (e.g. retrieval, creation, deletion) is handled by the core servers <em>and</em> the central register server (AKA user account directory).<br>A color tag on the API method indicates the server to which you should make the request.  </p>
+<![endif]--><link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Roboto:400,300,500,700,400italic|Roboto+Condensed:400,300,700"><link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/styles/docco.min.css"><link rel="stylesheet" type="text/css" href="/assets/fonts/ss-gizmo.min.css"><link rel="stylesheet" type="text/css" href="/assets/style.css"></head><body class="reference-system with-toc with-examples"><header id="page-header"><nav class="navbar navbar-default navbar-fixed-top" role="navigation"><div class="container-fluid"><div class="navbar-header"><a class="navbar-brand logo pryv-home" href="https://pryv.com" title="Pryv home"><img src="/assets/images/icon-home.svg" alt="Pryv home" height="50"></a><a class="navbar-brand logo" href="/" title="Developers home"><img src="/assets/images/logo-256-black.png" alt="Developers home"></a><button class="navbar-toggle" type="button" data-toggle="collapse" data-target="#main-nav"><span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button></div><div class="collapse navbar-collapse" id="main-nav"><ul class="nav navbar-nav"><li class="dropdown"><a class="dropdown-toggle" href="#" data-toggle="dropdown">Guides <b class="caret"></b></a><ul class="dropdown-menu"><li><a href="/getting-started/">Getting started</a></li><li><a href="/external-resources/">Apps &amp; Libs</a></li><li><a href="/concepts/">API concepts</a></li><li><a href="/guides/data-modelling/">Data modelling</a></li><li><a href="/guides/webhooks/">Webhooks</a></li><li><a href="/guides/custom-auth/">Custom auth</a></li><li><a href="/guides/consent/">Consent request</a></li><li><a href="/guides/app-guidelines/">App guidelines</a></li><li><a href="/guides/audit-logs/">Audit logs</a></li></ul></li><li class="dropdown"><a class="dropdown-toggle" href="#" data-toggle="dropdown">Reference <b class="caret"></b></a><ul class="dropdown-menu"><li><a href="/reference/">API reference</a></li><li><a href="/reference-admin/">Admin API reference</a></li><li class="active"><a href="/reference-system/">System API reference</a></li><li><a href="/event-types/">Event types</a></li><li><a href="/open-api/">Open API (Postman)</a></li><li><a href="/change-log/">API change log</a></li></ul></li><li class="dropdown"><a class="dropdown-toggle" href="#" data-toggle="dropdown">FAQ <b class="caret"></b></a><ul class="dropdown-menu"><li><a href="/faq-api/">API</a></li><li><a href="/faq-infra/">Infrastructure</a></li></ul></li><li><a href="https://support.pryv.com/hc/en-us/community/topics">Community</a></li><li><a href="https://github.com/pryv/open-pryv.io">Open Pryv.io</a></li><li><a href="/customer-resources/">Entreprise</a></li><li><a href="/roadmap/">Roadmap</a></li></ul><div class="navbar-right"><p class="navbar-text version"><a href="/change-log/" title="View change log">API version: <strong>1.7.0</strong></a></p></div><form class="navbar-form navbar-right"><div class="form-group"><label for="examples-api">API:&#xA0;</label><select class="form-control" id="examples-api"><option value="pryv.me" selected="selected">Pryv Lab: ${username}.pryv.me</option><option value="DNS-less">DNS-less: ${hostname}/${username}</option><option value="Own">Own domain: ${username}.${domain}</option></select></div><div class="form-group"><label for="examples-format">&#xA0;Format:&#xA0;</label><select class="form-control" id="examples-format"><option value="json" selected="selected">REST payload</option><option value="batch">Batch block</option><option value="http">cURL</option><option value="sockets">Socket.IO</option><option value="httpAuth">cURL auth</option></select></div></form></div></div></nav></header><div class="container-fluid" id="main-wrapper"><div id="main"><h1 class="page-title" id="system-reference"><!--system-reference-->System reference</h1><section id="basics"><h1 id="basics"><!--basics-->Basics</h1>
+<div class="intro"><p>This document describes Pryv.io&#x2019;s <strong>system-level</strong> API, allowing developers to create and manage user accounts.</p>
+</div><!-- it's either:--><!-- !trusted & !preview--><!-- !preview & -full--><!-- -preview--><section id="basics-services-involved"><h2 id="services-involved"><!--services-involved-->Services involved</h2>
+<div class="content"><div class="meta"></div><div class="intro"><p>Unlike user account data, which is fully managed by the core server hosting each account, managing the accounts themselves (e.g. retrieval, creation, deletion) is handled by the core servers <em>and</em> the central register server (AKA user account directory).<br>
+A color tag on the API method indicates the server to which you should make the request.</p>
 <ul>
 <li>The <strong>core servers</strong> own the account management processes, i.e. data creation and deletion</li>
 <li>The <strong>register server</strong> maintains the list of account usernames and their hosting locations; it helps account management by providing checks (for creation) and is notified of all relevant changes by the core servers.</li>
 </ul>
-</div></div></section><!-- it's either:--><!-- !trusted & !preview--><!-- !preview & -full--><!-- -preview--><section id="basics-endpoint-url"><h2 id="api-endpoint">API endpoint</h2>
-<div class="content"><div class="meta"></div><div class="intro"><p>The methods are called via HTTPS on the register or core server depending on the method:   </p>
+</div></div></section><!-- it's either:--><!-- !trusted & !preview--><!-- !preview & -full--><!-- -preview--><section id="basics-endpoint-url"><h2 id="api-endpoint"><!--api-endpoint-->API endpoint</h2>
+<div class="content"><div class="meta"></div><div class="intro"><p>The methods are called via HTTPS on the register or core server depending on the method:</p>
 <ul>
-<li>Register: <code>https://reg.{domain}</code> or <code>https://{hostname}/reg</code> for DNS-less setup.  </li>
-<li>Core: <code>https://{core-subdomain}.{domain}</code> or <code>https://{hostname}</code> for DNS-less setup.  </li>
+<li>Register: <code>https://reg.{domain}</code> or <code>https://{hostname}/reg</code> for DNS-less setup.</li>
+<li>Core: <code>https://{core-subdomain}.{domain}</code> or <code>https://{hostname}</code> for DNS-less setup.</li>
 </ul>
-<p>You can adapt the examples with &quot;API&quot; selector in the top navigation bar.</p>
-</div></div></section><!-- it's either:--><!-- !trusted & !preview--><!-- !preview & -full--><!-- -preview--><section id="basics-account-creation"><h2 id="account-creation">Account creation</h2>
-<div class="content"><div class="meta"></div><div class="intro"><p> The steps for creating a new Pryv.io account are the following:</p>
+<p>You can adapt the examples with &#x201C;API&#x201D; selector in the top navigation bar.</p>
+</div></div></section><!-- it's either:--><!-- !trusted & !preview--><!-- !preview & -full--><!-- -preview--><section id="basics-account-creation"><h2 id="account-creation"><!--account-creation-->Account creation</h2>
+<div class="content"><div class="meta"></div><div class="intro"><p>The steps for creating a new Pryv.io account are the following:</p>
 <ol>
 <li>The client calls the register server to get a list of available hostings (core server locations), see <a href="/reference-system/#get-hostings">Get Hostings</a>.</li>
-<li>The client calls the URL under &quot;availableCore&quot; for the hosting it chose with the desired new account data, see <a href="#create-user">Create user</a>.</li>
+<li>The client calls the URL under &#x201C;availableCore&#x201D; for the hosting it chose with the desired new account data, see <a href="#create-user">Create user</a>.</li>
 <li>Data is verified.</li>
 <li>If validation passes, the user is saved and an authenticated apiEndpoint is returned to the caller. See <a href="/guides/app-guidelines/">app guidelines</a>.</li>
 </ol>
@@ -34,288 +35,290 @@
 <li>Core server verifies data, creates account if OK (sending welcome email to user), returns status (including created account id) to register server</li>
 <li>register server updates directory if OK, returns status to client</li>
 </ol>
-</div></div></section></section><section id="api-methods"><h1 id="api-methods">API methods</h1>
-<div class="intro"></div><!-- it's either:--><!-- !trusted & !preview--><!-- !preview & -full--><!-- -preview--><section id="api-methods-admin"><h2 id="admin">Admin</h2>
-<div class="content"><div class="meta"><span onclick="location='/reference-system/#admin'" class="label admin-only">Admin only</span><text>&nbsp;</text></div><div class="intro"><p>Methods for platform administration.</p>
+</div></div></section></section><section id="api-methods"><h1 id="api-methods"><!--api-methods-->API methods</h1>
+<div class="intro"></div><!-- it's either:--><!-- !trusted & !preview--><!-- !preview & -full--><!-- -preview--><section id="api-methods-admin"><h2 id="admin"><!--admin-->Admin</h2>
+<div class="content"><div class="meta"><span class="label admin-only" onclick="location=&apos;/reference-system/#admin&apos;">Admin only</span><text>&#xA0;</text></div><div class="intro"><p>Methods for platform administration.</p>
 <p>These calls are limited to accredited persons and are flagged as <code>Admin only</code>.</p>
 <p>Admin api calls are tagged with <span class="admin-tag"><span title="Admin Only" class="label">A</span></span></p>
-<p>They must carry the admin key in the HTTP <code>Authorization</code> header.<br>This key is defined within the platform configuration: <code>REGISTER_ADMIN_KEY</code>.</p>
-</div></div><!-- it's either:--><!-- !trusted & !preview--><!-- !preview & -full--><!-- -preview--><section id="api-methods-admin-users-get" class="method"> <h3 id="get-users">Get users</h3>
-<div class="content"><div class="meta"><span onclick="location='/reference-system/#admin'" class="admin-tag"><span title="Admin Only" class="label">A</span></span><span onclick="location='/reference/#method-ids'" class="method-id"><span title="Method Id" class="label">id</span><span class="label-value"><code>users.get</code></span></span><span class="http"><span class="label">HTTP-only</span><span class="label-value"><code>GET <a href="/reference-system/#api-endpoint">{register}</a>/admin/users</code></span></span></div><div class="intro"><p>Get the list of all users registered on the platform.</p>
-</div><h4 id="parameters">Parameters</h4>
+<p>They must carry the admin key in the HTTP <code>Authorization</code> header.<br>
+This key is defined within the platform configuration: <code>REGISTER_ADMIN_KEY</code>.</p>
+</div></div><!-- it's either:--><!-- !trusted & !preview--><!-- !preview & -full--><!-- -preview--><section class="method" id="api-methods-admin-users-get">&#xA0;<h3 id="get-users"><!--get-users-->Get users</h3>
+<div class="content"><div class="meta"><span class="admin-tag" onclick="location=&apos;/reference-system/#admin&apos;"><span class="label" title="Admin Only">A</span></span><span class="method-id" onclick="location=&apos;/reference/#method-ids&apos;"><span class="label" title="Method Id">id</span><span class="label-value"><code>users.get</code></span></span><span class="http"><span class="label">HTTP-only</span><span class="label-value"><code>GET <a href="/reference-system/#api-endpoint">{register}</a>/admin/users</code></span></span></div><div class="intro"><p>Get the list of all users registered on the platform.</p>
+</div><h4 id="parameters"><!--parameters-->Parameters</h4>
 <table class="definitions"><tr><th><code>toHTML</code></th><td><div class="header"><span class="type">boolean</span><span class="label label-default optional">optional</span></div><div class="description"><p>If <code>true</code>, format the resulting users list as HTML tables.</p>
-</div></td></tr></table><h4 id="result">Result</h4>
+</div></td></tr></table><h4 id="result"><!--result-->Result</h4>
 <span class="http"><span class="label">HTTP</span><span class="label-value"><code>200 OK</code></span></span><table class="definitions"><tr><th><code>users</code></th><td><div class="header"><span class="type">array</span></div><div class="description"><p>Array of user data.</p>
 </div></td></tr></table></div><aside><div class="example"><p>Fetching the users list for a Pryv.io platform</p>
-<div class="tab-content"><div class="tab-pane json active"><pre><code>{}</code></pre><div class="step-marker">⬇</div><pre><code>{
-  "users": [
+<div class="tab-content"><div class="tab-pane json active"><pre><code>{}</code></pre><div class="step-marker">&#x2B07;</div><pre><code>{
+  &quot;users&quot;: [
     {
-      "username": "user1",
-      "email": "red.miller@mail.ch",
-      "language": "en",
-      "invitationToken": "enjoy",
-      "referer": "null",
-      "id": "ckwd7g6un001atkpvief1ts9y",
-      "registeredTimestamp": "1557743399558",
-      "server": "core1.pryv.me",
-      "registeredDate": "Mon, 13 May 2019 10:29:59 GMT"
+      &quot;username&quot;: &quot;user1&quot;,
+      &quot;email&quot;: &quot;red.miller@mail.ch&quot;,
+      &quot;language&quot;: &quot;en&quot;,
+      &quot;invitationToken&quot;: &quot;enjoy&quot;,
+      &quot;referer&quot;: &quot;null&quot;,
+      &quot;id&quot;: &quot;ckwf1y6i8001axnsme5ed4vnk&quot;,
+      &quot;registeredTimestamp&quot;: &quot;1557743399558&quot;,
+      &quot;server&quot;: &quot;core1.pryv.me&quot;,
+      &quot;registeredDate&quot;: &quot;Mon, 13 May 2019 10:29:59 GMT&quot;
     },
     {
-      "username": "user2",
-      "email": "user2@gmail.com",
-      "language": "fr",
-      "invitationToken": "enjoy",
-      "referer": "null",
-      "id": "ckwd7g6un001btkpve2xflshs",
-      "registeredTimestamp": "1536930239805",
-      "server": "core2.pryv.me",
-      "registeredDate": "Fri, 14 Sep 2018 13:03:59 GMT"
+      &quot;username&quot;: &quot;user2&quot;,
+      &quot;email&quot;: &quot;user2@gmail.com&quot;,
+      &quot;language&quot;: &quot;fr&quot;,
+      &quot;invitationToken&quot;: &quot;enjoy&quot;,
+      &quot;referer&quot;: &quot;null&quot;,
+      &quot;id&quot;: &quot;ckwf1y6i8001bxnsmgztbef0n&quot;,
+      &quot;registeredTimestamp&quot;: &quot;1536930239805&quot;,
+      &quot;server&quot;: &quot;core2.pryv.me&quot;,
+      &quot;registeredDate&quot;: &quot;Fri, 14 Sep 2018 13:03:59 GMT&quot;
     }
   ]
-}</code></pre></div><div class="tab-pane http"><pre><code>curl -i "https://<span class="api-reg-curl">reg.pryv.me</span>/admin/users"</code></pre><div class="step-marker">⬇</div><pre><code>HTTP/1.1 200 OK
+}</code></pre></div><div class="tab-pane http"><pre><code>curl -i &quot;https://<span class="api-reg-curl">reg.pryv.me</span>/admin/users&quot;</code></pre><div class="step-marker">&#x2B07;</div><pre><code>HTTP/1.1 200 OK
 Content-Type: application/json; charset=utf-8
 API-Version: 1.7.0
 
 {
-  "users": [
+  &quot;users&quot;: [
     {
-      "username": "user1",
-      "email": "red.miller@mail.ch",
-      "language": "en",
-      "invitationToken": "enjoy",
-      "referer": "null",
-      "id": "ckwd7g6un001atkpvief1ts9y",
-      "registeredTimestamp": "1557743399558",
-      "server": "core1.pryv.me",
-      "registeredDate": "Mon, 13 May 2019 10:29:59 GMT"
+      &quot;username&quot;: &quot;user1&quot;,
+      &quot;email&quot;: &quot;red.miller@mail.ch&quot;,
+      &quot;language&quot;: &quot;en&quot;,
+      &quot;invitationToken&quot;: &quot;enjoy&quot;,
+      &quot;referer&quot;: &quot;null&quot;,
+      &quot;id&quot;: &quot;ckwf1y6i8001axnsme5ed4vnk&quot;,
+      &quot;registeredTimestamp&quot;: &quot;1557743399558&quot;,
+      &quot;server&quot;: &quot;core1.pryv.me&quot;,
+      &quot;registeredDate&quot;: &quot;Mon, 13 May 2019 10:29:59 GMT&quot;
     },
     {
-      "username": "user2",
-      "email": "user2@gmail.com",
-      "language": "fr",
-      "invitationToken": "enjoy",
-      "referer": "null",
-      "id": "ckwd7g6un001btkpve2xflshs",
-      "registeredTimestamp": "1536930239805",
-      "server": "core2.pryv.me",
-      "registeredDate": "Fri, 14 Sep 2018 13:03:59 GMT"
+      &quot;username&quot;: &quot;user2&quot;,
+      &quot;email&quot;: &quot;user2@gmail.com&quot;,
+      &quot;language&quot;: &quot;fr&quot;,
+      &quot;invitationToken&quot;: &quot;enjoy&quot;,
+      &quot;referer&quot;: &quot;null&quot;,
+      &quot;id&quot;: &quot;ckwf1y6i8001bxnsmgztbef0n&quot;,
+      &quot;registeredTimestamp&quot;: &quot;1536930239805&quot;,
+      &quot;server&quot;: &quot;core2.pryv.me&quot;,
+      &quot;registeredDate&quot;: &quot;Fri, 14 Sep 2018 13:03:59 GMT&quot;
     }
   ]
 }
-</code></pre></div><div class="tab-pane sockets"><pre>Only available for HTTP REST</pre></div><div class="tab-pane batch"><pre>Only available for HTTP REST</pre></div><div class="tab-pane httpAuth"><pre><code>curl -i "https://<span class="api-reg-curl">reg.pryv.me</span>/admin/users"</code></pre><div class="step-marker">⬇</div><pre><code>HTTP/1.1 200 OK
+</code></pre></div><div class="tab-pane sockets"><pre>Only available for HTTP REST</pre></div><div class="tab-pane batch"><pre>Only available for HTTP REST</pre></div><div class="tab-pane httpAuth"><pre><code>curl -i &quot;https://<span class="api-reg-curl">reg.pryv.me</span>/admin/users&quot;</code></pre><div class="step-marker">&#x2B07;</div><pre><code>HTTP/1.1 200 OK
 Content-Type: application/json; charset=utf-8
 API-Version: 1.7.0
 
 {
-  "users": [
+  &quot;users&quot;: [
     {
-      "username": "user1",
-      "email": "red.miller@mail.ch",
-      "language": "en",
-      "invitationToken": "enjoy",
-      "referer": "null",
-      "id": "ckwd7g6un001atkpvief1ts9y",
-      "registeredTimestamp": "1557743399558",
-      "server": "core1.pryv.me",
-      "registeredDate": "Mon, 13 May 2019 10:29:59 GMT"
+      &quot;username&quot;: &quot;user1&quot;,
+      &quot;email&quot;: &quot;red.miller@mail.ch&quot;,
+      &quot;language&quot;: &quot;en&quot;,
+      &quot;invitationToken&quot;: &quot;enjoy&quot;,
+      &quot;referer&quot;: &quot;null&quot;,
+      &quot;id&quot;: &quot;ckwf1y6i8001axnsme5ed4vnk&quot;,
+      &quot;registeredTimestamp&quot;: &quot;1557743399558&quot;,
+      &quot;server&quot;: &quot;core1.pryv.me&quot;,
+      &quot;registeredDate&quot;: &quot;Mon, 13 May 2019 10:29:59 GMT&quot;
     },
     {
-      "username": "user2",
-      "email": "user2@gmail.com",
-      "language": "fr",
-      "invitationToken": "enjoy",
-      "referer": "null",
-      "id": "ckwd7g6un001btkpve2xflshs",
-      "registeredTimestamp": "1536930239805",
-      "server": "core2.pryv.me",
-      "registeredDate": "Fri, 14 Sep 2018 13:03:59 GMT"
+      &quot;username&quot;: &quot;user2&quot;,
+      &quot;email&quot;: &quot;user2@gmail.com&quot;,
+      &quot;language&quot;: &quot;fr&quot;,
+      &quot;invitationToken&quot;: &quot;enjoy&quot;,
+      &quot;referer&quot;: &quot;null&quot;,
+      &quot;id&quot;: &quot;ckwf1y6i8001bxnsmgztbef0n&quot;,
+      &quot;registeredTimestamp&quot;: &quot;1536930239805&quot;,
+      &quot;server&quot;: &quot;core2.pryv.me&quot;,
+      &quot;registeredDate&quot;: &quot;Fri, 14 Sep 2018 13:03:59 GMT&quot;
     }
   ]
 }
 
-</code></pre></div></div></div></aside></section><!-- it's either:--><!-- !trusted & !preview--><!-- !preview & -full--><!-- -preview--><section id="api-methods-admin-servers-get" class="method"> <h3 id="get-core-servers">Get core servers</h3>
-<div class="content"><div class="meta"><span onclick="location='/reference-system/#admin'" class="admin-tag"><span title="Admin Only" class="label">A</span></span><span onclick="location='/reference/#method-ids'" class="method-id"><span title="Method Id" class="label">id</span><span class="label-value"><code>servers.get</code></span></span><span class="http"><span class="label">HTTP-only</span><span class="label-value"><code>GET <a href="/reference-system/#api-endpoint">{register}</a>/admin/servers</code></span></span></div><div class="intro"><p>Get the list of all core servers with the number of users on them.</p>
-</div><h4 id="parameters">Parameters</h4>
-<table class="definitions"></table><h4 id="result">Result</h4>
+</code></pre></div></div></div></aside></section><!-- it's either:--><!-- !trusted & !preview--><!-- !preview & -full--><!-- -preview--><section class="method" id="api-methods-admin-servers-get">&#xA0;<h3 id="get-core-servers"><!--get-core-servers-->Get core servers</h3>
+<div class="content"><div class="meta"><span class="admin-tag" onclick="location=&apos;/reference-system/#admin&apos;"><span class="label" title="Admin Only">A</span></span><span class="method-id" onclick="location=&apos;/reference/#method-ids&apos;"><span class="label" title="Method Id">id</span><span class="label-value"><code>servers.get</code></span></span><span class="http"><span class="label">HTTP-only</span><span class="label-value"><code>GET <a href="/reference-system/#api-endpoint">{register}</a>/admin/servers</code></span></span></div><div class="intro"><p>Get the list of all core servers with the number of users on them.</p>
+</div><h4 id="parameters-1"><!--parameters-1-->Parameters</h4>
+<table class="definitions"></table><h4 id="result-1"><!--result-1-->Result</h4>
 <span class="http"><span class="label">HTTP</span><span class="label-value"><code>200 OK</code></span></span><table class="definitions"><tr><th><code>servers</code></th><td><div class="header"><span class="type">object</span></div><div class="description"><p>Object mapping each available core server to its user count.</p>
 </div></td></tr></table></div><aside><div class="example"><p>Fetching the core servers list for a Pryv.io platform</p>
-<div class="tab-content"><div class="tab-pane json active"><pre><code>{}</code></pre><div class="step-marker">⬇</div><pre><code>{
-  "servers": {
-    "core1.pryv.me": 1337,
-    "core2.pryv.me": 42
+<div class="tab-content"><div class="tab-pane json active"><pre><code>{}</code></pre><div class="step-marker">&#x2B07;</div><pre><code>{
+  &quot;servers&quot;: {
+    &quot;core1.pryv.me&quot;: 1337,
+    &quot;core2.pryv.me&quot;: 42
   }
-}</code></pre></div><div class="tab-pane http"><pre><code>curl -i "https://<span class="api-reg-curl">reg.pryv.me</span>/admin/servers"</code></pre><div class="step-marker">⬇</div><pre><code>HTTP/1.1 200 OK
+}</code></pre></div><div class="tab-pane http"><pre><code>curl -i &quot;https://<span class="api-reg-curl">reg.pryv.me</span>/admin/servers&quot;</code></pre><div class="step-marker">&#x2B07;</div><pre><code>HTTP/1.1 200 OK
 Content-Type: application/json; charset=utf-8
 API-Version: 1.7.0
 
 {
-  "servers": {
-    "core1.pryv.me": 1337,
-    "core2.pryv.me": 42
+  &quot;servers&quot;: {
+    &quot;core1.pryv.me&quot;: 1337,
+    &quot;core2.pryv.me&quot;: 42
   }
 }
-</code></pre></div><div class="tab-pane sockets"><pre>Only available for HTTP REST</pre></div><div class="tab-pane batch"><pre>Only available for HTTP REST</pre></div><div class="tab-pane httpAuth"><pre><code>curl -i "https://<span class="api-reg-curl">reg.pryv.me</span>/admin/servers"</code></pre><div class="step-marker">⬇</div><pre><code>HTTP/1.1 200 OK
+</code></pre></div><div class="tab-pane sockets"><pre>Only available for HTTP REST</pre></div><div class="tab-pane batch"><pre>Only available for HTTP REST</pre></div><div class="tab-pane httpAuth"><pre><code>curl -i &quot;https://<span class="api-reg-curl">reg.pryv.me</span>/admin/servers&quot;</code></pre><div class="step-marker">&#x2B07;</div><pre><code>HTTP/1.1 200 OK
 Content-Type: application/json; charset=utf-8
 API-Version: 1.7.0
 
 {
-  "servers": {
-    "core1.pryv.me": 1337,
-    "core2.pryv.me": 42
+  &quot;servers&quot;: {
+    &quot;core1.pryv.me&quot;: 1337,
+    &quot;core2.pryv.me&quot;: 42
   }
 }
 
-</code></pre></div></div></div></aside></section><!-- it's either:--><!-- !trusted & !preview--><!-- !preview & -full--><!-- -preview--><section id="api-methods-admin-servers-users.get" class="method"> <h3 id="get-users-on-core-server">Get users on core server</h3>
-<div class="content"><div class="meta"><span onclick="location='/reference-system/#admin'" class="admin-tag"><span title="Admin Only" class="label">A</span></span><span onclick="location='/reference/#method-ids'" class="method-id"><span title="Method Id" class="label">id</span><span class="label-value"><code>servers.users.get</code></span></span><span class="http"><span class="label">HTTP-only</span><span class="label-value"><code>GET <a href="/reference-system/#api-endpoint">{register}</a>/admin/servers/{serverName}/users</code></span></span></div><div class="intro"><p>Get the list of all users registered on a specific core server.</p>
-</div><h4 id="parameters">Parameters</h4>
+</code></pre></div></div></div></aside></section><!-- it's either:--><!-- !trusted & !preview--><!-- !preview & -full--><!-- -preview--><section class="method" id="api-methods-admin-servers-users.get">&#xA0;<h3 id="get-users-on-core-server"><!--get-users-on-core-server-->Get users on core server</h3>
+<div class="content"><div class="meta"><span class="admin-tag" onclick="location=&apos;/reference-system/#admin&apos;"><span class="label" title="Admin Only">A</span></span><span class="method-id" onclick="location=&apos;/reference/#method-ids&apos;"><span class="label" title="Method Id">id</span><span class="label-value"><code>servers.users.get</code></span></span><span class="http"><span class="label">HTTP-only</span><span class="label-value"><code>GET <a href="/reference-system/#api-endpoint">{register}</a>/admin/servers/{serverName}/users</code></span></span></div><div class="intro"><p>Get the list of all users registered on a specific core server.</p>
+</div><h4 id="parameters-2"><!--parameters-2-->Parameters</h4>
 <table class="definitions"><tr><th><code>serverName</code></th><td><div class="header"><span class="type">string</span><span class="http"><span class="label">HTTP</span><span class="label-value"><span>set in request path</span></span></span></div><div class="description"><p>The name of the core server.</p>
-</div></td></tr></table><h4 id="result">Result</h4>
+</div></td></tr></table><h4 id="result-2"><!--result-2-->Result</h4>
 <span class="http"><span class="label">HTTP</span><span class="label-value"><code>200 OK</code></span></span><table class="definitions"><tr><th><code>users</code></th><td><div class="header"><span class="type">array</span></div><div class="description"><p>Array of user data.</p>
 </div></td></tr></table></div><aside><div class="example"><p>Fetching the users list for a specifc core server.</p>
 <div class="tab-content"><div class="tab-pane json active"><pre><code>{
-  "serverName": "core1.pryv.me"
-}</code></pre><div class="step-marker">⬇</div><pre><code>{
-  "users": [
+  &quot;serverName&quot;: &quot;core1.pryv.me&quot;
+}</code></pre><div class="step-marker">&#x2B07;</div><pre><code>{
+  &quot;users&quot;: [
     {
-      "username": "user1",
-      "email": "red.miller@mail.ch",
-      "language": "en",
-      "invitationToken": "enjoy",
-      "referer": "null",
-      "id": "ckwd7g6un001atkpvief1ts9y",
-      "registeredTimestamp": "1557743399558",
-      "server": "core1.pryv.me",
-      "registeredDate": "Mon, 13 May 2019 10:29:59 GMT"
+      &quot;username&quot;: &quot;user1&quot;,
+      &quot;email&quot;: &quot;red.miller@mail.ch&quot;,
+      &quot;language&quot;: &quot;en&quot;,
+      &quot;invitationToken&quot;: &quot;enjoy&quot;,
+      &quot;referer&quot;: &quot;null&quot;,
+      &quot;id&quot;: &quot;ckwf1y6i8001axnsme5ed4vnk&quot;,
+      &quot;registeredTimestamp&quot;: &quot;1557743399558&quot;,
+      &quot;server&quot;: &quot;core1.pryv.me&quot;,
+      &quot;registeredDate&quot;: &quot;Mon, 13 May 2019 10:29:59 GMT&quot;
     }
   ]
-}</code></pre></div><div class="tab-pane http"><pre><code>curl -i "https://<span class="api-reg-curl">reg.pryv.me</span>/admin/servers/core1.pryv.me/users"</code></pre><div class="step-marker">⬇</div><pre><code>HTTP/1.1 200 OK
+}</code></pre></div><div class="tab-pane http"><pre><code>curl -i &quot;https://<span class="api-reg-curl">reg.pryv.me</span>/admin/servers/core1.pryv.me/users&quot;</code></pre><div class="step-marker">&#x2B07;</div><pre><code>HTTP/1.1 200 OK
 Content-Type: application/json; charset=utf-8
 API-Version: 1.7.0
 
 {
-  "users": [
+  &quot;users&quot;: [
     {
-      "username": "user1",
-      "email": "red.miller@mail.ch",
-      "language": "en",
-      "invitationToken": "enjoy",
-      "referer": "null",
-      "id": "ckwd7g6un001atkpvief1ts9y",
-      "registeredTimestamp": "1557743399558",
-      "server": "core1.pryv.me",
-      "registeredDate": "Mon, 13 May 2019 10:29:59 GMT"
+      &quot;username&quot;: &quot;user1&quot;,
+      &quot;email&quot;: &quot;red.miller@mail.ch&quot;,
+      &quot;language&quot;: &quot;en&quot;,
+      &quot;invitationToken&quot;: &quot;enjoy&quot;,
+      &quot;referer&quot;: &quot;null&quot;,
+      &quot;id&quot;: &quot;ckwf1y6i8001axnsme5ed4vnk&quot;,
+      &quot;registeredTimestamp&quot;: &quot;1557743399558&quot;,
+      &quot;server&quot;: &quot;core1.pryv.me&quot;,
+      &quot;registeredDate&quot;: &quot;Mon, 13 May 2019 10:29:59 GMT&quot;
     }
   ]
 }
-</code></pre></div><div class="tab-pane sockets"><pre>Only available for HTTP REST</pre></div><div class="tab-pane batch"><pre>Only available for HTTP REST</pre></div><div class="tab-pane httpAuth"><pre><code>curl -i "https://<span class="api-reg-curl">reg.pryv.me</span>/admin/servers/core1.pryv.me/users"</code></pre><div class="step-marker">⬇</div><pre><code>HTTP/1.1 200 OK
+</code></pre></div><div class="tab-pane sockets"><pre>Only available for HTTP REST</pre></div><div class="tab-pane batch"><pre>Only available for HTTP REST</pre></div><div class="tab-pane httpAuth"><pre><code>curl -i &quot;https://<span class="api-reg-curl">reg.pryv.me</span>/admin/servers/core1.pryv.me/users&quot;</code></pre><div class="step-marker">&#x2B07;</div><pre><code>HTTP/1.1 200 OK
 Content-Type: application/json; charset=utf-8
 API-Version: 1.7.0
 
 {
-  "users": [
+  &quot;users&quot;: [
     {
-      "username": "user1",
-      "email": "red.miller@mail.ch",
-      "language": "en",
-      "invitationToken": "enjoy",
-      "referer": "null",
-      "id": "ckwd7g6un001atkpvief1ts9y",
-      "registeredTimestamp": "1557743399558",
-      "server": "core1.pryv.me",
-      "registeredDate": "Mon, 13 May 2019 10:29:59 GMT"
+      &quot;username&quot;: &quot;user1&quot;,
+      &quot;email&quot;: &quot;red.miller@mail.ch&quot;,
+      &quot;language&quot;: &quot;en&quot;,
+      &quot;invitationToken&quot;: &quot;enjoy&quot;,
+      &quot;referer&quot;: &quot;null&quot;,
+      &quot;id&quot;: &quot;ckwf1y6i8001axnsme5ed4vnk&quot;,
+      &quot;registeredTimestamp&quot;: &quot;1557743399558&quot;,
+      &quot;server&quot;: &quot;core1.pryv.me&quot;,
+      &quot;registeredDate&quot;: &quot;Mon, 13 May 2019 10:29:59 GMT&quot;
     }
   ]
 }
 
-</code></pre></div></div></div></aside></section><!-- it's either:--><!-- !trusted & !preview--><!-- !preview & -full--><!-- -preview--><section id="api-methods-admin-servers-rename" class="method"> <h3 id="rename-core-server">Rename core server</h3>
-<div class="content"><div class="meta"><span onclick="location='/reference-system/#admin'" class="admin-tag"><span title="Admin Only" class="label">A</span></span><span onclick="location='/reference/#method-ids'" class="method-id"><span title="Method Id" class="label">id</span><span class="label-value"><code>servers.rename</code></span></span><span class="http"><span class="label">HTTP-only</span><span class="label-value"><code>GET <a href="/reference-system/#api-endpoint">{register}</a>/admin/servers/{srcServerName}/rename/{dstServerName}</code></span></span></div><div class="intro"><p>Rename a core server, thus reassigning the users from srcServer to dstServer.</p>
-</div><h4 id="parameters">Parameters</h4>
+</code></pre></div></div></div></aside></section><!-- it's either:--><!-- !trusted & !preview--><!-- !preview & -full--><!-- -preview--><section class="method" id="api-methods-admin-servers-rename">&#xA0;<h3 id="rename-core-server"><!--rename-core-server-->Rename core server</h3>
+<div class="content"><div class="meta"><span class="admin-tag" onclick="location=&apos;/reference-system/#admin&apos;"><span class="label" title="Admin Only">A</span></span><span class="method-id" onclick="location=&apos;/reference/#method-ids&apos;"><span class="label" title="Method Id">id</span><span class="label-value"><code>servers.rename</code></span></span><span class="http"><span class="label">HTTP-only</span><span class="label-value"><code>GET <a href="/reference-system/#api-endpoint">{register}</a>/admin/servers/{srcServerName}/rename/{dstServerName}</code></span></span></div><div class="intro"><p>Rename a core server, thus reassigning the users from srcServer to dstServer.</p>
+</div><h4 id="parameters-3"><!--parameters-3-->Parameters</h4>
 <table class="definitions"><tr><th><code>srcServerName</code></th><td><div class="header"><span class="type">string</span><span class="http"><span class="label">HTTP</span><span class="label-value"><span>set in request path</span></span></span></div><div class="description"><p>The current name of the core server to rename.</p>
 </div></td></tr><tr><th><code>dstServerName</code></th><td><div class="header"><span class="type">string</span><span class="http"><span class="label">HTTP</span><span class="label-value"><span>set in request path</span></span></span></div><div class="description"><p>The new name of the core server.</p>
-</div></td></tr></table><h4 id="result">Result</h4>
+</div></td></tr></table><h4 id="result-3"><!--result-3-->Result</h4>
 <span class="http"><span class="label">HTTP</span><span class="label-value"><code>200 OK</code></span></span><table class="definitions"><tr><th><code>count</code></th><td><div class="header"><span class="type">number</span></div><div class="description"><p>The count of reassigned users.
 It can be 0 if <code>srcServerName</code> did not match any existing core server.</p>
-</div></td></tr></table><h4 id="specific-errors">Specific errors</h4>
+</div></td></tr></table><h4 id="specific-errors"><!--specific-errors-->Specific errors</h4>
 <table class="definitions"><tr><th><code>INVALID_DATA</code></th><td><div class="header"><span class="http"><span class="label">HTTP</span><span class="label-value"><code>400</code></span></span></div><div class="description"><p>The server name (source or destination) is invalid because of an unrecognized format.</p>
 </div></td></tr></table></div><aside><div class="example"><p>Renaming a core server.</p>
 <div class="tab-content"><div class="tab-pane json active"><pre><code>{
-  "srcServerName": "core1.pryv.me",
-  "dstServerName": "core2.pryv.me"
-}</code></pre><div class="step-marker">⬇</div><pre><code>{
-  "count": 1
-}</code></pre></div><div class="tab-pane http"><pre><code>curl -i "https://<span class="api-reg-curl">reg.pryv.me</span>/admin/servers/core1.pryv.me/rename/core2.pryv.me"</code></pre><div class="step-marker">⬇</div><pre><code>HTTP/1.1 200 OK
+  &quot;srcServerName&quot;: &quot;core1.pryv.me&quot;,
+  &quot;dstServerName&quot;: &quot;core2.pryv.me&quot;
+}</code></pre><div class="step-marker">&#x2B07;</div><pre><code>{
+  &quot;count&quot;: 1
+}</code></pre></div><div class="tab-pane http"><pre><code>curl -i &quot;https://<span class="api-reg-curl">reg.pryv.me</span>/admin/servers/core1.pryv.me/rename/core2.pryv.me&quot;</code></pre><div class="step-marker">&#x2B07;</div><pre><code>HTTP/1.1 200 OK
 Content-Type: application/json; charset=utf-8
 API-Version: 1.7.0
 
 {
-  "count": 1
+  &quot;count&quot;: 1
 }
-</code></pre></div><div class="tab-pane sockets"><pre>Only available for HTTP REST</pre></div><div class="tab-pane batch"><pre>Only available for HTTP REST</pre></div><div class="tab-pane httpAuth"><pre><code>curl -i "https://<span class="api-reg-curl">reg.pryv.me</span>/admin/servers/core1.pryv.me/rename/core2.pryv.me"</code></pre><div class="step-marker">⬇</div><pre><code>HTTP/1.1 200 OK
+</code></pre></div><div class="tab-pane sockets"><pre>Only available for HTTP REST</pre></div><div class="tab-pane batch"><pre>Only available for HTTP REST</pre></div><div class="tab-pane httpAuth"><pre><code>curl -i &quot;https://<span class="api-reg-curl">reg.pryv.me</span>/admin/servers/core1.pryv.me/rename/core2.pryv.me&quot;</code></pre><div class="step-marker">&#x2B07;</div><pre><code>HTTP/1.1 200 OK
 Content-Type: application/json; charset=utf-8
 API-Version: 1.7.0
 
 {
-  "count": 1
+  &quot;count&quot;: 1
 }
 
-</code></pre></div></div></div></aside></section></section><!-- it's either:--><!-- !trusted & !preview--><!-- !preview & -full--><!-- -preview--><section id="api-methods-service"><h2 id="service">Service</h2>
+</code></pre></div></div></div></aside></section></section><!-- it's either:--><!-- !trusted & !preview--><!-- !preview & -full--><!-- -preview--><section id="api-methods-service"><h2 id="service"><!--service-->Service</h2>
 <div class="content"><div class="meta"></div><div class="intro"><p>Methods for collecting service information such as details about the platform and the API, connected apps or hostings (core server locations).</p>
-</div></div><!-- it's either:--><!-- !trusted & !preview--><!-- !preview & -full--><!-- -preview--><section id="api-methods-service-hostings-get" class="method"> <h3 id="get-hostings">Get hostings</h3>
-<div class="content"><div class="meta"><span onclick="location='/reference/#method-ids'" class="method-id"><span title="Method Id" class="label">id</span><span class="label-value"><code>hostings.get</code></span></span><span class="http"><span class="label">HTTP-only</span><span class="label-value"><code>GET <a href="/reference-system/#api-endpoint">{register}</a>/hostings</code></span></span></div><div class="intro"><p>Get the list of all available hostings for data storage locations.</p>
-</div><h4 id="parameters">Parameters</h4>
-<table class="definitions"></table><h4 id="result">Result</h4>
-<span class="http"><span class="label">HTTP</span><span class="label-value"><code>200 OK</code></span></span><table class="definitions"><tr><th><code>regions</code></th><td><div class="header"><span class="type">Object</span></div><div class="description"><p>Object containing multiple regions, containing themselves multiple zones, containing themselves multiple <strong>hostings</strong>.<br>You need to use the <code>availableCore</code> URL as endpoint for the <a href="#create-user">Create user API method</a>.</p>
+</div></div><!-- it's either:--><!-- !trusted & !preview--><!-- !preview & -full--><!-- -preview--><section class="method" id="api-methods-service-hostings-get">&#xA0;<h3 id="get-hostings"><!--get-hostings-->Get hostings</h3>
+<div class="content"><div class="meta"><span class="method-id" onclick="location=&apos;/reference/#method-ids&apos;"><span class="label" title="Method Id">id</span><span class="label-value"><code>hostings.get</code></span></span><span class="http"><span class="label">HTTP-only</span><span class="label-value"><code>GET <a href="/reference-system/#api-endpoint">{register}</a>/hostings</code></span></span></div><div class="intro"><p>Get the list of all available hostings for data storage locations.</p>
+</div><h4 id="parameters-4"><!--parameters-4-->Parameters</h4>
+<table class="definitions"></table><h4 id="result-4"><!--result-4-->Result</h4>
+<span class="http"><span class="label">HTTP</span><span class="label-value"><code>200 OK</code></span></span><table class="definitions"><tr><th><code>regions</code></th><td><div class="header"><span class="type">Object</span></div><div class="description"><p>Object containing multiple regions, containing themselves multiple zones, containing themselves multiple <strong>hostings</strong>.<br>
+You need to use the <code>availableCore</code> URL as endpoint for the <a href="#create-user">Create user API method</a>.</p>
 </div></td></tr></table></div><aside><div class="example"><p>Fetching the hostings for a Pryv.io platform</p>
-<div class="tab-content"><div class="tab-pane json active"><pre><code>{}</code></pre><div class="step-marker">⬇</div><pre><code>{
-  "regions": {
-    "europe": {
-      "name": "Europe",
-      "localizedName": {
-        "fr": "Europe"
+<div class="tab-content"><div class="tab-pane json active"><pre><code>{}</code></pre><div class="step-marker">&#x2B07;</div><pre><code>{
+  &quot;regions&quot;: {
+    &quot;europe&quot;: {
+      &quot;name&quot;: &quot;Europe&quot;,
+      &quot;localizedName&quot;: {
+        &quot;fr&quot;: &quot;Europe&quot;
       },
-      "zones": {
-        "switzerland": {
-          "name": "Switzerland",
-          "localizedName": {
-            "fr": "Suisse"
+      &quot;zones&quot;: {
+        &quot;switzerland&quot;: {
+          &quot;name&quot;: &quot;Switzerland&quot;,
+          &quot;localizedName&quot;: {
+            &quot;fr&quot;: &quot;Suisse&quot;
           },
-          "hostings": {
-            "core1": {
-              "url": "https://my-hosting-provider.ch",
-              "name": "Pilot core server",
-              "description": "The single PoC core server",
-              "available": true,
-              "availableCore": "https://my-core.ch"
+          &quot;hostings&quot;: {
+            &quot;core1&quot;: {
+              &quot;url&quot;: &quot;https://my-hosting-provider.ch&quot;,
+              &quot;name&quot;: &quot;Pilot core server&quot;,
+              &quot;description&quot;: &quot;The single PoC core server&quot;,
+              &quot;available&quot;: true,
+              &quot;availableCore&quot;: &quot;https://my-core.ch&quot;
             }
           }
         }
       }
     }
   }
-}</code></pre></div><div class="tab-pane http"><pre><code>curl -i "https://<span class="api-reg-curl">reg.pryv.me</span>/hostings"</code></pre><div class="step-marker">⬇</div><pre><code>HTTP/1.1 200 OK
+}</code></pre></div><div class="tab-pane http"><pre><code>curl -i &quot;https://<span class="api-reg-curl">reg.pryv.me</span>/hostings&quot;</code></pre><div class="step-marker">&#x2B07;</div><pre><code>HTTP/1.1 200 OK
 Content-Type: application/json; charset=utf-8
 API-Version: 1.7.0
 
 {
-  "regions": {
-    "europe": {
-      "name": "Europe",
-      "localizedName": {
-        "fr": "Europe"
+  &quot;regions&quot;: {
+    &quot;europe&quot;: {
+      &quot;name&quot;: &quot;Europe&quot;,
+      &quot;localizedName&quot;: {
+        &quot;fr&quot;: &quot;Europe&quot;
       },
-      "zones": {
-        "switzerland": {
-          "name": "Switzerland",
-          "localizedName": {
-            "fr": "Suisse"
+      &quot;zones&quot;: {
+        &quot;switzerland&quot;: {
+          &quot;name&quot;: &quot;Switzerland&quot;,
+          &quot;localizedName&quot;: {
+            &quot;fr&quot;: &quot;Suisse&quot;
           },
-          "hostings": {
-            "core1": {
-              "url": "https://my-hosting-provider.ch",
-              "name": "Pilot core server",
-              "description": "The single PoC core server",
-              "available": true,
-              "availableCore": "https://my-core.ch"
+          &quot;hostings&quot;: {
+            &quot;core1&quot;: {
+              &quot;url&quot;: &quot;https://my-hosting-provider.ch&quot;,
+              &quot;name&quot;: &quot;Pilot core server&quot;,
+              &quot;description&quot;: &quot;The single PoC core server&quot;,
+              &quot;available&quot;: true,
+              &quot;availableCore&quot;: &quot;https://my-core.ch&quot;
             }
           }
         }
@@ -323,30 +326,30 @@ API-Version: 1.7.0
     }
   }
 }
-</code></pre></div><div class="tab-pane sockets"><pre>Only available for HTTP REST</pre></div><div class="tab-pane batch"><pre>Only available for HTTP REST</pre></div><div class="tab-pane httpAuth"><pre><code>curl -i "https://<span class="api-reg-curl">reg.pryv.me</span>/hostings"</code></pre><div class="step-marker">⬇</div><pre><code>HTTP/1.1 200 OK
+</code></pre></div><div class="tab-pane sockets"><pre>Only available for HTTP REST</pre></div><div class="tab-pane batch"><pre>Only available for HTTP REST</pre></div><div class="tab-pane httpAuth"><pre><code>curl -i &quot;https://<span class="api-reg-curl">reg.pryv.me</span>/hostings&quot;</code></pre><div class="step-marker">&#x2B07;</div><pre><code>HTTP/1.1 200 OK
 Content-Type: application/json; charset=utf-8
 API-Version: 1.7.0
 
 {
-  "regions": {
-    "europe": {
-      "name": "Europe",
-      "localizedName": {
-        "fr": "Europe"
+  &quot;regions&quot;: {
+    &quot;europe&quot;: {
+      &quot;name&quot;: &quot;Europe&quot;,
+      &quot;localizedName&quot;: {
+        &quot;fr&quot;: &quot;Europe&quot;
       },
-      "zones": {
-        "switzerland": {
-          "name": "Switzerland",
-          "localizedName": {
-            "fr": "Suisse"
+      &quot;zones&quot;: {
+        &quot;switzerland&quot;: {
+          &quot;name&quot;: &quot;Switzerland&quot;,
+          &quot;localizedName&quot;: {
+            &quot;fr&quot;: &quot;Suisse&quot;
           },
-          "hostings": {
-            "core1": {
-              "url": "https://my-hosting-provider.ch",
-              "name": "Pilot core server",
-              "description": "The single PoC core server",
-              "available": true,
-              "availableCore": "https://my-core.ch"
+          &quot;hostings&quot;: {
+            &quot;core1&quot;: {
+              &quot;url&quot;: &quot;https://my-hosting-provider.ch&quot;,
+              &quot;name&quot;: &quot;Pilot core server&quot;,
+              &quot;description&quot;: &quot;The single PoC core server&quot;,
+              &quot;available&quot;: true,
+              &quot;availableCore&quot;: &quot;https://my-core.ch&quot;
             }
           }
         }
@@ -355,440 +358,441 @@ API-Version: 1.7.0
   }
 }
 
-</code></pre></div></div></div></aside></section><!-- it's either:--><!-- !trusted & !preview--><!-- !preview & -full--><!-- -preview--><section id="api-methods-service-apps-get" class="method"> <h3 id="get-apps">Get apps</h3>
-<div class="content"><div class="meta"><span onclick="location='/reference/#method-ids'" class="method-id"><span title="Method Id" class="label">id</span><span class="label-value"><code>apps.get</code></span></span><span class="http"><span class="label">HTTP-only</span><span class="label-value"><code>GET <a href="/reference-system/#api-endpoint">{register}</a>/apps</code></span></span></div><div class="intro"><p>Retrieve the list of applications connected to the platform.</p>
-</div><h4 id="parameters">Parameters</h4>
-<table class="definitions"></table><h4 id="result">Result</h4>
+</code></pre></div></div></div></aside></section><!-- it's either:--><!-- !trusted & !preview--><!-- !preview & -full--><!-- -preview--><section class="method" id="api-methods-service-apps-get">&#xA0;<h3 id="get-apps"><!--get-apps-->Get apps</h3>
+<div class="content"><div class="meta"><span class="method-id" onclick="location=&apos;/reference/#method-ids&apos;"><span class="label" title="Method Id">id</span><span class="label-value"><code>apps.get</code></span></span><span class="http"><span class="label">HTTP-only</span><span class="label-value"><code>GET <a href="/reference-system/#api-endpoint">{register}</a>/apps</code></span></span></div><div class="intro"><p>Retrieve the list of applications connected to the platform.</p>
+</div><h4 id="parameters-5"><!--parameters-5-->Parameters</h4>
+<table class="definitions"></table><h4 id="result-5"><!--result-5-->Result</h4>
 <span class="http"><span class="label">HTTP</span><span class="label-value"><code>200 OK</code></span></span><table class="definitions"><tr><th><code>apps</code></th><td><div class="header"><span class="type">array</span></div><div class="description"><p>An array listing all the applications connected to the Pryv.io platform.</p>
 </div></td></tr></table></div><aside><div class="example"><p>Retrieving the list of applications connected to the platform.</p>
-<div class="tab-content"><div class="tab-pane json active"><pre><code>{}</code></pre><div class="step-marker">⬇</div><pre><code>{
-  "apps": [
+<div class="tab-content"><div class="tab-pane json active"><pre><code>{}</code></pre><div class="step-marker">&#x2B07;</div><pre><code>{
+  &quot;apps&quot;: [
     {
-      "id": "pryv-csv-importer",
-      "displayName": "CSV Importer",
-      "description": "Import existing data from CSV files",
-      "iconURL": "https://pryv.github.io/static-web/apps/pryv-csv-importer/icon512.png",
-      "appURL": "http://pryv.github.io/dev-tools/csv-importer",
-      "active": false,
-      "onboarding": false,
-      "category": "Other",
-      "support": [
-        "iPad",
-        "iPhone",
-        "Web"
+      &quot;id&quot;: &quot;pryv-csv-importer&quot;,
+      &quot;displayName&quot;: &quot;CSV Importer&quot;,
+      &quot;description&quot;: &quot;Import existing data from CSV files&quot;,
+      &quot;iconURL&quot;: &quot;https://pryv.github.io/static-web/apps/pryv-csv-importer/icon512.png&quot;,
+      &quot;appURL&quot;: &quot;http://pryv.github.io/dev-tools/csv-importer&quot;,
+      &quot;active&quot;: false,
+      &quot;onboarding&quot;: false,
+      &quot;category&quot;: &quot;Other&quot;,
+      &quot;support&quot;: [
+        &quot;iPad&quot;,
+        &quot;iPhone&quot;,
+        &quot;Web&quot;
       ],
-      "settingsPageURL": "http://pryv.github.io/dev-tools/csv-importer"
+      &quot;settingsPageURL&quot;: &quot;http://pryv.github.io/dev-tools/csv-importer&quot;
     },
     {
-      "id": "ifttt-all",
-      "displayName": "IFTTT",
-      "description": "Connect Pryv to over 100 other products and services with Pryv Recipes on IFTTT",
-      "iconURL": "https://pryv.github.io/static-web/apps/ifttt-all/icon512.png",
-      "appURL": "https://ifttt.com/pryv",
-      "active": false,
-      "onboarding": false,
-      "category": "Other",
-      "support": [
-        "iPad",
-        "iPhone",
-        "Web"
+      &quot;id&quot;: &quot;ifttt-all&quot;,
+      &quot;displayName&quot;: &quot;IFTTT&quot;,
+      &quot;description&quot;: &quot;Connect Pryv to over 100 other products and services with Pryv Recipes on IFTTT&quot;,
+      &quot;iconURL&quot;: &quot;https://pryv.github.io/static-web/apps/ifttt-all/icon512.png&quot;,
+      &quot;appURL&quot;: &quot;https://ifttt.com/pryv&quot;,
+      &quot;active&quot;: false,
+      &quot;onboarding&quot;: false,
+      &quot;category&quot;: &quot;Other&quot;,
+      &quot;support&quot;: [
+        &quot;iPad&quot;,
+        &quot;iPhone&quot;,
+        &quot;Web&quot;
       ],
-      "settingsPageURL": "https://ifttt.com/pryv"
+      &quot;settingsPageURL&quot;: &quot;https://ifttt.com/pryv&quot;
     }
   ]
-}</code></pre></div><div class="tab-pane http"><pre><code>curl -i "https://<span class="api-reg-curl">reg.pryv.me</span>/apps"</code></pre><div class="step-marker">⬇</div><pre><code>HTTP/1.1 200 OK
+}</code></pre></div><div class="tab-pane http"><pre><code>curl -i &quot;https://<span class="api-reg-curl">reg.pryv.me</span>/apps&quot;</code></pre><div class="step-marker">&#x2B07;</div><pre><code>HTTP/1.1 200 OK
 Content-Type: application/json; charset=utf-8
 API-Version: 1.7.0
 
 {
-  "apps": [
+  &quot;apps&quot;: [
     {
-      "id": "pryv-csv-importer",
-      "displayName": "CSV Importer",
-      "description": "Import existing data from CSV files",
-      "iconURL": "https://pryv.github.io/static-web/apps/pryv-csv-importer/icon512.png",
-      "appURL": "http://pryv.github.io/dev-tools/csv-importer",
-      "active": false,
-      "onboarding": false,
-      "category": "Other",
-      "support": [
-        "iPad",
-        "iPhone",
-        "Web"
+      &quot;id&quot;: &quot;pryv-csv-importer&quot;,
+      &quot;displayName&quot;: &quot;CSV Importer&quot;,
+      &quot;description&quot;: &quot;Import existing data from CSV files&quot;,
+      &quot;iconURL&quot;: &quot;https://pryv.github.io/static-web/apps/pryv-csv-importer/icon512.png&quot;,
+      &quot;appURL&quot;: &quot;http://pryv.github.io/dev-tools/csv-importer&quot;,
+      &quot;active&quot;: false,
+      &quot;onboarding&quot;: false,
+      &quot;category&quot;: &quot;Other&quot;,
+      &quot;support&quot;: [
+        &quot;iPad&quot;,
+        &quot;iPhone&quot;,
+        &quot;Web&quot;
       ],
-      "settingsPageURL": "http://pryv.github.io/dev-tools/csv-importer"
+      &quot;settingsPageURL&quot;: &quot;http://pryv.github.io/dev-tools/csv-importer&quot;
     },
     {
-      "id": "ifttt-all",
-      "displayName": "IFTTT",
-      "description": "Connect Pryv to over 100 other products and services with Pryv Recipes on IFTTT",
-      "iconURL": "https://pryv.github.io/static-web/apps/ifttt-all/icon512.png",
-      "appURL": "https://ifttt.com/pryv",
-      "active": false,
-      "onboarding": false,
-      "category": "Other",
-      "support": [
-        "iPad",
-        "iPhone",
-        "Web"
+      &quot;id&quot;: &quot;ifttt-all&quot;,
+      &quot;displayName&quot;: &quot;IFTTT&quot;,
+      &quot;description&quot;: &quot;Connect Pryv to over 100 other products and services with Pryv Recipes on IFTTT&quot;,
+      &quot;iconURL&quot;: &quot;https://pryv.github.io/static-web/apps/ifttt-all/icon512.png&quot;,
+      &quot;appURL&quot;: &quot;https://ifttt.com/pryv&quot;,
+      &quot;active&quot;: false,
+      &quot;onboarding&quot;: false,
+      &quot;category&quot;: &quot;Other&quot;,
+      &quot;support&quot;: [
+        &quot;iPad&quot;,
+        &quot;iPhone&quot;,
+        &quot;Web&quot;
       ],
-      "settingsPageURL": "https://ifttt.com/pryv"
+      &quot;settingsPageURL&quot;: &quot;https://ifttt.com/pryv&quot;
     }
   ]
 }
-</code></pre></div><div class="tab-pane sockets"><pre>Only available for HTTP REST</pre></div><div class="tab-pane batch"><pre>Only available for HTTP REST</pre></div><div class="tab-pane httpAuth"><pre><code>curl -i "https://<span class="api-reg-curl">reg.pryv.me</span>/apps"</code></pre><div class="step-marker">⬇</div><pre><code>HTTP/1.1 200 OK
+</code></pre></div><div class="tab-pane sockets"><pre>Only available for HTTP REST</pre></div><div class="tab-pane batch"><pre>Only available for HTTP REST</pre></div><div class="tab-pane httpAuth"><pre><code>curl -i &quot;https://<span class="api-reg-curl">reg.pryv.me</span>/apps&quot;</code></pre><div class="step-marker">&#x2B07;</div><pre><code>HTTP/1.1 200 OK
 Content-Type: application/json; charset=utf-8
 API-Version: 1.7.0
 
 {
-  "apps": [
+  &quot;apps&quot;: [
     {
-      "id": "pryv-csv-importer",
-      "displayName": "CSV Importer",
-      "description": "Import existing data from CSV files",
-      "iconURL": "https://pryv.github.io/static-web/apps/pryv-csv-importer/icon512.png",
-      "appURL": "http://pryv.github.io/dev-tools/csv-importer",
-      "active": false,
-      "onboarding": false,
-      "category": "Other",
-      "support": [
-        "iPad",
-        "iPhone",
-        "Web"
+      &quot;id&quot;: &quot;pryv-csv-importer&quot;,
+      &quot;displayName&quot;: &quot;CSV Importer&quot;,
+      &quot;description&quot;: &quot;Import existing data from CSV files&quot;,
+      &quot;iconURL&quot;: &quot;https://pryv.github.io/static-web/apps/pryv-csv-importer/icon512.png&quot;,
+      &quot;appURL&quot;: &quot;http://pryv.github.io/dev-tools/csv-importer&quot;,
+      &quot;active&quot;: false,
+      &quot;onboarding&quot;: false,
+      &quot;category&quot;: &quot;Other&quot;,
+      &quot;support&quot;: [
+        &quot;iPad&quot;,
+        &quot;iPhone&quot;,
+        &quot;Web&quot;
       ],
-      "settingsPageURL": "http://pryv.github.io/dev-tools/csv-importer"
+      &quot;settingsPageURL&quot;: &quot;http://pryv.github.io/dev-tools/csv-importer&quot;
     },
     {
-      "id": "ifttt-all",
-      "displayName": "IFTTT",
-      "description": "Connect Pryv to over 100 other products and services with Pryv Recipes on IFTTT",
-      "iconURL": "https://pryv.github.io/static-web/apps/ifttt-all/icon512.png",
-      "appURL": "https://ifttt.com/pryv",
-      "active": false,
-      "onboarding": false,
-      "category": "Other",
-      "support": [
-        "iPad",
-        "iPhone",
-        "Web"
+      &quot;id&quot;: &quot;ifttt-all&quot;,
+      &quot;displayName&quot;: &quot;IFTTT&quot;,
+      &quot;description&quot;: &quot;Connect Pryv to over 100 other products and services with Pryv Recipes on IFTTT&quot;,
+      &quot;iconURL&quot;: &quot;https://pryv.github.io/static-web/apps/ifttt-all/icon512.png&quot;,
+      &quot;appURL&quot;: &quot;https://ifttt.com/pryv&quot;,
+      &quot;active&quot;: false,
+      &quot;onboarding&quot;: false,
+      &quot;category&quot;: &quot;Other&quot;,
+      &quot;support&quot;: [
+        &quot;iPad&quot;,
+        &quot;iPhone&quot;,
+        &quot;Web&quot;
       ],
-      "settingsPageURL": "https://ifttt.com/pryv"
+      &quot;settingsPageURL&quot;: &quot;https://ifttt.com/pryv&quot;
     }
   ]
 }
 
-</code></pre></div></div></div></aside></section><!-- it's either:--><!-- !trusted & !preview--><!-- !preview & -full--><!-- -preview--><section id="api-methods-service-apps-getOne" class="method"> <h3 id="get-app">Get app</h3>
-<div class="content"><div class="meta"><span onclick="location='/reference/#method-ids'" class="method-id"><span title="Method Id" class="label">id</span><span class="label-value"><code>apps.getOne</code></span></span><span class="http"><span class="label">HTTP-only</span><span class="label-value"><code>GET <a href="/reference-system/#api-endpoint">{register}</a>/apps/{appid}</code></span></span></div><div class="intro"><p>Retrieve information about a given application.</p>
-</div><h4 id="parameters">Parameters</h4>
+</code></pre></div></div></div></aside></section><!-- it's either:--><!-- !trusted & !preview--><!-- !preview & -full--><!-- -preview--><section class="method" id="api-methods-service-apps-getOne">&#xA0;<h3 id="get-app"><!--get-app-->Get app</h3>
+<div class="content"><div class="meta"><span class="method-id" onclick="location=&apos;/reference/#method-ids&apos;"><span class="label" title="Method Id">id</span><span class="label-value"><code>apps.getOne</code></span></span><span class="http"><span class="label">HTTP-only</span><span class="label-value"><code>GET <a href="/reference-system/#api-endpoint">{register}</a>/apps/{appid}</code></span></span></div><div class="intro"><p>Retrieve information about a given application.</p>
+</div><h4 id="parameters-6"><!--parameters-6-->Parameters</h4>
 <table class="definitions"><tr><th><code>appid</code></th><td><div class="header"><span class="type">string</span><span class="http"><span class="label">HTTP</span><span class="label-value"><span>set in request path</span></span></span></div><div class="description"><p>The id of the application to look for.</p>
-</div></td></tr></table><h4 id="result">Result</h4>
+</div></td></tr></table><h4 id="result-6"><!--result-6-->Result</h4>
 <span class="http"><span class="label">HTTP</span><span class="label-value"><code>200 OK</code></span></span><table class="definitions"><tr><th><code>app</code></th><td><div class="header"><span class="type">object</span></div><div class="description"><p>An object listing information about the given application.</p>
 </div></td></tr></table></div><aside><div class="example"><p>Retrieving information about a given application.</p>
-<div class="tab-content"><div class="tab-pane json active"><pre><code>{}</code></pre><div class="step-marker">⬇</div><pre><code>{
-  "app": {
-    "id": "pryv-csv-importer",
-    "displayName": "CSV Importer",
-    "description": "Import existing data from CSV files",
-    "iconURL": "https://pryv.github.io/static-web/apps/pryv-csv-importer/icon512.png",
-    "appURL": "http://pryv.github.io/dev-tools/csv-importer",
-    "active": false,
-    "onboarding": false,
-    "category": "Other",
-    "support": [
-      "iPad",
-      "iPhone",
-      "Web"
+<div class="tab-content"><div class="tab-pane json active"><pre><code>{}</code></pre><div class="step-marker">&#x2B07;</div><pre><code>{
+  &quot;app&quot;: {
+    &quot;id&quot;: &quot;pryv-csv-importer&quot;,
+    &quot;displayName&quot;: &quot;CSV Importer&quot;,
+    &quot;description&quot;: &quot;Import existing data from CSV files&quot;,
+    &quot;iconURL&quot;: &quot;https://pryv.github.io/static-web/apps/pryv-csv-importer/icon512.png&quot;,
+    &quot;appURL&quot;: &quot;http://pryv.github.io/dev-tools/csv-importer&quot;,
+    &quot;active&quot;: false,
+    &quot;onboarding&quot;: false,
+    &quot;category&quot;: &quot;Other&quot;,
+    &quot;support&quot;: [
+      &quot;iPad&quot;,
+      &quot;iPhone&quot;,
+      &quot;Web&quot;
     ],
-    "settingsPageURL": "http://pryv.github.io/dev-tools/csv-importer"
+    &quot;settingsPageURL&quot;: &quot;http://pryv.github.io/dev-tools/csv-importer&quot;
   }
-}</code></pre></div><div class="tab-pane http"><pre><code>curl -i "https://<span class="api-reg-curl">reg.pryv.me</span>/apps/${appid}"</code></pre><div class="step-marker">⬇</div><pre><code>HTTP/1.1 200 OK
+}</code></pre></div><div class="tab-pane http"><pre><code>curl -i &quot;https://<span class="api-reg-curl">reg.pryv.me</span>/apps/${appid}&quot;</code></pre><div class="step-marker">&#x2B07;</div><pre><code>HTTP/1.1 200 OK
 Content-Type: application/json; charset=utf-8
 API-Version: 1.7.0
 
 {
-  "app": {
-    "id": "pryv-csv-importer",
-    "displayName": "CSV Importer",
-    "description": "Import existing data from CSV files",
-    "iconURL": "https://pryv.github.io/static-web/apps/pryv-csv-importer/icon512.png",
-    "appURL": "http://pryv.github.io/dev-tools/csv-importer",
-    "active": false,
-    "onboarding": false,
-    "category": "Other",
-    "support": [
-      "iPad",
-      "iPhone",
-      "Web"
+  &quot;app&quot;: {
+    &quot;id&quot;: &quot;pryv-csv-importer&quot;,
+    &quot;displayName&quot;: &quot;CSV Importer&quot;,
+    &quot;description&quot;: &quot;Import existing data from CSV files&quot;,
+    &quot;iconURL&quot;: &quot;https://pryv.github.io/static-web/apps/pryv-csv-importer/icon512.png&quot;,
+    &quot;appURL&quot;: &quot;http://pryv.github.io/dev-tools/csv-importer&quot;,
+    &quot;active&quot;: false,
+    &quot;onboarding&quot;: false,
+    &quot;category&quot;: &quot;Other&quot;,
+    &quot;support&quot;: [
+      &quot;iPad&quot;,
+      &quot;iPhone&quot;,
+      &quot;Web&quot;
     ],
-    "settingsPageURL": "http://pryv.github.io/dev-tools/csv-importer"
+    &quot;settingsPageURL&quot;: &quot;http://pryv.github.io/dev-tools/csv-importer&quot;
   }
 }
-</code></pre></div><div class="tab-pane sockets"><pre>Only available for HTTP REST</pre></div><div class="tab-pane batch"><pre>Only available for HTTP REST</pre></div><div class="tab-pane httpAuth"><pre><code>curl -i "https://<span class="api-reg-curl">reg.pryv.me</span>/apps/${appid}"</code></pre><div class="step-marker">⬇</div><pre><code>HTTP/1.1 200 OK
+</code></pre></div><div class="tab-pane sockets"><pre>Only available for HTTP REST</pre></div><div class="tab-pane batch"><pre>Only available for HTTP REST</pre></div><div class="tab-pane httpAuth"><pre><code>curl -i &quot;https://<span class="api-reg-curl">reg.pryv.me</span>/apps/${appid}&quot;</code></pre><div class="step-marker">&#x2B07;</div><pre><code>HTTP/1.1 200 OK
 Content-Type: application/json; charset=utf-8
 API-Version: 1.7.0
 
 {
-  "app": {
-    "id": "pryv-csv-importer",
-    "displayName": "CSV Importer",
-    "description": "Import existing data from CSV files",
-    "iconURL": "https://pryv.github.io/static-web/apps/pryv-csv-importer/icon512.png",
-    "appURL": "http://pryv.github.io/dev-tools/csv-importer",
-    "active": false,
-    "onboarding": false,
-    "category": "Other",
-    "support": [
-      "iPad",
-      "iPhone",
-      "Web"
+  &quot;app&quot;: {
+    &quot;id&quot;: &quot;pryv-csv-importer&quot;,
+    &quot;displayName&quot;: &quot;CSV Importer&quot;,
+    &quot;description&quot;: &quot;Import existing data from CSV files&quot;,
+    &quot;iconURL&quot;: &quot;https://pryv.github.io/static-web/apps/pryv-csv-importer/icon512.png&quot;,
+    &quot;appURL&quot;: &quot;http://pryv.github.io/dev-tools/csv-importer&quot;,
+    &quot;active&quot;: false,
+    &quot;onboarding&quot;: false,
+    &quot;category&quot;: &quot;Other&quot;,
+    &quot;support&quot;: [
+      &quot;iPad&quot;,
+      &quot;iPhone&quot;,
+      &quot;Web&quot;
     ],
-    "settingsPageURL": "http://pryv.github.io/dev-tools/csv-importer"
+    &quot;settingsPageURL&quot;: &quot;http://pryv.github.io/dev-tools/csv-importer&quot;
   }
 }
 
-</code></pre></div></div></div></aside></section></section><!-- it's either:--><!-- !trusted & !preview--><!-- !preview & -full--><!-- -preview--><section id="api-methods-users"><h2 id="users">Users</h2>
+</code></pre></div></div></div></aside></section></section><!-- it's either:--><!-- !trusted & !preview--><!-- !preview & -full--><!-- -preview--><section id="api-methods-users"><h2 id="users"><!--users-->Users</h2>
 <div class="content"><div class="meta"></div><div class="intro"><p>Methods for managing users.</p>
-</div></div><!-- it's either:--><!-- !trusted & !preview--><!-- !preview & -full--><!-- -preview--><section id="api-methods-users-users-create" class="method"> <h3 id="create-user">Create user</h3>
-<div class="content"><div class="meta"><span onclick="location='/reference/#method-ids'" class="method-id"><span title="Method Id" class="label">id</span><span class="label-value"><code>users.create</code></span></span><span class="http"><span class="label">HTTP-only</span><span class="label-value"><code>POST <a href="/reference-system/#api-endpoint">{core}</a>/users</code></span></span></div><div class="intro"><p>Creates a new user account. The method&#39;s parameters can be customized with the <a href="/customer-resources/system-streams/">system streams configuration</a>.</p>
+</div></div><!-- it's either:--><!-- !trusted & !preview--><!-- !preview & -full--><!-- -preview--><section class="method" id="api-methods-users-users-create">&#xA0;<h3 id="create-user"><!--create-user-->Create user</h3>
+<div class="content"><div class="meta"><span class="method-id" onclick="location=&apos;/reference/#method-ids&apos;"><span class="label" title="Method Id">id</span><span class="label-value"><code>users.create</code></span></span><span class="http"><span class="label">HTTP-only</span><span class="label-value"><code>POST <a href="/reference-system/#api-endpoint">{core}</a>/users</code></span></span></div><div class="intro"><p>Creates a new user account. The method&#x2019;s parameters can be customized with the <a href="/customer-resources/system-streams/">system streams configuration</a>.</p>
 <p>Before Pryv.io 1.6, this route was served by the register server on <code>/user</code></p>
-</div><h4 id="parameters">Parameters</h4>
-<table class="definitions"><tr><th><code>appId</code></th><td><div class="header"><span class="type">string</span></div><div class="description"><p>Your app&#39;s unique identifier.</p>
-</div></td></tr><tr><th><code>username</code></th><td><div class="header"><span class="type">string</span></div><div class="description"><p>The user&#39;s username.</p>
-</div></td></tr><tr><th><code>password</code></th><td><div class="header"><span class="type">string</span></div><div class="description"><p>The user&#39;s password.</p>
-</div></td></tr><tr><th><code>email</code></th><td><div class="header"><span class="type">string</span></div><div class="description"><p>The user&#39;s e-mail address, used for password retrieval.</p>
+</div><h4 id="parameters-7"><!--parameters-7-->Parameters</h4>
+<table class="definitions"><tr><th><code>appId</code></th><td><div class="header"><span class="type">string</span></div><div class="description"><p>Your app&#x2019;s unique identifier.</p>
+</div></td></tr><tr><th><code>username</code></th><td><div class="header"><span class="type">string</span></div><div class="description"><p>The user&#x2019;s username.</p>
+</div></td></tr><tr><th><code>password</code></th><td><div class="header"><span class="type">string</span></div><div class="description"><p>The user&#x2019;s password.</p>
+</div></td></tr><tr><th><code>email</code></th><td><div class="header"><span class="type">string</span></div><div class="description"><p>The user&#x2019;s e-mail address, used for password retrieval.</p>
 </div></td></tr><tr><th><code>invitationToken</code></th><td><div class="header"><span class="type">string</span><span class="label label-default optional">optional</span></div><div class="description"><p>An invitation token, necessary when users registration is limited to a specific set of users.
 Platform administrators may limit users registration by configuring a list of authorized invitation tokens.
 If this is not the case, users registration is open to everyone and this parameter can be omitted.</p>
 <p><span class="entreprise-tag"><span title="Entreprise License Only" class="label">Y</span></span>Available in entreprise only.</p>
-</div></td></tr><tr><th><code>language</code></th><td><div class="header"><span class="type">string</span><span class="label label-default optional">optional</span></div><div class="description"><p>The user&#39;s preferred language as a 2-letter ISO language code.</p>
+</div></td></tr><tr><th><code>language</code></th><td><div class="header"><span class="type">string</span><span class="label label-default optional">optional</span></div><div class="description"><p>The user&#x2019;s preferred language as a 2-letter ISO language code.</p>
 </div></td></tr><tr><th><code>referer</code></th><td><div class="header"><span class="type">string</span><span class="label label-default optional">optional</span></div><div class="description"><p>A referer id potentially used for analytics.</p>
-</div></td></tr></table><h4 id="result">Result</h4>
-<span class="http"><span class="label">HTTP</span><span class="label-value"><code>200 OK</code></span></span><table class="definitions"><tr><th><code>username</code></th><td><div class="header"><span class="type">string</span></div><div class="description"><p>A confirmation of the user&#39;s username.</p>
+</div></td></tr></table><h4 id="result-7"><!--result-7-->Result</h4>
+<span class="http"><span class="label">HTTP</span><span class="label-value"><code>200 OK</code></span></span><table class="definitions"><tr><th><code>username</code></th><td><div class="header"><span class="type">string</span></div><div class="description"><p>A confirmation of the user&#x2019;s username.</p>
 </div></td></tr><tr><th><code>apiEndpoint</code></th><td><div class="header"><span class="type">string</span></div><div class="description"><p>The apiEndpoint to reach this account. It includes a personal access token.</p>
 </div></td></tr></table></div><aside><div class="example"><p>Creating a user.</p>
 <div class="tab-content"><div class="tab-pane json active"><pre><code>{
-  "appId": "default",
-  "password": "ChjUzDXwaTG2qdV",
-  "email": "joseph-brenner@pryv.me",
-  "invitationToken": "o3in4o2",
-  "language": "en",
-  "referer": "hospital-A"
-}</code></pre><div class="step-marker">⬇</div><pre><code>{
-  "username": "user-123-abc",
-  "apiEndpoint": "https://{personal-token}@user-123-abc.pryv.me/"
-}</code></pre></div><div class="tab-pane http"><pre><code>curl -i -X POST -H 'Content-Type: application/json' -d '{"appId":"default","username":"user-123-abc","password":"ChjUzDXwaTG2qdV","email":"joseph-brenner@pryv.me","invitationToken":"o3in4o2","language":"en","referer":"hospital-A"}' "https://<span class="core-reg-curl">{core-subdomain}</sapan>.pryv.me</span>/users"</code></pre><div class="step-marker">⬇</div><pre><code>HTTP/1.1 200 OK
+  &quot;appId&quot;: &quot;default&quot;,
+  &quot;password&quot;: &quot;ChjUzDXwaTG2qdV&quot;,
+  &quot;email&quot;: &quot;joseph-brenner@pryv.me&quot;,
+  &quot;invitationToken&quot;: &quot;o3in4o2&quot;,
+  &quot;language&quot;: &quot;en&quot;,
+  &quot;referer&quot;: &quot;hospital-A&quot;
+}</code></pre><div class="step-marker">&#x2B07;</div><pre><code>{
+  &quot;username&quot;: &quot;user-123-abc&quot;,
+  &quot;apiEndpoint&quot;: &quot;https://{personal-token}@user-123-abc.pryv.me/&quot;
+}</code></pre></div><div class="tab-pane http"><pre><code>curl -i -X POST -H &apos;Content-Type: application/json&apos; -d &apos;{&quot;appId&quot;:&quot;default&quot;,&quot;username&quot;:&quot;user-123-abc&quot;,&quot;password&quot;:&quot;ChjUzDXwaTG2qdV&quot;,&quot;email&quot;:&quot;joseph-brenner@pryv.me&quot;,&quot;invitationToken&quot;:&quot;o3in4o2&quot;,&quot;language&quot;:&quot;en&quot;,&quot;referer&quot;:&quot;hospital-A&quot;}&apos; &quot;https://<span class="core-reg-curl">{core-subdomain}.pryv.me</span>/users&quot;</code></pre><div class="step-marker">&#x2B07;</div><pre><code>HTTP/1.1 200 OK
 Content-Type: application/json; charset=utf-8
 API-Version: 1.7.0
 
 {
-  "username": "user-123-abc",
-  "apiEndpoint": "https://{personal-token}@user-123-abc.pryv.me/"
+  &quot;username&quot;: &quot;user-123-abc&quot;,
+  &quot;apiEndpoint&quot;: &quot;https://{personal-token}@user-123-abc.pryv.me/&quot;
 }
-</code></pre></div><div class="tab-pane sockets"><pre>Only available for HTTP REST</pre></div><div class="tab-pane batch"><pre>Only available for HTTP REST</pre></div><div class="tab-pane httpAuth"><pre><code>curl -i -X POST -H 'Content-Type: application/json' -d '{"appId":"default","username":"user-123-abc","password":"ChjUzDXwaTG2qdV","email":"joseph-brenner@pryv.me","invitationToken":"o3in4o2","language":"en","referer":"hospital-A"}' "https://<span class="core-reg-curl">{core-subdomain}</sapan>.pryv.me</span>/users?auth=${token}"</code></pre><div class="step-marker">⬇</div><pre><code>HTTP/1.1 200 OK
+</code></pre></div><div class="tab-pane sockets"><pre>Only available for HTTP REST</pre></div><div class="tab-pane batch"><pre>Only available for HTTP REST</pre></div><div class="tab-pane httpAuth"><pre><code>curl -i -X POST -H &apos;Content-Type: application/json&apos; -d &apos;{&quot;appId&quot;:&quot;default&quot;,&quot;username&quot;:&quot;user-123-abc&quot;,&quot;password&quot;:&quot;ChjUzDXwaTG2qdV&quot;,&quot;email&quot;:&quot;joseph-brenner@pryv.me&quot;,&quot;invitationToken&quot;:&quot;o3in4o2&quot;,&quot;language&quot;:&quot;en&quot;,&quot;referer&quot;:&quot;hospital-A&quot;}&apos; &quot;https://<span class="core-reg-curl">{core-subdomain}.pryv.me</span>/users?auth=${token}&quot;</code></pre><div class="step-marker">&#x2B07;</div><pre><code>HTTP/1.1 200 OK
 Content-Type: application/json; charset=utf-8
 API-Version: 1.7.0
 
 {
-  "username": "user-123-abc",
-  "apiEndpoint": "https://{personal-token}@user-123-abc.pryv.me/"
+  &quot;username&quot;: &quot;user-123-abc&quot;,
+  &quot;apiEndpoint&quot;: &quot;https://{personal-token}@user-123-abc.pryv.me/&quot;
 }
 
-</code></pre></div></div></div></aside></section><!-- it's either:--><!-- !trusted & !preview--><!-- !preview & -full--><!-- -preview--><section id="api-methods-users-username-check" class="method"> <h3 id="check-username">Check username</h3>
-<div class="content"><div class="meta"><span onclick="location='/reference/#method-ids'" class="method-id"><span title="Method Id" class="label">id</span><span class="label-value"><code>username.check</code></span></span><span class="http"><span class="label">HTTP-only</span><span class="label-value"><code>GET <a href="/reference-system/#api-endpoint">{register}</a>/{username}/check_username</code></span></span></div><div class="intro"><p>For the single node mode please use <a href="/reference/#check-username">this</a> API endpoint.</p>
+</code></pre></div></div></div></aside></section><!-- it's either:--><!-- !trusted & !preview--><!-- !preview & -full--><!-- -preview--><section class="method" id="api-methods-users-username-check">&#xA0;<h3 id="check-username"><!--check-username-->Check username</h3>
+<div class="content"><div class="meta"><span class="method-id" onclick="location=&apos;/reference/#method-ids&apos;"><span class="label" title="Method Id">id</span><span class="label-value"><code>username.check</code></span></span><span class="http"><span class="label">HTTP-only</span><span class="label-value"><code>GET <a href="/reference-system/#api-endpoint">{register}</a>/{username}/check_username</code></span></span></div><div class="intro"><p>For the single node mode please use <a href="/reference/#check-username">this</a> API endpoint.</p>
 <p>Check the availability and validity of a given username.</p>
-</div><h4 id="parameters">Parameters</h4>
+</div><h4 id="parameters-8"><!--parameters-8-->Parameters</h4>
 <table class="definitions"><tr><th><code>username</code></th><td><div class="header"><span class="type">string</span><span class="http"><span class="label">HTTP</span><span class="label-value"><span>set in request path</span></span></span></div><div class="description"><p>The username to check.</p>
-</div></td></tr></table><h4 id="result">Result</h4>
+</div></td></tr></table><h4 id="result-8"><!--result-8-->Result</h4>
 <span class="http"><span class="label">HTTP</span><span class="label-value"><code>200 OK</code></span></span><table class="definitions"><tr><th><code>reserved</code></th><td><div class="header"><span class="type">boolean</span></div><div class="description"><p>Set to <code>true</code> if the given username is already taken, <code>false</code> otherwise.</p>
 </div></td></tr><tr><th><code>reason</code></th><td><div class="header"><span class="type">string</span><span class="label label-default optional">optional</span></div><div class="description"><p>Optional indication of the reason why the username is reserved.
 If it mentions <code>RESERVED_USER_NAME</code>, this means that the given username is part of
 the reserved usernames list configured within the register service.</p>
-</div></td></tr></table><h4 id="specific-errors">Specific errors</h4>
+</div></td></tr></table><h4 id="specific-errors-1"><!--specific-errors-1-->Specific errors</h4>
 <table class="definitions"><tr><th><code>INVALID_USERNAME</code></th><td><div class="header"><span class="http"><span class="label">HTTP</span><span class="label-value"><code>400</code></span></span></div><div class="description"><p>The given username is invalid because of an unrecognized format.</p>
 </div></td></tr></table></div><aside><div class="example"><p>Checking availability and validity of a given username</p>
-<div class="tab-content"><div class="tab-pane json active"><pre><code>{}</code></pre><div class="step-marker">⬇</div><pre><code>{
-  "reserved": false
-}</code></pre></div><div class="tab-pane http"><pre><code>curl -i "https://<span class="api-reg-curl">reg.pryv.me</span>/user-123-abc/check_username"</code></pre><div class="step-marker">⬇</div><pre><code>HTTP/1.1 200 OK
+<div class="tab-content"><div class="tab-pane json active"><pre><code>{}</code></pre><div class="step-marker">&#x2B07;</div><pre><code>{
+  &quot;reserved&quot;: false
+}</code></pre></div><div class="tab-pane http"><pre><code>curl -i &quot;https://<span class="api-reg-curl">reg.pryv.me</span>/user-123-abc/check_username&quot;</code></pre><div class="step-marker">&#x2B07;</div><pre><code>HTTP/1.1 200 OK
 Content-Type: application/json; charset=utf-8
 API-Version: 1.7.0
 
 {
-  "reserved": false
+  &quot;reserved&quot;: false
 }
-</code></pre></div><div class="tab-pane sockets"><pre>Only available for HTTP REST</pre></div><div class="tab-pane batch"><pre>Only available for HTTP REST</pre></div><div class="tab-pane httpAuth"><pre><code>curl -i "https://<span class="api-reg-curl">reg.pryv.me</span>/user-123-abc/check_username"</code></pre><div class="step-marker">⬇</div><pre><code>HTTP/1.1 200 OK
+</code></pre></div><div class="tab-pane sockets"><pre>Only available for HTTP REST</pre></div><div class="tab-pane batch"><pre>Only available for HTTP REST</pre></div><div class="tab-pane httpAuth"><pre><code>curl -i &quot;https://<span class="api-reg-curl">reg.pryv.me</span>/user-123-abc/check_username&quot;</code></pre><div class="step-marker">&#x2B07;</div><pre><code>HTTP/1.1 200 OK
 Content-Type: application/json; charset=utf-8
 API-Version: 1.7.0
 
 {
-  "reserved": false
+  &quot;reserved&quot;: false
 }
 
 </code></pre></div></div></div><div class="example"><p>Special case where the username is part of the reserved list.</p>
-<div class="tab-content"><div class="tab-pane json active"><pre><code>{}</code></pre><div class="step-marker">⬇</div><pre><code>{
-  "reserved": true,
-  "reason": "RESERVED_USER_NAME"
-}</code></pre></div><div class="tab-pane http"><pre><code>curl -i "https://<span class="api-reg-curl">reg.pryv.me</span>/pryvpryv/check_username"</code></pre><div class="step-marker">⬇</div><pre><code>HTTP/1.1 200 OK
+<div class="tab-content"><div class="tab-pane json active"><pre><code>{}</code></pre><div class="step-marker">&#x2B07;</div><pre><code>{
+  &quot;reserved&quot;: true,
+  &quot;reason&quot;: &quot;RESERVED_USER_NAME&quot;
+}</code></pre></div><div class="tab-pane http"><pre><code>curl -i &quot;https://<span class="api-reg-curl">reg.pryv.me</span>/pryvpryv/check_username&quot;</code></pre><div class="step-marker">&#x2B07;</div><pre><code>HTTP/1.1 200 OK
 Content-Type: application/json; charset=utf-8
 API-Version: 1.7.0
 
 {
-  "reserved": true,
-  "reason": "RESERVED_USER_NAME"
+  &quot;reserved&quot;: true,
+  &quot;reason&quot;: &quot;RESERVED_USER_NAME&quot;
 }
-</code></pre></div><div class="tab-pane sockets"><pre>Only available for HTTP REST</pre></div><div class="tab-pane batch"><pre>Only available for HTTP REST</pre></div><div class="tab-pane httpAuth"><pre><code>curl -i "https://<span class="api-reg-curl">reg.pryv.me</span>/pryvpryv/check_username"</code></pre><div class="step-marker">⬇</div><pre><code>HTTP/1.1 200 OK
+</code></pre></div><div class="tab-pane sockets"><pre>Only available for HTTP REST</pre></div><div class="tab-pane batch"><pre>Only available for HTTP REST</pre></div><div class="tab-pane httpAuth"><pre><code>curl -i &quot;https://<span class="api-reg-curl">reg.pryv.me</span>/pryvpryv/check_username&quot;</code></pre><div class="step-marker">&#x2B07;</div><pre><code>HTTP/1.1 200 OK
 Content-Type: application/json; charset=utf-8
 API-Version: 1.7.0
 
 {
-  "reserved": true,
-  "reason": "RESERVED_USER_NAME"
+  &quot;reserved&quot;: true,
+  &quot;reason&quot;: &quot;RESERVED_USER_NAME&quot;
 }
 
-</code></pre></div></div></div></aside></section><!-- it's either:--><!-- !trusted & !preview--><!-- !preview & -full--><!-- -preview--><section id="api-methods-users-emails-check" class="method"> <h3 id="check-email-existence">Check email existence</h3>
-<div class="content"><div class="meta"><span onclick="location='/reference/#method-ids'" class="method-id"><span title="Method Id" class="label">id</span><span class="label-value"><code>emails.check</code></span></span><span class="http"><span class="label">HTTP-only</span><span class="label-value"><code>GET <a href="/reference-system/#api-endpoint">{register}</a>/{email}/check_email</code></span></span></div><div class="intro"><p>Check the existence of an account&#39;s email.</p>
-</div><h4 id="parameters">Parameters</h4>
+</code></pre></div></div></div></aside></section><!-- it's either:--><!-- !trusted & !preview--><!-- !preview & -full--><!-- -preview--><section class="method" id="api-methods-users-emails-check">&#xA0;<h3 id="check-email-existence"><!--check-email-existence-->Check email existence</h3>
+<div class="content"><div class="meta"><span class="method-id" onclick="location=&apos;/reference/#method-ids&apos;"><span class="label" title="Method Id">id</span><span class="label-value"><code>emails.check</code></span></span><span class="http"><span class="label">HTTP-only</span><span class="label-value"><code>GET <a href="/reference-system/#api-endpoint">{register}</a>/{email}/check_email</code></span></span></div><div class="intro"><p>Check the existence of an account&#x2019;s email.</p>
+</div><h4 id="parameters-9"><!--parameters-9-->Parameters</h4>
 <table class="definitions"><tr><th><code>email</code></th><td><div class="header"><span class="type">string</span><span class="http"><span class="label">HTTP</span><span class="label-value"><span>set in request path</span></span></span></div><div class="description"><p>The email address to check.</p>
-</div></td></tr></table><h4 id="result">Result</h4>
+</div></td></tr></table><h4 id="result-9"><!--result-9-->Result</h4>
 <span class="http"><span class="label">HTTP</span><span class="label-value"><code>200 OK</code></span></span><table class="definitions"><tr><th><code>exists</code></th><td><div class="header"><span class="type">boolean</span></div><div class="description"><p>Set to <code>true</code> if the email address is already registered, <code>false</code> otherwise.</p>
-</div></td></tr></table><h4 id="specific-errors">Specific errors</h4>
+</div></td></tr></table><h4 id="specific-errors-2"><!--specific-errors-2-->Specific errors</h4>
 <table class="definitions"><tr><th><code>INVALID_EMAIL</code></th><td><div class="header"><span class="http"><span class="label">HTTP</span><span class="label-value"><code>400</code></span></span></div><div class="description"><p>The email address is invalid because of an unrecognized format.</p>
-</div></td></tr></table></div><aside><div class="example"><p>Checking the existence of an account&#39;s email address.</p>
+</div></td></tr></table></div><aside><div class="example"><p>Checking the existence of an account&#x2019;s email address.</p>
 <div class="tab-content"><div class="tab-pane json active"><pre><code>{
-  "email": "joseph-brenner@pryv.me"
-}</code></pre><div class="step-marker">⬇</div><pre><code>{
-  "exists": false
-}</code></pre></div><div class="tab-pane http"><pre><code>curl -i "https://<span class="api-reg-curl">reg.pryv.me</span>/joseph-brenner@pryv.me/check_email"</code></pre><div class="step-marker">⬇</div><pre><code>HTTP/1.1 200 OK
+  &quot;email&quot;: &quot;joseph-brenner@pryv.me&quot;
+}</code></pre><div class="step-marker">&#x2B07;</div><pre><code>{
+  &quot;exists&quot;: false
+}</code></pre></div><div class="tab-pane http"><pre><code>curl -i &quot;https://<span class="api-reg-curl">reg.pryv.me</span>/joseph-brenner@pryv.me/check_email&quot;</code></pre><div class="step-marker">&#x2B07;</div><pre><code>HTTP/1.1 200 OK
 Content-Type: application/json; charset=utf-8
 API-Version: 1.7.0
 
 {
-  "exists": false
+  &quot;exists&quot;: false
 }
-</code></pre></div><div class="tab-pane sockets"><pre>Only available for HTTP REST</pre></div><div class="tab-pane batch"><pre>Only available for HTTP REST</pre></div><div class="tab-pane httpAuth"><pre><code>curl -i "https://<span class="api-reg-curl">reg.pryv.me</span>/joseph-brenner@pryv.me/check_email"</code></pre><div class="step-marker">⬇</div><pre><code>HTTP/1.1 200 OK
+</code></pre></div><div class="tab-pane sockets"><pre>Only available for HTTP REST</pre></div><div class="tab-pane batch"><pre>Only available for HTTP REST</pre></div><div class="tab-pane httpAuth"><pre><code>curl -i &quot;https://<span class="api-reg-curl">reg.pryv.me</span>/joseph-brenner@pryv.me/check_email&quot;</code></pre><div class="step-marker">&#x2B07;</div><pre><code>HTTP/1.1 200 OK
 Content-Type: application/json; charset=utf-8
 API-Version: 1.7.0
 
 {
-  "exists": false
+  &quot;exists&quot;: false
 }
 
-</code></pre></div></div></div></aside></section><!-- it's either:--><!-- !trusted & !preview--><!-- !preview & -full--><!-- -preview--><section id="api-methods-users-email-username.get" class="method"> <h3 id="get-username-from-email">Get username from email</h3>
-<div class="content"><div class="meta"><span onclick="location='/reference/#method-ids'" class="method-id"><span title="Method Id" class="label">id</span><span class="label-value"><code>email.username.get</code></span></span><span class="http"><span class="label">HTTP-only</span><span class="label-value"><code>GET <a href="/reference-system/#api-endpoint">{register}</a>/{email}/username</code></span></span></div><div class="intro"><p>Get the username of a Pryv.io account according to the given email. This API method can be disabled in the <a href="https://api.pryv.com/reference-admin/#platform-settings">platform configuration</a>.</p>
-</div><h4 id="parameters">Parameters</h4>
+</code></pre></div></div></div></aside></section><!-- it's either:--><!-- !trusted & !preview--><!-- !preview & -full--><!-- -preview--><section class="method" id="api-methods-users-email-username.get">&#xA0;<h3 id="get-username-from-email"><!--get-username-from-email-->Get username from email</h3>
+<div class="content"><div class="meta"><span class="method-id" onclick="location=&apos;/reference/#method-ids&apos;"><span class="label" title="Method Id">id</span><span class="label-value"><code>email.username.get</code></span></span><span class="http"><span class="label">HTTP-only</span><span class="label-value"><code>GET <a href="/reference-system/#api-endpoint">{register}</a>/{email}/username</code></span></span></div><div class="intro"><p>Get the username of a Pryv.io account according to the given email. This API method can be disabled in the <a href="https://api.pryv.com/reference-admin/#platform-settings">platform configuration</a>.</p>
+</div><h4 id="parameters-10"><!--parameters-10-->Parameters</h4>
 <table class="definitions"><tr><th><code>email</code></th><td><div class="header"><span class="type">string</span><span class="http"><span class="label">HTTP</span><span class="label-value"><span>set in request path</span></span></span></div><div class="description"><p>The email address to look for.</p>
-</div></td></tr></table><h4 id="result">Result</h4>
+</div></td></tr></table><h4 id="result-10"><!--result-10-->Result</h4>
 <span class="http"><span class="label">HTTP</span><span class="label-value"><code>200 OK</code></span></span><table class="definitions"><tr><th><code>username</code></th><td><div class="header"><span class="type">string</span></div><div class="description"><p>The username linked to the given email.</p>
-</div></td></tr></table><h4 id="specific-errors">Specific errors</h4>
+</div></td></tr></table><h4 id="specific-errors-3"><!--specific-errors-3-->Specific errors</h4>
 <table class="definitions"><tr><th><code>UNKNOWN_EMAIL</code></th><td><div class="header"><span class="http"><span class="label">HTTP</span><span class="label-value"><code>404</code></span></span></div><div class="description"><p>The given email address is unknown (unregistered).</p>
 </div></td></tr></table></div><aside><div class="example"><p>Retrieving a username from a given email.</p>
 <div class="tab-content"><div class="tab-pane json active"><pre><code>{
-  "email": "joseph-brenner@pryv.me"
-}</code></pre><div class="step-marker">⬇</div><pre><code>{
-  "username": "user-123-abc"
-}</code></pre></div><div class="tab-pane http"><pre><code>curl -i "https://<span class="api-reg-curl">reg.pryv.me</span>/joseph-brenner@pryv.me/username"</code></pre><div class="step-marker">⬇</div><pre><code>HTTP/1.1 200 OK
+  &quot;email&quot;: &quot;joseph-brenner@pryv.me&quot;
+}</code></pre><div class="step-marker">&#x2B07;</div><pre><code>{
+  &quot;username&quot;: &quot;user-123-abc&quot;
+}</code></pre></div><div class="tab-pane http"><pre><code>curl -i &quot;https://<span class="api-reg-curl">reg.pryv.me</span>/joseph-brenner@pryv.me/username&quot;</code></pre><div class="step-marker">&#x2B07;</div><pre><code>HTTP/1.1 200 OK
 Content-Type: application/json; charset=utf-8
 API-Version: 1.7.0
 
 {
-  "username": "user-123-abc"
+  &quot;username&quot;: &quot;user-123-abc&quot;
 }
-</code></pre></div><div class="tab-pane sockets"><pre>Only available for HTTP REST</pre></div><div class="tab-pane batch"><pre>Only available for HTTP REST</pre></div><div class="tab-pane httpAuth"><pre><code>curl -i "https://<span class="api-reg-curl">reg.pryv.me</span>/joseph-brenner@pryv.me/username"</code></pre><div class="step-marker">⬇</div><pre><code>HTTP/1.1 200 OK
+</code></pre></div><div class="tab-pane sockets"><pre>Only available for HTTP REST</pre></div><div class="tab-pane batch"><pre>Only available for HTTP REST</pre></div><div class="tab-pane httpAuth"><pre><code>curl -i &quot;https://<span class="api-reg-curl">reg.pryv.me</span>/joseph-brenner@pryv.me/username&quot;</code></pre><div class="step-marker">&#x2B07;</div><pre><code>HTTP/1.1 200 OK
 Content-Type: application/json; charset=utf-8
 API-Version: 1.7.0
 
 {
-  "username": "user-123-abc"
+  &quot;username&quot;: &quot;user-123-abc&quot;
 }
 
-</code></pre></div></div></div></aside></section><!-- it's either:--><!-- !trusted & !preview--><!-- !preview & -full--><!-- -preview--><section id="api-methods-users-cores-get" class="method"> <h3 id="get-core">Get core</h3>
-<div class="content"><div class="meta"><span onclick="location='/reference/#method-ids'" class="method-id"><span title="Method Id" class="label">id</span><span class="label-value"><code>cores.get</code></span></span><span class="http"><span class="label">HTTP-only</span><span class="label-value"><code>GET <a href="/reference-system/#api-endpoint">{register}</a>/cores</code></span></span></div><div class="intro"><p>Get the core of a Pryv.io account according to the given username or email. You must provide <strong>only</strong> one of them.</p>
-</div><h4 id="parameters">Parameters</h4>
+</code></pre></div></div></div></aside></section><!-- it's either:--><!-- !trusted & !preview--><!-- !preview & -full--><!-- -preview--><section class="method" id="api-methods-users-cores-get">&#xA0;<h3 id="get-core"><!--get-core-->Get core</h3>
+<div class="content"><div class="meta"><span class="method-id" onclick="location=&apos;/reference/#method-ids&apos;"><span class="label" title="Method Id">id</span><span class="label-value"><code>cores.get</code></span></span><span class="http"><span class="label">HTTP-only</span><span class="label-value"><code>GET <a href="/reference-system/#api-endpoint">{register}</a>/cores</code></span></span></div><div class="intro"><p>Get the core of a Pryv.io account according to the given username or email. You must provide <strong>only</strong> one of them.</p>
+</div><h4 id="parameters-11"><!--parameters-11-->Parameters</h4>
 <table class="definitions"><tr><th><code>username</code></th><td><div class="header"><span class="type">string</span></div><div class="description"><p>The username to look for.</p>
-</div></td></tr><tr><th><code>email</code></th><td><div class="header"><span class="type">string</span></div><div class="description"><p>The email to look for. When using the email parameter, you will always get a core returned, even if no such email is registered.<br>This is meant to prevent email discovery.</p>
-</div></td></tr></table><h4 id="result">Result</h4>
+</div></td></tr><tr><th><code>email</code></th><td><div class="header"><span class="type">string</span></div><div class="description"><p>The email to look for. When using the email parameter, you will always get a core returned, even if no such email is registered.<br>
+This is meant to prevent email discovery.</p>
+</div></td></tr></table><h4 id="result-11"><!--result-11-->Result</h4>
 <span class="http"><span class="label">HTTP</span><span class="label-value"><code>200 OK</code></span></span><table class="definitions"><tr><th><code>core</code></th><td><div class="header"><span class="type">object</span></div><div class="description"><p>The core by username</p>
 </div></td></tr></table></div><aside><div class="example"><p>Retrieving the core URL for a given username.</p>
-<div class="tab-content"><div class="tab-pane json active"><pre><code>{}</code></pre><div class="step-marker">⬇</div><pre><code>{
-  "core": {
-    "url": "https://co1.pryv.me/"
+<div class="tab-content"><div class="tab-pane json active"><pre><code>{}</code></pre><div class="step-marker">&#x2B07;</div><pre><code>{
+  &quot;core&quot;: {
+    &quot;url&quot;: &quot;https://co1.pryv.me/&quot;
   }
-}</code></pre></div><div class="tab-pane http"><pre><code>curl -i "https://<span class="api-reg-curl">reg.pryv.me</span>/cores?username=trench"</code></pre><div class="step-marker">⬇</div><pre><code>HTTP/1.1 200 OK
+}</code></pre></div><div class="tab-pane http"><pre><code>curl -i &quot;https://<span class="api-reg-curl">reg.pryv.me</span>/cores?username=trench&quot;</code></pre><div class="step-marker">&#x2B07;</div><pre><code>HTTP/1.1 200 OK
 Content-Type: application/json; charset=utf-8
 API-Version: 1.7.0
 
 {
-  "core": {
-    "url": "https://co1.pryv.me/"
+  &quot;core&quot;: {
+    &quot;url&quot;: &quot;https://co1.pryv.me/&quot;
   }
 }
-</code></pre></div><div class="tab-pane sockets"><pre>Only available for HTTP REST</pre></div><div class="tab-pane batch"><pre>Only available for HTTP REST</pre></div><div class="tab-pane httpAuth"><pre><code>curl -i "https://<span class="api-reg-curl">reg.pryv.me</span>/cores?username=trench"</code></pre><div class="step-marker">⬇</div><pre><code>HTTP/1.1 200 OK
+</code></pre></div><div class="tab-pane sockets"><pre>Only available for HTTP REST</pre></div><div class="tab-pane batch"><pre>Only available for HTTP REST</pre></div><div class="tab-pane httpAuth"><pre><code>curl -i &quot;https://<span class="api-reg-curl">reg.pryv.me</span>/cores?username=trench&quot;</code></pre><div class="step-marker">&#x2B07;</div><pre><code>HTTP/1.1 200 OK
 Content-Type: application/json; charset=utf-8
 API-Version: 1.7.0
 
 {
-  "core": {
-    "url": "https://co1.pryv.me/"
+  &quot;core&quot;: {
+    &quot;url&quot;: &quot;https://co1.pryv.me/&quot;
   }
 }
 
 </code></pre></div></div></div><div class="example"><p>Retrieving the core URL for a non-existing email.</p>
 <div class="tab-content"><div class="tab-pane json active"><pre><code>{
-  "email": "adam-gibson@replacement.tech"
-}</code></pre><div class="step-marker">⬇</div><pre><code>{
-  "core": {
-    "url": "https://co3.pryv.me/"
+  &quot;email&quot;: &quot;adam-gibson@replacement.tech&quot;
+}</code></pre><div class="step-marker">&#x2B07;</div><pre><code>{
+  &quot;core&quot;: {
+    &quot;url&quot;: &quot;https://co3.pryv.me/&quot;
   }
-}</code></pre></div><div class="tab-pane http"><pre><code>curl -i "https://<span class="api-reg-curl">reg.pryv.me</span>/cores?email=adam-gibson@replacement.tech"</code></pre><div class="step-marker">⬇</div><pre><code>HTTP/1.1 200 OK
+}</code></pre></div><div class="tab-pane http"><pre><code>curl -i &quot;https://<span class="api-reg-curl">reg.pryv.me</span>/cores?email=adam-gibson@replacement.tech&quot;</code></pre><div class="step-marker">&#x2B07;</div><pre><code>HTTP/1.1 200 OK
 Content-Type: application/json; charset=utf-8
 API-Version: 1.7.0
 
 {
-  "core": {
-    "url": "https://co3.pryv.me/"
+  &quot;core&quot;: {
+    &quot;url&quot;: &quot;https://co3.pryv.me/&quot;
   }
 }
-</code></pre></div><div class="tab-pane sockets"><pre>Only available for HTTP REST</pre></div><div class="tab-pane batch"><pre>Only available for HTTP REST</pre></div><div class="tab-pane httpAuth"><pre><code>curl -i "https://<span class="api-reg-curl">reg.pryv.me</span>/cores?email=adam-gibson@replacement.tech"</code></pre><div class="step-marker">⬇</div><pre><code>HTTP/1.1 200 OK
+</code></pre></div><div class="tab-pane sockets"><pre>Only available for HTTP REST</pre></div><div class="tab-pane batch"><pre>Only available for HTTP REST</pre></div><div class="tab-pane httpAuth"><pre><code>curl -i &quot;https://<span class="api-reg-curl">reg.pryv.me</span>/cores?email=adam-gibson@replacement.tech&quot;</code></pre><div class="step-marker">&#x2B07;</div><pre><code>HTTP/1.1 200 OK
 Content-Type: application/json; charset=utf-8
 API-Version: 1.7.0
 
 {
-  "core": {
-    "url": "https://co3.pryv.me/"
+  &quot;core&quot;: {
+    &quot;url&quot;: &quot;https://co3.pryv.me/&quot;
   }
 }
 
-</code></pre></div></div></div></aside></section><!-- it's either:--><!-- !trusted & !preview--><!-- !preview & -full--><!-- -preview--><section id="api-methods-users-users-delete" class="method"> <h3 id="delete-user">Delete user</h3>
-<div class="content"><div class="meta"><span onclick="location='/reference/#method-ids'" class="method-id"><span title="Method Id" class="label">id</span><span class="label-value"><code>users.delete</code></span></span><span class="http"><span class="label">HTTP-only</span><span class="label-value"><code>DELETE <a href="/reference-system/#api-endpoint">{core}</a>/users/{username}</code></span></span><span onclick="location='/reference/#trusted-apps-verification'" class="label trusted-only">Trusted apps only</span><text>&nbsp;</text></div><div class="intro"><p>Deletes a user account. This method must be enabled in the platform configuration. You should fetch the URL of the core where the user data is stored using the <a href="#get-core">Get core</a> method.  </p>
+</code></pre></div></div></div></aside></section><!-- it's either:--><!-- !trusted & !preview--><!-- !preview & -full--><!-- -preview--><section class="method" id="api-methods-users-users-delete">&#xA0;<h3 id="delete-user"><!--delete-user-->Delete user</h3>
+<div class="content"><div class="meta"><span class="method-id" onclick="location=&apos;/reference/#method-ids&apos;"><span class="label" title="Method Id">id</span><span class="label-value"><code>users.delete</code></span></span><span class="http"><span class="label">HTTP-only</span><span class="label-value"><code>DELETE <a href="/reference-system/#api-endpoint">{core}</a>/users/{username}</code></span></span><span class="label trusted-only" onclick="location=&apos;/reference/#trusted-apps-verification&apos;">Trusted apps only</span><text>&#xA0;</text></div><div class="intro"><p>Deletes a user account. This method must be enabled in the platform configuration. You should fetch the URL of the core where the user data is stored using the <a href="#get-core">Get core</a> method.</p>
 <ul>
 <li>When performed by the account owner, this method requires a personal token.</li>
 <li>For platform administrators, please refer to <a href="/reference-admin/#delete-user">its Delete user method</a>.</li>
 <li>For Open Pryv.io users, this method requires to provide the <a href="https://github.com/pryv/open-pryv.io#config">auth:adminAccessKey</a> as <code>Authorization</code> header.</li>
 </ul>
-</div><h4 id="parameters">Parameters</h4>
+</div><h4 id="parameters-12"><!--parameters-12-->Parameters</h4>
 <table class="definitions"><tr><th><code>username</code></th><td><div class="header"><span class="type">string</span><span class="http"><span class="label">HTTP</span><span class="label-value"><span>set in request path</span></span></span></div><div class="description"><p>The username of the account to delete.</p>
-</div></td></tr></table><h4 id="result">Result</h4>
+</div></td></tr></table><h4 id="result-12"><!--result-12-->Result</h4>
 <span class="http"><span class="label">HTTP</span><span class="label-value"><code>200 OK</code></span></span><table class="definitions"><tr><th><code>userDeletion</code></th><td><div class="header"><span class="type">object</span></div><div class="description"><p>The deleted user.</p>
 </div></td></tr></table></div><aside><div class="example"><p>Deleting a user.</p>
-<div class="tab-content"><div class="tab-pane json active"><pre><code>{}</code></pre><div class="step-marker">⬇</div><pre><code>{
-  "userDeletion": {
-    "username": "mark-kaminski"
+<div class="tab-content"><div class="tab-pane json active"><pre><code>{}</code></pre><div class="step-marker">&#x2B07;</div><pre><code>{
+  &quot;userDeletion&quot;: {
+    &quot;username&quot;: &quot;mark-kaminski&quot;
   }
-}</code></pre></div><div class="tab-pane http"><pre><code>curl -i -X DELETE "https://<span class="core-reg-curl">{core-subdomain}</sapan>.pryv.me</span>/users/mark-kaminski"</code></pre><div class="step-marker">⬇</div><pre><code>HTTP/1.1 200 OK
+}</code></pre></div><div class="tab-pane http"><pre><code>curl -i -X DELETE &quot;https://<span class="core-reg-curl">{core-subdomain}.pryv.me</span>/users/mark-kaminski&quot;</code></pre><div class="step-marker">&#x2B07;</div><pre><code>HTTP/1.1 200 OK
 Content-Type: application/json; charset=utf-8
 API-Version: 1.7.0
 
 {
-  "userDeletion": {
-    "username": "mark-kaminski"
+  &quot;userDeletion&quot;: {
+    &quot;username&quot;: &quot;mark-kaminski&quot;
   }
 }
-</code></pre></div><div class="tab-pane sockets"><pre>Only available for HTTP REST</pre></div><div class="tab-pane batch"><pre>Only available for HTTP REST</pre></div><div class="tab-pane httpAuth"><pre><code>curl -i -X DELETE "https://<span class="core-reg-curl">{core-subdomain}</sapan>.pryv.me</span>/users/mark-kaminski?auth=${token}"</code></pre><div class="step-marker">⬇</div><pre><code>HTTP/1.1 200 OK
+</code></pre></div><div class="tab-pane sockets"><pre>Only available for HTTP REST</pre></div><div class="tab-pane batch"><pre>Only available for HTTP REST</pre></div><div class="tab-pane httpAuth"><pre><code>curl -i -X DELETE &quot;https://<span class="core-reg-curl">{core-subdomain}.pryv.me</span>/users/mark-kaminski?auth=${token}&quot;</code></pre><div class="step-marker">&#x2B07;</div><pre><code>HTTP/1.1 200 OK
 Content-Type: application/json; charset=utf-8
 API-Version: 1.7.0
 
 {
-  "userDeletion": {
-    "username": "mark-kaminski"
+  &quot;userDeletion&quot;: {
+    &quot;username&quot;: &quot;mark-kaminski&quot;
   }
 }
 

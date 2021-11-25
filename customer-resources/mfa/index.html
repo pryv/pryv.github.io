@@ -1,104 +1,108 @@
-<!DOCTYPE html><html lang="en" class="no-js"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="description" property="og:description" content="Pryv API reference and resources for developers"><meta name="author" content="Pryv SA"><meta property="og:type" content="website"><meta name="image" property="og:image" content="/assets/images/logo-256.png"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Pryv.io Multi-Factor Authentication configuration | Pryv API</title><link rel="icon" href="/assets/images/favicon-black.ico" type="image/x-icon"><link rel="apple-touch-icon" sizes="120x120" href="/assets/images/apple-touch-icon-120x120-black.png"><link rel="apple-touch-icon" sizes="152x152" href="/assets/images/apple-touch-icon-152x152-black.png"><link rel="apple-touch-icon" sizes="180x180" href="/assets/images/apple-touch-icon-180x180-black.png"><!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+<!DOCTYPE html><html class="no-js" lang="en"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="description" property="og:description" content="Pryv API reference and resources for developers"><meta name="author" content="Pryv SA"><meta property="og:type" content="website"><meta name="image" property="og:image" content="/assets/images/logo-256.png"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Pryv.io Multi-Factor Authentication configuration | Pryv API</title><link rel="icon" href="/assets/images/favicon-black.ico" type="image/x-icon"><link rel="apple-touch-icon" sizes="120x120" href="/assets/images/apple-touch-icon-120x120-black.png"><link rel="apple-touch-icon" sizes="152x152" href="/assets/images/apple-touch-icon-152x152-black.png"><link rel="apple-touch-icon" sizes="180x180" href="/assets/images/apple-touch-icon-180x180-black.png"><!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
 <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
 <!--[if lt IE 9]>
   <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
   <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
-<![endif]--><link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Roboto:400,300,500,700,400italic|Roboto+Condensed:400,300,700"><link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/styles/docco.min.css"><link rel="stylesheet" type="text/css" href="/assets/fonts/ss-gizmo.min.css"><link rel="stylesheet" type="text/css" href="/assets/style.css"></head><body class="MFA configuration with-toc"><header id="page-header"><nav role="navigation" class="navbar navbar-default navbar-fixed-top"><div class="container-fluid"><div class="navbar-header"><a href="https://pryv.com" title="Pryv home" class="navbar-brand logo pryv-home"><img src="/assets/images/icon-home.svg" alt="Pryv home" height="50"></a><a href="/" title="Developers home" class="navbar-brand logo"><img src="/assets/images/logo-256-black.png" alt="Developers home"></a><button type="button" data-toggle="collapse" data-target="#main-nav" class="navbar-toggle"><span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button></div><div id="main-nav" class="collapse navbar-collapse"><ul class="nav navbar-nav"><li class="dropdown"><a href="#" data-toggle="dropdown" class="dropdown-toggle">Guides <b class="caret"></b></a><ul class="dropdown-menu"><li><a href="/getting-started/">Getting started</a></li><li><a href="/external-resources/">Apps &amp; Libs</a></li><li><a href="/concepts/">API concepts</a></li><li><a href="/guides/data-modelling/">Data modelling</a></li><li><a href="/guides/webhooks/">Webhooks</a></li><li><a href="/guides/custom-auth/">Custom auth</a></li><li><a href="/guides/consent/">Consent request</a></li><li><a href="/guides/app-guidelines/">App guidelines</a></li><li><a href="/guides/audit-logs/">Audit logs</a></li></ul></li><li class="dropdown"><a href="#" data-toggle="dropdown" class="dropdown-toggle">Reference <b class="caret"></b></a><ul class="dropdown-menu"><li><a href="/reference/">API reference</a></li><li><a href="/reference-admin/">Admin API reference</a></li><li><a href="/reference-system/">System API reference</a></li><li><a href="/event-types/">Event types</a></li><li><a href="/open-api/">Open API (Postman)</a></li><li><a href="/change-log/">API change log</a></li></ul></li><li class="dropdown"><a href="#" data-toggle="dropdown" class="dropdown-toggle">FAQ <b class="caret"></b></a><ul class="dropdown-menu"><li><a href="/faq-api/">API</a></li><li><a href="/faq-infra/">Infrastructure</a></li></ul></li><li><a href="https://support.pryv.com/hc/en-us/community/topics">Community</a></li><li><a href="https://github.com/pryv/open-pryv.io">Open Pryv.io</a></li><li><a href="/customer-resources/">Entreprise</a></li><li><a href="/roadmap/">Roadmap</a></li></ul><div class="navbar-right"><p class="navbar-text version"><a href="/change-log/" title="View change log">API version: <strong>1.7.0</strong></a></p></div></div></div></nav></header><div id="main-wrapper" class="container container-narrow"><div id="main"><h1 class="page-title">Pryv.io Multi-Factor Authentication configuration</h1><p>This document describes how to configure Multi-Factor Authentication (MFA) for the Pryv.io <a href="/reference/#login-user">auth.login</a> API method.</p>
+<![endif]--><link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Roboto:400,300,500,700,400italic|Roboto+Condensed:400,300,700"><link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/styles/docco.min.css"><link rel="stylesheet" type="text/css" href="/assets/fonts/ss-gizmo.min.css"><link rel="stylesheet" type="text/css" href="/assets/style.css"></head><body class="MFA configuration with-toc"><header id="page-header"><nav class="navbar navbar-default navbar-fixed-top" role="navigation"><div class="container-fluid"><div class="navbar-header"><a class="navbar-brand logo pryv-home" href="https://pryv.com" title="Pryv home"><img src="/assets/images/icon-home.svg" alt="Pryv home" height="50"></a><a class="navbar-brand logo" href="/" title="Developers home"><img src="/assets/images/logo-256-black.png" alt="Developers home"></a><button class="navbar-toggle" type="button" data-toggle="collapse" data-target="#main-nav"><span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button></div><div class="collapse navbar-collapse" id="main-nav"><ul class="nav navbar-nav"><li class="dropdown"><a class="dropdown-toggle" href="#" data-toggle="dropdown">Guides <b class="caret"></b></a><ul class="dropdown-menu"><li><a href="/getting-started/">Getting started</a></li><li><a href="/external-resources/">Apps &amp; Libs</a></li><li><a href="/concepts/">API concepts</a></li><li><a href="/guides/data-modelling/">Data modelling</a></li><li><a href="/guides/webhooks/">Webhooks</a></li><li><a href="/guides/custom-auth/">Custom auth</a></li><li><a href="/guides/consent/">Consent request</a></li><li><a href="/guides/app-guidelines/">App guidelines</a></li><li><a href="/guides/audit-logs/">Audit logs</a></li></ul></li><li class="dropdown"><a class="dropdown-toggle" href="#" data-toggle="dropdown">Reference <b class="caret"></b></a><ul class="dropdown-menu"><li><a href="/reference/">API reference</a></li><li><a href="/reference-admin/">Admin API reference</a></li><li><a href="/reference-system/">System API reference</a></li><li><a href="/event-types/">Event types</a></li><li><a href="/open-api/">Open API (Postman)</a></li><li><a href="/change-log/">API change log</a></li></ul></li><li class="dropdown"><a class="dropdown-toggle" href="#" data-toggle="dropdown">FAQ <b class="caret"></b></a><ul class="dropdown-menu"><li><a href="/faq-api/">API</a></li><li><a href="/faq-infra/">Infrastructure</a></li></ul></li><li><a href="https://support.pryv.com/hc/en-us/community/topics">Community</a></li><li><a href="https://github.com/pryv/open-pryv.io">Open Pryv.io</a></li><li><a href="/customer-resources/">Entreprise</a></li><li><a href="/roadmap/">Roadmap</a></li></ul><div class="navbar-right"><p class="navbar-text version"><a href="/change-log/" title="View change log">API version: <strong>1.7.0</strong></a></p></div></div></div></nav></header><div class="container container-narrow" id="main-wrapper"><div id="main"><h1 class="page-title" id="pryvio-multi-factor-authentication-configuration"><!--pryvio-multi-factor-authentication-configuration-->Pryv.io Multi-Factor Authentication configuration</h1><p>This document describes how to configure Multi-Factor Authentication (MFA) for the Pryv.io <a href="/reference/#login-user">auth.login</a> API method.</p>
 <p>The prerequisite for this is to have:</p>
 <ul>
 <li>a running <a href="/concepts/#entreprise-license-open-source-license">entreprise version</a> of Pryv.io</li>
-<li>an external communication service to send messages over another channel, such as email or SMS.  </li>
+<li>an external communication service to send messages over another channel, such as email or SMS.</li>
 </ul>
 <p>Depending on your communication service capabilities, you will either use the <strong>single</strong> or the <strong>challenge-verify</strong> mode.</p>
-<h2 id="flow">Flow</h2>
-<p>You will need to define a template for the API call(s) that will be made to your communication service. The user-specific values that will be substituted in the template will be stored in the user&#39;s <a href="/reference/#get-private-profile">private profile</a>.</p>
-<h3 id="setup">Setup</h3>
-<p>MFA must be activated per user account. You can implement this in your onboarding flow or at a later time.<br>After obtaining a <code>personal</code> token from an <a href="/reference/#login-user">auth.login</a> API call, you must call the <a href="/reference/#activate-mfa">activate MFA</a> API method, providing the user&#39;s MFA data. This will trigger the challenge sent to the user.</p>
-<p>You should <a href="/reference/#confirm-mfa-activation">confirm MFA activation</a> by sending the obtained challenge in the payload which will be substituted in the related template. If confirmation is successful, the MFA data provided at activation is saved in the user&#39;s <a href="/reference/#get-private-profile">private profile</a>, alongside <code>recoveryCodes</code> which you receive for <a href="#deactivation-and-recovery">later deactivation</a>.</p>
-<h3 id="usage">Usage</h3>
-<p>Once MFA has been activated for an account, you will receive a <code>mfaToken</code> each time you perform a <a href="/reference/#login-with-mfa">Login user</a> API call. You will use it to <a href="/reference/#trigger-mfa-challenge">Trigger the MFA challenge</a> where data saved in the <a href="/reference/#get-private-profile">private profile</a> will be sent to your communication service.<br>You will send the received challenge the same way you did for confirmation, but this time using the <a href="/reference/#verify-mfa-challenge">verify MFA challenge</a> route.  </p>
-<h3 id="deactivation-and-recovery">Deactivation and recovery</h3>
+<h2 id="flow"><!--flow-->Flow</h2>
+<p>You will need to define a template for the API call(s) that will be made to your communication service. The user-specific values that will be substituted in the template will be stored in the user&#x2019;s <a href="/reference/#get-private-profile">private profile</a>.</p>
+<h3 id="setup"><!--setup-->Setup</h3>
+<p>MFA must be activated per user account. You can implement this in your onboarding flow or at a later time.<br>
+After obtaining a <code>personal</code> token from an <a href="/reference/#login-user">auth.login</a> API call, you must call the <a href="/reference/#activate-mfa">activate MFA</a> API method, providing the user&#x2019;s MFA data. This will trigger the challenge sent to the user.</p>
+<p>You should <a href="/reference/#confirm-mfa-activation">confirm MFA activation</a> by sending the obtained challenge in the payload which will be substituted in the related template. If confirmation is successful, the MFA data provided at activation is saved in the user&#x2019;s <a href="/reference/#get-private-profile">private profile</a>, alongside <code>recoveryCodes</code> which you receive for <a href="#deactivation-and-recovery">later deactivation</a>.</p>
+<h3 id="usage"><!--usage-->Usage</h3>
+<p>Once MFA has been activated for an account, you will receive a <code>mfaToken</code> each time you perform a <a href="/reference/#login-with-mfa">Login user</a> API call. You will use it to <a href="/reference/#trigger-mfa-challenge">Trigger the MFA challenge</a> where data saved in the <a href="/reference/#get-private-profile">private profile</a> will be sent to your communication service.<br>
+You will send the received challenge the same way you did for confirmation, but this time using the <a href="/reference/#verify-mfa-challenge">verify MFA challenge</a> route.</p>
+<h3 id="deactivation-and-recovery"><!--deactivation-and-recovery-->Deactivation and recovery</h3>
 <p>You may deactivate MFA using a personal token on the <a href="/reference/#deactivate-mfa">deactivate MFA</a> API method. If you have lost access to your 2nd factor such as phone or email, you can also use the <a href="/reference/#recover-mfa">recover MFA</a> route to deactivate it using one of the codes</p>
-<h2 id="modes">Modes</h2>
-<p>The <strong>single</strong> mode is meant when your communication service only supports sending messages. If it supports creating a challenge and verifying it, you can also use <strong>challenge-verify</strong>.  </p>
-<p>In <strong>single</strong> mode, the Pryv.io MFA service generates a secret code, sends it to your communication service upon <a href="/reference/#activate-mfa">activation</a> and <a href="/reference/#trigger-mfa-challenge">challenge</a>, then verifies it itself during <a href="/reference/#confirm-mfa-activation">confirmation</a> and <a href="/reference/#verify-mfa-challenge">verification</a>.  </p>
+<h2 id="modes"><!--modes-->Modes</h2>
+<p>The <strong>single</strong> mode is meant when your communication service only supports sending messages. If it supports creating a challenge and verifying it, you can also use <strong>challenge-verify</strong>.</p>
+<p>In <strong>single</strong> mode, the Pryv.io MFA service generates a secret code, sends it to your communication service upon <a href="/reference/#activate-mfa">activation</a> and <a href="/reference/#trigger-mfa-challenge">challenge</a>, then verifies it itself during <a href="/reference/#confirm-mfa-activation">confirmation</a> and <a href="/reference/#verify-mfa-challenge">verification</a>.</p>
 <p>In <strong>challenge-verify</strong> mode, the Pryv.io MFA service makes an HTTP request to your communication service to generate and send a code then forwards it during verification.</p>
 <p>The templates  are to be set either directly through the platform settings configuration file <code>platform.yml</code> or through the admin panel.</p>
-<h2 id="configuration">Configuration</h2>
-<h3 id="template">Template</h3>
+<h2 id="configuration"><!--configuration-->Configuration</h2>
+<h3 id="template"><!--template-->Template</h3>
 <p>For <strong>single</strong> and <strong>challenge-verify</strong> mode, you will have to define how endpoints will be contacted. The configuration for an endpoint looks like this:</p>
-<pre><code class="lang-yaml">url: &#39;https://api.smsapi.com/mfa/codes?language={{ language }}&#39;
-method: &#39;POST&#39;
-body: &#39;{&quot;phone&quot;:&quot;{{ phone }}&quot;}&#39;
+<pre><code class="language-yaml">url: &apos;https://api.smsapi.com/mfa/codes?language={{ language }}&apos;
+method: &apos;POST&apos;
+body: &apos;{&quot;phone&quot;:&quot;{{ phone }}&quot;}&apos;
 headers:
-  authorization: &#39;Bearer: YOUR-COMMUNICATION-SERVER-API-KEY&#39;
-  &#39;content-type&#39;: &#39;application/json&#39;
+  authorization: &apos;Bearer: YOUR-COMMUNICATION-SERVER-API-KEY&apos;
+  &apos;content-type&apos;: &apos;application/json&apos;
 </code></pre>
-<h3 id="user-data">User data</h3>
-<p>When activating MFA for a user account, variables provided in the request body at <a href="/reference/#activate-mfa">activation</a> will be saved in the user&#39;s account. They look like this:  </p>
-<pre><code class="lang-json">{
+<h3 id="user-data"><!--user-data-->User data</h3>
+<p>When activating MFA for a user account, variables provided in the request body at <a href="/reference/#activate-mfa">activation</a> will be saved in the user&#x2019;s account. They look like this:</p>
+<pre><code class="language-json">{
   &quot;language&quot;: &quot;en&quot;,
   &quot;phone&quot;: &quot;41791231212&quot;
 }
 </code></pre>
-<h3 id="parameters">Parameters</h3>
-<h4 id="url">url</h4>
+<h3 id="parameters"><!--parameters-->Parameters</h3>
+<h4 id="url"><!--url-->url</h4>
 <p>You can provide the URL, with the query parameters here as a string. Variables are substituted in the string.</p>
-<h4 id="method">method</h4>
+<h4 id="method"><!--method-->method</h4>
 <p>The HTTP method, currently supports HTTP <code>POST</code> and <code>GET</code> methods.</p>
-<h4 id="body">body</h4>
+<h4 id="body"><!--body-->body</h4>
 <p>The request body that will be sent, provided as a string. Variables are substituted in the string.</p>
-<h4 id="headers">headers</h4>
-<p>The request headers that will be sent in the HTTP request. Variables are substituted in the values of these headers.<br>As the request body is a string, you will have to provide the corresponding <code>content-type</code> header.</p>
-<h2 id="single">Single</h2>
-<p>For <strong>single</strong> mode, you can provide a <code>{{ code }}</code> variable which will be substituted with a code generated by the Pryv.io MFA service.<br>The example hereafter, stores the message in the user-specific data, where <code>{{ code }}</code> substitution also works.</p>
-<h3 id="single-template">Single template</h3>
-<p>The configuration for single mode describes the HTTP request made by the Pryv.io MFA service during <a href="/reference/#activate-mfa">activation</a> and <a href="/reference/#trigger-mfa-challenge">challenge</a>. It looks like this in the platform.yml file:  </p>
-<pre><code class="lang-yaml">single:
-  url: &#39;https://api.smsmode.com/http/1.6/sendSMS.do?accessToken=your-api-key&amp;message={{ message }}&amp;emetteur=Pryv%20Lab&amp;numero={{ number }}&#39;
-  method: &#39;GET&#39;
+<h4 id="headers"><!--headers-->headers</h4>
+<p>The request headers that will be sent in the HTTP request. Variables are substituted in the values of these headers.<br>
+As the request body is a string, you will have to provide the corresponding <code>content-type</code> header.</p>
+<h2 id="single"><!--single-->Single</h2>
+<p>For <strong>single</strong> mode, you can provide a <code>{{ code }}</code> variable which will be substituted with a code generated by the Pryv.io MFA service.<br>
+The example hereafter, stores the message in the user-specific data, where <code>{{ code }}</code> substitution also works.</p>
+<h3 id="single-template"><!--single-template-->Single template</h3>
+<p>The configuration for single mode describes the HTTP request made by the Pryv.io MFA service during <a href="/reference/#activate-mfa">activation</a> and <a href="/reference/#trigger-mfa-challenge">challenge</a>. It looks like this in the platform.yml file:</p>
+<pre><code class="language-yaml">single:
+  url: &apos;https://api.smsmode.com/http/1.6/sendSMS.do?accessToken=your-api-key&amp;message={{ message }}&amp;emetteur=Pryv%20Lab&amp;numero={{ number }}&apos;
+  method: &apos;GET&apos;
 </code></pre>
 <p>or in the admin panel:</p>
-<pre><code class="lang-json">{
+<pre><code class="language-json">{
   &quot;single&quot;: {
     &quot;url&quot;: &quot;https://api.smsmode.com/http/1.6/sendSMS.do?accessToken=your-api-key&amp;message={{ message }}&amp;emetteur=Pryv%20Lab&amp;numero={{ number }}&quot;,
     &quot;method&quot;: &quot;GET&quot;
   }
 }
 </code></pre>
-<h3 id="single-user-data">Single user data</h3>
+<h3 id="single-user-data"><!--single-user-data-->Single user data</h3>
 <p>with the following user data sent during <a href="/reference/#activate-mfa">activation</a>:</p>
-<pre><code class="lang-json">{
+<pre><code class="language-json">{
   &quot;number&quot;:&quot;41791231212&quot;,
   &quot;message&quot;:&quot;Your Pryv Lab MFA code is: {{ code }}&quot;
 }
 </code></pre>
 <p>and <a href="/reference/#confirm-mfa-activation">confirmation</a> / <a href="/reference/#verify-mfa-challenge">verification</a>:</p>
-<pre><code class="lang-json">{
+<pre><code class="language-json">{
   &quot;code&quot;: &quot;12345&quot;
 }
 </code></pre>
-<h2 id="challenge-verify">Challenge-Verify</h2>
-<h3 id="challenge-verify-template">Challenge-Verify template</h3>
-<p>The configuration for challenge-verify mode describes the HTTP requests made by the Pryv.io MFA service during <a href="/reference/#activate-mfa">activation</a> and <a href="/reference/#trigger-mfa-challenge">challenge</a> under <code>challenge</code> and <a href="/reference/#confirm-mfa-activation">confirmation</a> and <a href="/reference/#verify-mfa-challenge">verification</a> under <code>verify</code>. It looks like this in the platform.yml file:  </p>
-<p>The template looks like this in the <code>platform.yml</code> file:  </p>
-<pre><code class="lang-yaml">challenge:
-  url: &#39;https://api.smsapi.com/mfa/codes&#39;
-  method: &#39;POST&#39;
-  body: &#39;{&quot;phone_number&quot;:&quot;{{ number }}&quot;}&#39;
+<h2 id="challenge-verify"><!--challenge-verify-->Challenge-Verify</h2>
+<h3 id="challenge-verify-template"><!--challenge-verify-template-->Challenge-Verify template</h3>
+<p>The configuration for challenge-verify mode describes the HTTP requests made by the Pryv.io MFA service during <a href="/reference/#activate-mfa">activation</a> and <a href="/reference/#trigger-mfa-challenge">challenge</a> under <code>challenge</code> and <a href="/reference/#confirm-mfa-activation">confirmation</a> and <a href="/reference/#verify-mfa-challenge">verification</a> under <code>verify</code>. It looks like this in the platform.yml file:</p>
+<p>The template looks like this in the <code>platform.yml</code> file:</p>
+<pre><code class="language-yaml">challenge:
+  url: &apos;https://api.smsapi.com/mfa/codes&apos;
+  method: &apos;POST&apos;
+  body: &apos;{&quot;phone_number&quot;:&quot;{{ number }}&quot;}&apos;
   headers:
-    authorization: &#39;Bearer: your-api-key&#39;
-    &#39;content-type&#39;: &#39;application/json&#39;
+    authorization: &apos;Bearer: your-api-key&apos;
+    &apos;content-type&apos;: &apos;application/json&apos;
 verify:
-  url: &#39;https://api.smsapi.com/mfa/codes/verifications&#39;
-  method: &#39;POST&#39;
-  body: &#39;{&quot;phone_number&quot;:&quot;{{ number }}&quot;,&quot;code&quot;:&quot;{{ code }}&quot;}&#39;
+  url: &apos;https://api.smsapi.com/mfa/codes/verifications&apos;
+  method: &apos;POST&apos;
+  body: &apos;{&quot;phone_number&quot;:&quot;{{ number }}&quot;,&quot;code&quot;:&quot;{{ code }}&quot;}&apos;
   headers:
-    authorization: &#39;Bearer: your-api-key&#39;
-    &#39;content-type&#39;: &#39;application/json&#39;
+    authorization: &apos;Bearer: your-api-key&apos;
+    &apos;content-type&apos;: &apos;application/json&apos;
 </code></pre>
 <p>or in the admin panel:</p>
-<pre><code class="lang-json">{
+<pre><code class="language-json">{
   &quot;challenge&quot;: {
     &quot;url&quot;: &quot;https://api.smsapi.com/mfa/codes&quot;,
     &quot;method&quot;: &quot;POST&quot;,
@@ -119,18 +123,18 @@ verify:
   }
 }
 </code></pre>
-<h3 id="challenge-verify-user-data">Challenge-Verify user data</h3>
+<h3 id="challenge-verify-user-data"><!--challenge-verify-user-data-->Challenge-Verify user data</h3>
 <p>with the following user data sent during <a href="/reference/#activate-mfa">activation</a>:</p>
-<pre><code class="lang-json">{
+<pre><code class="language-json">{
   &quot;number&quot;:&quot;41791231212&quot;
 }
 </code></pre>
 <p>and <a href="/reference/#confirm-mfa-activation">confirmation</a> / <a href="/reference/#verify-mfa-challenge">verification</a>:</p>
-<pre><code class="lang-json">{
+<pre><code class="language-json">{
   &quot;code&quot;: &quot;12345&quot;
 }
 </code></pre>
-<h2 id="references">References</h2>
+<h2 id="references"><!--references-->References</h2>
 <p>The aforementionned examples use working templates and user data for:</p>
 <ul>
 <li>SMS API: <a href="https://www.smsapi.com/docs/#15-sms-authenticator">https://www.smsapi.com/docs/#15-sms-authenticator</a></li>
