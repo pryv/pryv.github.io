@@ -112,9 +112,10 @@ The example hereafter, stores the message in the user-specific data, where <code
 <p>with the following user data sent during <a href="/reference/#activate-mfa">activation</a>:</p>
 <pre><code class="language-json">{
   &quot;number&quot;:&quot;41791231212&quot;,
-  &quot;message&quot;:&quot;Your Pryv Lab MFA code is: {{ code }}&quot;
+  &quot;message&quot;:&quot;Your%20Pryv%20Lab%20MFA%20code%20is%3A%20{{ code }}&quot;
 }
 </code></pre>
+<p>Note that the message <code>Your Pryv Lab MFA code is: {{ code }}</code> has been URL encoded as it will appear in query parameters, but the <code>{{ code }}</code> variable is kept as-is since it must be substituted by the Pryv MFA service.</p>
 <p>and <a href="/reference/#confirm-mfa-activation">confirmation</a> / <a href="/reference/#verify-mfa-challenge">verification</a>:</p>
 <pre><code class="language-json">{
   &quot;code&quot;: &quot;12345&quot;
