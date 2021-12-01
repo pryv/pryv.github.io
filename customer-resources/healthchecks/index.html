@@ -3,36 +3,40 @@
 <!--[if lt IE 9]>
   <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
   <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
-<![endif]--><link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Roboto:400,300,500,700,400italic|Roboto+Condensed:400,300,700"><link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/styles/docco.min.css"><link rel="stylesheet" type="text/css" href="/assets/fonts/ss-gizmo.min.css"><link rel="stylesheet" type="text/css" href="/assets/style.css"></head><body class="healthchecks with-toc"><header id="page-header"><nav class="navbar navbar-default navbar-fixed-top" role="navigation"><div class="container-fluid"><div class="navbar-header"><a class="navbar-brand logo pryv-home" href="https://pryv.com" title="Pryv home"><img src="/assets/images/icon-home.svg" alt="Pryv home" height="50"></a><a class="navbar-brand logo" href="/" title="Developers home"><img src="/assets/images/logo-256-black.png" alt="Developers home"></a><button class="navbar-toggle" type="button" data-toggle="collapse" data-target="#main-nav"><span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button></div><div class="collapse navbar-collapse" id="main-nav"><ul class="nav navbar-nav"><li class="dropdown"><a class="dropdown-toggle" href="#" data-toggle="dropdown">Guides <b class="caret"></b></a><ul class="dropdown-menu"><li><a href="/getting-started/">Getting started</a></li><li><a href="/external-resources/">Apps &amp; Libs</a></li><li><a href="/concepts/">API concepts</a></li><li><a href="/guides/data-modelling/">Data modelling</a></li><li><a href="/guides/webhooks/">Webhooks</a></li><li><a href="/guides/custom-auth/">Custom auth</a></li><li><a href="/guides/consent/">Consent request</a></li><li><a href="/guides/app-guidelines/">App guidelines</a></li><li><a href="/guides/audit-logs/">Audit logs</a></li></ul></li><li class="dropdown"><a class="dropdown-toggle" href="#" data-toggle="dropdown">Reference <b class="caret"></b></a><ul class="dropdown-menu"><li><a href="/reference/">API reference</a></li><li><a href="/reference-admin/">Admin API reference</a></li><li><a href="/reference-system/">System API reference</a></li><li><a href="/event-types/">Event types</a></li><li><a href="/open-api/">Open API (Postman)</a></li><li><a href="/change-log/">API change log</a></li></ul></li><li class="dropdown"><a class="dropdown-toggle" href="#" data-toggle="dropdown">FAQ <b class="caret"></b></a><ul class="dropdown-menu"><li><a href="/faq-api/">API</a></li><li><a href="/faq-infra/">Infrastructure</a></li></ul></li><li><a href="https://support.pryv.com/hc/en-us/community/topics">Community</a></li><li><a href="https://github.com/pryv/open-pryv.io">Open Pryv.io</a></li><li><a href="/customer-resources/">Entreprise</a></li><li><a href="/roadmap/">Roadmap</a></li></ul><div class="navbar-right"><p class="navbar-text version"><a href="/change-log/" title="View change log">API version: <strong>1.7.0</strong></a></p></div></div></div></nav></header><div class="container container-narrow" id="main-wrapper"><div id="main"><h1 class="page-title" id="pryvio-healthchecks"><!--pryvio-healthchecks-->Pryv.io Healthchecks</h1><table>
-<thead>
-<tr>
-<th></th>
-<th></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Author</td>
-<td>Ilia Kebets</td>
-</tr>
-<tr>
-<td>Reviewer</td>
-<td>Guillaume Bassand (v1-3), Anastasia Bouzdine (v4)</td>
-</tr>
-<tr>
-<td>Date</td>
-<td>28.04.2020</td>
-</tr>
-<tr>
-<td>Version</td>
-<td>4</td>
-</tr>
-</tbody>
-</table>
-<h1 id="summary"><!--summary-->Summary</h1>
-<p>This procedure describes how to perform regular healthcheck API calls to the Pryv.io API in order to remotely monitor its status. You can directly jump to the <a href="#healthchecks">Healthchecks section</a> to proceed to the healthchecks.</p>
+<![endif]--><link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Roboto:400,300,500,700,400italic|Roboto+Condensed:400,300,700"><link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/styles/docco.min.css"><link rel="stylesheet" type="text/css" href="/assets/fonts/ss-gizmo.min.css"><link rel="stylesheet" type="text/css" href="/assets/style.css"></head><body class="healthchecks with-toc"><header id="page-header"><nav class="navbar navbar-default navbar-fixed-top" role="navigation"><div class="container-fluid"><div class="navbar-header"><a class="navbar-brand logo pryv-home" href="https://pryv.com" title="Pryv home"><img src="/assets/images/icon-home.svg" alt="Pryv home" height="50"></a><a class="navbar-brand logo" href="/" title="Developers home"><img src="/assets/images/logo-256-black.png" alt="Developers home"></a><button class="navbar-toggle" type="button" data-toggle="collapse" data-target="#main-nav"><span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button></div><div class="collapse navbar-collapse" id="main-nav"><ul class="nav navbar-nav"><li class="dropdown"><a class="dropdown-toggle" href="#" data-toggle="dropdown">Guides <b class="caret"></b></a><ul class="dropdown-menu"><li><a href="/getting-started/">Getting started</a></li><li><a href="/external-resources/">Apps &amp; Libs</a></li><li><a href="/concepts/">API concepts</a></li><li><a href="/guides/data-modelling/">Data modelling</a></li><li><a href="/guides/webhooks/">Webhooks</a></li><li><a href="/guides/custom-auth/">Custom auth</a></li><li><a href="/guides/consent/">Consent request</a></li><li><a href="/guides/app-guidelines/">App guidelines</a></li><li><a href="/guides/audit-logs/">Audit logs</a></li></ul></li><li class="dropdown"><a class="dropdown-toggle" href="#" data-toggle="dropdown">Reference <b class="caret"></b></a><ul class="dropdown-menu"><li><a href="/reference/">API reference</a></li><li><a href="/reference-admin/">Admin API reference</a></li><li><a href="/reference-system/">System API reference</a></li><li><a href="/event-types/">Event types</a></li><li><a href="/open-api/">Open API (Postman)</a></li><li><a href="/change-log/">API change log</a></li></ul></li><li class="dropdown"><a class="dropdown-toggle" href="#" data-toggle="dropdown">FAQ <b class="caret"></b></a><ul class="dropdown-menu"><li><a href="/faq-api/">API</a></li><li><a href="/faq-infra/">Infrastructure</a></li></ul></li><li><a href="https://support.pryv.com/hc/en-us/community/topics">Community</a></li><li><a href="https://github.com/pryv/open-pryv.io">Open Pryv.io</a></li><li><a href="/customer-resources/">Entreprise</a></li><li><a href="/roadmap/">Roadmap</a></li></ul><div class="navbar-right"><p class="navbar-text version"><a href="/change-log/" title="View change log">API version: <strong>1.7.0</strong></a></p></div></div></div></nav></header><div class="container container-narrow" id="main-wrapper"><div id="main"><h1 class="page-title" id="pryvio-healthchecks"><!--pryvio-healthchecks-->Pryv.io Healthchecks</h1><!--
+|         |                       |
+| ------- | --------------------- |
+| Author  | Ilia Kebets 	      |
+| Reviewer | Guillaume Bassand (v1-3), Anastasia Bouzdine (v4) |
+| Date    | 28.04.2020            |
+| Version | 4                     |
+-->
+<p>This guide describes how to perform regular healthcheck API calls to the Pryv.io API in order to remotely monitor its status. You can directly jump to the <a href="#healthchecks">Healthchecks section</a> to proceed to the healthchecks.</p>
 <p>Please note that the current procedure does not cover how to perform healthchecks per core machine, only per hosting. If you require core-level status, get in touch with your Pryv tech contact.</p>
-<h1 id="variables"><!--variables-->Variables</h1>
+<h2 id="table-of-contents-"><!--table-of-contents--->Table of contents <!-- omit in toc --></h2>
+<ol>
+<li><a href="#variables">Variables</a></li>
+<li><a href="#tools">Tools</a>
+<ol>
+<li><a href="#dns-checks">DNS checks:</a></li>
+<li><a href="#http-calls">HTTP calls</a></li>
+</ol>
+</li>
+<li><a href="#preparation">Preparation</a>
+<ol>
+<li><a href="#create-account">Create account</a></li>
+<li><a href="#create-token">Create token</a></li>
+</ol>
+</li>
+<li><a href="#healthchecks">Healthchecks</a>
+<ol>
+<li><a href="#dns">DNS</a></li>
+<li><a href="#register">Register</a></li>
+<li><a href="#core">Core</a></li>
+</ol>
+</li>
+</ol>
+<h2 id="variables"><!--variables-->Variables</h2>
 <p>As this guide is platform agnostic, we will use variables <code>${VARIABLE_NAME}</code> which must be replaced in the commands.</p>
 <p>In particular, the following variables should be replaced :</p>
 <ul>
@@ -40,20 +44,20 @@
 <li>the <strong>core machines hostings</strong>, identified with a <code>${HOSTING_NAME}</code>. In a Pryv.io platform, core machines are organized into clusters that we call hostings. Each of these has an identifier <code>${HOSTING_NAME}</code>, which can be found at the following URL: https://reg.${DOMAIN}/hostings. The <code>${HOSTING_NAME}</code> are the keys of the object <code>regions:REGION_NAME:zones:ZONE_NAME:hostings</code>. For DNS-less setups, it is fixed as <code>hosting1</code>.</li>
 <li>the <strong>access token</strong> <code>${ACCESS_TOKEN}</code>, associated with a dedicated user account and that will be used in the API calls for healthchecks. The <a href="#preparation">preparation chapter</a> describes how to obtain it.</li>
 </ul>
-<h1 id="tools"><!--tools-->Tools</h1>
+<h2 id="tools"><!--tools-->Tools</h2>
 <p>Depending on your skill set, this can be done using CLI tools or a web interface.</p>
-<h2 id="dns-checks"><!--dns-checks-->DNS checks:</h2>
+<h3 id="dns-checks"><!--dns-checks-->DNS checks:</h3>
 <ul>
 <li>dig version 9.12.3+</li>
 </ul>
-<h2 id="http-calls"><!--http-calls-->HTTP calls</h2>
+<h3 id="http-calls"><!--http-calls-->HTTP calls</h3>
 <ul>
 <li>cURL v7.54.0+</li>
 </ul>
-<h1 id="preparation"><!--preparation-->Preparation</h1>
+<h2 id="preparation"><!--preparation-->Preparation</h2>
 <p>As the current Pryv.io version does not have dedicated API endpoints for a thorough healthcheck, we create a dedicated user account in order to do so.
 This preparation phase describes how to create an account and obtain a non-expirable token. This must be done once and the username/token pairs stored for automatic API healthcheck calls.</p>
-<h2 id="create-account"><!--create-account-->Create account</h2>
+<h3 id="create-account"><!--create-account-->Create account</h3>
 <p>We begin by creating an account. We propose to use the following credentials, but these can be modified at the user&#x2019;s discretion:</p>
 <ul>
 <li><strong>username</strong> : healthmetrics</li>
@@ -91,7 +95,7 @@ This preparation phase describes how to create an account and obtain a non-expir
 </ul>
 </li>
 </ol>
-<h2 id="create-token"><!--create-token-->Create token</h2>
+<h3 id="create-token"><!--create-token-->Create token</h3>
 <p>In order to obtain a non-expirable access token, you must do 2 calls. First sign in with the user password to obtain a temporary personal token, and then use it to obtain a non-expirable one.</p>
 <p><strong>- Sign in:</strong></p>
 <pre><code class="language-bash">curl -i -H &quot;Content-Type: application/json&quot; \
@@ -154,15 +158,15 @@ This preparation phase describes how to create an account and obtain a non-expir
 <li>Click on <code>Accept</code> button</li>
 <li>Copy the Access token and save it for this machine&#x2019;s healthchecks. We will refer to it as <code>${ACCESS_TOKEN}</code>.</li>
 </ol>
-<h1 id="healthchecks"><!--healthchecks-->Healthchecks</h1>
-<h2 id="dns"><!--dns-->DNS</h2>
+<h2 id="healthchecks"><!--healthchecks-->Healthchecks</h2>
+<h3 id="dns"><!--dns-->DNS</h3>
 <p>Run <code>Dig A healthmetrics01.${DOMAIN}</code></p>
 <p>The expected result: An answer.</p>
-<h2 id="register"><!--register-->Register</h2>
+<h3 id="register"><!--register-->Register</h3>
 <p>The call to perform: <strong>HTTP GET</strong> <code>https://reg.${DOMAIN}/healthmetrics01/check_username</code> (<code>https://${HOSTNAME}/reg/healthmetrics01/check_username</code> for DNS-less)</p>
 <p>Run <code>curl https://reg.${DOMAIN}/healthmetrics01/check_username</code> (<code>curl https://${HOSTNAME}/reg/healthmetrics01/check_username</code> for DNS-less)</p>
 <p>The expected result: <code>Status: 200</code></p>
-<h2 id="core"><!--core-->Core</h2>
+<h3 id="core"><!--core-->Core</h3>
 <p>Authorization header: <code>${ACCESS_TOKEN}</code></p>
 <p>The call to perform: <strong>HTTP GET</strong> <code>https://healthmetrics01.${DOMAIN}/events?limit=1</code></p>
 <p>Run <code>curl -i -H &apos;Authorization: ${ACCESS_TOKEN}&apos;</code>
