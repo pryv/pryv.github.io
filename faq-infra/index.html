@@ -137,6 +137,34 @@ rm -rf pryv/influxdb/data/*
 </code></pre>
 <h3 id="how-can-i-use-the-demo-dashboard-app-app-web-on-my-pryvio-platform"><!--how-can-i-use-the-demo-dashboard-app-app-web-on-my-pryvio-platform-->How can I use the demo dashboard app (<em>app-web</em>) on my Pryv.io platform?</h3>
 <p>App-web is hosted on GitHub pages and can be used for your Pryv.io platform as described in <a href="https://github.com/pryv/app-web#usage">its documentation</a>.</p>
+<h3 id="can-i-use-my-own-ssl-termination-with-pryvio"><!--can-i-use-my-own-ssl-termination-with-pryvio-->Can I use my own SSL termination with Pryv.io?</h3>
+<p>Yes, you need to provide the following changes to the template configuration files found in <code>config-leader/data/${ROLE}</code>, where <code>${ROLE}</code> is <code>singlenode</code> or <code>core</code>, <code>reg-master</code>, <code>reg-slave</code> and <code>static</code> depending on your deployment.</p>
+<p>In the <code>config-leader/data/${ROLE}/nginx/conf/nginx.conf</code> files, comment out the following lines by adding a <code>#</code> at their beginning as following:</p>
+<pre><code class="language-nginx">#ssl_certificate      /app/conf/secret/DOMAIN-bundle.crt;
+#ssl_certificate_key  /app/conf/secret/DOMAIN-key.pem;
+</code></pre>
+<p>In the <code>config-leader/data/${ROLE}/nginx/conf/site-443.conf</code> and <code>config-leader/data/${ROLE}/nginx/conf/site-443-mfa.conf</code> files, change the <code>listen</code> directive from <code>443 ssl</code> to <code>80</code> for each <code>server</code> block as following:</p>
+<pre><code class="language-nginx">server {
+  listen    80;
+  # ...
+}
+</code></pre>
+<h3 id="my-security-policy-requires-that-all-outgoing-traffic-goes-through-a-proxy-will-pryvio-work"><!--my-security-policy-requires-that-all-outgoing-traffic-goes-through-a-proxy-will-pryvio-work-->My security policy requires that all outgoing traffic goes through a proxy, will Pryv.io work?</h3>
+<p>Yes, you need to provide the following changes to the template configuration files found in <code>config-leader/data/${ROLE}</code>, where <code>${ROLE}</code> is <code>singlenode</code> or <code>core</code>, <code>reg-master</code>, <code>reg-slave</code> and <code>static</code> depending on your deployment.</p>
+<p>In the <code>config-leader/data/${ROLE}/pryv.yml</code> files, add the environment variables <code>http_proxy</code> and <code>https_proxy</code> to the <code>reverse_proxy</code> service:</p>
+<pre><code class="language-yaml">reverse_proxy:
+  image: &quot;eu.gcr.io/pryvio/nginx:1.3.40&quot;
+  container_name: pryvio_nginx
+  # ...
+  environment:
+    - http_proxy
+    - https_proxy
+</code></pre>
+<p>In the <code>run-config-leader</code>, <code>run-config-follower</code> and <code>run-pryv</code> scripts, add the following lines at the beginning, right under the shebang <code>#!/usr/bin/env bash</code>:</p>
+<pre><code class="language-bash">export http_proxy=${YOUR-PROXY-HOSTNAME-WITH-PORT}
+export https_proxy=${YOUR-PROXY-HOSTNAME-WITH-PORT}
+</code></pre>
+<p>Do the same for the <code>restart-</code> scripts.</p>
 </div><nav id="toc"></nav></div><footer id="page-footer"><nav class="navbar navbar-default"><div class="container-fluid"><div id="footer-nav"><ul class="nav navbar-nav"><li><a href="mailto:developers@pryv.com">Send a message</a></li><li><a href="https://github.com/pryv">GitHub</a></li><li><a href="https://pryv.com">pryv.com</a></li></ul></div></div></nav></footer><script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script><script src="/assets/bootstrap.min.js"></script><script src="/assets/js/toc.min.js"></script><!-- TOC generation--><script>jQuery(document).ready(function($) {
   // Header is about 51 pixels. This equals to 'header + fuzz', fuzz was
   // determined experimentally.
