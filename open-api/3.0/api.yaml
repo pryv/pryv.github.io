@@ -15,9 +15,9 @@ paths:
         Authenticates the user against the provided credentials, opening a
         personal access session. By default, the session is valid for 14 days
         after the last token usage. This duration is configurable in the
-        platform parameters.  
+        platform parameters.
 
-        This is one of the only API methods that do not expect an [auth parameter](#basics-authorization).  
+        This is one of the only API methods that do not expect an [auth parameter](#basics-authorization).
 
         This method requires that the `appId` and `Origin` (or `Referer`) header comply with the [trusted app verification](#basics-trusted-apps-verification).
       operationId: auth.login
@@ -33,6 +33,7 @@ paths:
           content:
             application/json:
               schema:
+                - type: string
                 - type: string
                 - type: string
       requestBody:
@@ -77,7 +78,8 @@ paths:
                 - type: string
       requestBody:
         description: The parameters depend entirely on the chosen MFA method and will be
-          forwarded to the service generating the challenge.
+          forwarded as-is to the service generating the challenge. Make sure to
+          URL encode parameters if they appear in query parameters.
         required: true
         content:
           application/json:
@@ -233,13 +235,13 @@ paths:
         - name: streams
           description: >-
             
-            **Array of streamIds:** Events assigned to any of the specified streams or their children will be returned.  
+            **Array of streamIds:** Events assigned to any of the specified streams or their children will be returned.
 
 
             or
 
 
-            **[Streams query](#data-structure-streams-query)**: Object used for filtering events by complex streamIds relations.  
+            **[Streams query](#data-structure-streams-query)**: Object used for filtering events by complex streamIds relations.
 
 
             By default, all accessible events are returned regardless of their stream.
@@ -462,7 +464,7 @@ paths:
         Adds new HF series data points to a HF event.
 
 
-        The HF series data will only store one set of values for any given deltaTime. This means you can update existing data points by 'adding' new data with the original deltaTime.  
+        The HF series data will only store one set of values for any given deltaTime. This means you can update existing data points by 'adding' new data with the original deltaTime.
       operationId: hfs.add
       parameters:
         - name: id
@@ -618,7 +620,7 @@ paths:
     get:
       description: >-
         Gets accesses that were created by your access token, unless you're
-        using a personal token then it returns all accesses.  
+        using a personal token then it returns all accesses.
 
         Only returns accesses that are active when making the request. To include accesses that have expired or were deleted, use
 
@@ -666,7 +668,7 @@ paths:
       description: >-
         Deletes the specified access. Personal accesses can delete any access.
         App accesses can delete shared accesses they created. Deleting an app
-        access deletes the shared ones it created.  
+        access deletes the shared ones it created.
 
         All accesses can also perform a self-delete unless a forbidden `selfRevoke` permission has been set.
       operationId: accesses.delete
@@ -733,7 +735,7 @@ paths:
     get:
       description: >-
         **(DEPRECATED)** Please use the [Get events method](#get-events)
-        instead.  
+        instead.
 
 
         Fetches accessible audit logs.
@@ -846,7 +848,7 @@ paths:
     put:
       description: >-
         Modifies the webhook. You can only modify webhooks with the access that
-        was used to create them, unless you are using a personal token.  
+        was used to create them, unless you are using a personal token.
 
         Updating the `state` to `active` resets the `currentRetries` counter.
       operationId: webhooks.update
@@ -1058,7 +1060,7 @@ paths:
   /account:
     get:
       description: |-
-        **(DEPRECATED)** Please use events methods instead.  
+        **(DEPRECATED)** Please use events methods instead.
 
         Retrieves the user's account information.
       operationId: account.get
@@ -1070,7 +1072,7 @@ paths:
                 - $ref: "#/components/schemas/account"
     put:
       description: |-
-        **(DEPRECATED)** Please use events methods instead.  
+        **(DEPRECATED)** Please use events methods instead.
 
         Modifies the user's account information.
       operationId: account.update
@@ -1110,7 +1112,7 @@ paths:
     post:
       description: >-
         Requests the resetting of the user's password. An e-mail containing an
-        expiring reset token (e.g. in a link) will be sent to the user.  
+        expiring reset token (e.g. in a link) will be sent to the user.
 
         This method requires that the `appId` and `Origin` (or `Referer`) header comply with the [trusted app verification](#basics-trusted-apps-verification).
       operationId: account.requestPasswordReset
@@ -1130,7 +1132,7 @@ paths:
       description: >-
         Resets the user's password, authorizing the request with the given reset
         token (see [request password
-        reset](#methods-account-account-requestPasswordReset) ).  
+        reset](#methods-account-account-requestPasswordReset) ).
 
         This method requires that the `appId` and `Origin` (or `Referer`) header comply with the [trusted app verification](#basics-trusted-apps-verification).
       operationId: account.resetPassword
