@@ -1319,6 +1319,12 @@ components:
           description: The token identifying the access. Automatically generated if not set
             when creating the access; **slugified if necessary**.
           type: string
+        apiEndpoint:
+          readOnly: true
+          required: true
+          description: The API endpoint with the access' authorization token. See [app
+            guidelines](/guides/app-guidelines/).
+          type: string
         type:
           readOnly: (except at creation)
           description: "The type — or usage — of the access. Default: `shared`."
@@ -1359,7 +1365,7 @@ components:
         expireAfter:
           readOnly: (except at creation)
           description: >-
-            If set, controls access expiry in seconds.  
+            If set, controls access expiry in seconds.
 
             When given a number in this attribute (positive or zero), the access will expire (and not be usable anymore) after this many seconds.
           type: number
@@ -1547,7 +1553,7 @@ components:
           description: >-
             The URL where the HTTP POST requests will be made. To identify the
             source of the webhook on your notifications server, you can use the
-            `url`'s hostname, path or query parameters. For example: 
+            `url`'s hostname, path or query parameters. For example:
 
 
             ```json
@@ -1561,9 +1567,9 @@ components:
         minIntervalMs:
           readOnly: true
           required: true
-          description: "The webhooks run rate is throttled by a minimum interval between
+          description: The webhooks run rate is throttled by a minimum interval between
             HTTP calls in milliseconds, sending an array of changes that occured
-            during this period. Its value is set by the platform admin. "
+            during this period. Its value is set by the platform admin.
           type: number
         maxRetries:
           readOnly: true
@@ -1610,9 +1616,9 @@ components:
         runs:
           readOnly: true
           required: true
-          description: "Array of Run objects in inverse chronological order (newest first)
+          description: Array of Run objects in inverse chronological order (newest first)
             which allows to monitor a webhook's health. Its length is set by the
-            platform admin. "
+            platform admin.
           type: array
           items:
             type: Run objects
