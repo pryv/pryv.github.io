@@ -54,8 +54,8 @@ paths:
   /auth/logout:
     post:
       description: >-
-        Terminates a personal access session by invalidating its access token
-        (the user will have to login again).
+        Terminates a personal access session by invalidating its access
+        token (the user will have to login again).
 
         Simply provide the Authorization token in own of [the supported ways](/reference/#authorization), no request body is required.
       operationId: auth.logout
@@ -97,8 +97,7 @@ paths:
             set both `fromTime` and `toTime` (for example by choosing a very
             small number for `fromTime` or a large one for `toTime` if you want
             to retrieve all events). Note: events are considered to be within a
-            given timeframe based on their `time` only (`duration` is not
-            considered)."
+            given timeframe based on their `time` and `duration`."
           required: false
           in: query
         - name: streams
@@ -149,10 +148,10 @@ paths:
           required: false
           in: query
         - name: state
-          description: Indicates what items to return depending on their state. By default,
-            only items that are not in the trash are returned; `trashed` returns
-            only items in the trash, while `all` return all items regardless of
-            their state.
+          description: Indicates what items to return depending on their state. By
+            default, only items that are not in the trash are returned;
+            `trashed` returns only items in the trash, while `all` return all
+            items regardless of their state.
           required: false
           in: query
         - name: modifiedSince
@@ -175,11 +174,11 @@ paths:
                 - type: array
                   items: "[item deletions](#data-structure-item-deletion)"
     post:
-      description: Records a new event, in addition to JSON, this request accepts standard
-        multipart/form-data content to support the creation of event with
-        attached files in a single request. When sending a multipart request,
-        one content part must hold the JSON for the new event and all other
-        content parts must be the attached files.
+      description: Records a new event, in addition to JSON, this request accepts
+        standard multipart/form-data content to support the creation of event
+        with attached files in a single request. When sending a multipart
+        request, one content part must hold the JSON for the new event and all
+        other content parts must be the attached files.
       operationId: events.create
       responses:
         "201":
@@ -235,9 +234,9 @@ paths:
               type: object
               properties: {}
     post:
-      description: Adds one or more file attachments to the event. This request expects
-        standard multipart/form-data content, with all content parts being the
-        attached files.
+      description: Adds one or more file attachments to the event. This request
+        expects standard multipart/form-data content, with all content parts
+        being the attached files.
       operationId: events.addAttachment
       parameters:
         - name: id
@@ -249,7 +248,8 @@ paths:
                 - $ref: "#/components/schemas/event"
     delete:
       description: >-
-        Trashes or deletes the specified event, depending on its current state:
+        Trashes or deletes the specified event, depending on its current
+        state:
 
 
         - If the event is not already in the trash, it will be moved to the trash (i.e. flagged as `trashed`)
@@ -274,8 +274,8 @@ paths:
       operationId: events.getAttachment
       parameters:
         - name: readToken
-          description: Required if not using the `Authorization` HTTP header. The file read
-            token to authentify the request. See
+          description: Required if not using the `Authorization` HTTP header. The file
+            read token to authentify the request. See
             [`event.attachments[].readToken`](#data-structure-event) for more
             info.
           required: true
@@ -315,8 +315,8 @@ paths:
           required: false
           in: query
         - name: state
-          description: By default, only items that are not in the trash are returned; `all`
-            return all items regardless of their state.
+          description: By default, only items that are not in the trash are returned;
+            `all` return all items regardless of their state.
           required: false
           in: query
         - name: includeDeletionsSince
@@ -375,7 +375,8 @@ paths:
               properties: {}
     delete:
       description: >-
-        Trashes or deletes the specified stream, depending on its current state:
+        Trashes or deletes the specified stream, depending on its current
+        state:
 
 
         - If the stream is not already in the trash, it will be moved to the trash (i.e. flagged as `trashed`)
@@ -426,8 +427,8 @@ paths:
                 - type: array
                   items: deleted [accesses](#data-structure-access)
     post:
-      description: Creates a new access. You can only create accesses whose permissions are
-        a subset of those granted to your own access token.
+      description: Creates a new access. You can only create accesses whose
+        permissions are a subset of those granted to your own access token.
       operationId: accesses.create
       responses:
         "201":
@@ -447,9 +448,9 @@ paths:
   "/accesses/{id}":
     delete:
       description: >-
-        Deletes the specified access. Personal accesses can delete any access.
-        App accesses can delete shared accesses they created. Deleting an app
-        access deletes the shared ones it created.
+        Deletes the specified access. Personal accesses can delete any
+        access. App accesses can delete shared accesses they created. Deleting
+        an app access deletes the shared ones it created.
 
         All accesses can also perform a self-delete unless a forbidden `selfRevoke` permission has been set.
       operationId: accesses.delete
@@ -489,12 +490,12 @@ paths:
                   description: The id of the app requesting authorization.
                   type: string
                 deviceName:
-                  description: The name of the device running the app requesting
-                    authorization, if applicable.
+                  description: The name of the device running the app requesting authorization, if
+                    applicable.
                   type: string
                 requestedPermissions:
-                  description: An array of permission request objects, which are identical
-                    to stream permission objects of
+                  description: An array of permission request objects, which are identical to
+                    stream permission objects of
                     [accesses](#data-structure-access) except that each stream
                     permission object must have a `defaultName` property
                     specifying the name the stream should be created with later
@@ -570,8 +571,8 @@ paths:
                 - $ref: "#/components/schemas/item-deletion"
   /profile/app:
     get:
-      description: Gets the app's dedicated profile set, which contains app-level settings
-        for the user. Available to app accesses.
+      description: Gets the app's dedicated profile set, which contains app-level
+        settings for the user. Available to app accesses.
       operationId: profile.getApp
       responses:
         "200":
@@ -602,8 +603,9 @@ paths:
               properties: {}
   /profile/public:
     get:
-      description: Gets the public profile set, which contains the information the user
-        makes publicly available (e.g. avatar image). Available to all accesses.
+      description: Gets the public profile set, which contains the information the
+        user makes publicly available (e.g. avatar image). Available to all
+        accesses.
       operationId: profile.getPublic
       responses:
         "200":
@@ -719,8 +721,8 @@ paths:
   /account/request-password-reset:
     post:
       description: >-
-        Requests the resetting of the user's password. An e-mail containing an
-        expiring reset token (e.g. in a link) will be sent to the user.
+        Requests the resetting of the user's password. An e-mail containing
+        an expiring reset token (e.g. in a link) will be sent to the user.
 
         This method requires that the `appId` and `Origin` (or `Referer`) header comply with the [trusted app verification](#basics-trusted-apps-verification).
       operationId: account.requestPasswordReset
@@ -738,8 +740,8 @@ paths:
   /account/reset-password:
     post:
       description: >-
-        Resets the user's password, authorizing the request with the given reset
-        token (see [request password
+        Resets the user's password, authorizing the request with the given
+        reset token (see [request password
         reset](#methods-account-account-requestPasswordReset) ).
 
         This method requires that the `appId` and `Origin` (or `Referer`) header comply with the [trusted app verification](#basics-trusted-apps-verification).
@@ -753,8 +755,8 @@ paths:
               type: object
               properties:
                 resetToken:
-                  description: The expiring reset token that was sent to the user after
-                    requesting the password reset.
+                  description: The expiring reset token that was sent to the user after requesting
+                    the password reset.
                   type: string
                 newPassword:
                   description: The new password.
@@ -796,8 +798,8 @@ components:
             creating the event.
           $ref: "#/components/schemas/timestamp"
         duration:
-          description: If present and non-zero, indicates that the event is a period event.
-            **Running period events have a duration set to `null`**. **A
+          description: If present and non-zero, indicates that the event is a period
+            event. **Running period events have a duration set to `null`**. **A
             duration set to zero is equivalent to no duration**.
           $ref: "#/components/schemas/timestamp"
         type:
@@ -924,8 +926,8 @@ components:
           uniqueItems: true
           readOnly: (except at creation)
           required: true
-          description: The token identifying the access. Automatically generated if not set
-            when creating the access; **slugified if necessary**.
+          description: The token identifying the access. Automatically generated if not
+            set when creating the access; **slugified if necessary**.
           type: string
         apiEndpoint:
           readOnly: true
