@@ -48,7 +48,7 @@ If you wish to give a Pryv access token to an external service and to control it
 <p>Depending on the <code>type</code> field of the event, the content of the fields <code>content</code> and <code>attachments</code> are validated.</p>
 <h2 id="other-data-structures"><!--other-data-structures-->Other data structures</h2>
 <h3 id="what-information-should-be-contained-in-the-profile-section-of-the-user-"><!--what-information-should-be-contained-in-the-profile-section-of-the-user--->What information should be contained in the &#x201C;Profile&#x201D; section of the user ?</h3>
-<p>Profile sets are plain key-value structure in which you can store any user-level settings (e.g. credentials).<br>
+<p>Profile sets are plain key-value structure in which you can store any user-level settings (e.g. credentials).
 This structure is likely to be deprecated soon, and with the exception of the &#x201C;Public profile set&#x201D;, we recommend our customers to use dedicated streams to store account information of their users.</p>
 <h3 id="what-are-followed-slices-that-can-be-stored-in-pryv-accounts-"><!--what-are-followed-slices-that-can-be-stored-in-pryv-accounts--->What are &#x201C;Followed slices&#x201D; that can be stored in Pryv accounts ?</h3>
 <p>Followed slices are meant to store another user&#x2019;s access tokens in one&#x2019;s account. For practical reasons, we generally advise you to store the access tokens in a dedicated stream.</p>
@@ -65,7 +65,7 @@ This structure is likely to be deprecated soon, and with the exception of the &#
 <p>If you are having issues creating the package for the create attachment call with the client/framework/library you are using, you can print the details of the call by using cURL with the <code>-v</code> verbose option.</p>
 <h2 id="synchronization"><!--synchronization-->Synchronization</h2>
 <h3 id="how-to-keep-events-in-local-cache-up-to-date"><!--how-to-keep-events-in-local-cache-up-to-date-->How to keep events in local cache up to date?</h3>
-<p>The <a href="/reference/#get-events">events.get API method</a> offers the <code>modifiedSince</code> and <code>includeDeletions</code> parameters to synchronize a set of events.<br>
+<p>The <a href="/reference/#get-events">events.get API method</a> offers the <code>modifiedSince</code> and <code>includeDeletions</code> parameters to synchronize a set of events.
 As the default parameters return the last 20 events, we should perform synchronization on a time range, which can be very big if needed.</p>
 <ol>
 <li>Initialize your events cache with an <code>events.get</code> call and a time range with <code>fromTime</code> and <code>toTime</code>.</li>
@@ -73,13 +73,13 @@ As the default parameters return the last 20 events, we should perform synchroni
 <li>Store this value in a variable we call <code>anchor</code> and add a very small number to it, for example: <code>0.0000001</code>.</li>
 <li>To synchronize the events you just need to call <code>events.get</code> with a time range and <code>&amp;modifiedSince={anchor}&amp;includeDeletions=true</code> query parameters.</li>
 </ol>
-<p>The companion JavaScript library <a href="https://github.com/pryv/lib-js-monitor">Monitor</a> implements this pattern.</p>
+<p>The JavaScript library&#x2019;s <a href="https://github.com/pryv/lib-js/tree/master/components/pryv-monitor">Monitor add-on</a> implements this pattern.</p>
 <h4 id="limitation"><!--limitation-->Limitation</h4>
-<p>Note that if you have an <a href="/reference/#access">access</a> with permissions on a certain set of streams (we&#x2019;ll call this a &#x201C;scope&#x201D;), you will not be able to detect events that are leaving this scope.<br>
+<p>Note that if you have an <a href="/reference/#access">access</a> with permissions on a certain set of streams (we&#x2019;ll call this a &#x201C;scope&#x201D;), you will not be able to detect events that are leaving this scope.
 For example, let&#x2019;s say you have permissions on the streamId <code>diary</code>. If some client changes its streamIds by removing <code>diary</code>, you will not be able to detect this change.</p>
 <h3 id="how-can-i-setup-an-automatic-synchronization-of-my-events-and-streams-cache"><!--how-can-i-setup-an-automatic-synchronization-of-my-events-and-streams-cache-->How can I setup an &#x201C;Automatic&#x201D; synchronization of my Events and Streams cache</h3>
 <p>By coupling the precedent logic with a <a href="/faq-api/#notification-system">Notification System</a></p>
-<p>If you use the <a href="https://github.com/pryv/lib-js">Pryv JavaScript Library</a>, it can be used in combination with our <a href="https://github.com/pryv/lib-js-monitor">Monitor</a> and <a href="https://github.com/pryv/lib-js-socket.io">Socket.io</a> add-ons to have &#x201C;near real-time&#x201D; updates.</p>
+<p>If you use the <a href="https://github.com/pryv/lib-js">Pryv JavaScript Library</a>, it can be used in combination with our <a href="https://github.com/pryv/lib-js/tree/master/components/pryv-monitor">Monitor</a> and <a href="https://github.com/pryv/lib-js/tree/master/components/pryv-socket.io">Socket.io</a> add-ons to have &#x201C;near real-time&#x201D; updates.</p>
 <h2 id="user-creation"><!--user-creation-->User creation</h2>
 <h3 id="is-there-an-api-call-for-user-creation"><!--is-there-an-api-call-for-user-creation-->Is there an API call for user creation?</h3>
 <p>The API call for user creation is defined in <a href="/reference-system/#account-creation">API system reference</a>, please contact us for more information.</p>
@@ -156,7 +156,7 @@ You can contact us directly if you wish to implement a verification protocol for
 <img align="center" width="200" src="/assets/images/app-access.png">
 <h2 id="notification-system"><!--notification-system-->Notification system</h2>
 <h3 id="should-i-use-websockets-or-webhooks-to-subscribe-to-changes-"><!--should-i-use-websockets-or-webhooks-to-subscribe-to-changes--->Should I use &#x201C;websockets&#x201D; or &#x201C;webhooks&#x201D; to subscribe to changes ?</h3>
-<p><strong>Websockets</strong> should be used to get notified of data changes in a web application (on the frontend side).<br>
+<p><strong>Websockets</strong> should be used to get notified of data changes in a web application (on the frontend side).
 <strong>Webhooks</strong> are more suited to get notified of data changes in a web service (on the backend side).</p>
 <p>More details on websockets and webhooks can be found <a href="/reference/#subscribe-to-changes">here</a>.</p>
 <h3 id="what-type-of-information-do-webhookswebsockets-contain-"><!--what-type-of-information-do-webhookswebsockets-contain--->What type of information do webhooks/websockets contain ?</h3>
