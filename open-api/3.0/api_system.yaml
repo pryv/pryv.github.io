@@ -1,7 +1,7 @@
 openapi: 3.0.0
 info:
   description: Description of Pryv.io System API in Open API 3.0 standard format
-  version: 1.7.14
+  version: 1.8.0
   title: Pryv.io System API
   contact:
     email: support@pryv.com
@@ -117,6 +117,8 @@ paths:
         customized with the [system streams
         configuration](/customer-resources/system-streams/).
 
+        Enforces password complexity rules if enabled (set via the corresponding platform settings).
+
 
         Before Pryv.io 1.6, this route was served by the register server on `/user`
       operationId: users.create
@@ -127,6 +129,8 @@ paths:
               schema:
                 - type: string
                 - type: string
+        "400":
+          description: invalid-parameters-format
       requestBody:
         content:
           application/json:

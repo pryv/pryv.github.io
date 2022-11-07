@@ -1,7 +1,7 @@
 openapi: 3.0.0
 info:
   description: Description of Open-Pryv.io API in Open API 3.0 standard format
-  version: 1.7.14
+  version: 1.8.0
   title: Open-Pryv.io API
   contact:
     email: support@pryv.com
@@ -36,6 +36,8 @@ paths:
                 - type: string
                 - type: string
                 - type: string
+                - $ref: "#/components/schemas/timestamp"
+                - $ref: "#/components/schemas/timestamp"
       requestBody:
         content:
           application/json:
@@ -700,12 +702,15 @@ paths:
               properties: {}
   /account/change-password:
     post:
-      description: Modifies the user's password.
+      description: >-
+        Modifies the user's password.
+
+        Enforces password complexity, reuse and minimum age rules if enabled (set via the corresponding platform settings).
       operationId: account.changePassword
       responses:
         "200": {}
         "400":
-          description: invalid-operation
+          description: invalid-parameters-format
       requestBody:
         content:
           application/json:
@@ -744,10 +749,14 @@ paths:
         reset token (see [request password
         reset](#methods-account-account-requestPasswordReset) ).
 
+        Enforces password complexity, reuse and minimum age rules if enabled (set via the corresponding platform settings).
+
         This method requires that the `appId` and `Origin` (or `Referer`) header comply with the [trusted app verification](#basics-trusted-apps-verification).
       operationId: account.resetPassword
       responses:
         "200": {}
+        "400":
+          description: invalid-parameters-format
       requestBody:
         content:
           application/json:
