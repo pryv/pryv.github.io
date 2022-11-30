@@ -10,7 +10,6 @@
   <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Roboto:300,400">
   <title>Food preferences</title>
   <script src="https://pryv.github.io/lib-js/pryv.js"></script>
-  <script src="script.js"></script>
 </head>
 
 <body>
@@ -64,14 +63,14 @@
         }
       },
     };
-    
+
     function pryvAuthStateChange(state) { // called each time the authentication state changed
       console.log('##pryvAuthStateChange', state);
       if (state.id === Pryv.Browser.AuthStates.AUTHORIZED) {
         document.getElementById('please-login').style.visibility = 'hidden';
         document.getElementById('logged-in').style.visibility = 'visible';
         document.getElementById('apiEndpoint').innerHTML = state.apiEndpoint;
-        
+
         connection = new Pryv.Connection(state.apiEndpoint);
         console.log('# Browser succeeded for user ' + connection.apiEndpoint);
       }
