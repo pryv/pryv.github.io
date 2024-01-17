@@ -1,0 +1,91 @@
+<!DOCTYPE html><html class="no-js" lang="en"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="description" property="og:description" content="Pryv API reference and resources for developers"><meta name="author" content="Pryv SA"><meta property="og:type" content="website"><meta name="image" property="og:image" content="/assets/images/logo-256.png"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Data In Pryv | Pryv API</title><link rel="icon" href="/assets/images/favicon-black.ico" type="image/x-icon"><link rel="apple-touch-icon" sizes="120x120" href="/assets/images/apple-touch-icon-120x120-black.png"><link rel="apple-touch-icon" sizes="152x152" href="/assets/images/apple-touch-icon-152x152-black.png"><link rel="apple-touch-icon" sizes="180x180" href="/assets/images/apple-touch-icon-180x180-black.png"><!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+<!--[if lt IE 9]>
+  <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+  <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+<![endif]--><link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Roboto:400,300,500,700,400italic|Roboto+Condensed:400,300,700"><link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/styles/docco.min.css"><link rel="stylesheet" type="text/css" href="/assets/fonts/ss-gizmo.min.css"><link rel="stylesheet" type="text/css" href="/assets/style.css"></head><body class="data-in-pryv with-toc"><header id="page-header"><nav class="navbar navbar-default navbar-fixed-top" role="navigation"><div class="container-fluid"><div class="navbar-header"><a class="navbar-brand logo pryv-home" href="https://pryv.com" title="Pryv home"><img src="/assets/images/icon-home.svg" alt="Pryv home" height="50"></a><a class="navbar-brand logo" href="/" title="Developers home"><img src="/assets/images/logo-256-black.png" alt="Developers home"></a><button class="navbar-toggle" type="button" data-toggle="collapse" data-target="#main-nav"><span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button></div><div class="collapse navbar-collapse" id="main-nav"><ul class="nav navbar-nav"><li class="dropdown"><a class="dropdown-toggle" href="#" data-toggle="dropdown">Guides <b class="caret"></b></a><ul class="dropdown-menu"><li><a href="/getting-started/">Getting started</a></li><li><a href="/concepts/">API concepts</a></li><li class="active"><a href="/data-in-pryv/">Data In Pryv</a></li><li><a href="/guides/data-modelling/">Data modelling</a></li><li><a href="/guides/app-guidelines/">App guidelines</a></li><li><a href="/external-resources/">Apps &amp; Libs</a></li><li><a href="/guides/webhooks/">Webhooks</a></li><li><a href="/guides/custom-auth/">Custom auth</a></li><li><a href="/guides/consent/">Consent request</a></li><li><a href="/guides/audit-logs/">Audit logs</a></li></ul></li><li class="dropdown"><a class="dropdown-toggle" href="#" data-toggle="dropdown">Reference <b class="caret"></b></a><ul class="dropdown-menu"><li><a href="/reference/">API reference</a></li><li><a href="/reference-admin/">Admin API reference</a></li><li><a href="/reference-system/">System API reference</a></li><li><a href="/event-types/">Event types</a></li><li><a href="/open-api/">Open API (Postman)</a></li><li><a href="/change-log/">API change log</a></li></ul></li><li class="dropdown"><a class="dropdown-toggle" href="#" data-toggle="dropdown">FAQ <b class="caret"></b></a><ul class="dropdown-menu"><li><a href="/faq-api/">API</a></li><li><a href="/faq-infra/">Infrastructure</a></li></ul></li><li><a href="https://github.com/pryv/open-pryv.io">Open Pryv.io</a></li><li><a href="/customer-resources/">Entreprise</a></li><li><a href="/roadmap/">Roadmap</a></li></ul><div class="navbar-right"><p class="navbar-text version"><a href="/change-log/" title="View change log">API version: <strong>1.9.0</strong></a></p></div></div></div></nav></header><div class="container container-narrow" id="main-wrapper"><div id="main"><h1 class="page-title" id="data-in-pryv"><!--data-in-pryv-->Data In Pryv</h1><p><strong>This white paper outlines how pryv.io manages data and why we designed it this way, hopefully shedding light on pryv.io&#x2019;s unique value proposition from the data model perspective.It&#x2019;s targeted at both technical and non-technical audiences with a basic understanding of data storage and networks.</strong></p>
+<h2 id="privacy-at-the-core"><!--privacy-at-the-core-->Privacy at the core</h2>
+<p>Pryv was designed from day one around privacy and decentralisation. We&#x2019;ll assume that you, the reader of this paper, have a pretty good idea why privacy matters. And decentralisation is ultimately necessary to achieve privacy, because centralised architecture implies centralised control, which means people do not truly own their data. So data access on Pryv.io is segregated per account: each access requires a consent agreement or an access delegation.</p>
+<p><img src="/assets/images/data-in-pryv/white_paper_first_image_1.svg" alt="img"></p>
+<ul>
+<li>Manage all (decentralised) streams via one consolidated interface.</li>
+<li>Data sharing relying on explicit user consent.</li>
+<li>Granular third-party access control from a single platform.</li>
+</ul>
+<h2 id="a-data-structure-designed-for-all"><!--a-data-structure-designed-for-all-->A data structure designed for all</h2>
+<p>But can people really be said to own their data if they can&#x2019;t understand it? We don&#x2019;t think so. So we strived to design a data model that makes sense to both developers and users. Based on a few simple concepts, with neither too little nor too much abstraction.</p>
+<p><img src="/assets/images/data-in-pryv/data_structure_scnd_image.svg" alt="img"></p>
+<h2 id="events-the-base-units-of-data"><!--events-the-base-units-of-data-->Events: the base units of data</h2>
+<p>Pryv stores things that happen in time as <strong>events</strong>.</p>
+<ul>
+<li>A blood pressure measurement.</li>
+<li>A note</li>
+<li>A photo</li>
+<li>Anything</li>
+</ul>
+<p>To differentiate photos from notes, every event has a <strong>type</strong>.</p>
+<p><img src="/assets/images/data-in-pryv/middleware-white-paper-data-privacy-management-pryv.png" alt="img"></p>
+<p>To let data be easily understood and exchanged across systems, we provide an open directory of standard types, which we recommend developers use when interoperability is a concern (it rarely isn&#x2019;t). It&#x2019;s worth pointing out that Pryv.io events are so easy to use and interoperable because we kept the types low-level, holding all necessary contextual information at the organizational level (our next topic). For example: we have no such things as &#x201C;heart rate&#x201D; events; instead in Pryv.io you&#x2019;ll use <code>frequency/bpm</code> events classified under the &#x201C;heart rate&#x201D; context.</p>
+<h2 id="streams-ready-to-use-organisation"><!--streams-ready-to-use-organisation-->Streams: ready-to-use organisation</h2>
+<p>When you record something that happens in time, usually you need more context than just time. Where does the information come from? Why was it recorded? Where shall it be used, and/or by whom? Pryv uses <strong>streams</strong> to keep track of all that. Similar to folders in a file system, streams encode context for your events. They classify events in a hierarchical way, providing them with a structure, and as described above, complement low-level event types with the necessary info. But unlike folders in a file system, they let you organise data in a free many-to-many fashion with events possibly belonging to more than one stream, covering most &#x2013; if not all &#x2013; organisational needs.</p>
+<p><img src="/assets/images/data-in-pryv/streams_small.svg" alt="img"></p>
+<p><strong>At this point something might become apparent:</strong></p>
+<p><strong>Pryv clearly sets itself apart from the many solutions out there which provide unopinionated (fully freely-structured) object storage. Those certainly have their use sometimes, but if we really want to tackle the issues of data ownership and interoperability, we need to balance flexibility with familiarity. So when designing Pryv we paved a few cowpaths &#x2013; which brought along other benefits for developers, such as a more expressive API.</strong></p>
+<h2 id="no-nonsense-access-management"><!--no-nonsense-access-management-->No-nonsense access management</h2>
+<p>We have an idea of what data looks like in Pryv (and why), now how do we access it? Every connection to Pryv data is mediated by, well, an <strong>access</strong>.</p>
+<p>No surprises here either, we strove to keep it straightforward: account owners connecting via a trusted app use <strong>owner</strong> (personal) accesses; for other apps they use <strong>delegate</strong> (app) accesses; to share data with other people they create <strong>shared</strong> accesses. As expected, the latter two only provide a limited view of the account&#x2019;s data. That view &#x2013; or subset &#x2013; is primarily based on context (streams), because that&#x2019;s how we humans handle privacy in most cases. So controlling who sees what is just a natural aspect of properly contextualising data.</p>
+<p><img src="/assets/images/data-in-pryv/accesses_last_image.svg" alt="img"></p>
+<h2 id="cross-account-indexingsearching-and-aggregation"><!--cross-account-indexingsearching-and-aggregation-->Cross-account indexing/searching and aggregation</h2>
+<p>Pryv keeps every account&#x2019;s data separate from other accounts&#x2019;, so how do you work with data across multiple accounts?</p>
+<p>You do it what we consider the Right Way: &#xAB;client&#xBB;-side, probably on a middleware service. So for example if you want medical statistics over a number of patients, you&#x2019;ll ask the patients to grant your app/service access, aggregate each patient&#x2019;s data subset into your own database, then compute your stats and/or maybe expose the aggregated data to other apps through an API.</p>
+<p>How&#x2019;s that a feature you ask?</p>
+<p>We understand it might not look like one today, but we believe it actually is &#x2013; because there is no way around it if you take privacy seriously. That&#x2019;s just how we think personal data will work in the future. So you might consider building things this way to be a wise investment.</p>
+<h2 id="future-friendly"><!--future-friendly-->Future-friendly</h2>
+<p>More and more people realise there&#x2019;s a problem with how most apps and services on today&#x2019;s internet deal with personal data. It&#x2019;s not that they&#x2019;re ill-intentioned, but that they&#x2019;re build on a client-server architecture that&#x2019;s inherently at odds with privacy and proper data ownership.</p>
+<p>As a growing number of us work to change the rules of the game, we can see a truly decentralised web coming that fully realises the promise and design of the internet. Pryv is our contribution to that change, and while it still comprises centralised components as of today, its data model is fundamentally ready for tomorrow&#x2019;s web. Building on Pryv means your apps will be, too.</p>
+</div><nav id="toc"></nav></div><footer id="page-footer"><nav class="navbar navbar-default"><div class="container-fluid"><div id="footer-nav"><ul class="nav navbar-nav"><li><a href="mailto:developers@pryv.com">Send a message</a></li><li><a href="https://github.com/pryv">GitHub</a></li><li><a href="https://pryv.com">pryv.com</a></li></ul></div></div></nav></footer><script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script><script src="/assets/bootstrap.min.js"></script><script src="/assets/js/toc.min.js"></script><!-- TOC generation--><script>jQuery(document).ready(function($) {
+  // Header is about 51 pixels. This equals to 'header + fuzz', fuzz was
+  // determined experimentally.
+  var offset = 90;
+
+  // Display TOC on the left side of the page.
+  $('#toc').toc({
+    selector: '#main h1:not(.page-title),#main h2,#main h3',
+    ulClass: 'nav'
+  });
+
+  // Synchronise scroll/click motion with TOC display.
+  $(document).ready(function() {
+    // NOTE This is done at onLoad since we need to wait for all CSS
+    // to appear.
+    $('body').scrollspy({
+      target: '#toc',
+      offset: offset
+    });
+    scrollBy(0, 1); // make it scroll to be sure scrollspy gets it
+    
+    // fix offset when navigating
+    $('#toc li a, a.toc-anchor').click(function (e) {
+      e.preventDefault();
+      var target = $(this).attr('href');
+      window.location.hash = target;
+      
+      $(target)[0].scrollIntoView();
+      if ($(window).scrollTop() + $(window).height() !== $(document).height()) {
+        //only adjust when not at bottom
+        scrollBy(0, -offset + 40);
+      }
+      return true;
+    });
+  
+  });
+});
+</script><!-- Code blocks highlighting--><script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/highlight.min.js"></script><script>hljs.initHighlightingOnLoad();
+</script><!-- Google Analytics--><script>var _gaq = _gaq || [];
+_gaq.push(['_setAccount', 'UA-36589447-2']);
+_gaq.push(['_trackPageview']);
+(function() {
+  var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+  ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+  var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+})();</script></body></html>
