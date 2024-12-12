@@ -46,7 +46,7 @@ What are &#x201C;Streams&#x201D; ?</p>
 </ul>
 <p>And what are &#x201C;Events&#x201D; ?</p>
 <ul>
-<li><strong>Events</strong> are the primary unit of content in Pryv.io. They are similar to files that are inserted in their corresponding folders. An event is a timestamped piece of typed data (e.g a weight measurement would have the type <code>mass/kg</code>), and belongs to one or multiple streams. It can either have a type from the <a href="https://api.pryv.com/event-types/">list of standard event types</a> or a custom type that can be created for the intended use case.</li>
+<li><strong>Events</strong> are the primary unit of content in Pryv.io. They are similar to files that are inserted in their corresponding folders. An event is a timestamped piece of typed data (e.g a weight measurement would have the type <code>mass/kg</code>), and belongs to one or multiple streams. It can either have a type from the <a href="https://pryv.github.io/event-types/">list of standard event types</a> or a custom type that can be created for the intended use case.</li>
 </ul>
 <p>Be patient, it is going to become crystal-clear for you with this <a href="https://youtu.be/zl9RTf6JTps">video</a> :</p>
 <p><a href="https://youtu.be/zl9RTf6JTps" title="Pryv.io Data Model"><img src="/assets/images/youtube_screen.png" alt="Pryv.io Data Model"></a></p>
@@ -194,8 +194,8 @@ Two options are available to organize her stream structure:</p>
 <p>In this regard, multiplying the number of streams is a preferable solution when you need to enter data measurements for different types of components (e.g medications, diseases, medical devices, etc).</p>
 <h2 id="define-a-custom-event-type"><!--define-a-custom-event-type-->Define a custom event type</h2>
 <p>Time to get our hands dirty.<br>
-If your event type is not referenced in the <a href="https://api.pryv.com/event-types/">default Event Types list</a>, you can create your own.</p>
-<p>Does it mean you can create absolutely any event type you want? Well, not exactly. It will need to follow the specification <code>{class}/{format}</code> (e.g <code>note/txt</code>). <strong>Events with undeclared types are allowed but their content is not validated.</strong> You can find more information on this in the <a href="https://api.pryv.com/event-types/#basics">corresponding section</a>.</p>
+If your event type is not referenced in the <a href="https://pryv.github.io/event-types/">default Event Types list</a>, you can create your own.</p>
+<p>Does it mean you can create absolutely any event type you want? Well, not exactly. It will need to follow the specification <code>{class}/{format}</code> (e.g <code>note/txt</code>). <strong>Events with undeclared types are allowed but their content is not validated.</strong> You can find more information on this in the <a href="https://pryv.github.io/event-types/#basics">corresponding section</a>.</p>
 <p>For example, let&#x2019;s say that you need to create a custom event type for your 12-lead ECG recording <code>ecg/12-lead-recording</code>. If you want to perform content validation and ensure that every time you retrieve a new event it has the right structure, the procedure is the following:</p>
 <ol>
 <li>Fork the <a href="https://github.com/pryv/data-types">Data Type Github repository</a></li>
@@ -216,7 +216,7 @@ If your event type is not referenced in the <a href="https://api.pryv.com/event-
 <li><a href="https://github.com/pryv/data-types#data-types-validation">Validate</a> the JSON schema of your event type</li>
 <li>Publish these files on a webserver and indicate the <code>flat.json</code> file in the platform parameters :</li>
 </ol>
-<pre><code class="language-json">EVENT_TYPES_URL: &quot;https://api.pryv.com/event-types/flat.json&quot;
+<pre><code class="language-json">EVENT_TYPES_URL: &quot;https://pryv.github.io/event-types/flat.json&quot;
 </code></pre>
 <p>The detailed steps can be found <a href="https://github.com/pryv/data-types#how-to-customize-your-data-types">here</a>.</p>
 <h2 id="share-a-single-event"><!--share-a-single-event-->Share a single event</h2>
