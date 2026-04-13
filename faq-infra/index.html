@@ -53,7 +53,7 @@ ${DOMAIN}		${TTL_SECONDS}	IN		NS		ns2-${DOMAIN}.${TOP_DOMAIN}
 <h2 id="customize-registration-login-password-reset-pages"><!--customize-registration-login-password-reset-pages-->Customize registration, login, password-reset pages</h2>
 <p>We deliver the platform with default web apps for registration, login, password-reset and auth request. The code is available on https://github.com/pryv/app-web-auth3.</p>
 <p>To customize it, fork the repository, make stub commit on the <code>gh-pages</code> branch to activate the <a href="https://pages.github.com/">GitHub Pages</a>.
-Modify the NGINX configuration on the static-web machine <code>static/nginx/site.conf</code> (or <code>pryv/nginx/site.conf</code> for single node). Change line:</p>
+Modify the NGINX configuration in <code>pryv/nginx/site.conf</code>. Change line:</p>
 <pre><code>proxy_pass        https://pryv.github.io/app-web-auth3/;
 </code></pre>
 <p>to:</p>
@@ -71,8 +71,8 @@ Modify the NGINX configuration on the static-web machine <code>static/nginx/site
 <li>Consent authorization: https://sw.${DOMAIN}/access/access.html</li>
 </ul>
 <h2 id="host-apps-resources-on-the-same-domain-and-reuse-the-ssl-certificate"><!--host-apps-resources-on-the-same-domain-and-reuse-the-ssl-certificate-->Host apps, resources on the same domain and reuse the SSL certificate</h2>
-<p>The web role is meant for this. It contains a proxy server that can be configured to serve apps from different sources such as GitHub pages under the same domain, thus allowing to reuse the SSL certificate.</p>
-<p>Using the web role, apps can be served on any path from the hostname https://sw.${DOMAIN}/ such as https://sw.${DOMAIN}/MY_APP/.</p>
+<p>The built-in NGINX proxy can be configured to serve apps from different sources such as GitHub pages under the same domain, thus allowing to reuse the SSL certificate.</p>
+<p>Apps can be served on any path from the hostname https://sw.${DOMAIN}/ such as https://sw.${DOMAIN}/MY_APP/.</p>
 <p>This is done by adding the following <code>location</code> clause in the <code>pryv/nginx/conf/site.conf</code> file:</p>
 <pre><code>server {
  	listen               443;
@@ -114,20 +114,10 @@ The corresponding error can be found in the container logs using:</p>
 <p>It should have a message similar to:</p>
 <pre><code>Error: EACCES: permission denied
 </code></pre>
-<p>This can be fixed by running the provided <code>ensure-permissions-${ROLE}</code> script. If necessary, reboot the Pryv.io services as well.</p>
+<p>This can be fixed by running the provided <code>ensure-permissions</code> script. If necessary, reboot the Pryv.io services as well.</p>
 <h3 id="how-do-i-reset-data-on-my-pryvio-platform"><!--how-do-i-reset-data-on-my-pryvio-platform-->How do I reset data on my Pryv.io platform?</h3>
 <p>This step will erase all data from your platform. Perform this at your own risk and make sure that you know what you are doing.</p>
 <p>To erase all data on the platform, you need to delete the contents of the data folders and reboot the services.</p>
-<p>On the register master:</p>
-<pre><code class="language-bash">cd ${PRYV_CONF_ROOT}
-./stop-config-leader
-./stop-pryv
-rm -rf pryv/redis/data/*
-rm -rf config-leader/database/*
-./run-config-leader
-./run-pryv
-</code></pre>
-<p>On core:</p>
 <pre><code class="language-bash">cd ${PRYV_CONF_ROOT}
 ./stop-pryv
 rm -rf pryv/core/data/*
@@ -138,20 +128,20 @@ rm -rf pryv/influxdb/data/*
 <h3 id="how-can-i-use-the-demo-dashboard-app-app-web-on-my-pryvio-platform"><!--how-can-i-use-the-demo-dashboard-app-app-web-on-my-pryvio-platform-->How can I use the demo dashboard app (<em>app-web</em>) on my Pryv.io platform?</h3>
 <p>App-web is hosted on GitHub pages and can be used for your Pryv.io platform as described in <a href="https://github.com/pryv/app-web#usage">its documentation</a>.</p>
 <h3 id="can-i-use-my-own-ssl-termination-with-pryvio"><!--can-i-use-my-own-ssl-termination-with-pryvio-->Can I use my own SSL termination with Pryv.io?</h3>
-<p>Yes, you need to provide the following changes to the template configuration files found in <code>config-leader/data/${ROLE}</code>, where <code>${ROLE}</code> is <code>singlenode</code> or <code>core</code>, <code>reg-master</code>, <code>reg-slave</code> and <code>static</code> depending on your deployment.</p>
-<p>In the <code>config-leader/data/${ROLE}/nginx/conf/nginx.conf</code> files, comment out the following lines by adding a <code>#</code> at their beginning as following:</p>
+<p>Yes, you need to provide the following changes to your NGINX configuration.</p>
+<p>In the <code>nginx/conf/nginx.conf</code> file, comment out the following lines by adding a <code>#</code> at their beginning as following:</p>
 <pre><code class="language-nginx">#ssl_certificate      /app/conf/secret/DOMAIN-bundle.crt;
 #ssl_certificate_key  /app/conf/secret/DOMAIN-key.pem;
 </code></pre>
-<p>In the <code>config-leader/data/${ROLE}/nginx/conf/site-443.conf</code> and <code>config-leader/data/${ROLE}/nginx/conf/site-443-mfa.conf</code> files, change the <code>listen</code> directive from <code>443 ssl</code> to <code>80</code> for each <code>server</code> block as following:</p>
+<p>In the <code>nginx/conf/site-443.conf</code> file, change the <code>listen</code> directive from <code>443 ssl</code> to <code>80</code> for each <code>server</code> block as following:</p>
 <pre><code class="language-nginx">server {
   listen    80;
   # ...
 }
 </code></pre>
 <h3 id="my-security-policy-requires-that-all-outgoing-traffic-goes-through-a-proxy-will-pryvio-work"><!--my-security-policy-requires-that-all-outgoing-traffic-goes-through-a-proxy-will-pryvio-work-->My security policy requires that all outgoing traffic goes through a proxy, will Pryv.io work?</h3>
-<p>Yes, you need to provide the following changes to the template configuration files found in <code>config-leader/data/${ROLE}</code>, where <code>${ROLE}</code> is <code>singlenode</code> or <code>core</code>, <code>reg-master</code>, <code>reg-slave</code> and <code>static</code> depending on your deployment.</p>
-<p>In the <code>config-leader/data/${ROLE}/pryv.yml</code> files, add the environment variables <code>http_proxy</code> and <code>https_proxy</code> to the <code>reverse_proxy</code> service:</p>
+<p>Yes, you need to provide the following changes to your deployment configuration.</p>
+<p>In your <code>docker-compose.yml</code> (or equivalent), add the environment variables <code>http_proxy</code> and <code>https_proxy</code> to the reverse proxy service:</p>
 <pre><code class="language-yaml">reverse_proxy:
   image: &quot;eu.gcr.io/pryvio/nginx:1.3.40&quot;
   container_name: pryvio_nginx

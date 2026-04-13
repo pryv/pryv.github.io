@@ -100,22 +100,11 @@ dig @${NS2_HOSTNAME} TXT _acme-challenge.${DOMAIN}
 mv privkey.pem ${DOMAIN}-key.pem
 </code></pre>
 <p>You might have to copy them as <code>live/</code> holds symbolic links.</p>
-<p>Then copy them into:</p>
-<pre><code class="language-bash">${PRYV_CONF_ROOT}/config-leader/data/${ROLE}/nginx/conf/secret/
+<p>Then copy them into your NGINX secret directory:</p>
+<pre><code class="language-bash">${PRYV_CONF_ROOT}/pryv/nginx/conf/secret/
 </code></pre>
-<p>with <code>${ROLE}</code> being:</p>
-<ul>
-<li><code>singlenode</code></li>
-</ul>
-<p>OR</p>
-<ul>
-<li><code>core</code></li>
-<li><code>reg-master</code></li>
-<li><code>reg-slave</code></li>
-<li><code>static</code></li>
-</ul>
 <p>Make sure that the certificates permissions are set correctly:</p>
-<pre><code class="language-bash">./ensure-permissions[-${ROLE}] --ignore-redis
+<pre><code class="language-bash">./ensure-permissions --ignore-redis
 </code></pre>
 <p>And reboot the follower and pryv services, using either method:</p>
 <ul>
