@@ -39,6 +39,10 @@
 <li><strong>PostgreSQL backend</strong> (optional): full MongoDB parity for events, streams, accounts. Select via <code>storages.engines.*</code> config. <strong>Note:</strong> v1&#x2192;v2 data migration currently only operates from a MongoDB v1 source; migration into a PostgreSQL v2 backend is not yet supported. See <a href="https://github.com/pryv/open-pryv.io/blob/master/INSTALL.md">INSTALL.md</a>.</li>
 <li><strong>rqlite</strong> is now the only platform-storage engine &#x2014; the legacy sqlite platform store was removed. <code>master.js</code> always spawns <code>rqlited</code>.</li>
 </ul>
+<p><strong>Upgrading from v1</strong></p>
+<ul>
+<li>Toolkit at <a href="https://github.com/pryv/dev-migrate-v1-v2"><code>dev-migrate-v1-v2</code></a>: exports v1 user data (MongoDB) and produces a v2-compatible backup directory that <code>bin/backup.js --restore</code> can import.</li>
+</ul>
 <p><strong>Known gaps in 2.0.0-pre</strong></p>
 <ul>
 <li><strong>OAuth2 authorization-code flow</strong> (RFC 6749 <code>/oauth2/authorize</code>, <code>/oauth2/token</code>, client registration, refresh tokens, PKCE) is <strong>not</strong> in this preview. Clients that need OAuth2-style authorization must continue using the existing <code>/reg/access</code> polling flow (now core-affinity aware in multi-core deployments).</li>

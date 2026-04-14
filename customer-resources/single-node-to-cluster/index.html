@@ -1,64 +1,203 @@
-<!DOCTYPE html><html class="no-js" lang="en"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="description" property="og:description" content="Pryv API reference and resources for developers"><meta name="author" content="Pryv SA"><meta property="og:type" content="website"><meta name="image" property="og:image" content="/assets/images/logo-256.png"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Pryv.io Single-node to Cluster extension | Pryv API</title><link rel="icon" href="/assets/images/favicon-black.ico" type="image/x-icon"><link rel="apple-touch-icon" sizes="120x120" href="/assets/images/apple-touch-icon-120x120-black.png"><link rel="apple-touch-icon" sizes="152x152" href="/assets/images/apple-touch-icon-152x152-black.png"><link rel="apple-touch-icon" sizes="180x180" href="/assets/images/apple-touch-icon-180x180-black.png"><!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+<!DOCTYPE html><html class="no-js" lang="en"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="description" property="og:description" content="Pryv API reference and resources for developers"><meta name="author" content="Pryv SA"><meta property="og:type" content="website"><meta name="image" property="og:image" content="/assets/images/logo-256.png"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Pryv.io &#x2014; single-core to multi-core upgrade | Pryv API</title><link rel="icon" href="/assets/images/favicon-black.ico" type="image/x-icon"><link rel="apple-touch-icon" sizes="120x120" href="/assets/images/apple-touch-icon-120x120-black.png"><link rel="apple-touch-icon" sizes="152x152" href="/assets/images/apple-touch-icon-152x152-black.png"><link rel="apple-touch-icon" sizes="180x180" href="/assets/images/apple-touch-icon-180x180-black.png"><!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
 <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
 <!--[if lt IE 9]>
   <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
   <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
-<![endif]--><link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Roboto:400,300,500,700,400italic|Roboto+Condensed:400,300,700"><link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/styles/docco.min.css"><link rel="stylesheet" type="text/css" href="/assets/fonts/ss-gizmo.min.css"><link rel="stylesheet" type="text/css" href="/assets/style.css"></head><body class="single-node-to-cluster with-toc"><header id="page-header"><nav class="navbar navbar-default navbar-fixed-top" role="navigation"><div class="container-fluid"><div class="navbar-header"><a class="navbar-brand logo" href="/" title="Developers home"><img src="/assets/images/logo-256-black.png" alt="Developers home"></a><button class="navbar-toggle" type="button" data-toggle="collapse" data-target="#main-nav"><span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button></div><div class="collapse navbar-collapse" id="main-nav"><ul class="nav navbar-nav"><li class="dropdown"><a class="dropdown-toggle" href="#" data-toggle="dropdown">Guides <b class="caret"></b></a><ul class="dropdown-menu"><li><a href="/getting-started/">Getting started</a></li><li><a href="/concepts/">API concepts</a></li><li><a href="/data-in-pryv/">Data In Pryv</a></li><li><a href="/guides/data-modelling/">Data modelling</a></li><li><a href="/guides/app-guidelines/">App guidelines</a></li><li><a href="/external-resources/">Apps &amp; Libs</a></li><li><a href="/guides/webhooks/">Webhooks</a></li><li><a href="/guides/custom-auth/">Custom auth</a></li><li><a href="/guides/consent/">Consent request</a></li><li><a href="/guides/audit-logs/">Audit logs</a></li></ul></li><li class="dropdown"><a class="dropdown-toggle" href="#" data-toggle="dropdown">Reference <b class="caret"></b></a><ul class="dropdown-menu"><li><a href="/reference/">API reference</a></li><li><a href="/reference-admin/">Admin API reference</a></li><li><a href="/reference-system/">System API reference</a></li><li><a href="/event-types/">Event types</a></li><li><a href="/open-api/">Open API (Postman)</a></li><li><a href="/change-log/">API change log</a></li></ul></li><li class="dropdown"><a class="dropdown-toggle" href="#" data-toggle="dropdown">FAQ <b class="caret"></b></a><ul class="dropdown-menu"><li><a href="/faq-api/">API</a></li><li><a href="/faq-infra/">Infrastructure</a></li></ul></li><li><a href="https://github.com/pryv/open-pryv.io">Open Pryv.io</a></li><li><a href="/customer-resources/">Setup</a></li><li><a href="/roadmap/">Roadmap</a></li></ul><div class="navbar-right"><p class="navbar-text version"><a href="/change-log/" title="View change log">API version: <strong>2.0.0-pre</strong></a></p></div></div></div></nav></header><div class="container container-narrow" id="main-wrapper"><div id="main"><h1 class="page-title" id="pryvio-single-node-to-cluster-extension"><!--pryvio-single-node-to-cluster-extension-->Pryv.io Single-node to Cluster extension</h1><blockquote>
-<p><strong>Note (v2):</strong> This guide was written for the v1 topology where scaling meant deploying separate service roles on different machines. In v2, scaling to multi-core uses horizontal replication of the same binary with rqlite-based coordination. See <a href="https://github.com/pryv/open-pryv.io/blob/master/SINGLE-TO-MULTIPLE.md">SINGLE-TO-MULTIPLE.md</a> in the repository for the v2 procedure.</p>
+<![endif]--><link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Roboto:400,300,500,700,400italic|Roboto+Condensed:400,300,700"><link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/styles/docco.min.css"><link rel="stylesheet" type="text/css" href="/assets/fonts/ss-gizmo.min.css"><link rel="stylesheet" type="text/css" href="/assets/style.css"></head><body class="single-node-to-cluster with-toc"><header id="page-header"><nav class="navbar navbar-default navbar-fixed-top" role="navigation"><div class="container-fluid"><div class="navbar-header"><a class="navbar-brand logo" href="/" title="Developers home"><img src="/assets/images/logo-256-black.png" alt="Developers home"></a><button class="navbar-toggle" type="button" data-toggle="collapse" data-target="#main-nav"><span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button></div><div class="collapse navbar-collapse" id="main-nav"><ul class="nav navbar-nav"><li class="dropdown"><a class="dropdown-toggle" href="#" data-toggle="dropdown">Guides <b class="caret"></b></a><ul class="dropdown-menu"><li><a href="/getting-started/">Getting started</a></li><li><a href="/concepts/">API concepts</a></li><li><a href="/data-in-pryv/">Data In Pryv</a></li><li><a href="/guides/data-modelling/">Data modelling</a></li><li><a href="/guides/app-guidelines/">App guidelines</a></li><li><a href="/external-resources/">Apps &amp; Libs</a></li><li><a href="/guides/webhooks/">Webhooks</a></li><li><a href="/guides/custom-auth/">Custom auth</a></li><li><a href="/guides/consent/">Consent request</a></li><li><a href="/guides/audit-logs/">Audit logs</a></li></ul></li><li class="dropdown"><a class="dropdown-toggle" href="#" data-toggle="dropdown">Reference <b class="caret"></b></a><ul class="dropdown-menu"><li><a href="/reference/">API reference</a></li><li><a href="/reference-admin/">Admin API reference</a></li><li><a href="/reference-system/">System API reference</a></li><li><a href="/event-types/">Event types</a></li><li><a href="/open-api/">Open API (Postman)</a></li><li><a href="/change-log/">API change log</a></li></ul></li><li class="dropdown"><a class="dropdown-toggle" href="#" data-toggle="dropdown">FAQ <b class="caret"></b></a><ul class="dropdown-menu"><li><a href="/faq-api/">API</a></li><li><a href="/faq-infra/">Infrastructure</a></li></ul></li><li><a href="https://github.com/pryv/open-pryv.io">Open Pryv.io</a></li><li><a href="/customer-resources/">Setup</a></li><li><a href="/roadmap/">Roadmap</a></li></ul><div class="navbar-right"><p class="navbar-text version"><a href="/change-log/" title="View change log">API version: <strong>2.0.0-pre</strong></a></p></div></div></div></nav></header><div class="container container-narrow" id="main-wrapper"><div id="main"><h1 class="page-title" id="pryvio--single-core-to-multi-core-upgrade"><!--pryvio--single-core-to-multi-core-upgrade-->Pryv.io &#x2014; single-core to multi-core upgrade</h1><p>This guide describes how to upgrade a running single-core Pryv.io deployment to a multi-core setup, where several cores share the same platform and split users among themselves.</p>
+<blockquote>
+<p><strong>Since v2 (2026)</strong> there is <strong>no data migration involved</strong>. The platform DB (rqlite) is already in place on the single-core install &#x2014; going multi-core is a <strong>config-only</strong> change plus adding one or more cores. No separate register, DNS or static-web machines to provision, and no user data to copy. Users that already existed on the single core stay on that core; new registrations are distributed across all available cores.</p>
+<p>This page is the platform-operator narrative around the upstream <a href="https://github.com/pryv/open-pryv.io/blob/master/SINGLE-TO-MULTIPLE.md">SINGLE-TO-MULTIPLE.md</a>, which contains the exact config snippets and verification commands.</p>
 </blockquote>
-<p>This guide describes how to migrate a single-node installation from a <em>source</em> machine to multiple <em>dest</em> machines in a cluster setup.</p>
 <h2 id="table-of-contents-"><!--table-of-contents--->Table of contents <!-- omit in toc --></h2>
 <ol>
-<li><a href="#optional-create-users-with-specific-data-on-source-for-post-migration-verification"><em>(Optional)</em> Create user(s) with specific data on source for post-migration verification</a></li>
-<li><a href="#adapt-platform-parameters">Adapt platform parameters</a></li>
-<li><a href="#migrate-register-master">Migrate register master</a></li>
-<li><a href="#replace-config-by-cluster">Replace config by cluster</a></li>
-<li><a href="#migrate-user-data-to-core-machine">Migrate user data to core machine</a></li>
+<li><a href="#prerequisites">Prerequisites</a></li>
+<li><a href="#outcome-at-a-glance">Outcome at a glance</a></li>
+<li><a href="#decide-on-a-dns-strategy">Decide on a DNS strategy</a></li>
+<li><a href="#pick-a-wildcard-ssl-strategy">Pick a wildcard SSL strategy</a></li>
+<li><a href="#step-1--set-up-dns">Step 1 &#x2014; Set up DNS</a></li>
+<li><a href="#step-2--reconfigure-the-existing-core">Step 2 &#x2014; Reconfigure the existing core</a></li>
+<li><a href="#step-3--restart-and-verify-the-first-core">Step 3 &#x2014; Restart and verify the first core</a></li>
+<li><a href="#step-4--deploy-the-second-core">Step 4 &#x2014; Deploy the second core</a></li>
+<li><a href="#step-5--verify-cross-core-operation">Step 5 &#x2014; Verify cross-core operation</a></li>
+<li><a href="#nginx--reverse-proxy-notes">Nginx / reverse-proxy notes</a></li>
+<li><a href="#rollback">Rollback</a></li>
 </ol>
-<h2 id="optional-create-users-with-specific-data-on-source-for-post-migration-verification"><!--optional-create-users-with-specific-data-on-source-for-post-migration-verification--><em>(Optional)</em> Create user(s) with specific data on source for post-migration verification</h2>
-<p>Generate a few events and streams by hand for a naked eye comparison for data transferred after the migration.</p>
-<h2 id="adapt-platform-parameters"><!--adapt-platform-parameters-->Adapt platform parameters</h2>
-<p>Fetch cluster configuration files for the same version <a href="https://pryv.github.io/config-template-pryv.io/">here</a>. Extract them, and edit the <code>config-leader/conf/template-platform.yml</code> (<code>platform.yml</code> for versions prior to 1.7).</p>
-<p>The difference between a single and cluster lies in the &#x201C;Machines and platform settings&#x201D; section.</p>
-<ol>
-<li>
-<p>Copy the <code>DOMAIN</code></p>
-</li>
-<li>
-<p>Set the IP addresses for the new machines, leave unused ones as-is:</p>
+<h2 id="prerequisites"><!--prerequisites-->Prerequisites</h2>
 <ul>
-<li><code>STATIC_WEB_IP_ADDRESS</code></li>
-<li><code>REG_MASTER_IP_ADDRESS</code></li>
-<li><code>REG_MASTER_VPN_IP_ADDRESS</code></li>
-<li><code>REG_SLAVE_IP_ADDRESS</code></li>
+<li>A running single-core Pryv.io v2 install with real users and data.</li>
+<li>DNS control for the target shared domain (you need to publish wildcard A records and an <code>lsc.{domain}</code> A record; or, in DNSless mode, NS+A records only).</li>
+<li>At least one more machine or Dokku app for the second core.</li>
+<li>A base-storage database (PostgreSQL or MongoDB) for the second core &#x2014; separate from the first core&#x2019;s.</li>
+<li>The wildcard (or per-core) SSL certificate covering the new domain.</li>
 </ul>
-</li>
-<li>
-<p>Copy the <code>REGISTER_ADMIN_KEY</code></p>
-</li>
-<li>
-<p>Set the IP address of the machine where core data will be migrated to <code>HOSTINGS_AND_CORES:value:hosting1:co1:ip</code></p>
-</li>
-<li>
-<p>Set the <code>HOSTINGS_PROVIDERS</code> data if needed</p>
-</li>
-</ol>
-<p>You can overwrite the other sections with the ones from your <code>platform.yml</code></p>
-<h2 id="migrate-register-master"><!--migrate-register-master-->Migrate register master</h2>
+<h2 id="outcome-at-a-glance"><!--outcome-at-a-glance-->Outcome at a glance</h2>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>Before</th>
+<th>After</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Cores</td>
+<td>1 (single node)</td>
+<td>2+ (one existing + one or more new)</td>
+</tr>
+<tr>
+<td>Platform DB</td>
+<td>rqlite (single, embedded)</td>
+<td>rqlite (clustered, embedded on every core, joined via DNS discovery)</td>
+</tr>
+<tr>
+<td>Base storage</td>
+<td>1 (PostgreSQL or MongoDB)</td>
+<td>1 per core &#x2014; cores never share the base DB</td>
+</tr>
+<tr>
+<td>User routing</td>
+<td>All users on one instance</td>
+<td>Each core hosts a subset; discovery via <code>/reg/cores?username=</code></td>
+</tr>
+<tr>
+<td>Public URL</td>
+<td><code>https://api.example.com</code> (dnsLess) or single domain</td>
+<td><code>{username}.mc.example.com</code> or per-core URLs (DNSless)</td>
+</tr>
+<tr>
+<td>Config flag</td>
+<td><code>dnsLess.isActive: true</code></td>
+<td><code>dnsLess.isActive: false</code>, <code>core.id</code> + <code>dns.domain</code></td>
+</tr>
+</tbody>
+</table>
+<h2 id="decide-on-a-dns-strategy"><!--decide-on-a-dns-strategy-->Decide on a DNS strategy</h2>
+<p>Two shapes of multi-core deployment are supported:</p>
 <ol>
-<li>Perform the <a href="/customer-resources/register-migration/">register migration</a> for the reg-master machine</li>
+<li><strong>Embedded DNS</strong> &#x2014; the cores answer DNS queries for <code>*.mc.example.com</code>. You publish NS records at the registrar that delegate the Pryv.io subdomain to the cores.</li>
+<li><strong>Externally-managed DNS (DNSless multi-core)</strong> &#x2014; an external DNS provider (Cloudflare, Route 53, internal DNS, load balancer) resolves core hostnames. Cores advertise explicit <code>core.url</code> values via the platform DB and the client SDK uses the discovery endpoint rather than DNS to find the right core.</li>
 </ol>
-<h2 id="replace-config-by-cluster"><!--replace-config-by-cluster-->Replace config by cluster</h2>
-<ol start="2">
-<li>On <em>dest</em> reg-master, download and untar config files for a cluster deployment of same version</li>
-<li>Replace or copy the <code>config-leader/conf/platform.yml</code> file with the one you prepared earlier</li>
-<li>Copy the SSL certificates from <code>config-leader/data/singlenode/nginx/conf/secret/</code> to each new <code>$ROLE</code> in <code>config-leader/data/${ROLE}/nginx/conf/secret/</code></li>
-<li>On <em>dest</em> reg-master run: <code>restart-config-follower</code> and <code>restart-pryv</code></li>
+<p>In both cases, an <code>lsc.{domain}</code> A record listing every core IP is needed for rqlite peer discovery.</p>
+<p>See <a href="https://github.com/pryv/open-pryv.io/blob/master/SINGLE-TO-MULTIPLE.md#dnsless-multi-core-externally-managed-dns">INSTALL &#x2014; DNSless multi-core</a> for the externally-managed variant.</p>
+<h2 id="pick-a-wildcard-ssl-strategy"><!--pick-a-wildcard-ssl-strategy-->Pick a wildcard SSL strategy</h2>
+<ul>
+<li>Embedded DNS: one <strong>wildcard</strong> cert for <code>*.mc.example.com</code> used by all cores.</li>
+<li>DNSless: per-core plain certs for each <code>core.url</code>.</li>
+</ul>
+<p>See the <a href="/customer-resources/ssl-certificate/">SSL certificate guide</a>.</p>
+<h2 id="step-1--set-up-dns"><!--step-1--set-up-dns-->Step 1 &#x2014; Set up DNS</h2>
+<p><strong>Embedded DNS variant</strong> &#x2014; publish at the registrar:</p>
+<pre><code>dns1.mc.example.com  3600  IN  A   &lt;core-a-ip&gt;
+dns2.mc.example.com  3600  IN  A   &lt;core-b-ip&gt;
+mc                   3600  IN  NS  dns1.mc.example.com.
+mc                   3600  IN  NS  dns2.mc.example.com.
+
+# rqlite peer discovery &#x2014; must list every core
+lsc.mc.example.com   60    IN  A   &lt;core-a-ip&gt;
+lsc.mc.example.com   60    IN  A   &lt;core-b-ip&gt;
+</code></pre>
+<p>If you have a single machine to start with, repeat its IP in both <code>dns1</code> / <code>dns2</code> and the <code>lsc</code> record; add the second IP in Step 4.</p>
+<p><strong>DNSless variant</strong> &#x2014; publish A records at your provider for each <code>core.url</code>, plus the <code>lsc.{domain}</code> record.</p>
+<h2 id="step-2--reconfigure-the-existing-core"><!--step-2--reconfigure-the-existing-core-->Step 2 &#x2014; Reconfigure the existing core</h2>
+<p>Edit the existing core&#x2019;s override YAML &#x2014; see the exact shape in <a href="https://github.com/pryv/open-pryv.io/blob/master/SINGLE-TO-MULTIPLE.md#2-update-the-first-cores-config">SINGLE-TO-MULTIPLE.md &#x2014; Update the first core&#x2019;s config</a>. The salient changes:</p>
+<pre><code class="language-yaml"># REMOVE (single-core / dnsLess)
+# dnsLess:
+#   isActive: true
+#   publicUrl: https://old-single-core.example.com
+
+dnsLess:
+  isActive: false
+
+core:
+  id: core-a              # unique identifier for this core
+  ip: &lt;host-public-ip&gt;
+  available: true
+
+dns:
+  domain: mc.example.com  # shared domain for all cores
+  active: false           # set to true only if the core itself should answer DNS queries
+
+storages:
+  engines:
+    rqlite:
+      raftPort: 4002      # must be reachable from peer cores
+</code></pre>
+<p><code>storages.platform.engine</code> is already <code>rqlite</code> &#x2014; no change needed.</p>
+<h2 id="step-3--restart-and-verify-the-first-core"><!--step-3--restart-and-verify-the-first-core-->Step 3 &#x2014; Restart and verify the first core</h2>
+<p>Restart <code>bin/master.js</code>. On startup the core will:</p>
+<ul>
+<li>Use the embedded rqlited for all platform operations.</li>
+<li>Generate user API URLs as <code>https://{username}.{dns.domain}/</code>.</li>
+<li>Identify itself as <code>core-a</code> and write its entry (id, ip, available) into PlatformDB.</li>
+</ul>
+<p>Sanity checks (commands from upstream):</p>
+<pre><code class="language-bash"># Service info now reports multi-core URLs
+curl -s https://core-a.mc.example.com/reg/service/info
+# &#x2192; api: https://{username}.mc.example.com/
+
+# Existing users are reachable at their subdomain
+curl -s https://existinguser.mc.example.com/auth/login -X POST ...
+
+# Core discovery works for existing users
+curl -s &apos;https://core-a.mc.example.com/reg/cores?username=existinguser&apos;
+# &#x2192; { core: { url: &quot;https://core-a.mc.example.com&quot; } }
+</code></pre>
+<p>Until Step 4, the rqlite cluster has a single node &#x2014; that&#x2019;s fine.</p>
+<h2 id="step-4--deploy-the-second-core"><!--step-4--deploy-the-second-core-->Step 4 &#x2014; Deploy the second core</h2>
+<p>Install the same core version on a second machine (Docker image or native). Give it its own base-storage DB (PostgreSQL/MongoDB) &#x2014; cores never share base storage. Override YAML:</p>
+<pre><code class="language-yaml">core:
+  id: core-b
+  ip: &lt;core-b-ip&gt;
+  available: true
+
+dns:
+  domain: mc.example.com
+
+storages:
+  engines:
+    rqlite:
+      raftPort: 4002      # same Raft port, must be reachable from core-a
+    postgresql:            # or mongodb
+      host: &lt;core-b-pg-host&gt;
+      database: pryv_db_b
+      # &#x2026; core-b&apos;s own credentials
+</code></pre>
+<p>Start <code>bin/master.js</code> on core-b. Its embedded rqlited uses DNS discovery (<code>lsc.mc.example.com</code>) to find core-a and joins the existing cluster &#x2014; no manual cluster bootstrapping.</p>
+<p><strong>Firewall reminder:</strong> the rqlite Raft port (default 4002) is peer-to-peer and does <strong>not</strong> go through nginx. Open it between cores.</p>
+<h2 id="step-5--verify-cross-core-operation"><!--step-5--verify-cross-core-operation-->Step 5 &#x2014; Verify cross-core operation</h2>
+<p>Upstream gives the exact curl sequence &#x2014; <a href="https://github.com/pryv/open-pryv.io/blob/master/SINGLE-TO-MULTIPLE.md#5-verify-cross-core-operation">SINGLE-TO-MULTIPLE.md &#x2014; Verify cross-core operation</a>. The essentials:</p>
+<pre><code class="language-bash"># 1. Register a new user on core-b &#x2014; it should land on core-b
+curl -s https://core-b.mc.example.com/users -X POST \
+  -H &apos;Content-Type: application/json&apos; \
+  -d &apos;{&quot;appId&quot;:&quot;test&quot;,&quot;username&quot;:&quot;newuser&quot;,&quot;password&quot;:&quot;pass&quot;,&quot;email&quot;:&quot;new@test.com&quot;,&quot;invitationtoken&quot;:&quot;enjoy&quot;,&quot;languageCode&quot;:&quot;en&quot;}&apos;
+
+# 2. Discover from core-a &#x2014; should return core-b&apos;s URL
+curl -s &apos;https://core-a.mc.example.com/reg/cores?username=newuser&apos;
+# &#x2192; { core: { url: &quot;https://core-b.mc.example.com&quot; } }
+
+# 3. List all cores (admin)
+curl -s https://core-a.mc.example.com/system/admin/cores -H &apos;Authorization: &lt;admin-key&gt;&apos;
+# &#x2192; { cores: [{ id: &quot;core-a&quot;, userCount: N }, { id: &quot;core-b&quot;, userCount: M }] }
+</code></pre>
+<p>Then run the <a href="/customer-resources/platform-validation/">platform validation checklist</a> and the <a href="/customer-resources/healthchecks/">healthchecks</a> &#x2014; once against each core.</p>
+<h2 id="nginx--reverse-proxy-notes"><!--nginx--reverse-proxy-notes-->Nginx / reverse-proxy notes</h2>
+<p>Each core still needs the same two upstreams as before &#x2014; API on 3000 and HFS on 4000 &#x2014; see <a href="https://github.com/pryv/open-pryv.io/blob/master/INSTALL.md#running--behind-nginx">INSTALL &#x2014; Running behind nginx</a>. Extra items to remember in multi-core:</p>
+<ol>
+<li><strong>HFS Host header</strong> &#x2014; keep <code>proxy_set_header Host 127.0.0.1:4000;</code> for the HFS locations.</li>
+<li><strong>Socket.IO</strong> &#x2014; WebSocket-only upgrade handling for <code>/socket.io/</code>. In cluster mode the core refuses HTTP long-polling.</li>
+<li><strong>Upload size</strong> &#x2014; <code>client_max_body_size</code> matches <code>uploads.maxSizeMb</code>.</li>
+<li><strong>Raft port (4002)</strong> &#x2014; not through nginx; a straight TCP path between cores.</li>
 </ol>
-<h2 id="migrate-user-data-to-core-machine"><!--migrate-user-data-to-core-machine-->Migrate user data to core machine</h2>
-<ol start="6">
-<li>Perform the <a href="/customer-resources/core-migration/">core migration</a></li>
+<h2 id="rollback"><!--rollback-->Rollback</h2>
+<p>If something goes wrong, you can revert to single-core without losing data:</p>
+<ol>
+<li>Stop the second core.</li>
+<li>Put the first core&#x2019;s config back to <code>dnsLess.isActive: true</code> with its previous <code>dnsLess.publicUrl</code>, and remove <code>core.id</code> / <code>dns.domain</code>.</li>
+<li>Restart &#x2014; the embedded rqlited runs as a standalone node again with the same platform data.</li>
 </ol>
+<p><strong>No data migration in either direction</strong> &#x2014; rqlite is authoritative throughout and base storage was never shared, so user data stays where it already is.</p>
+<p>If you were running on Pryv.io v1 and still need the legacy procedure, it is archived as the <a href="/customer-resources/register-migration/">v1 register migration reference</a>. None of the v1 steps apply to a v2 install.</p>
 </div><nav id="toc"></nav></div><footer id="page-footer"><nav class="navbar navbar-default"><div class="container-fluid"><div id="footer-nav"><ul class="nav navbar-nav"><li><a href="https://github.com/pryv">GitHub</a></li></ul></div></div></nav></footer><script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script><script src="/assets/bootstrap.min.js"></script><script src="/assets/js/toc.min.js"></script><!-- TOC generation--><script>jQuery(document).ready(function($) {
   // Header is about 51 pixels. This equals to 'header + fuzz', fuzz was
   // determined experimentally.

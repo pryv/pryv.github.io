@@ -8,10 +8,19 @@
 <p>Related components:</p>
 <ul>
 <li><a href="https://github.com/pryv/open-pryv.io">open-pryv.io</a>: Main API server (core + register + mail + MFA + HFS + previews)</li>
-<li><a href="https://github.com/pryv/service-config-leader">service-config-leader</a>: Configuration management centralization</li>
-<li><a href="https://github.com/pryv/service-config-follower">service-config-follower</a>: Subscribe to config-leader</li>
-<li><a href="https://github.com/pryv/service-ssl-certificate">service-ssl-certificate</a>: Let&#x2019;s Encrypt automated certificate request</li>
+<li><a href="https://github.com/pryv/dev-migrate-v1-v2">dev-migrate-v1-v2</a>: Toolkit to migrate user data from Open Pryv.io 1.x to v2</li>
+<li><a href="https://github.com/pryv/service-config-leader">service-config-leader</a>: Configuration management centralization (v1)</li>
+<li><a href="https://github.com/pryv/service-config-follower">service-config-follower</a>: Subscribe to config-leader (v1)</li>
+<li><a href="https://github.com/pryv/service-ssl-certificate">service-ssl-certificate</a>: Let&#x2019;s Encrypt automated certificate request (v1)</li>
 </ul>
+<h2 id="upgrading-from-v1"><!--upgrading-from-v1-->Upgrading from v1</h2>
+<p>If you already run Open Pryv.io 1.x and want to move your users to v2:</p>
+<ol>
+<li>Install a fresh v2 core following the <a href="/customer-resources/pryv.io-setup/">platform setup guide</a>.</li>
+<li>Use <a href="https://github.com/pryv/dev-migrate-v1-v2"><code>dev-migrate-v1-v2</code></a> to export your v1 MongoDB into a v2-compatible backup directory.</li>
+<li>Import that backup into the v2 install with <code>node bin/backup.js --restore /path/to/backup</code> &#x2014; see the <a href="/customer-resources/backup/">backup guide</a>.</li>
+</ol>
+<p>See the toolkit&#x2019;s README for the current source/target support matrix.</p>
 <h2 id="documents"><!--documents-->Documents</h2>
 <ul>
 <li>
@@ -73,8 +82,8 @@ You will also find information about how to operate your Pryv.io platform.</p>
 <p>This document describes how to migrate a Pryv.io core service to a different machine.</p>
 </li>
 <li>
-<p>Register migration: <a href="/customer-resources/register-migration/">HTML</a></p>
-<p>This document describes how to migrate a Pryv.io register service to a different machine.</p>
+<p>Register migration (v1 only): <a href="/customer-resources/register-migration/">HTML</a></p>
+<p>Historical reference for migrating a v1 register service. In v2 the register role is built into the core binary &#x2014; use <a href="/customer-resources/core-migration/">core migration</a> instead.</p>
 </li>
 <li>
 <p>Single-node to Cluster upgrade: <a href="/customer-resources/single-node-to-cluster/">HTML</a></p>

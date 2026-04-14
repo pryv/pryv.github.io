@@ -3,117 +3,105 @@
 <!--[if lt IE 9]>
   <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
   <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
-<![endif]--><link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Roboto:400,300,500,700,400italic|Roboto+Condensed:400,300,700"><link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/styles/docco.min.css"><link rel="stylesheet" type="text/css" href="/assets/fonts/ss-gizmo.min.css"><link rel="stylesheet" type="text/css" href="/assets/style.css"></head><body class="ssl-certificate with-toc"><header id="page-header"><nav class="navbar navbar-default navbar-fixed-top" role="navigation"><div class="container-fluid"><div class="navbar-header"><a class="navbar-brand logo" href="/" title="Developers home"><img src="/assets/images/logo-256-black.png" alt="Developers home"></a><button class="navbar-toggle" type="button" data-toggle="collapse" data-target="#main-nav"><span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button></div><div class="collapse navbar-collapse" id="main-nav"><ul class="nav navbar-nav"><li class="dropdown"><a class="dropdown-toggle" href="#" data-toggle="dropdown">Guides <b class="caret"></b></a><ul class="dropdown-menu"><li><a href="/getting-started/">Getting started</a></li><li><a href="/concepts/">API concepts</a></li><li><a href="/data-in-pryv/">Data In Pryv</a></li><li><a href="/guides/data-modelling/">Data modelling</a></li><li><a href="/guides/app-guidelines/">App guidelines</a></li><li><a href="/external-resources/">Apps &amp; Libs</a></li><li><a href="/guides/webhooks/">Webhooks</a></li><li><a href="/guides/custom-auth/">Custom auth</a></li><li><a href="/guides/consent/">Consent request</a></li><li><a href="/guides/audit-logs/">Audit logs</a></li></ul></li><li class="dropdown"><a class="dropdown-toggle" href="#" data-toggle="dropdown">Reference <b class="caret"></b></a><ul class="dropdown-menu"><li><a href="/reference/">API reference</a></li><li><a href="/reference-admin/">Admin API reference</a></li><li><a href="/reference-system/">System API reference</a></li><li><a href="/event-types/">Event types</a></li><li><a href="/open-api/">Open API (Postman)</a></li><li><a href="/change-log/">API change log</a></li></ul></li><li class="dropdown"><a class="dropdown-toggle" href="#" data-toggle="dropdown">FAQ <b class="caret"></b></a><ul class="dropdown-menu"><li><a href="/faq-api/">API</a></li><li><a href="/faq-infra/">Infrastructure</a></li></ul></li><li><a href="https://github.com/pryv/open-pryv.io">Open Pryv.io</a></li><li><a href="/customer-resources/">Setup</a></li><li><a href="/roadmap/">Roadmap</a></li></ul><div class="navbar-right"><p class="navbar-text version"><a href="/change-log/" title="View change log">API version: <strong>2.0.0-pre</strong></a></p></div></div></div></nav></header><div class="container container-narrow" id="main-wrapper"><div id="main"><h1 class="page-title" id="pryvio-ssl-certificate"><!--pryvio-ssl-certificate-->Pryv.io SSL Certificate</h1><p>This document describes how to generate a wildcard SSL certificate using <a href="https://letsencrypt.org/">Let&#x2019;s Encrypt</a> and Pryv.io&#x2019;s DNS.</p>
-<p>As prerequisite, you must have&#x2026;</p>
-<ul>
-<li><a href="/customer-resources/pryv.io-setup/#obtain-a-domain-name">obtained a domain name</a>,</li>
-<li>and <a href="/customer-resources/pryv.io-setup/#set-the-platform-parameters">installed the Pryv.io platform</a>.</li>
-</ul>
-<p>If you are using an infrastructure with appliances that perform the SSL termination, you can simply adapt the NGINX configuration files to listen on port 80 and not perform encryption.</p>
+<![endif]--><link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Roboto:400,300,500,700,400italic|Roboto+Condensed:400,300,700"><link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/styles/docco.min.css"><link rel="stylesheet" type="text/css" href="/assets/fonts/ss-gizmo.min.css"><link rel="stylesheet" type="text/css" href="/assets/style.css"></head><body class="ssl-certificate with-toc"><header id="page-header"><nav class="navbar navbar-default navbar-fixed-top" role="navigation"><div class="container-fluid"><div class="navbar-header"><a class="navbar-brand logo" href="/" title="Developers home"><img src="/assets/images/logo-256-black.png" alt="Developers home"></a><button class="navbar-toggle" type="button" data-toggle="collapse" data-target="#main-nav"><span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button></div><div class="collapse navbar-collapse" id="main-nav"><ul class="nav navbar-nav"><li class="dropdown"><a class="dropdown-toggle" href="#" data-toggle="dropdown">Guides <b class="caret"></b></a><ul class="dropdown-menu"><li><a href="/getting-started/">Getting started</a></li><li><a href="/concepts/">API concepts</a></li><li><a href="/data-in-pryv/">Data In Pryv</a></li><li><a href="/guides/data-modelling/">Data modelling</a></li><li><a href="/guides/app-guidelines/">App guidelines</a></li><li><a href="/external-resources/">Apps &amp; Libs</a></li><li><a href="/guides/webhooks/">Webhooks</a></li><li><a href="/guides/custom-auth/">Custom auth</a></li><li><a href="/guides/consent/">Consent request</a></li><li><a href="/guides/audit-logs/">Audit logs</a></li></ul></li><li class="dropdown"><a class="dropdown-toggle" href="#" data-toggle="dropdown">Reference <b class="caret"></b></a><ul class="dropdown-menu"><li><a href="/reference/">API reference</a></li><li><a href="/reference-admin/">Admin API reference</a></li><li><a href="/reference-system/">System API reference</a></li><li><a href="/event-types/">Event types</a></li><li><a href="/open-api/">Open API (Postman)</a></li><li><a href="/change-log/">API change log</a></li></ul></li><li class="dropdown"><a class="dropdown-toggle" href="#" data-toggle="dropdown">FAQ <b class="caret"></b></a><ul class="dropdown-menu"><li><a href="/faq-api/">API</a></li><li><a href="/faq-infra/">Infrastructure</a></li></ul></li><li><a href="https://github.com/pryv/open-pryv.io">Open Pryv.io</a></li><li><a href="/customer-resources/">Setup</a></li><li><a href="/roadmap/">Roadmap</a></li></ul><div class="navbar-right"><p class="navbar-text version"><a href="/change-log/" title="View change log">API version: <strong>2.0.0-pre</strong></a></p></div></div></div></nav></header><div class="container container-narrow" id="main-wrapper"><div id="main"><h1 class="page-title" id="pryvio-ssl-certificate"><!--pryvio-ssl-certificate-->Pryv.io SSL Certificate</h1><p>This document describes how to obtain and install the SSL certificate used by a Pryv.io deployment.</p>
+<blockquote>
+<p><strong>Since v2 (2026)</strong> the core no longer ships its own <code>renew-ssl-certificate</code> helper. You provide the certificate from a source of your choice &#x2014; <a href="https://letsencrypt.org/">Let&#x2019;s Encrypt</a> / <a href="https://certbot.eff.org/">certbot</a>, your internal CA, a commercial CA, or your reverse-proxy&#x2019;s auto-renewal (Caddy, Traefik, <code>nginx-proxy-manager</code>, &#x2026;) &#x2014; and point the core at the resulting files.</p>
+</blockquote>
+<p>Prerequisite: you have <a href="/customer-resources/pryv.io-setup/#obtain-a-domain-name">obtained a domain name</a> and installed the core (<a href="https://github.com/pryv/open-pryv.io/blob/master/INSTALL.md">INSTALL</a>).</p>
 <h2 id="table-of-contents-"><!--table-of-contents--->Table of contents <!-- omit in toc --></h2>
 <ol>
-<li><a href="#automatic-generation-with-pryvio-174-or-later">Automatic generation with Pryv.io 1.7.4 or later</a>
+<li><a href="#which-certificate-do-i-need">Which certificate do I need?</a></li>
+<li><a href="#where-the-certificate-plugs-in">Where the certificate plugs in</a>
 <ol>
-<li><a href="#dns-check-failure-error-servers-are-not-reachable">DNS check failure: Error: Servers are not reachable</a></li>
+<li><a href="#built-in-https-core-terminates-tls">Built-in HTTPS (core terminates TLS)</a></li>
+<li><a href="#behind-your-own-reverse-proxy">Behind your own reverse proxy</a></li>
 </ol>
 </li>
-<li><a href="#manual-generation-with-pryv-173-or-earlier">Manual generation with Pryv 1.7.3 or earlier</a>
+<li><a href="#issuing-a-certificate-with-lets-encrypt--certbot">Issuing a certificate with Let&#x2019;s Encrypt / certbot</a>
 <ol>
-<li><a href="#install-certbot">Install Certbot</a></li>
-<li><a href="#generate-certificate-using-dns-validation">Generate certificate using DNS validation</a></li>
-<li><a href="#reorganize-ssl-certificate-files">Reorganize SSL certificate files</a></li>
+<li><a href="#http-01-challenge-single-core-public-host">HTTP-01 challenge (single-core, public host)</a></li>
+<li><a href="#dns-01-challenge-required-for-wildcards">DNS-01 challenge (required for wildcards)</a></li>
 </ol>
 </li>
+<li><a href="#renewal">Renewal</a></li>
+<li><a href="#v1-procedure-legacy">v1 procedure (legacy)</a></li>
 </ol>
-<h2 id="automatic-generation-with-pryvio-174-or-later"><!--automatic-generation-with-pryvio-174-or-later-->Automatic generation with Pryv.io 1.7.4 or later</h2>
-<p>If you are running Pryv.io 1.7.4 or later, you can simply run the <code>renew-ssl-certificate</code> script provided with <a href="https://pryv.github.io/config-template-pryv.io/">the configuration files</a> to generate a SSL certificate for your Pryv.io platform.</p>
-<p>Note: from version 1.9.0 it&#x2019;s required to set a valid email address in the configuration file <code>config-leader/ssl/conf/ssl-certificate.yml</code></p>
-<p>Otherwise, follow this guide.</p>
-<h3 id="dns-check-failure-error-servers-are-not-reachable"><!--dns-check-failure-error-servers-are-not-reachable-->DNS check failure: Error: Servers are not reachable</h3>
-<p>If you encounter this error, your network settings might prevent the <code>renewl-ssl-certificate</code> tool from peforming the pre-check of DNS challenge, namely the node process inside the <code>pryvio_ssl_certificate</code> container cannot get an answer from the <code>pryvio_dns</code> container.</p>
-<p>You can simply skip this by modifying the <code>acme:skipDnsChecks</code> parameter in <code>config-leader/ssl/conf/ssl-certificate.yml</code>. You can also increase the value of the time allocated for the DNS container(s) to reboot by increasing the <code>acme:dnsRebootWaitMs</code> parameter. On machines with limited resources, you can increase this value to <code>10000</code> (10 seconds).</p>
-<h2 id="manual-generation-with-pryv-173-or-earlier"><!--manual-generation-with-pryv-173-or-earlier-->Manual generation with Pryv 1.7.3 or earlier</h2>
-<p>Unless specified otherwise, the steps are to be performed on the single-node or <code>reg-master</code> machine, depending on your setup. Certbot can be installed and run anywhere, of course.</p>
-<h3 id="install-certbot"><!--install-certbot-->Install Certbot</h3>
+<h2 id="which-certificate-do-i-need"><!--which-certificate-do-i-need-->Which certificate do I need?</h2>
+<table>
+<thead>
+<tr>
+<th>Deployment</th>
+<th>Certificate</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Single-core with <code>dnsLess.isActive: true</code></td>
+<td>Plain cert for <code>your-domain.com</code> (one hostname)</td>
+</tr>
+<tr>
+<td>Multi-core using embedded DNS</td>
+<td><strong>Wildcard</strong> cert for <code>*.mc.example.com</code> (every user gets a subdomain)</td>
+</tr>
+<tr>
+<td>Multi-core with DNSless overrides</td>
+<td>Per-core plain certs (one cert per <code>core.url</code>)</td>
+</tr>
+</tbody>
+</table>
+<p>A wildcard certificate requires the <strong>DNS-01</strong> ACME challenge.</p>
+<h2 id="where-the-certificate-plugs-in"><!--where-the-certificate-plugs-in-->Where the certificate plugs in</h2>
+<h3 id="built-in-https-core-terminates-tls"><!--built-in-https-core-terminates-tls-->Built-in HTTPS (core terminates TLS)</h3>
+<p>Set the paths in your override YAML &#x2014; the core will load them directly:</p>
+<pre><code class="language-yaml">http:
+  ip: 0.0.0.0
+  port: 443
+  ssl:
+    keyFile: /etc/ssl/pryv/privkey.pem
+    certFile: /etc/ssl/pryv/fullchain.pem
+    caFile:  /etc/ssl/pryv/chain.pem        # optional, add the issuer chain if your CA is not in the OS trust store
+</code></pre>
+<p>Restart <code>bin/master.js</code> to pick up a renewed certificate (future versions may hot-reload &#x2014; not yet guaranteed).</p>
+<h3 id="behind-your-own-reverse-proxy"><!--behind-your-own-reverse-proxy-->Behind your own reverse proxy</h3>
+<p>Terminate TLS in your proxy and forward plain HTTP to the core on port 3000 (API) and port 4000 (HFS). A sample NGINX block is in <a href="https://github.com/pryv/open-pryv.io/blob/master/INSTALL.md#running--behind-nginx">INSTALL &#x2014; Running behind nginx</a>. The proxy is also the right place to host your auto-renewal (certbot hook, Caddy&#x2019;s built-in ACME, Traefik, etc.).</p>
+<h2 id="issuing-a-certificate-with-lets-encrypt--certbot"><!--issuing-a-certificate-with-lets-encrypt--certbot-->Issuing a certificate with Let&#x2019;s Encrypt / certbot</h2>
+<p>Install certbot from <a href="https://certbot.eff.org/instructions">the project instructions</a>.</p>
+<h3 id="http-01-challenge-single-core-public-host"><!--http-01-challenge-single-core-public-host-->HTTP-01 challenge (single-core, public host)</h3>
+<p>The core (or your reverse proxy) must serve <code>/.well-known/acme-challenge/</code> on port 80 during the challenge. With certbot&#x2019;s standalone mode:</p>
+<pre><code class="language-bash">sudo certbot certonly --standalone -d your-domain.com
+# &#x2192; certs land in /etc/letsencrypt/live/your-domain.com/
+</code></pre>
+<p>Then point <code>http.ssl</code> at <code>/etc/letsencrypt/live/your-domain.com/fullchain.pem</code> and <code>privkey.pem</code>, or copy them into the path your reverse proxy expects.</p>
+<h3 id="dns-01-challenge-required-for-wildcards"><!--dns-01-challenge-required-for-wildcards-->DNS-01 challenge (required for wildcards)</h3>
+<pre><code class="language-bash">sudo certbot certonly --manual --preferred-challenges dns \
+    -d &quot;*.mc.example.com&quot; -d &quot;mc.example.com&quot;
+</code></pre>
+<p>Certbot prompts you for a <code>_acme-challenge.mc.example.com</code> TXT record. Publish it in whichever DNS system answers for that domain (your registrar&#x2019;s zone, the core&#x2019;s embedded DNS if <code>dns.active: true</code>, an external provider, &#x2026;) and wait for propagation:</p>
+<pre><code class="language-bash">dig TXT _acme-challenge.mc.example.com
+</code></pre>
+<p>When the right value comes back, continue the certbot prompt.</p>
+<p>For a non-interactive pipeline, certbot has DNS plugins for common providers (Route 53, Cloudflare, OVH, &#x2026;) &#x2014; see <a href="https://eff-certbot.readthedocs.io/en/stable/using.html#dns-plugins">certbot plugins</a>. An API-driven plugin is the only practical way to run fully-automated wildcard renewal.</p>
+<h2 id="renewal"><!--renewal-->Renewal</h2>
 <ul>
-<li><a href="https://certbot.eff.org/instructions">Reference</a></li>
-</ul>
-<p>This procedure describes the commands for Ubuntu 18.04.
-If you are using another OS, go to the reference link, choose <em>software: None of the above</em> and your OS and follow the installation instructions.</p>
-<pre><code class="language-bash">sudo apt-get update
-sudo apt-get install software-properties-common
-sudo add-apt-repository ppa:certbot/certbot
-sudo apt-get update
-sudo apt-get install certbot
-</code></pre>
-<h3 id="generate-certificate-using-dns-validation"><!--generate-certificate-using-dns-validation-->Generate certificate using DNS validation</h3>
-<ul>
-<li><a href="https://certbot.eff.org/docs/using.html#manual">Reference</a></li>
-</ul>
-<p>Make sure your DNS supports the Let&#x2019;s Encrypt CAA by verifying that it has this field in its platform variables:</p>
-<pre><code class="language-yaml">  ADVANCED_API_SETTINGS:
-    optional: true
-    name: &quot;Advanced API settings&quot;
-    settings:
-      SSL_CAA_ISSUER:
-        value: letsencrypt.org
-        description: &quot;Certificate authority allowed to issue SSL certificates for this domain&quot;
-</code></pre>
-<p>If you are not familiar with this process, it is recommended to do a dry-run as the Let&#x2019;s Encrypt API has a call limit, which may block you in case of multiple failed attempts.
-For this, append <code>--dry-run</code> to the command below. Once it works, simply repeat it without <code>--dry-run</code>.</p>
-<p>Launch the process using:</p>
-<pre><code class="language-bash">certbot certonly --manual --preferred-challenges dns
-</code></pre>
-<p>When prompted for the domain, enter <code>*.${DOMAIN}</code> and accept to share the IP address by pressing <code>ENTER</code>.</p>
-<p>Now, the CLI will ask you to set a certain key to the TXT Record <code>_acme-challenge</code>. Enter it in the platform variables by adding the following field as following:</p>
-<pre><code class="language-yaml">  DNS_SETTINGS:
-    name: &quot;DNS settings&quot;
-    settings:
-      DNS_CUSTOM_ENTRIES:
-        description: &quot;Additional DNS entries. See the DNS configuration document: https://pryv.github.io/customer-resources/#guides-and-documents.
-        Can be set to null if not used.&quot;
-        value:
-          _acme-challenge:
-            description: &quot;KEY&quot;
-</code></pre>
-<p>And reboot the follower and Pryv.io services, using either method:</p>
-<ul>
-<li>On each follower machine, run:<pre><code class="language-bash">./restart-config-follower
-./restart-pryv
+<li>
+<p><strong>certbot</strong> auto-registers a systemd timer/cron job (<code>certbot renew</code>) that runs twice a day. Reload the core (or your reverse proxy) after each successful renewal:</p>
+<pre><code class="language-bash"># /etc/letsencrypt/renewal-hooks/post/reload-pryv.sh
+#!/usr/bin/env bash
+systemctl reload nginx          # or: systemctl restart pryv-core
 </code></pre>
 </li>
-<li>From the admin panel web app, push &#x2018;Update&#x2019;</li>
-</ul>
-<p>Verify that the key is querying the name servers.</p>
-<p>If you are running a single-node platform or cluster with a single DNS, you can run:</p>
-<pre><code class="language-bash">dig @reg.${DOMAIN} TXT _acme-challenge.${DOMAIN}
-</code></pre>
-<p>If you are running a cluster platform with more than one DNS, run:</p>
-<pre><code class="language-bash">dig @${NS1_HOSTNAME} TXT _acme-challenge.${DOMAIN}
-dig @${NS2_HOSTNAME} TXT _acme-challenge.${DOMAIN}
-</code></pre>
-<p>Once you get the right key, go back to the CLI and press ENTER.</p>
-<p>You should now have a certificate in <code>/etc/letsencrypt/live/${DOMAIN}/</code>.</p>
-<h3 id="reorganize-ssl-certificate-files"><!--reorganize-ssl-certificate-files-->Reorganize SSL certificate files</h3>
-<p>Rename the files to match the NGINX settings:</p>
-<pre><code class="language-bash">mv fullchain.pem ${DOMAIN}-bundle.crt
-mv privkey.pem ${DOMAIN}-key.pem
-</code></pre>
-<p>You might have to copy them as <code>live/</code> holds symbolic links.</p>
-<p>Then copy them into your NGINX secret directory:</p>
-<pre><code class="language-bash">${PRYV_CONF_ROOT}/pryv/nginx/conf/secret/
-</code></pre>
-<p>Make sure that the certificates permissions are set correctly:</p>
-<pre><code class="language-bash">./ensure-permissions --ignore-redis
-</code></pre>
-<p>And reboot the follower and pryv services, using either method:</p>
-<ul>
-<li>On each follower machine, run:<pre><code class="language-bash">./restart-config-follower
-./restart-pryv
-</code></pre>
+<li>
+<p><strong>Reverse-proxy-managed certificates</strong> (Caddy, Traefik, nginx-proxy-manager, &#x2026;) take care of renewal transparently &#x2014; nothing to do on the Pryv.io side.</p>
 </li>
-<li>From the admin panel web app, push &#x2018;Update&#x2019;</li>
 </ul>
+<h2 id="v1-procedure-legacy"><!--v1-procedure-legacy-->v1 procedure (legacy)</h2>
+<p>Operators still running Pryv.io v1 can use the procedure shipped with the <a href="https://pryv.github.io/config-template-pryv.io/">v1 config template</a>:</p>
+<ul>
+<li>From 1.7.4 onward, run <code>./renew-ssl-certificate</code>. Make sure <code>config-leader/ssl/conf/ssl-certificate.yml</code> has a valid email address (mandatory since 1.9.0).</li>
+<li>If the pre-check fails with <em>&#x201C;Servers are not reachable&#x201D;</em> (the <code>pryvio_ssl_certificate</code> container cannot reach <code>pryvio_dns</code>), flip <code>acme.skipDnsChecks</code> to <code>true</code> in the same file, or raise <code>acme.dnsRebootWaitMs</code> to give DNS containers more time to start.</li>
+<li>Certificate files end up in <code>${PRYV_CONF_ROOT}/pryv/nginx/conf/secret/</code> as <code>${DOMAIN}-bundle.crt</code> and <code>${DOMAIN}-key.pem</code>. Run <code>./ensure-permissions --ignore-redis</code> and reboot (<code>./restart-config-follower &amp;&amp; ./restart-pryv</code>, or <em>Update</em> from the admin panel).</li>
+</ul>
+<p>None of the paths or scripts above exist in v2 &#x2014; use the v2 procedures earlier on this page instead.</p>
 </div><nav id="toc"></nav></div><footer id="page-footer"><nav class="navbar navbar-default"><div class="container-fluid"><div id="footer-nav"><ul class="nav navbar-nav"><li><a href="https://github.com/pryv">GitHub</a></li></ul></div></div></nav></footer><script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script><script src="/assets/bootstrap.min.js"></script><script src="/assets/js/toc.min.js"></script><!-- TOC generation--><script>jQuery(document).ready(function($) {
   // Header is about 51 pixels. This equals to 'header + fuzz', fuzz was
   // determined experimentally.

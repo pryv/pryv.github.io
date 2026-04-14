@@ -3,62 +3,114 @@
 <!--[if lt IE 9]>
   <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
   <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
-<![endif]--><link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Roboto:400,300,500,700,400italic|Roboto+Condensed:400,300,700"><link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/styles/docco.min.css"><link rel="stylesheet" type="text/css" href="/assets/fonts/ss-gizmo.min.css"><link rel="stylesheet" type="text/css" href="/assets/style.css"></head><body class="backup with-toc"><header id="page-header"><nav class="navbar navbar-default navbar-fixed-top" role="navigation"><div class="container-fluid"><div class="navbar-header"><a class="navbar-brand logo" href="/" title="Developers home"><img src="/assets/images/logo-256-black.png" alt="Developers home"></a><button class="navbar-toggle" type="button" data-toggle="collapse" data-target="#main-nav"><span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button></div><div class="collapse navbar-collapse" id="main-nav"><ul class="nav navbar-nav"><li class="dropdown"><a class="dropdown-toggle" href="#" data-toggle="dropdown">Guides <b class="caret"></b></a><ul class="dropdown-menu"><li><a href="/getting-started/">Getting started</a></li><li><a href="/concepts/">API concepts</a></li><li><a href="/data-in-pryv/">Data In Pryv</a></li><li><a href="/guides/data-modelling/">Data modelling</a></li><li><a href="/guides/app-guidelines/">App guidelines</a></li><li><a href="/external-resources/">Apps &amp; Libs</a></li><li><a href="/guides/webhooks/">Webhooks</a></li><li><a href="/guides/custom-auth/">Custom auth</a></li><li><a href="/guides/consent/">Consent request</a></li><li><a href="/guides/audit-logs/">Audit logs</a></li></ul></li><li class="dropdown"><a class="dropdown-toggle" href="#" data-toggle="dropdown">Reference <b class="caret"></b></a><ul class="dropdown-menu"><li><a href="/reference/">API reference</a></li><li><a href="/reference-admin/">Admin API reference</a></li><li><a href="/reference-system/">System API reference</a></li><li><a href="/event-types/">Event types</a></li><li><a href="/open-api/">Open API (Postman)</a></li><li><a href="/change-log/">API change log</a></li></ul></li><li class="dropdown"><a class="dropdown-toggle" href="#" data-toggle="dropdown">FAQ <b class="caret"></b></a><ul class="dropdown-menu"><li><a href="/faq-api/">API</a></li><li><a href="/faq-infra/">Infrastructure</a></li></ul></li><li><a href="https://github.com/pryv/open-pryv.io">Open Pryv.io</a></li><li><a href="/customer-resources/">Setup</a></li><li><a href="/roadmap/">Roadmap</a></li></ul><div class="navbar-right"><p class="navbar-text version"><a href="/change-log/" title="View change log">API version: <strong>2.0.0-pre</strong></a></p></div></div></div></nav></header><div class="container container-narrow" id="main-wrapper"><div id="main"><h1 class="page-title" id="pryvio-backup"><!--pryvio-backup-->Pryv.io Backup</h1><p>This guide describes how to perform a backup of your Pryv.io platform and how to restore it in case of any data loss.</p>
-<p>In v2, Pryv.io runs as a single binary. Backup covers the core data (MongoDB/PostgreSQL, InfluxDB, user files) and configuration.</p>
-<p>We will refer to the root of your Pryv.io installation as <code>${PRYV_CONF_ROOT}</code>.</p>
-<p>Pryv.io v2 also provides a built-in backup tool: <code>bin/backup.js</code> (see <code>INSTALL.md</code> in the repository).</p>
+<![endif]--><link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Roboto:400,300,500,700,400italic|Roboto+Condensed:400,300,700"><link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/styles/docco.min.css"><link rel="stylesheet" type="text/css" href="/assets/fonts/ss-gizmo.min.css"><link rel="stylesheet" type="text/css" href="/assets/style.css"></head><body class="backup with-toc"><header id="page-header"><nav class="navbar navbar-default navbar-fixed-top" role="navigation"><div class="container-fluid"><div class="navbar-header"><a class="navbar-brand logo" href="/" title="Developers home"><img src="/assets/images/logo-256-black.png" alt="Developers home"></a><button class="navbar-toggle" type="button" data-toggle="collapse" data-target="#main-nav"><span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button></div><div class="collapse navbar-collapse" id="main-nav"><ul class="nav navbar-nav"><li class="dropdown"><a class="dropdown-toggle" href="#" data-toggle="dropdown">Guides <b class="caret"></b></a><ul class="dropdown-menu"><li><a href="/getting-started/">Getting started</a></li><li><a href="/concepts/">API concepts</a></li><li><a href="/data-in-pryv/">Data In Pryv</a></li><li><a href="/guides/data-modelling/">Data modelling</a></li><li><a href="/guides/app-guidelines/">App guidelines</a></li><li><a href="/external-resources/">Apps &amp; Libs</a></li><li><a href="/guides/webhooks/">Webhooks</a></li><li><a href="/guides/custom-auth/">Custom auth</a></li><li><a href="/guides/consent/">Consent request</a></li><li><a href="/guides/audit-logs/">Audit logs</a></li></ul></li><li class="dropdown"><a class="dropdown-toggle" href="#" data-toggle="dropdown">Reference <b class="caret"></b></a><ul class="dropdown-menu"><li><a href="/reference/">API reference</a></li><li><a href="/reference-admin/">Admin API reference</a></li><li><a href="/reference-system/">System API reference</a></li><li><a href="/event-types/">Event types</a></li><li><a href="/open-api/">Open API (Postman)</a></li><li><a href="/change-log/">API change log</a></li></ul></li><li class="dropdown"><a class="dropdown-toggle" href="#" data-toggle="dropdown">FAQ <b class="caret"></b></a><ul class="dropdown-menu"><li><a href="/faq-api/">API</a></li><li><a href="/faq-infra/">Infrastructure</a></li></ul></li><li><a href="https://github.com/pryv/open-pryv.io">Open Pryv.io</a></li><li><a href="/customer-resources/">Setup</a></li><li><a href="/roadmap/">Roadmap</a></li></ul><div class="navbar-right"><p class="navbar-text version"><a href="/change-log/" title="View change log">API version: <strong>2.0.0-pre</strong></a></p></div></div></div></nav></header><div class="container container-narrow" id="main-wrapper"><div id="main"><h1 class="page-title" id="pryvio-backup"><!--pryvio-backup-->Pryv.io Backup</h1><p>This guide describes how to back up a Pryv.io platform and how to restore from a backup.</p>
+<blockquote>
+<p><strong>Since v2 (2026)</strong> Pryv.io ships a built-in backup/restore tool, <code>bin/backup.js</code>. Prefer it over raw database dumps &#x2014; it understands Pryv.io&#x2019;s data model, backs up per user, supports incremental runs and can verify integrity on restore. Raw database/filesystem dumps are still documented below as a disaster-recovery alternative for operators who need them (offline DB snapshots, block-level volume backups, etc.).</p>
+</blockquote>
 <h2 id="table-of-contents-"><!--table-of-contents--->Table of contents <!-- omit in toc --></h2>
 <ol>
-<li><a href="#backup">Backup</a>
+<li><a href="#recommended-binbackupjs">Recommended: <code>bin/backup.js</code></a>
 <ol>
-<li><a href="#database-exports">Database exports</a></li>
-<li><a href="#configuration-and-user-files">Configuration and user files</a></li>
-<li><a href="#important-notice">Important notice</a></li>
-</ol>
-</li>
+<li><a href="#full-backup">Full backup</a></li>
+<li><a href="#incremental-backup">Incremental backup</a></li>
+<li><a href="#backup-a-single-user">Backup a single user</a></li>
 <li><a href="#restore">Restore</a></li>
+<li><a href="#whats-in-the-backup">What&#x2019;s in the backup</a></li>
 </ol>
-<h2 id="backup"><!--backup-->Backup</h2>
-<h3 id="database-exports"><!--database-exports-->Database exports</h3>
-<ul>
-<li><strong>MongoDB</strong> &#x2014; Run the following command to export the MongoDB data:</li>
-</ul>
-<pre><code class="language-bash">docker exec -t pryvio_mongodb /app/bin/mongodb/bin/mongodump -d pryv-node -o /app/backup/
-</code></pre>
-<p>The backup folder will be located at: <code>${PRYV_CONF_ROOT}/pryv/mongodb/backup/</code>.</p>
-<ul>
-<li><strong>InfluxDB</strong> &#x2014; Run the following command to export the InfluxDB data:</li>
-</ul>
-<pre><code class="language-bash">docker exec -t pryvio_influxdb /usr/bin/influxd backup -portable /pryv/backup/
-</code></pre>
-<p>The backup folder will be located at: <code>${PRYV_CONF_ROOT}/pryv/influxdb/backup/</code>.</p>
-<h3 id="configuration-and-user-files"><!--configuration-and-user-files-->Configuration and user files</h3>
-<ul>
-<li>Backup the <code>${PRYV_CONF_ROOT}</code> folder except the following:
-<ul>
-<li><code>${PRYV_CONF_ROOT}/pryv/mongodb/data/</code></li>
-<li><code>${PRYV_CONF_ROOT}/pryv/influxdb/data</code></li>
-<li><code>${PRYV_CONF_ROOT}/pryv/core/data/previews/</code></li>
-</ul>
 </li>
-</ul>
-<h3 id="important-notice"><!--important-notice-->Important notice</h3>
-<p>During the time of the backup, if user accounts are created between database export steps, they won&#x2019;t be usable after a backup restoration. Attachments and High-frequency data created after the MongoDB backup won&#x2019;t be accessible as their corresponding Pryv.io events will not be available.</p>
-<h2 id="restore"><!--restore-->Restore</h2>
-<p>Once you have backed up data, you can use it to restore your Pryv.io platform as described in the following procedure.</p>
-<ul>
-<li>Empty the contents of the <code>${PRYV_CONF_ROOT}</code> folder</li>
-<li>Copy the backed up files under the <code>${PRYV_CONF_ROOT}</code> folder</li>
-<li>Start the service</li>
-<li>Restore the MongoDB files:</li>
-</ul>
-<pre><code class="language-bash">docker exec -t pryvio_mongodb /app/bin/mongodb/bin/mongorestore /app/backup/
+<li><a href="#alternative-raw-database--filesystem-dumps">Alternative: raw database + filesystem dumps</a>
+<ol>
+<li><a href="#what-to-back-up">What to back up</a></li>
+<li><a href="#dump-postgresql--mongodb">Dump PostgreSQL / MongoDB</a></li>
+<li><a href="#restore-raw-dumps">Restore raw dumps</a></li>
+</ol>
+</li>
+<li><a href="#important-notice-on-consistency">Important notice on consistency</a></li>
+</ol>
+<h2 id="recommended-binbackupjs"><!--recommended-binbackupjs-->Recommended: <code>bin/backup.js</code></h2>
+<p>Run from the <code>open-pryv.io</code> repository root. The tool uses the same config files as the running core, so point <code>NODE_ENV</code> and <code>--config</code> at the same override you use in production.</p>
+<h3 id="full-backup"><!--full-backup-->Full backup</h3>
+<pre><code class="language-bash">NODE_ENV=production node bin/backup.js --output /backups/pryv-$(date +%Y%m%d)
 </code></pre>
-<ul>
-<li>Restore the InfluxDB files:</li>
-</ul>
-<pre><code class="language-bash">docker exec -t pryvio_influxdb /usr/bin/influxd restore -portable /pryv/backup/
+<p>The backup is a directory containing gzipped chunk files and a <code>manifest.json</code>. Default chunk size is 50 MB compressed &#x2014; tune with <code>--max-chunk-size</code>.</p>
+<h3 id="incremental-backup"><!--incremental-backup-->Incremental backup</h3>
+<p>Point <code>--output</code> at an existing backup directory and add <code>--incremental</code>. The tool reads the previous <code>manifest.json</code> and exports only data that changed per user since the last backup:</p>
+<pre><code class="language-bash">node bin/backup.js --output /backups/pryv-rolling --incremental
 </code></pre>
+<p>If the directory does not yet contain a manifest, the tool falls back to a full backup.</p>
+<h3 id="backup-a-single-user"><!--backup-a-single-user-->Backup a single user</h3>
+<pre><code class="language-bash">node bin/backup.js --output /backups/alice --user &lt;userId&gt;
+</code></pre>
+<h3 id="restore"><!--restore-->Restore</h3>
+<p>Into an <strong>empty</strong> install (recommended):</p>
+<pre><code class="language-bash">node bin/backup.js --restore /backups/pryv-20260414
+</code></pre>
+<p>Into an install that already has conflicting users, pick one:</p>
+<ul>
+<li><code>--overwrite</code> &#x2014; clear the target user&#x2019;s data first and reimport.</li>
+<li><code>--skip-conflicts</code> &#x2014; leave conflicting users alone; only import the rest.</li>
+</ul>
+<p>Useful restore flags:</p>
+<ul>
+<li><code>--verify-integrity</code> &#x2014; after restore, verify event/access integrity hashes and roll back any user whose hashes don&#x2019;t match.</li>
+<li><code>--user &lt;userId&gt;</code> &#x2014; restore just one user.</li>
+<li><code>--delete-on-success</code> / <code>--move-on-success &lt;path&gt;</code> &#x2014; housekeep the backup directory after a successful restore.</li>
+</ul>
+<h3 id="whats-in-the-backup"><!--whats-in-the-backup-->What&#x2019;s in the backup</h3>
+<p><code>bin/backup.js</code> exports, per user:</p>
+<ul>
+<li>account info (system-stream events, emails, etc.)</li>
+<li>streams and events (including integrity hashes)</li>
+<li>accesses, followed-slices</li>
+<li>attachments (file blobs)</li>
+<li>high-frequency series</li>
+<li>audit records (if audit is active)</li>
+</ul>
+<p>It does <strong>not</strong> export: sessions and password-reset tokens (add <code>--include-ephemeral</code> if you want them), rqlite platform-DB state (see below), user-level webhooks&#x2019; ephemeral queue, or your YAML configuration files.</p>
+<h2 id="alternative-raw-database--filesystem-dumps"><!--alternative-raw-database--filesystem-dumps-->Alternative: raw database + filesystem dumps</h2>
+<p>Use this path when you need full block-level or native-DB snapshots &#x2014; for example when integrating with an existing backup solution, or when planning a bit-identical disaster-recovery restore.</p>
+<h3 id="what-to-back-up"><!--what-to-back-up-->What to back up</h3>
+<ol>
+<li><strong>Base storage database</strong> &#x2014; PostgreSQL (recommended) or MongoDB &#x2014; holds events, streams, accesses.</li>
+<li><strong>Per-user filesystem data</strong> &#x2014; the <code>data/users/</code> tree holds SQLite DBs (audit, user index, per-user account) and attachment files. See <a href="https://github.com/pryv/open-pryv.io/blob/master/INSTALL.md#data-directories">INSTALL &#x2014; Data directories</a>.</li>
+<li><strong>Series engine data</strong> &#x2014; if using InfluxDB for HFS, back up InfluxDB. If using PostgreSQL for HFS, it is already covered by step 1.</li>
+<li><strong>Previews</strong> (<code>data/previews/</code>) &#x2014; optional; previews can be regenerated from attachments.</li>
+<li><strong>Platform DB</strong> (<code>data/rqlite-data/</code>) &#x2014; rqlite Raft log and snapshot. In single-core mode a snapshot is enough; in multi-core mode this is rebuilt from peer state when a core is reinstalled, so snapshotting is optional.</li>
+<li><strong>Your override YAML(s)</strong> &#x2014; the override-config file(s) passed to <code>bin/master.js</code>.</li>
+</ol>
+<p>Stop the core (or the specific user&#x2019;s activity) before dumping to avoid half-written events between step 1 and step 2.</p>
+<h3 id="dump-postgresql--mongodb"><!--dump-postgresql--mongodb-->Dump PostgreSQL / MongoDB</h3>
+<p><strong>PostgreSQL</strong>:</p>
+<pre><code class="language-bash">pg_dump -U postgres -Fc pryv_db &gt; /backups/pryv-$(date +%Y%m%d).dump
+</code></pre>
+<p><strong>MongoDB</strong>:</p>
+<pre><code class="language-bash">mongodump --db=pryv-node --out=/backups/pryv-mongodump-$(date +%Y%m%d)
+</code></pre>
+<p><strong>InfluxDB</strong> (only if used):</p>
+<pre><code class="language-bash">influxd backup -portable /backups/pryv-influx-$(date +%Y%m%d)
+</code></pre>
+<p>Back up <code>data/users/</code> alongside the DB dump with any filesystem tool (<code>rsync</code>, <code>tar</code>, volume snapshot, etc.).</p>
+<h3 id="restore-raw-dumps"><!--restore-raw-dumps-->Restore raw dumps</h3>
+<p>Restore into an install of the <strong>same core version</strong> with an empty database and empty <code>data/users/</code>:</p>
+<pre><code class="language-bash"># PostgreSQL
+createdb -U postgres pryv_db
+pg_restore -U postgres -d pryv_db /backups/pryv-20260414.dump
+
+# MongoDB
+mongorestore /backups/pryv-mongodump-20260414
+
+# InfluxDB (if used)
+influxd restore -portable /backups/pryv-influx-20260414
+</code></pre>
+<p>Then restore the <code>data/users/</code> tree in place, start the core, and check the <a href="/customer-resources/healthchecks/">healthchecks</a>.</p>
+<h2 id="important-notice-on-consistency"><!--important-notice-on-consistency-->Important notice on consistency</h2>
+<p>Backups taken while the core is running can be <strong>inconsistent</strong> &#x2014; events written between the DB dump and the filesystem snapshot may reference attachments that weren&#x2019;t yet copied (or vice versa), and new users registered mid-backup won&#x2019;t have all their data captured.</p>
+<p>To guarantee consistency:</p>
+<ul>
+<li>Prefer <code>bin/backup.js</code>, which reads each user&#x2019;s data in a single pass.</li>
+<li>For raw dumps, stop the core before dumping, or use the host&#x2019;s snapshot feature (LVM, ZFS, cloud volume snapshot) to capture both the DB and the filesystem at the same instant.</li>
+<li>Document and test your restore procedure at least once per year &#x2014; an untested backup is not a backup.</li>
+</ul>
 </div><nav id="toc"></nav></div><footer id="page-footer"><nav class="navbar navbar-default"><div class="container-fluid"><div id="footer-nav"><ul class="nav navbar-nav"><li><a href="https://github.com/pryv">GitHub</a></li></ul></div></div></nav></footer><script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script><script src="/assets/bootstrap.min.js"></script><script src="/assets/js/toc.min.js"></script><!-- TOC generation--><script>jQuery(document).ready(function($) {
   // Header is about 51 pixels. This equals to 'header + fuzz', fuzz was
   // determined experimentally.

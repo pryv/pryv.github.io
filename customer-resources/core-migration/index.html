@@ -3,237 +3,169 @@
 <!--[if lt IE 9]>
   <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
   <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
-<![endif]--><link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Roboto:400,300,500,700,400italic|Roboto+Condensed:400,300,700"><link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/styles/docco.min.css"><link rel="stylesheet" type="text/css" href="/assets/fonts/ss-gizmo.min.css"><link rel="stylesheet" type="text/css" href="/assets/style.css"></head><body class="core-migration with-toc"><header id="page-header"><nav class="navbar navbar-default navbar-fixed-top" role="navigation"><div class="container-fluid"><div class="navbar-header"><a class="navbar-brand logo" href="/" title="Developers home"><img src="/assets/images/logo-256-black.png" alt="Developers home"></a><button class="navbar-toggle" type="button" data-toggle="collapse" data-target="#main-nav"><span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button></div><div class="collapse navbar-collapse" id="main-nav"><ul class="nav navbar-nav"><li class="dropdown"><a class="dropdown-toggle" href="#" data-toggle="dropdown">Guides <b class="caret"></b></a><ul class="dropdown-menu"><li><a href="/getting-started/">Getting started</a></li><li><a href="/concepts/">API concepts</a></li><li><a href="/data-in-pryv/">Data In Pryv</a></li><li><a href="/guides/data-modelling/">Data modelling</a></li><li><a href="/guides/app-guidelines/">App guidelines</a></li><li><a href="/external-resources/">Apps &amp; Libs</a></li><li><a href="/guides/webhooks/">Webhooks</a></li><li><a href="/guides/custom-auth/">Custom auth</a></li><li><a href="/guides/consent/">Consent request</a></li><li><a href="/guides/audit-logs/">Audit logs</a></li></ul></li><li class="dropdown"><a class="dropdown-toggle" href="#" data-toggle="dropdown">Reference <b class="caret"></b></a><ul class="dropdown-menu"><li><a href="/reference/">API reference</a></li><li><a href="/reference-admin/">Admin API reference</a></li><li><a href="/reference-system/">System API reference</a></li><li><a href="/event-types/">Event types</a></li><li><a href="/open-api/">Open API (Postman)</a></li><li><a href="/change-log/">API change log</a></li></ul></li><li class="dropdown"><a class="dropdown-toggle" href="#" data-toggle="dropdown">FAQ <b class="caret"></b></a><ul class="dropdown-menu"><li><a href="/faq-api/">API</a></li><li><a href="/faq-infra/">Infrastructure</a></li></ul></li><li><a href="https://github.com/pryv/open-pryv.io">Open Pryv.io</a></li><li><a href="/customer-resources/">Setup</a></li><li><a href="/roadmap/">Roadmap</a></li></ul><div class="navbar-right"><p class="navbar-text version"><a href="/change-log/" title="View change log">API version: <strong>2.0.0-pre</strong></a></p></div></div></div></nav></header><div class="container container-narrow" id="main-wrapper"><div id="main"><h1 class="page-title" id="pryvio-core-migration"><!--pryvio-core-migration-->Pryv.io core migration</h1><blockquote>
-<p><strong>Note (v2):</strong> This guide was written for the v1 topology where core, HFS, preview, and MFA ran as separate containers with separate NGINX upstreams. In v2, all services run from a single binary and Docker image. The data migration steps (MongoDB, InfluxDB, user files) still apply, but the NGINX configuration is simplified to a single upstream.</p>
+<![endif]--><link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Roboto:400,300,500,700,400italic|Roboto+Condensed:400,300,700"><link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/styles/docco.min.css"><link rel="stylesheet" type="text/css" href="/assets/fonts/ss-gizmo.min.css"><link rel="stylesheet" type="text/css" href="/assets/style.css"></head><body class="core-migration with-toc"><header id="page-header"><nav class="navbar navbar-default navbar-fixed-top" role="navigation"><div class="container-fluid"><div class="navbar-header"><a class="navbar-brand logo" href="/" title="Developers home"><img src="/assets/images/logo-256-black.png" alt="Developers home"></a><button class="navbar-toggle" type="button" data-toggle="collapse" data-target="#main-nav"><span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button></div><div class="collapse navbar-collapse" id="main-nav"><ul class="nav navbar-nav"><li class="dropdown"><a class="dropdown-toggle" href="#" data-toggle="dropdown">Guides <b class="caret"></b></a><ul class="dropdown-menu"><li><a href="/getting-started/">Getting started</a></li><li><a href="/concepts/">API concepts</a></li><li><a href="/data-in-pryv/">Data In Pryv</a></li><li><a href="/guides/data-modelling/">Data modelling</a></li><li><a href="/guides/app-guidelines/">App guidelines</a></li><li><a href="/external-resources/">Apps &amp; Libs</a></li><li><a href="/guides/webhooks/">Webhooks</a></li><li><a href="/guides/custom-auth/">Custom auth</a></li><li><a href="/guides/consent/">Consent request</a></li><li><a href="/guides/audit-logs/">Audit logs</a></li></ul></li><li class="dropdown"><a class="dropdown-toggle" href="#" data-toggle="dropdown">Reference <b class="caret"></b></a><ul class="dropdown-menu"><li><a href="/reference/">API reference</a></li><li><a href="/reference-admin/">Admin API reference</a></li><li><a href="/reference-system/">System API reference</a></li><li><a href="/event-types/">Event types</a></li><li><a href="/open-api/">Open API (Postman)</a></li><li><a href="/change-log/">API change log</a></li></ul></li><li class="dropdown"><a class="dropdown-toggle" href="#" data-toggle="dropdown">FAQ <b class="caret"></b></a><ul class="dropdown-menu"><li><a href="/faq-api/">API</a></li><li><a href="/faq-infra/">Infrastructure</a></li></ul></li><li><a href="https://github.com/pryv/open-pryv.io">Open Pryv.io</a></li><li><a href="/customer-resources/">Setup</a></li><li><a href="/roadmap/">Roadmap</a></li></ul><div class="navbar-right"><p class="navbar-text version"><a href="/change-log/" title="View change log">API version: <strong>2.0.0-pre</strong></a></p></div></div></div></nav></header><div class="container container-narrow" id="main-wrapper"><div id="main"><h1 class="page-title" id="pryvio-core-migration"><!--pryvio-core-migration-->Pryv.io core migration</h1><p>This guide describes how to migrate a Pryv.io <strong>core</strong> to a new machine &#x2014; that is, moving the running core binary, its configuration and its persistent data to a fresh host while keeping the same public URL.</p>
+<blockquote>
+<p><strong>Since v2 (2026)</strong> Pryv.io runs as a <strong>single binary</strong> (<code>bin/master.js</code>) in a <strong>single Docker image</strong> (<code>pryvio/open-pryv.io</code>). Moving a core is therefore a single-service migration: copy the config, copy the data directories (plus your database dump), start the core on the new host, and either point DNS or proxy traffic from the old host while DNS propagates. There is no longer a separate <code>register</code>, <code>hfs</code>, <code>preview</code> or <code>mfa</code> container to coordinate.</p>
 </blockquote>
-<p>This guide describes how to migrate the core role of Pryv.io to a new machine.</p>
-<p>We will copy the data from the old core to the new one, then set the old core to proxy to the new one so we can use it during the DNS propagation phase.</p>
+<p>The strategy:</p>
+<ol>
+<li>Install the core on the <strong>dest</strong> machine</li>
+<li>Copy config and data from <strong>source</strong> to <strong>dest</strong></li>
+<li>Bring the core up on <strong>dest</strong></li>
+<li>Either update DNS to point to <strong>dest</strong>, or keep <strong>source</strong> alive as an NGINX proxy to <strong>dest</strong> during DNS propagation</li>
+<li>Stop <strong>source</strong> once traffic has drained</li>
+</ol>
 <h2 id="table-of-contents-"><!--table-of-contents--->Table of contents <!-- omit in toc --></h2>
 <ol>
-<li><a href="#optional-create-users-with-specific-data-on-source-for-post-migration-verification"><em>(Optional)</em> Create user(s) with specific data on source for post-migration verification</a></li>
-<li><a href="#setup-dest-machine">Setup <em>dest</em> machine</a></li>
+<li><a href="#optional-create-a-verification-user-on-source">(Optional) Create a verification user on source</a></li>
+<li><a href="#set-up-the-dest-machine">Set up the dest machine</a></li>
 <li><a href="#transfer-data">Transfer data</a>
 <ol>
-<li><a href="#transfer-config-data-and-fetch-docker-images">Transfer config data and fetch docker images</a></li>
-<li><a href="#transfer-user-data-from-source-to-dest">Transfer user data from <em>source</em> to <em>dest</em></a></li>
+<li><a href="#transfer-configuration">Transfer configuration</a></li>
+<li><a href="#dump-and-transfer-the-database">Dump and transfer the database</a></li>
+<li><a href="#transfer-file-system-data">Transfer file-system data</a></li>
 </ol>
 </li>
-<li><a href="#launch-services-on-dest">Launch services on <em>dest</em></a></li>
-<li><a href="#set-nginx-redirection-for-core-on-source">Set NGINX redirection for core on <em>source</em></a></li>
-<li><a href="#reload-nginx-on-source">Reload NGINX on <em>source</em></a></li>
+<li><a href="#launch-the-core-on-dest">Launch the core on dest</a></li>
+<li><a href="#cut-over">Cut over</a>
+<ol>
+<li><a href="#option-a--update-dns-and-stop-source">Option A &#x2014; update DNS and stop source</a></li>
+<li><a href="#option-b--proxy-from-source-to-dest-during-dns-propagation">Option B &#x2014; proxy from source to dest during DNS propagation</a></li>
+</ol>
+</li>
 <li><a href="#verify">Verify</a></li>
-<li><a href="#update-core-server-ip-address-on-register">Update core server IP address on register</a></li>
+<li><a href="#multi-core-deployments--update-the-platformdb-entry">Multi-core deployments &#x2014; update the PlatformDB entry</a></li>
 </ol>
-<h2 id="optional-create-users-with-specific-data-on-source-for-post-migration-verification"><!--optional-create-users-with-specific-data-on-source-for-post-migration-verification--><em>(Optional)</em> Create user(s) with specific data on source for post-migration verification</h2>
-<p>Generate a few events and streams by hand for a naked eye comparison for data transferred after the migration.</p>
-<h2 id="setup-dest-machine"><!--setup-dest-machine-->Setup <em>dest</em> machine</h2>
-<p>We assume that you have installed <code>docker</code> and <code>docker-compose</code> on the <em>dest</em> machine and have authenticated yourself with our private Docker repository.</p>
-<h2 id="transfer-data"><!--transfer-data-->Transfer data</h2>
-<p>We will be transfering data using rsync, therefore, we setup a pair of keys for this:</p>
-<ol>
-<li>
-<p>Create an SSH key pair using the following command:</p>
+<h2 id="optional-create-a-verification-user-on-source"><!--optional-create-a-verification-user-on-source-->(Optional) Create a verification user on source</h2>
+<p>Create a test user with a few streams and events on the <strong>source</strong> core before the migration. After the cutover, log in as that user on <strong>dest</strong> and check that the data is intact &#x2014; a quick naked-eye check complements the automated verification steps later.</p>
+<h2 id="set-up-the-dest-machine"><!--set-up-the-dest-machine-->Set up the dest machine</h2>
+<p>On <strong>dest</strong>, install the same core version as <strong>source</strong>:</p>
+<ul>
+<li>Either pull the Docker image (same tag as on source: <code>docker pull pryvio/open-pryv.io:&lt;tag&gt;</code>)</li>
+<li>Or clone the same commit and run <code>just setup-dev-env &amp;&amp; just install</code> (native install)</li>
+</ul>
+<p>Also install the database you use (PostgreSQL or MongoDB), unless you are running the database on a separate host that will remain unchanged.</p>
+<p>Set up an SSH key pair for rsync:</p>
 <pre><code class="language-bash">ssh-keygen -t rsa -b 4096 -C &quot;migration@remote&quot;
+# private key stays on source at ${PATH_TO_PRIVATE_KEY}
+# public key goes into ~/.ssh/authorized_keys on dest
 </code></pre>
-</li>
-<li>
-<p>Copy the private one to <code>${PATH_TO_PRIVATE_KEY}</code> in <em>source</em></p>
-</li>
-<li>
-<p>Add the public one in <code>~/.ssh/authorized_keys</code> on <em>dest</em></p>
-</li>
+<h2 id="transfer-data"><!--transfer-data-->Transfer data</h2>
+<h3 id="transfer-configuration"><!--transfer-configuration-->Transfer configuration</h3>
+<p>Copy the override YAML(s) used on <strong>source</strong>. Their path depends on how you run the core. Typical locations:</p>
+<ul>
+<li>Docker deploy: the mounted config volume (e.g. <code>/etc/pryv/override.yml</code>)</li>
+<li>Native deploy: the file passed via <code>--config</code> to <code>bin/master.js</code></li>
+<li>Dokku deploy: the app config stored under <code>/home/dokku/&lt;app&gt;/</code></li>
+</ul>
+<pre><code class="language-bash"># on source
+rsync --verbose --copy-links --archive --compress \
+    -e &quot;ssh -i ${PATH_TO_PRIVATE_KEY}&quot; \
+    /etc/pryv/ \
+    ${USERNAME}@${DEST_MACHINE}:/etc/pryv/
+</code></pre>
+<p>If the machine&#x2019;s IP, private network or database host changes as part of the migration, edit the override YAML on <strong>dest</strong> accordingly (for example <code>storages.engines.postgresql.host</code> or <code>core.ip</code>).</p>
+<h3 id="dump-and-transfer-the-database"><!--dump-and-transfer-the-database-->Dump and transfer the database</h3>
+<p>Stop the core on <strong>source</strong> before dumping, so the dump is consistent and no writes come in during the transfer:</p>
+<pre><code class="language-bash"># Docker: docker stop pryvio_open_pryv_io
+# Systemd: systemctl stop pryv-core
+</code></pre>
+<p><strong>PostgreSQL</strong> (recommended):</p>
+<pre><code class="language-bash"># on source (or on your PG host)
+pg_dump -U postgres -Fc pryv_db &gt; /tmp/pryv_db.dump
+rsync -e &quot;ssh -i ${PATH_TO_PRIVATE_KEY}&quot; \
+    /tmp/pryv_db.dump \
+    ${USERNAME}@${DEST_MACHINE}:/tmp/pryv_db.dump
+
+# on dest (restore into an empty database)
+createdb -U postgres pryv_db
+pg_restore -U postgres -d pryv_db /tmp/pryv_db.dump
+</code></pre>
+<p><strong>MongoDB</strong>:</p>
+<pre><code class="language-bash"># on source
+mongodump --db=pryv-node --out=/tmp/mongodump
+rsync --archive --compress \
+    -e &quot;ssh -i ${PATH_TO_PRIVATE_KEY}&quot; \
+    /tmp/mongodump/ \
+    ${USERNAME}@${DEST_MACHINE}:/tmp/mongodump/
+
+# on dest
+mongorestore /tmp/mongodump/
+</code></pre>
+<p><strong>InfluxDB</strong> (optional &#x2014; only if you use InfluxDB for high-frequency series; PostgreSQL is fine too and moves with the PG dump above):</p>
+<pre><code class="language-bash"># on source
+influxd backup -portable /tmp/influx-backup
+
+# on dest (after rsync)
+influxd restore -portable /tmp/influx-backup
+</code></pre>
+<h3 id="transfer-file-system-data"><!--transfer-file-system-data-->Transfer file-system data</h3>
+<p>Per-user SQLite DBs, attachments, previews and the rqlite platform DB all live under the core&#x2019;s <code>data/</code> directory (see <a href="https://github.com/pryv/open-pryv.io/blob/master/INSTALL.md#data-directories">INSTALL &#x2014; Data directories</a>). Transfer the whole tree:</p>
+<pre><code class="language-bash"># on source &#x2014; adjust paths to match your filesystem and sqlite.path config
+rsync --verbose --copy-links --archive --compress \
+    -e &quot;ssh -i ${PATH_TO_PRIVATE_KEY}&quot; \
+    /var/lib/pryv/data/ \
+    ${USERNAME}@${DEST_MACHINE}:/var/lib/pryv/data/
+</code></pre>
+<p>Ensure file ownership on <strong>dest</strong> matches the UID the core runs as (root for the stock Docker image; the <code>pryv</code> user for native installs).</p>
+<h2 id="launch-the-core-on-dest"><!--launch-the-core-on-dest-->Launch the core on dest</h2>
+<p>Start the core:</p>
+<pre><code class="language-bash"># Docker
+docker start pryvio_open_pryv_io
+
+# Native / systemd
+systemctl start pryv-core
+</code></pre>
+<p>Watch the logs for a clean startup &#x2014; <code>master.js</code> should report its workers ready, rqlited up, and HTTP listeners bound:</p>
+<pre><code class="language-bash">docker logs -f pryvio_open_pryv_io
+# or
+journalctl -u pryv-core -f
+</code></pre>
+<p>Do <strong>not</strong> start the core on <strong>dest</strong> while <strong>source</strong> is still serving traffic with the same database &#x2014; both cores writing to the same base storage will corrupt data.</p>
+<h2 id="cut-over"><!--cut-over-->Cut over</h2>
+<h3 id="option-a--update-dns-and-stop-source"><!--option-a--update-dns-and-stop-source-->Option A &#x2014; update DNS and stop source</h3>
+<p>Simplest path when you can schedule a short outage:</p>
+<ol>
+<li>Keep <strong>source</strong> stopped after the dump.</li>
+<li>Start the core on <strong>dest</strong>.</li>
+<li>Update the DNS A record for the public domain to the new IP.</li>
+<li>Wait for propagation. Clients that still hit the old IP while DNS is stale will fail; this is the outage window.</li>
 </ol>
-<h3 id="transfer-config-data-and-fetch-docker-images"><!--transfer-config-data-and-fetch-docker-images-->Transfer config data and fetch docker images</h3>
-<ol start="4">
-<li>
-<p>Transfer config data: on <em>source</em>, run:</p>
-<pre><code class="language-bash">time rsync --verbose --copy-links \
-    --archive --compress -e \
-  &quot;ssh -i ${PATH_TO_PRIVATE_KEY}&quot; \
-    ${PRYV_CONF_ROOT}/config-follower \
-    ${USERNAME}@${DEST_MACHINE}:${PRYV_CONF_ROOT}/config-follower/
+<h3 id="option-b--proxy-from-source-to-dest-during-dns-propagation"><!--option-b--proxy-from-source-to-dest-during-dns-propagation-->Option B &#x2014; proxy from source to dest during DNS propagation</h3>
+<p>Zero-downtime variant: keep <strong>source</strong>&#x2019;s reverse proxy alive and point it at <strong>dest</strong> until DNS propagates, then retire <strong>source</strong>.</p>
+<p>In v2 the core exposes just two HTTP upstreams &#x2014; API on port 3000 and HFS on port 4000 (see <a href="https://github.com/pryv/open-pryv.io/blob/master/INSTALL.md#running--behind-nginx">INSTALL &#x2014; Running behind nginx</a>). Replace the <code>api_backend</code> / <code>hfs_backend</code> upstreams in <strong>source</strong>&#x2019;s NGINX:</p>
+<pre><code class="language-nginx"># on source &#x2014; was pointing at localhost
+upstream api_backend { server 127.0.0.1:3000; }
+upstream hfs_backend { server 127.0.0.1:4000; }
+
+# becomes (TLS-terminated by dest, plain https upstream)
+upstream api_backend { server ${DEST_CORE_IP}:443; }
+upstream hfs_backend { server ${DEST_CORE_IP}:443; }
 </code></pre>
-<p>(You may have to go via your home user directory on <em>dest</em> first if permission issues arise.)</p>
-</li>
-<li>
-<p>Fetch docker images on <em>dest</em> by running:</p>
-<pre><code class="language-bash">${PRYV_CONF_ROOT}/run-config-follower
-${PRYV_CONF_ROOT}/run-pryv
-</code></pre>
-</li>
-<li>
-<p>Shutdown Pryv services prior to transferring user data:</p>
-<pre><code class="language-bash">${PRYV_CONF_ROOT}/stop-pryv
-</code></pre>
-</li>
-</ol>
-<h3 id="transfer-user-data-from-source-to-dest"><!--transfer-user-data-from-source-to-dest-->Transfer user data from <em>source</em> to <em>dest</em></h3>
-<ol start="7">
-<li>
-<p>Shutdown NGINX on <em>source</em> to prevent new information from arriving: <code>docker stop pryvio_nginx</code></p>
-</li>
-<li>
-<p>On <em>source</em>, create a dump of the MongoDB database:</p>
-<pre><code class="language-bash">docker exec -t pryvio_mongodb /app/bin/mongodb/bin/mongodump -d pryv-node -o /app/backup/
-</code></pre>
-<p>The backup folder will be located at: <code>${PRYV_CONF_ROOT}/pryv/mongodb/backup/</code></p>
-</li>
-<li>
-<p>Transfer Mongo data: on <em>source</em>, run:</p>
-<pre><code class="language-bash">time rsync --verbose --copy-links \
-     --archive --compress -e \
-  &quot;ssh -i ${PATH_TO_PRIVATE_KEY}&quot; \
-     ${PRYV_CONF_ROOT}/pryv/mongodb/backup \
-     ${USERNAME}@${DEST_MACHINE}:${PRYV_CONF_ROOT}/pryv/mongodb/backup/ 
-</code></pre>
-<p>(You may have to go via your home user directory on <em>dest</em> first if permission issues arise.)</p>
-</li>
-<li>
-<p>On <em>source</em>, create a dump of the InfluxDB database:</p>
-<pre><code class="language-bash">docker exec -t pryvio_influxdb /usr/bin/influxd backup -portable /pryv/backup/
-</code></pre>
-<p>The backup folder will be located at: <code>${PRYV_CONF_ROOT}/pryv/influxdb/backup/</code></p>
-</li>
-<li>
-<p>Transfer InfluxDB data: on <em>source</em>, run:</p>
-<pre><code class="language-bash">time rsync --verbose --copy-links \
-     --archive --compress -e \
-  &quot;ssh -i ${PATH_TO_PRIVATE_KEY}&quot; \
-     ${PRYV_CONF_ROOT}/pryv/influxdb/backup \
-     ${USERNAME}@${DEST_MACHINE}:${PRYV_CONF_ROOT}/pryv/influxdb/backup/ 
-</code></pre>
-<p>(Same comment as previous step about permissions.)</p>
-</li>
-<li>
-<p>Transfer other user data: on <em>source</em>, run:</p>
-<pre><code class="language-bash">time rsync --verbose --copy-links \
-     --archive --compress -e \
-  &quot;ssh -i ${PATH_TO_PRIVATE_KEY}&quot; \
-     ${PRYV_CONF_ROOT}/pryv/core/data \
-     ${USERNAME}@${DEST_MACHINE}:${PRYV_CONF_ROOT}/pryv/core/data/
-</code></pre>
-<p>(Same comment as previous step about permissions.)</p>
-</li>
-<li>
-<p>On <em>dest</em>, run <code>./ensure-permissions-core</code> script to help with enforcing correct permissions on data and log folders</p>
-</li>
-</ol>
-<p>If you wish to reactivate service on the <em>source</em> machine, simply reboot the stopped services: <code>${PRYV_CONF_ROOT}/run-pryv</code></p>
-<h2 id="launch-services-on-dest"><!--launch-services-on-dest-->Launch services on <em>dest</em></h2>
+<p>and change every <code>proxy_pass http://api_backend</code> / <code>http://hfs_backend</code> to <code>https://api_backend</code> / <code>https://hfs_backend</code>.</p>
+<p>Reload NGINX on <strong>source</strong>. All traffic now flows <code>client &#x2192; source NGINX &#x2192; dest</code>. When DNS has propagated (monitor <strong>source</strong>&#x2019;s access log until it goes idle), stop NGINX on <strong>source</strong> and decommission the host.</p>
+<h2 id="verify"><!--verify-->Verify</h2>
+<p>Once traffic is landing on <strong>dest</strong>:</p>
+<ul>
+<li>Log in as the verification user from the pre-migration step and spot-check recent events.</li>
+<li>Watch the core logs to confirm that API calls arrive on <strong>dest</strong> and not on <strong>source</strong>.</li>
+<li>Hit the basic endpoints described in the <a href="/customer-resources/healthchecks/">healthchecks guide</a>.</li>
+</ul>
+<h2 id="multi-core-deployments--update-the-platformdb-entry"><!--multi-core-deployments--update-the-platformdb-entry-->Multi-core deployments &#x2014; update the PlatformDB entry</h2>
+<p>In <strong>v2 multi-core</strong> mode each core self-registers into the rqlite PlatformDB on startup with its <code>core.id</code>, <code>core.ip</code>, <code>core.available</code> and (for DNSless multi-core) <code>core.url</code>. Restarting the moved core on <strong>dest</strong> automatically re-advertises the new IP/URL &#x2014; <strong>there is no register machine or admin panel to edit</strong>.</p>
+<p>Two things to check after the move:</p>
 <ol>
 <li>
-<p>Launch services: run <code>${PRYV_CONF_ROOT}/run-pryv</code></p>
+<p><strong><code>core.id</code> is unchanged</strong> &#x2014; the ID identifies this core&#x2019;s user partition in the platform. Keep it the same on <strong>dest</strong> so existing user&#x2192;core mappings stay valid.</p>
 </li>
 <li>
-<p>Restore MongoDB files, run:</p>
-<pre><code class="language-bash">docker exec -t pryvio_mongodb /app/bin/mongodb/bin/mongorestore /app/backup/
+<p><strong>Other cores can reach the new host</strong> &#x2014; the Raft port (default 4002) must be open between all cores. From another core:</p>
+<pre><code class="language-bash">curl -s https://core-x.mc.example.com/system/admin/cores -H &apos;Authorization: &lt;admin-key&gt;&apos;
 </code></pre>
-</li>
-<li>
-<p>Restore the InDuxDB files:</p>
-<pre><code class="language-bash">docker exec -t pryvio_influxdb /usr/bin/influxd restore -portable /pryv/backup/
-</code></pre>
+<p>The moved core should appear in the list with its new IP.</p>
 </li>
 </ol>
-<h2 id="set-nginx-redirection-for-core-on-source"><!--set-nginx-redirection-for-core-on-source-->Set NGINX redirection for core on <em>source</em></h2>
-<p>Since the DNS changes will take some time to come into effect, the NGINX process on <em>source</em> will be set to proxy to the <em>dest</em> machine.<br>
-The following steps describe the configuration changes to make NGINX proxy calls to the <em>dest</em> core. It is advised to comment out the old setting inline using <code>#</code> in order to rollback easily in case of need.</p>
-<ul>
-<li>
-<p>In <code>${PRYV_CONF_ROOT}/pryv/nginx/conf/site-443.conf</code>, Replace the following:</p>
-<pre><code class="language-nginx">upstream core_server {
-  server core:3000 max_fails=3 fail_timeout=30s;
-  server core:3001 max_fails=3 fail_timeout=30s;
-  server core:3002 max_fails=3 fail_timeout=30s;
-  server core:3003 max_fails=3 fail_timeout=30s;
-  server core:3004 max_fails=3 fail_timeout=30s;
-  server core:3005 max_fails=3 fail_timeout=30s;
-}
-
-upstream websocket_server {
-  ip_hash;
-  server core:3000 max_fails=3 fail_timeout=30s;
-  server core:3001 max_fails=3 fail_timeout=30s;
-  server core:3002 max_fails=3 fail_timeout=30s;
-  server core:3003 max_fails=3 fail_timeout=30s;
-  server core:3004 max_fails=3 fail_timeout=30s;
-  server core:3005 max_fails=3 fail_timeout=30s;
-}
-
-upstream hfs_server {
-  server hfs:3000 max_fails=3 fail_timeout=30s;
-  server hfs:3001 max_fails=3 fail_timeout=30s;
-  server hfs:3002 max_fails=3 fail_timeout=30s;
-  server hfs:3003 max_fails=3 fail_timeout=30s;
-  server hfs:3004 max_fails=3 fail_timeout=30s;
-  server hfs:3005 max_fails=3 fail_timeout=30s;
-}
-
-upstream preview_server {
-  server preview:9000 max_fails=3 fail_timeout=30s;
-}
-
-upstream mfa_server {
-  server mfa:7000 max_fails=3 fail_timeout=30s;
-}
-</code></pre>
-<p>with</p>
-<pre><code class="language-nginx">upstream core_server {
-  server ${DEST_CORE_IP_ADDRESS}:443;
-}
-
-upstream websocket_server {
-  server ${DEST_CORE_IP_ADDRESS}:443;
-}
-
-upstream hfs_server {
-  server ${DEST_CORE_IP_ADDRESS}:443;
-}
-
-upstream preview_server {
-  server ${DEST_CORE_IP_ADDRESS}:443;
-}
-
-upstream mfa_server {
-  server ${DEST_CORE_IP_ADDRESS}:443;
-}
-</code></pre>
-</li>
-<li>
-<p>In the same file, change the proxy protocol from <code>http</code> to <code>https</code>:</p>
-<ul>
-<li>Change: <code>http://core_server</code> to <code>https://core_server</code></li>
-<li>Change: <code>http://websocket_server</code> to <code>http://websocket_server</code></li>
-<li>Change: <code>http://hfs_server</code> to <code>https://hfs_server</code></li>
-<li>Change: <code>http://preview_server</code> to <code>https://preview_server</code></li>
-<li>Change: <code>http://mfa_server</code> to <code>https://mfa_server</code></li>
-</ul>
-</li>
-</ul>
-<h2 id="reload-nginx-on-source"><!--reload-nginx-on-source-->Reload NGINX on <em>source</em></h2>
-<p>Run <code>${PRYV_CONF_ROOT}/run-pryv</code></p>
-<p>As we are currently using docker-compose to specify the mounted volumes (containing the NGINX config), we just boot all services, even if they won&#x2019;t be used as NGINX is proxying to the <em>dest</em> machine.</p>
-<h2 id="verify"><!--verify-->Verify</h2>
-<p>Log onto an account and verify that the data has been moved. You can monitor the services logs (<code>doker logs ${CONTAINER_NAME}</code>, which can be found using <code>docker ps</code>) to ensure that data is accessed on the new machine.</p>
-<h2 id="update-core-server-ip-address-on-register"><!--update-core-server-ip-address-on-register-->Update core server IP address on register</h2>
-<p>SSH to the reg-master machine and edit <strong>manually</strong> (don&#x2019;t use the admin panel) the following parameters:</p>
-<p>In <code>${PRYV_CONF_ROOT}/config-leader/conf/platform.yml</code>:</p>
-<pre><code class="language-yaml">vars:
-  MACHINES_AND_PLATFORM_SETTINGS:
-    name: &quot;Machines and platform settings&quot;
-    settings:
-      # ...
-      HOSTINGS_AND_CORES:
-        description: &quot;Defines the distribution of cores among the hostings providers&quot;
-        value:
-          hosting1: # find the hosting that you have migrated
-            co1: 
-              ip: CHANGE_ME # change its IP address to the new one
-</code></pre>
-<p>Then reboot config-follower and the pryv-services on all register machines:</p>
-<pre><code class="language-bash">${PRYV_CONF_ROOT}/restart-config-follower
-${PRYV_CONF_ROOT}/restart-pryv
-</code></pre>
+<p>If you run <strong>v1</strong> and still need to update the old register machine&#x2019;s <code>HOSTINGS_AND_CORES</code> entry, see the <a href="/customer-resources/register-migration/">v1 register migration reference</a> for the legacy procedure.</p>
 </div><nav id="toc"></nav></div><footer id="page-footer"><nav class="navbar navbar-default"><div class="container-fluid"><div id="footer-nav"><ul class="nav navbar-nav"><li><a href="https://github.com/pryv">GitHub</a></li></ul></div></div></nav></footer><script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script><script src="/assets/bootstrap.min.js"></script><script src="/assets/js/toc.min.js"></script><!-- TOC generation--><script>jQuery(document).ready(function($) {
   // Header is about 51 pixels. This equals to 'header + fuzz', fuzz was
   // determined experimentally.

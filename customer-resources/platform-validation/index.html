@@ -3,197 +3,141 @@
 <!--[if lt IE 9]>
   <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
   <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
-<![endif]--><link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Roboto:400,300,500,700,400italic|Roboto+Condensed:400,300,700"><link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/styles/docco.min.css"><link rel="stylesheet" type="text/css" href="/assets/fonts/ss-gizmo.min.css"><link rel="stylesheet" type="text/css" href="/assets/style.css"></head><body class="platform-validation with-toc"><header id="page-header"><nav class="navbar navbar-default navbar-fixed-top" role="navigation"><div class="container-fluid"><div class="navbar-header"><a class="navbar-brand logo" href="/" title="Developers home"><img src="/assets/images/logo-256-black.png" alt="Developers home"></a><button class="navbar-toggle" type="button" data-toggle="collapse" data-target="#main-nav"><span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button></div><div class="collapse navbar-collapse" id="main-nav"><ul class="nav navbar-nav"><li class="dropdown"><a class="dropdown-toggle" href="#" data-toggle="dropdown">Guides <b class="caret"></b></a><ul class="dropdown-menu"><li><a href="/getting-started/">Getting started</a></li><li><a href="/concepts/">API concepts</a></li><li><a href="/data-in-pryv/">Data In Pryv</a></li><li><a href="/guides/data-modelling/">Data modelling</a></li><li><a href="/guides/app-guidelines/">App guidelines</a></li><li><a href="/external-resources/">Apps &amp; Libs</a></li><li><a href="/guides/webhooks/">Webhooks</a></li><li><a href="/guides/custom-auth/">Custom auth</a></li><li><a href="/guides/consent/">Consent request</a></li><li><a href="/guides/audit-logs/">Audit logs</a></li></ul></li><li class="dropdown"><a class="dropdown-toggle" href="#" data-toggle="dropdown">Reference <b class="caret"></b></a><ul class="dropdown-menu"><li><a href="/reference/">API reference</a></li><li><a href="/reference-admin/">Admin API reference</a></li><li><a href="/reference-system/">System API reference</a></li><li><a href="/event-types/">Event types</a></li><li><a href="/open-api/">Open API (Postman)</a></li><li><a href="/change-log/">API change log</a></li></ul></li><li class="dropdown"><a class="dropdown-toggle" href="#" data-toggle="dropdown">FAQ <b class="caret"></b></a><ul class="dropdown-menu"><li><a href="/faq-api/">API</a></li><li><a href="/faq-infra/">Infrastructure</a></li></ul></li><li><a href="https://github.com/pryv/open-pryv.io">Open Pryv.io</a></li><li><a href="/customer-resources/">Setup</a></li><li><a href="/roadmap/">Roadmap</a></li></ul><div class="navbar-right"><p class="navbar-text version"><a href="/change-log/" title="View change log">API version: <strong>2.0.0-pre</strong></a></p></div></div></div></nav></header><div class="container container-narrow" id="main-wrapper"><div id="main"><h1 class="page-title" id="pryvio-platform-validation-guide"><!--pryvio-platform-validation-guide-->Pryv.io platform validation guide</h1><!--
-|         |                       |
-| ------- | --------------------- |
-| Author  | Ilia Kebets 	      |
-| Reviewer | Guillaume Bassand (v1,2), Anastasia Bouzdine (v3) |
-| Date    | 28.04.2020            |
-| Version | 4                     |
--->
+<![endif]--><link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Roboto:400,300,500,700,400italic|Roboto+Condensed:400,300,700"><link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/styles/docco.min.css"><link rel="stylesheet" type="text/css" href="/assets/fonts/ss-gizmo.min.css"><link rel="stylesheet" type="text/css" href="/assets/style.css"></head><body class="platform-validation with-toc"><header id="page-header"><nav class="navbar navbar-default navbar-fixed-top" role="navigation"><div class="container-fluid"><div class="navbar-header"><a class="navbar-brand logo" href="/" title="Developers home"><img src="/assets/images/logo-256-black.png" alt="Developers home"></a><button class="navbar-toggle" type="button" data-toggle="collapse" data-target="#main-nav"><span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button></div><div class="collapse navbar-collapse" id="main-nav"><ul class="nav navbar-nav"><li class="dropdown"><a class="dropdown-toggle" href="#" data-toggle="dropdown">Guides <b class="caret"></b></a><ul class="dropdown-menu"><li><a href="/getting-started/">Getting started</a></li><li><a href="/concepts/">API concepts</a></li><li><a href="/data-in-pryv/">Data In Pryv</a></li><li><a href="/guides/data-modelling/">Data modelling</a></li><li><a href="/guides/app-guidelines/">App guidelines</a></li><li><a href="/external-resources/">Apps &amp; Libs</a></li><li><a href="/guides/webhooks/">Webhooks</a></li><li><a href="/guides/custom-auth/">Custom auth</a></li><li><a href="/guides/consent/">Consent request</a></li><li><a href="/guides/audit-logs/">Audit logs</a></li></ul></li><li class="dropdown"><a class="dropdown-toggle" href="#" data-toggle="dropdown">Reference <b class="caret"></b></a><ul class="dropdown-menu"><li><a href="/reference/">API reference</a></li><li><a href="/reference-admin/">Admin API reference</a></li><li><a href="/reference-system/">System API reference</a></li><li><a href="/event-types/">Event types</a></li><li><a href="/open-api/">Open API (Postman)</a></li><li><a href="/change-log/">API change log</a></li></ul></li><li class="dropdown"><a class="dropdown-toggle" href="#" data-toggle="dropdown">FAQ <b class="caret"></b></a><ul class="dropdown-menu"><li><a href="/faq-api/">API</a></li><li><a href="/faq-infra/">Infrastructure</a></li></ul></li><li><a href="https://github.com/pryv/open-pryv.io">Open Pryv.io</a></li><li><a href="/customer-resources/">Setup</a></li><li><a href="/roadmap/">Roadmap</a></li></ul><div class="navbar-right"><p class="navbar-text version"><a href="/change-log/" title="View change log">API version: <strong>2.0.0-pre</strong></a></p></div></div></div></nav></header><div class="container container-narrow" id="main-wrapper"><div id="main"><h1 class="page-title" id="pryvio-platform-validation-guide"><!--pryvio-platform-validation-guide-->Pryv.io platform validation guide</h1><p>This guide describes how to validate that a Pryv.io platform is up and running after install or after an upgrade.</p>
 <blockquote>
-<p><strong>Note (v2):</strong> This guide was written for the v1 multi-service topology (separate register, core, static-web roles). In v2, Pryv.io runs as a single binary &#x2014; validation is simpler. The general principles still apply but role-specific steps should be adapted to the unified deployment.</p>
+<p><strong>Since v2 (2026)</strong> Pryv.io is a single binary serving registration, core API, HFS and &#x2014; in multi-core mode &#x2014; DNS. Validation is therefore one short checklist instead of four (DNS + register + core + NGINX). In multi-core mode, run the checklist against every core.</p>
 </blockquote>
-<p>This procedure describes the steps to validate that a Pryv.io platform is up and running. You can directly jump to the <a href="#checklist">Checklist section</a> to proceed to a quick check-up of your Pryv.io platform.
-Troubleshooting steps can be found at the end of this document in case of validation failure.</p>
 <h2 id="table-of-contents-"><!--table-of-contents--->Table of contents <!-- omit in toc --></h2>
 <ol>
 <li><a href="#variables">Variables</a></li>
-<li><a href="#tools">Tools</a>
-<ol>
-<li><a href="#dns-checks">DNS checks:</a></li>
-<li><a href="#http-checks">HTTP checks:</a></li>
-</ol>
-</li>
+<li><a href="#tools">Tools</a></li>
 <li><a href="#checklist">Checklist</a>
 <ol>
-<li><a href="#dns-is-set-as-domain-name-server">DNS is set as domain name server</a></li>
-<li><a href="#dns">DNS</a></li>
-<li><a href="#core">Core</a></li>
-<li><a href="#register">Register</a></li>
+<li><a href="#1-process-is-up">1. Process is up</a></li>
+<li><a href="#2-public-url-responds">2. Public URL responds</a></li>
+<li><a href="#3-registration--rqlite-reachable">3. Registration / rqlite reachable</a></li>
+<li><a href="#4-dns-multi-core-only">4. DNS (multi-core only)</a></li>
+<li><a href="#5-base-storage-postgresql--mongodb-reachable">5. Base storage (PostgreSQL / MongoDB) reachable</a></li>
+<li><a href="#6-optional-hfs-port-reachable">6. (Optional) HFS port reachable</a></li>
 </ol>
 </li>
 <li><a href="#troubleshoot">Troubleshoot</a>
 <ol>
-<li><a href="#file-permissions">File permissions</a></li>
-<li><a href="#dns-issues">DNS issues</a>
-<ol>
-<li><a href="#redis-database-unreachable">Redis database unreachable</a></li>
-<li><a href="#configuration-error">Configuration error</a></li>
-<li><a href="#port-is-unreachable-from-the-internet">Port is unreachable from the Internet</a></li>
-</ol>
-</li>
-<li><a href="#core-issues">Core issues</a>
-<ol>
-<li><a href="#configuration-error-1">Configuration error</a></li>
-<li><a href="#waiting-on-database-connection">Waiting on database connection</a></li>
-</ol>
-</li>
-<li><a href="#nginx-issues">NGINX issues</a>
-<ol>
-<li><a href="#configuration-error-2">Configuration error</a></li>
-</ol>
-</li>
-<li><a href="#register-issues">Register issues</a>
-<ol>
-<li><a href="#configuration-error-3">Configuration error</a></li>
-<li><a href="#redis-database-unreachable-1">Redis database unreachable</a></li>
-</ol>
-</li>
+<li><a href="#core-does-not-start">Core does not start</a></li>
+<li><a href="#502--504-from-the-reverse-proxy">502 / 504 from the reverse proxy</a></li>
+<li><a href="#rqlite-cluster-split-brain-or-not-converging">rqlite cluster split-brain or not converging</a></li>
+<li><a href="#dns-does-not-resolve-user-subdomains">DNS does not resolve user subdomains</a></li>
+<li><a href="#base-storage-connection-fails">Base storage connection fails</a></li>
+<li><a href="#permission-denied-on-data-directories">Permission denied on data directories</a></li>
 </ol>
 </li>
 </ol>
 <h2 id="variables"><!--variables-->Variables</h2>
-<p>As this guide is platform-agnostic, we will use variables <code>${VARIABLE_NAME}</code> which must be replaced in the commands.</p>
-<p>In particular, the following variables should be replaced :</p>
+<p>Replace these placeholders:</p>
 <ul>
-<li>the <strong>domain name</strong>, which will be called <code>${DOMAIN}</code>,</li>
-<li>the <strong>configuration root folder</strong> <code>${PRYV_CONF_ROOT}</code>, corresponding to the folder on the machine containing the Pryv.io configuration files,</li>
-<li>the <strong>container name</strong>. Pryv.io components are containerized with Docker, so when doing certain actions on them, we address the containers by their name <code>${APP_CONTAINER_NAME}</code>. To find the name of a container, use <code>docker ps -a</code> to display all containers,</li>
-<li>the <strong>core machine hostname</strong> <code>${CORE_MACHINE_HOSTNAME}</code>, corresponding to the machine running the Pryv.io core service. On default configurations, we define the first one as <code>co1.${DOMAIN}</code>.</li>
+<li><code>${DOMAIN}</code> &#x2014; the public domain (path-based in <code>dnsLess</code>, subdomain base in multi-core).</li>
+<li><code>${PUBLIC_URL}</code> &#x2014; the full public URL of the core (<code>dnsLess.publicUrl</code> or <code>https://core-a.${DOMAIN}</code>).</li>
+<li><code>${CORE_HOST}</code> &#x2014; hostname the core runs on (SSH target for log inspection).</li>
+<li><code>${DATA_DIR}</code> &#x2014; data root from your config (see <a href="https://github.com/pryv/open-pryv.io/blob/master/INSTALL.md#data-directories">INSTALL &#x2014; Data directories</a>).</li>
 </ul>
 <h2 id="tools"><!--tools-->Tools</h2>
-<p>Depending on your skill set, this can be done using CLI tools or a web interface.</p>
-<h3 id="dns-checks"><!--dns-checks-->DNS checks:</h3>
 <ul>
-<li>dig version 9.12.3+</li>
-</ul>
-<h3 id="http-checks"><!--http-checks-->HTTP checks:</h3>
-<ul>
-<li>cURL version 7.54.0+</li>
-<li>Chrome web browser version 71+</li>
+<li><code>curl</code> v7.54+</li>
+<li><code>dig</code> v9.12+ (multi-core only)</li>
+<li>SSH access to each core machine</li>
 </ul>
 <h2 id="checklist"><!--checklist-->Checklist</h2>
-<h3 id="dns-is-set-as-domain-name-server"><!--dns-is-set-as-domain-name-server-->DNS is set as domain name server</h3>
-<p>Run the following command:</p>
-<pre><code>dig NS +trace +nodnssec ${DOMAIN}
-</code></pre>
-<p>The <strong>2 last blocks</strong> should display hostnames that resolve to the machine running your Pryv.io DNS such as:</p>
-<pre><code>${YOUR-DOMAIN}.		SOME_TTL_VALUE	IN	NS	dns1-pryv.${YOUR-DOMAIN}.
-${YOUR-DOMAIN}.		SOME_TTL_VALUE	IN	NS	dns2-pryv.${YOUR-DOMAIN}.
-</code></pre>
-<p>The last block should be followed by a line indicating that it is coming from your Pryv.io DNS such as:</p>
-<pre><code>;; Received 123 bytes from ${YOUR-DNS-IP-ADDRESS}#53(dns1-pryv.${YOUR-DOMAIN}) in 15 ms
-</code></pre>
+<h3 id="1-process-is-up"><!--1-process-is-up-->1. Process is up</h3>
 <ul>
-<li>If there are no blocks containing your machine&#x2019;s hostname, the name servers for the Pryv.io domain name <code>${DOMAIN}</code> are not defined or misconfigured. Verify with your domain provider that the name servers are set correctly.</li>
-<li>If there is a single block displaying your machine&#x2019;s hostname, then your Pryv.io DNS is not running. See <a href="#dns-issues">DNS issues section</a>.</li>
+<li>Docker: <code>docker ps</code> should list <code>pryvio_open_pryv_io</code> (or your container name) in an <code>Up</code> state.</li>
+<li>systemd: <code>systemctl status pryv-core</code> should show <code>active (running)</code>.</li>
+<li>Logs should end with the API/HFS workers signalling readiness &#x2014; no restart loop.</li>
 </ul>
-<h3 id="dns"><!--dns-->DNS</h3>
-<p>Run the following command:</p>
-<pre><code>dig reg.${DOMAIN}
+<h3 id="2-public-url-responds"><!--2-public-url-responds-->2. Public URL responds</h3>
+<pre><code class="language-bash">curl -i ${PUBLIC_URL}/reg/service/info
 </code></pre>
-<p>The <code>ANSWER</code> section should exist and list a hostname such as:</p>
-<pre><code>;; ANSWER :
-reg.${DOMAIN}.  SOME_TTL_NUMBER  IN  A  ${REGISTER_MACHINE_IP_ADDRESS}
+<p><strong>Expected:</strong> HTTP 200 with a JSON body listing <code>api</code>, <code>register</code>, <code>access</code>, <code>name</code>, <code>version</code>.</p>
+<p><strong>Common failures:</strong></p>
+<ul>
+<li><code>Could not resolve host</code> &#x2192; DNS or hosts-file not pointing at the core.</li>
+<li><code>Connection refused</code> &#x2192; the core or the reverse proxy is not listening on 443.</li>
+<li><code>502 Bad Gateway</code> &#x2192; the reverse proxy can&#x2019;t reach the core on port 3000.</li>
+</ul>
+<h3 id="3-registration--rqlite-reachable"><!--3-registration--rqlite-reachable-->3. Registration / rqlite reachable</h3>
+<p>Forces a round-trip through the rqlite platform DB:</p>
+<pre><code class="language-bash">curl -i ${PUBLIC_URL}/reg/testuser/check_username
 </code></pre>
-<p>If there is no <code>ANSWER</code> section, this means that the DNS is not running or is unreachable. See <a href="#dns-issues">DNS section</a>.</p>
-<h3 id="core"><!--core-->Core</h3>
-<p>Run <code>curl -i https://${CORE_MACHINE_HOSTNAME}/status</code> or open <a href="https://$%7BCORE_MACHINE_HOSTNAME%7D/status">https://${CORE_MACHINE_HOSTNAME}/status</a>.</p>
-<p>The hostname of the first core should be <code>co1.${DOMAIN}</code> by default (<code>co2.${DOMAIN}</code> and so on for the other ones in case of cluster deployment).</p>
+<p><strong>Expected:</strong> HTTP 200 with a JSON body telling you whether <code>testuser</code> is reserved.</p>
+<p>If this returns 500, inspect the core logs for rqlited errors &#x2014; see the <a href="#rqlite-cluster-split-brain-or-not-converging">rqlite troubleshooting</a> section.</p>
+<h3 id="4-dns-multi-core-only"><!--4-dns-multi-core-only-->4. DNS (multi-core only)</h3>
+<p>Skip in <code>dnsLess</code> mode.</p>
+<p>Verify that your domain&#x2019;s nameservers point to the cores:</p>
+<pre><code class="language-bash">dig NS +trace +nodnssec ${DOMAIN}
+</code></pre>
+<p>The last hop should return NS records that resolve to your core IPs. Then confirm a user subdomain resolves (use any registered username, or create one first):</p>
+<pre><code class="language-bash">dig A someuser.${DOMAIN}
+</code></pre>
+<p><strong>Expected:</strong> an <code>ANSWER SECTION</code> with an A record for one of the cores.</p>
+<h3 id="5-base-storage-postgresql--mongodb-reachable"><!--5-base-storage-postgresql--mongodb-reachable-->5. Base storage (PostgreSQL / MongoDB) reachable</h3>
+<p>The core logs a fatal error and exits if it cannot connect to its base storage on startup &#x2014; step 1 catches this. To double-check the connection independently:</p>
 <ul>
-<li>HTTP Status 200: OK</li>
-<li>HTTP Status 502: core service is not running, see <a href="#core-issues">core issues section</a></li>
-<li><code>connection refused</code> error: core&#x2019;s NGINX is not running, see <a href="#nginx-issues">NGINX section</a></li>
-<li><code>could not resolve host</code> error: DNS is not running, see <a href="#dns-issues">DNS section</a></li>
+<li>PostgreSQL: <code>psql -h &lt;host&gt; -U &lt;user&gt; -d pryv_db -c &apos;\dt&apos;</code> from the core machine.</li>
+<li>MongoDB: <code>mongosh --host &lt;host&gt; --eval &apos;db.stats()&apos; pryv-node</code> from the core machine.</li>
 </ul>
-<h3 id="register"><!--register-->Register</h3>
-<p>Run <code>curl -i https://reg.${DOMAIN}/wactiv/check_username</code> or open <a href="https://reg.$%7BDOMAIN%7D/wactiv/check_username">https://reg.${DOMAIN}/wactiv/check_username</a>. For DNS-less, use <code>curl -i https://${HOSTNAME}/reg/wactiv/check_username</code> or open <a href="https://$%7BHOSTNAME%7D/reg/wactiv/check_username">https://${HOSTNAME}/reg/wactiv/check_username</a>.</p>
-<p>HTTP status:</p>
-<ul>
-<li>200: OK</li>
-<li>500, 502: Register service is not running, see <a href="#register-issues">register issues section</a></li>
-</ul>
+<h3 id="6-optional-hfs-port-reachable"><!--6-optional-hfs-port-reachable-->6. (Optional) HFS port reachable</h3>
+<p>Only if your deployment uses HFS (high-frequency series):</p>
+<pre><code class="language-bash">curl -i -X OPTIONS ${PUBLIC_URL}/someuser/events/abc/series
+</code></pre>
+<p><strong>Expected:</strong> a 2xx or a documented 4xx from the HFS stack. A 502/504 means the reverse proxy can&#x2019;t reach port 4000.</p>
 <h2 id="troubleshoot"><!--troubleshoot-->Troubleshoot</h2>
-<h3 id="file-permissions"><!--file-permissions-->File permissions</h3>
-<p>If you encounter permission issues on data and log files, those handy scripts make sure they are set correctly:</p>
+<h3 id="core-does-not-start"><!--core-does-not-start-->Core does not start</h3>
+<p>Inspect the logs:</p>
+<pre><code class="language-bash">docker logs -f --tail 200 pryvio_open_pryv_io
+# or
+journalctl -u pryv-core -f
+</code></pre>
+<p>Common causes:</p>
 <ul>
-<li>On a single node setup: <code>./ensure-permissions</code>; after that run <code>${PRYV_CONF_ROOT}/restart-pryv</code> to ensure Redis picks up possible changes</li>
-<li>On a cluster setup:
+<li>Malformed override YAML (<code>invalid config ...</code>). Run with <code>DEBUG=1</code> to get the full stack.</li>
+<li>Missing required <code>auth.adminAccessKey</code> / <code>auth.filesReadTokenSecret</code> / <code>service.*</code> keys &#x2014; see <a href="https://github.com/pryv/open-pryv.io/blob/master/INSTALL.md#minimal-production-config">INSTALL &#x2014; Minimal production config</a>.</li>
+<li>Port in use &#x2014; usually another core or a stale process holding 3000/4000/4001/4002.</li>
+<li><code>rqlited</code> binary missing &#x2014; reinstall the image or re-run <code>just setup-dev-env</code>.</li>
+</ul>
+<p>Export the tail of the log if you need to escalate:</p>
+<pre><code class="language-bash">docker logs --tail 200 pryvio_open_pryv_io &gt; $(date -I)-pryv-core.log
+</code></pre>
+<h3 id="502--504-from-the-reverse-proxy"><!--502--504-from-the-reverse-proxy-->502 / 504 from the reverse proxy</h3>
 <ul>
-<li>On register: <code>./ensure-permissions-reg-master</code>; after that run <code>${PRYV_CONF_ROOT}/restart-pryv</code> to ensure Redis picks up possible changes</li>
-<li>On core: <code>./ensure-permissions-core</code></li>
+<li>Confirm the core is actually listening on 3000/4000: <code>ss -tlnp | grep -E &apos;3000|4000&apos;</code>.</li>
+<li>If the proxy is on a different host, check the firewall between them.</li>
+<li>For HFS specifically, ensure <code>proxy_set_header Host 127.0.0.1:4000;</code> is set &#x2014; the HFS subdomain-to-path middleware breaks if a real domain is forwarded (<a href="https://github.com/pryv/open-pryv.io/blob/master/INSTALL.md#important-nginx-notes">INSTALL note</a>).</li>
 </ul>
-</li>
-</ul>
-<h3 id="dns-issues"><!--dns-issues-->DNS issues</h3>
-<ol>
-<li>SSH to the machine</li>
-<li>Access the DNS container logs on the register machine: <code>docker logs -f --tail 50 ${DNS_CONTAINER_NAME}</code>.</li>
-</ol>
-<h4 id="redis-database-unreachable"><!--redis-database-unreachable-->Redis database unreachable</h4>
-<p>The logs contain the following error <code>Error: Redis connection to redis:6379 failed - getaddrinfo ENOTFOUND redis redis:6379</code>.<br>
-See the Redis logs: <code>tail -f ${PRYV_CONF_ROOT}/reg-master/redis/log/redis.log</code><br>
-Fix issue if possible, otherwise send the last 100 lines of the log file to your Pryv tech contact. Run <code>tail -n 100 ${PRYV_CONF_ROOT}/reg-master/redis/log/redis.log &gt; ${DATE}-${ISSUE_NAME}.log</code> to generate the log file.</p>
-<h4 id="configuration-error"><!--configuration-error-->Configuration error</h4>
-<p>If the service keeps rebooting with an error message, fix configuration if possible.<br>
-Otherwise, send the last 100 lines of the DNS log file to your Pryv tech contact. Run <code>docker logs --tail 100 ${DNS_CONTAINER_NAME} &gt; ${DATE}-${ISSUE_NAME}.log</code> to generate the log file.</p>
-<h4 id="port-is-unreachable-from-the-internet"><!--port-is-unreachable-from-the-internet-->Port is unreachable from the Internet</h4>
-<p>If there are no errors in the logs, the machine might simply not be reachable from the Internet on port UDP/53.</p>
-<ol>
-<li>SSH to the register machine</li>
-<li>Make a DNS request: <code>dig @localhost reg.${DOMAIN}</code></li>
-</ol>
-<p>If the request yields an answer, your firewall settings might be set wrong. You must allow INGRESS UDP/53 as defined in the <strong>Infrastructure procurement guide</strong> from the <a href="/customer-resources/#guides-and-documents">Customer Resources page</a>.</p>
-<h3 id="core-issues"><!--core-issues-->Core issues</h3>
-<ol>
-<li>SSH to core machine</li>
-<li>Read logs &amp; fix issue if possible: <code>docker logs -f --tail 50 ${CORE_CONTAINER_NAME}</code></li>
-<li>Reboot if necessary: <code>docker stop ${CORE_CONTAINER_NAME} &amp;&amp; ./run-core</code></li>
-<li>Send container log to your Pryv tech contact. Run <code>docker logs --tail 100 ${CORE_CONTAINER_NAME} &gt; ${DATE}-${ISSUE_NAME}.log</code> to generate the log file.</li>
-</ol>
-<h4 id="configuration-error-1"><!--configuration-error-1-->Configuration error</h4>
-<p>If the service keeps rebooting with an error message, fix configuration if possible.<br>
-Otherwise, send the last 100 lines of the container log to your Pryv tech contact. Run <code>docker logs --tail 100 ${CORE_CONTAINER_NAME} &gt; ${DATE}-${ISSUE_NAME}.log</code> to generate the log file.</p>
-<h4 id="waiting-on-database-connection"><!--waiting-on-database-connection-->Waiting on database connection</h4>
-<p>If the service is waiting on the database to be available for connection: <code>[database] Cannot connect to mongodb://mongodb:27017/pryv-node, retrying in a sec</code><br>
-check MongoDB status: <code>tail -f ${PRYV_CONF_ROOT}/core/mongodb/log/mongodb.log</code></p>
+<h3 id="rqlite-cluster-split-brain-or-not-converging"><!--rqlite-cluster-split-brain-or-not-converging-->rqlite cluster split-brain or not converging</h3>
+<p>Only in multi-core mode. Symptoms: <code>/reg/*</code> returns 500, registrations fail, <code>/system/admin/cores</code> times out.</p>
 <ul>
-<li>Booting: just wait 1-15min depending on the size of your database</li>
-<li>Error: read logs, fix error if possible &amp; reboot it if needed: <code>docker stop ${MONGODB_CONTAINER_NAME} &amp;&amp; ./run-core</code></li>
-<li>Send MongoDB container log to your Pryv tech contact. Run <code>tail -n 100 ${PRYV_CONF_ROOT}/core/mongodb/log/mongodb.log &gt; ${DATE}-${ISSUE_NAME}.log</code> to generate the log file.</li>
+<li>Every core must run rqlited on the same Raft port (default 4002) and the port must be open between cores.</li>
+<li>The <code>lsc.${DOMAIN}</code> A record must list <strong>every</strong> core&#x2019;s IP &#x2014; rqlited uses it for peer discovery.</li>
+<li>Inspect rqlite&#x2019;s local status: <code>curl http://localhost:4001/status</code> on each core. The <code>raft</code> block should agree on a single leader.</li>
+<li>Full troubleshooting: <a href="https://rqlite.io/docs/">rqlite.io documentation</a>.</li>
 </ul>
-<h3 id="nginx-issues"><!--nginx-issues-->NGINX issues</h3>
-<ol>
-<li>SSH to core/register machine</li>
-<li>Read logs &amp; fix issue if possible: <code>docker logs ${NGINX_CONTAINER_NAME}</code></li>
-<li>Reboot if necessary: <code>docker stop ${NGINX_CONTAINER_NAME} &amp;&amp; ./run-core</code></li>
-<li>Send error log to your Pryv tech contact. Run <code>docker logs --tail 100 ${NGINX_CONTAINER_NAME} &gt; ${DATE}-${ISSUE_NAME}.log</code> to generate the log file.</li>
-</ol>
-<h4 id="configuration-error-2"><!--configuration-error-2-->Configuration error</h4>
-<p>If the log file has a line such as: <code>2019/01/28 12:44:07 [emerg] ERROR MESSAGE ...</code>, fix issue if possible.<br>
-Otherwise, send error log to your Pryv tech contact. Run <code>docker logs --tail 100 ${NGINX_CONTAINER_NAME} &gt; ${DATE}-${ISSUE_NAME}.log</code> to generate the log file.</p>
-<h3 id="register-issues"><!--register-issues-->Register issues</h3>
-<ol>
-<li>SSH to the register machine</li>
-<li>Read logs &amp; fix issue if possible: <code>docker logs -f --tail 50 ${REGISTER_CONTAINER_NAME}</code></li>
-<li>Reboot if necessary: <code>docker stop ${REGISTER_CONTAINER_NAME} &amp;&amp; ./run-reg-master</code></li>
-<li>Send error log to your Pryv tech contact. Run <code>docker logs --tail 100 ${REGISTER_CONTAINER_NAME} &gt; ${DATE}-${ISSUE_NAME}.log</code> to generate the log file.</li>
-</ol>
-<h4 id="configuration-error-3"><!--configuration-error-3-->Configuration error</h4>
-<p>Service keeps rebooting with an error message - fix configuration if possible and reboot the service.</p>
-<h4 id="redis-database-unreachable-1"><!--redis-database-unreachable-1-->Redis database unreachable</h4>
-<p>See <a href="#redis-database-unreachable">this section under DNS</a>.</p>
+<h3 id="dns-does-not-resolve-user-subdomains"><!--dns-does-not-resolve-user-subdomains-->DNS does not resolve user subdomains</h3>
+<p>Only in multi-core mode with embedded DNS (<code>dns.active: true</code>).</p>
+<ul>
+<li>Check that the core process binds port 53 (<code>ss -ulnp | grep :53</code>). If Docker&#x2019;s embedded DNS or <code>systemd-resolved</code> is holding the port, free it or bind the core&#x2019;s DNS to a specific interface.</li>
+<li>Query the core directly, bypassing recursive resolvers: <code>dig @&lt;core-ip&gt; someuser.${DOMAIN}</code>.</li>
+<li>If the direct query works but public resolvers don&#x2019;t, the domain&#x2019;s NS records at the registrar are wrong.</li>
+</ul>
+<h3 id="base-storage-connection-fails"><!--base-storage-connection-fails-->Base storage connection fails</h3>
+<ul>
+<li>Credentials: re-read <code>storages.engines.postgresql.*</code> (or <code>mongodb.*</code>) in your override YAML.</li>
+<li>Network: from the core host, <code>nc -vz &lt;db-host&gt; 5432</code> (or <code>27017</code>).</li>
+<li>Permissions: PostgreSQL&#x2019;s <code>pg_hba.conf</code> must allow the core&#x2019;s IP; MongoDB&#x2019;s auth DB must contain the user.</li>
+</ul>
+<h3 id="permission-denied-on-data-directories"><!--permission-denied-on-data-directories-->Permission denied on data directories</h3>
+<p>The core process must own (or at least be able to write to) <code>${DATA_DIR}/users</code>, <code>${DATA_DIR}/previews</code> and <code>${DATA_DIR}/rqlite-data</code>. Typical fix:</p>
+<pre><code class="language-bash">sudo chown -R &lt;pryv-user&gt;:&lt;pryv-user&gt; ${DATA_DIR}
+</code></pre>
+<p>For Docker: the default image runs as root, so permissions are usually only an issue when host-mounted volumes were pre-created by another user.</p>
 </div><nav id="toc"></nav></div><footer id="page-footer"><nav class="navbar navbar-default"><div class="container-fluid"><div id="footer-nav"><ul class="nav navbar-nav"><li><a href="https://github.com/pryv">GitHub</a></li></ul></div></div></nav></footer><script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script><script src="/assets/bootstrap.min.js"></script><script src="/assets/js/toc.min.js"></script><!-- TOC generation--><script>jQuery(document).ready(function($) {
   // Header is about 51 pixels. This equals to 'header + fuzz', fuzz was
   // determined experimentally.
