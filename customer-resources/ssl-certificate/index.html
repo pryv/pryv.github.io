@@ -11,19 +11,10 @@
 <h2 id="table-of-contents-"><!--table-of-contents--->Table of contents <!-- omit in toc --></h2>
 <ol>
 <li><a href="#which-certificate-do-i-need">Which certificate do I need?</a></li>
-<li><a href="#where-the-certificate-plugs-in">Where the certificate plugs in</a>
-<ol>
-<li><a href="#built-in-https-core-terminates-tls">Built-in HTTPS (core terminates TLS)</a></li>
-<li><a href="#behind-your-own-reverse-proxy">Behind your own reverse proxy</a></li>
-</ol>
-</li>
-<li><a href="#issuing-a-certificate-with-lets-encrypt--certbot">Issuing a certificate with Let&#x2019;s Encrypt / certbot</a>
-<ol>
-<li><a href="#http-01-challenge-single-core-public-host">HTTP-01 challenge (single-core, public host)</a></li>
-<li><a href="#dns-01-challenge-required-for-wildcards">DNS-01 challenge (required for wildcards)</a></li>
-</ol>
-</li>
-<li><a href="#renewal">Renewal</a></li>
+<li><a href="#choose-an-issuance-strategy">Choose an issuance strategy</a></li>
+<li><a href="#strategy-a--built-in-auto-renewal-recommended">Strategy A &#x2014; built-in auto-renewal (recommended)</a></li>
+<li><a href="#strategy-b--reverse-proxy-handles-acme">Strategy B &#x2014; reverse proxy handles ACME</a></li>
+<li><a href="#strategy-c--manual-certbot--file-paths">Strategy C &#x2014; manual certbot + file paths</a></li>
 <li><a href="#v1-procedure-legacy">v1 procedure (legacy)</a></li>
 </ol>
 <h2 id="which-certificate-do-i-need"><!--which-certificate-do-i-need-->Which certificate do I need?</h2>
@@ -53,22 +44,102 @@
 <blockquote>
 <p><strong>Public-facing TLS vs cluster CA.</strong> This page is about the <strong>public-facing</strong> SSL cert that clients (apps, browsers, SDKs) see when they hit <code>https://{username}.{domain}/</code>. In multi-core deployments, the <code>bin/bootstrap.js</code> CLI also creates a <strong>separate, internal cluster CA</strong> (<code>/etc/pryv/ca/</code>) used only for mutually-authenticated TLS on the rqlite Raft channel between cores. The two are independent: you still need a publicly-trusted cert for the API. The cluster CA is self-signed by design &#x2014; it never sees the public internet &#x2014; and is managed entirely by the bootstrap CLI. See <a href="/customer-resources/single-node-to-cluster/#cluster-security-at-a-glance">single-node to cluster &#x2014; Cluster security at a glance</a>.</p>
 </blockquote>
-<h2 id="where-the-certificate-plugs-in"><!--where-the-certificate-plugs-in-->Where the certificate plugs in</h2>
-<h3 id="built-in-https-core-terminates-tls"><!--built-in-https-core-terminates-tls-->Built-in HTTPS (core terminates TLS)</h3>
-<p>Set the paths in your override YAML &#x2014; the core will load them directly:</p>
+<h2 id="choose-an-issuance-strategy"><!--choose-an-issuance-strategy-->Choose an issuance strategy</h2>
+<p>Three practical paths, in order of operational effort (lowest first):</p>
+<table>
+<thead>
+<tr>
+<th>Strategy</th>
+<th>When</th>
+<th>Operator work</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>A &#x2014; built-in auto-renewal</strong></td>
+<td>You want the simplest setup; the core can reach Let&#x2019;s Encrypt itself; there&#x2019;s no reverse proxy already handling ACME.</td>
+<td>One-time config block, then nothing.</td>
+</tr>
+<tr>
+<td><strong>B &#x2014; reverse proxy handles ACME</strong></td>
+<td>You already run Caddy / Traefik / nginx-proxy-manager / similar with built-in ACME.</td>
+<td>Unchanged &#x2014; keep doing that.</td>
+</tr>
+<tr>
+<td><strong>C &#x2014; manual certbot + file paths</strong></td>
+<td>You need offline-style installs, custom CAs, or another bespoke issuance path.</td>
+<td>Issue + copy on each renewal, or wire a certbot cron.</td>
+</tr>
+</tbody>
+</table>
+<p>Strategies A and B are mutually exclusive (you&#x2019;d run two ACME clients racing for the same hostname). Strategy C works alongside either &#x2014; it&#x2019;s what the core falls back to when <code>letsEncrypt.enabled: false</code>.</p>
+<h2 id="strategy-a--built-in-auto-renewal-recommended"><!--strategy-a--built-in-auto-renewal-recommended-->Strategy A &#x2014; built-in auto-renewal (recommended)</h2>
+<p>Opt-in via the <code>letsEncrypt</code> config block. The core runs the ACME flow itself, renews well before expiry, replicates the cert to every node in a multi-core deployment via PlatformDB, and hot-swaps the running HTTPS server&#x2019;s TLS context (<code>https.Server.setSecureContext</code>) so there&#x2019;s no restart.</p>
+<p>Minimum config on a single-core host:</p>
 <pre><code class="language-yaml">http:
   ip: 0.0.0.0
   port: 443
   ssl:
-    keyFile: /etc/ssl/pryv/privkey.pem
-    certFile: /etc/ssl/pryv/fullchain.pem
-    caFile:  /etc/ssl/pryv/chain.pem        # optional, add the issuer chain if your CA is not in the OS trust store
+    keyFile: var-pryv/tls/your-domain.com/privkey.pem
+    certFile: var-pryv/tls/your-domain.com/fullchain.pem
+dnsLess:
+  isActive: true
+  publicUrl: https://your-domain.com
+letsEncrypt:
+  enabled: true
+  email: ops@your-domain.com
+  atRestKey: &apos;&lt;base64 of 32 random bytes&gt;&apos;
+  certRenewer: true
 </code></pre>
-<p>Restart <code>bin/master.js</code> to pick up a renewed certificate (future versions may hot-reload &#x2014; not yet guaranteed).</p>
-<h3 id="behind-your-own-reverse-proxy"><!--behind-your-own-reverse-proxy-->Behind your own reverse proxy</h3>
-<p>Terminate TLS in your proxy and forward plain HTTP to the core on port 3000 (API) and port 4000 (HFS). A sample NGINX block is in <a href="https://github.com/pryv/open-pryv.io/blob/master/INSTALL.md#running--behind-nginx">INSTALL &#x2014; Running behind nginx</a>. The proxy is also the right place to host your auto-renewal (certbot hook, Caddy&#x2019;s built-in ACME, Traefik, etc.).</p>
-<h2 id="issuing-a-certificate-with-lets-encrypt--certbot"><!--issuing-a-certificate-with-lets-encrypt--certbot-->Issuing a certificate with Let&#x2019;s Encrypt / certbot</h2>
-<p>Install certbot from <a href="https://certbot.eff.org/instructions">the project instructions</a>.</p>
+<p>Generate the <code>atRestKey</code> once:</p>
+<pre><code class="language-bash">node -e &quot;console.log(require(&apos;crypto&apos;).randomBytes(32).toString(&apos;base64&apos;))&quot;
+</code></pre>
+<p>Multi-core: every core must have the <strong>same</strong> <code>atRestKey</code> in its override YAML; <code>certRenewer: true</code> is set on exactly <strong>one</strong> core &#x2014; typically the cluster CA holder (the node that ran <code>bin/bootstrap.js new-core</code> for the others). The renewer does the ACME work; every other core polls PlatformDB and materialises the rotated cert to disk on its next tick. See <a href="/customer-resources/single-node-to-cluster/">single-node to cluster</a> for the multi-core walkthrough.</p>
+<p>Hostnames + challenge type are <strong>derived from topology</strong>:</p>
+<table>
+<thead>
+<tr>
+<th>Topology config</th>
+<th>Hostnames covered</th>
+<th>ACME challenge</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>dnsLess.publicUrl</code></td>
+<td>the host in that URL</td>
+<td>HTTP-01</td>
+</tr>
+<tr>
+<td><code>core.url</code></td>
+<td>the host in that URL</td>
+<td>HTTP-01</td>
+</tr>
+<tr>
+<td><code>dns.domain</code></td>
+<td><code>*.{domain}</code> + apex</td>
+<td>DNS-01</td>
+</tr>
+</tbody>
+</table>
+<p>There is intentionally no <code>letsEncrypt.hostnames</code> field &#x2014; the two could drift. If none of the three are set, the core refuses to start the letsEncrypt block with a loud error; fix your topology config.</p>
+<p><strong>DNS-01 with the embedded DNS server</strong> (multi-core wildcard case) has been validated end-to-end against Let&#x2019;s Encrypt staging. The core publishes the <code>_acme-challenge</code> TXT record through rqlite &#x2192; every core&#x2019;s embedded DNS server &#x2192; LE&#x2019;s 5+ geo-distributed validators.</p>
+<p><strong>Reverse-proxy reload hook</strong> &#x2014; optional. If you terminate TLS in nginx / Caddy / HAProxy instead of the core, point the core at those same cert paths and give it a script to nudge the proxy on rotation:</p>
+<pre><code class="language-yaml">letsEncrypt:
+  enabled: true
+  # ...
+  onRotateScript: /etc/pryv/hooks/reload-nginx.sh
+</code></pre>
+<pre><code class="language-bash"># /etc/pryv/hooks/reload-nginx.sh
+#!/usr/bin/env bash
+nginx -t &amp;&amp; nginx -s reload
+</code></pre>
+<p>Env vars passed: <code>PRYV_CERT_HOSTNAME</code>, <code>PRYV_CERT_PATH</code>, <code>PRYV_CERT_KEYPATH</code>. Non-zero exit is logged and moved past &#x2014; no retry, no rollback.</p>
+<p><strong>Admin visibility</strong> &#x2014; <code>GET /system/admin/certs</code> (admin-key protected) returns hostname / issuedAt / expiresAt / daysUntilExpiry for every cert the cluster is managing.</p>
+<h2 id="strategy-b--reverse-proxy-handles-acme"><!--strategy-b--reverse-proxy-handles-acme-->Strategy B &#x2014; reverse proxy handles ACME</h2>
+<p>Terminate TLS in your proxy (Caddy has native ACME; Traefik / nginx-proxy-manager offer plugins) and forward plain HTTP to the core on port 3000 (API) and port 4000 (HFS). Sample nginx block: <a href="https://github.com/pryv/open-pryv.io/blob/master/INSTALL.md#running--behind-nginx">INSTALL &#x2014; Running behind nginx</a>. Leave <code>letsEncrypt.enabled: false</code> on the core. The proxy handles everything; the core doesn&#x2019;t even see a certificate.</p>
+<h2 id="strategy-c--manual-certbot--file-paths"><!--strategy-c--manual-certbot--file-paths-->Strategy C &#x2014; manual certbot + file paths</h2>
+<p>Only needed for offline-style installs, custom CAs, or other bespoke issuance paths. Install certbot from <a href="https://certbot.eff.org/instructions">the project instructions</a>.</p>
 <h3 id="http-01-challenge-single-core-public-host"><!--http-01-challenge-single-core-public-host-->HTTP-01 challenge (single-core, public host)</h3>
 <p>The core (or your reverse proxy) must serve <code>/.well-known/acme-challenge/</code> on port 80 during the challenge. With certbot&#x2019;s standalone mode:</p>
 <pre><code class="language-bash">sudo certbot certonly --standalone -d your-domain.com
@@ -84,7 +155,7 @@
 </code></pre>
 <p>When the right value comes back, continue the certbot prompt.</p>
 <p>For a non-interactive pipeline, certbot has DNS plugins for common providers (Route 53, Cloudflare, OVH, &#x2026;) &#x2014; see <a href="https://eff-certbot.readthedocs.io/en/stable/using.html#dns-plugins">certbot plugins</a>. An API-driven plugin is the only practical way to run fully-automated wildcard renewal.</p>
-<h2 id="renewal"><!--renewal-->Renewal</h2>
+<h3 id="renewal-in-strategy-c"><!--renewal-in-strategy-c-->Renewal in Strategy C</h3>
 <ul>
 <li>
 <p><strong>certbot</strong> auto-registers a systemd timer/cron job (<code>certbot renew</code>) that runs twice a day. Reload the core (or your reverse proxy) after each successful renewal:</p>
@@ -94,7 +165,7 @@ systemctl reload nginx          # or: systemctl restart pryv-core
 </code></pre>
 </li>
 <li>
-<p><strong>Reverse-proxy-managed certificates</strong> (Caddy, Traefik, nginx-proxy-manager, &#x2026;) take care of renewal transparently &#x2014; nothing to do on the Pryv.io side.</p>
+<p>With Strategy A you get the same outcome (auto-renew + reload) without running certbot at all.</p>
 </li>
 </ul>
 <h2 id="v1-procedure-legacy"><!--v1-procedure-legacy-->v1 procedure (legacy)</h2>
