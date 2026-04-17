@@ -43,12 +43,9 @@ dns1.mc.example.com  3600  IN  A   &lt;core-a-ip&gt;
 dns2.mc.example.com  3600  IN  A   &lt;core-b-ip&gt;
 mc                   3600  IN  NS  dns1.mc.example.com.
 mc                   3600  IN  NS  dns2.mc.example.com.
-
-# A record used by rqlite peer discovery &#x2014; must list every core:
-lsc.mc.example.com   60    IN  A   &lt;core-a-ip&gt;
-lsc.mc.example.com   60    IN  A   &lt;core-b-ip&gt;
 </code></pre>
-<p>If you have a single machine in this mode, use the same IP for both <code>dns1</code> and <code>dns2</code> entries and the single <code>lsc</code> A record.</p>
+<p>You do <strong>not</strong> publish <code>lsc.mc.example.com</code> or per-core (<code>{core-id}.mc.example.com</code>) records by hand &#x2014; the <code>bin/bootstrap.js</code> CLI on the existing core writes them into PlatformDB and the embedded DNS server serves them. See <a href="/customer-resources/single-node-to-cluster/">single-node to cluster</a> for the procedure.</p>
+<p>If you have a single machine in this mode, use the same IP for both <code>dns1</code> and <code>dns2</code> entries.</p>
 <h3 id="multi-core-with-externally-managed-dns"><!--multi-core-with-externally-managed-dns-->Multi-core with externally-managed DNS</h3>
 <p>Use this when DNS is managed by an external provider (Cloudflare, Route 53, an internal DNS server, a load balancer) rather than the core. Set an explicit <code>core.url</code> per core in the override YAML &#x2014; see <a href="https://github.com/pryv/open-pryv.io/blob/master/SINGLE-TO-MULTIPLE.md#dnsless-multi-core-externally-managed-dns">INSTALL &#x2014; DNSless multi-core</a> &#x2014; and still publish the <code>lsc.{domain}</code> A record(s) so rqlite peers can discover each other.</p>
 <h2 id="install-and-configure-the-core"><!--install-and-configure-the-core-->Install and configure the core</h2>
@@ -58,7 +55,7 @@ lsc.mc.example.com   60    IN  A   &lt;core-b-ip&gt;
 <li>Write a minimal <code>override-config.yml</code> &#x2014; the template is in <a href="https://github.com/pryv/open-pryv.io/blob/master/INSTALL.md#minimal-production-config">INSTALL &#x2014; Minimal production config</a>.</li>
 <li>Start <code>bin/master.js</code> (or the Docker image) with <code>NODE_ENV=production</code> and your override file.</li>
 </ol>
-<p>For multi-core, the upgrade path from an existing single-core install is documented in <a href="/customer-resources/single-node-to-cluster/">single-node to cluster</a> and upstream in <a href="https://github.com/pryv/open-pryv.io/blob/master/SINGLE-TO-MULTIPLE.md">SINGLE-TO-MULTIPLE.md</a>.</p>
+<p>For multi-core, the upgrade path from an existing single-core install is documented in <a href="/customer-resources/single-node-to-cluster/">single-node to cluster</a> and upstream in <a href="https://github.com/pryv/open-pryv.io/blob/master/SINGLE-TO-MULTIPLE.md">SINGLE-TO-MULTIPLE.md</a>. Adding each new core is one CLI invocation on the existing core (<code>bin/bootstrap.js new-core ...</code>) followed by booting the new core in <code>--bootstrap</code> mode &#x2014; the CLI handles cluster CA, mTLS material, platform-secret transfer, DNS publishing and pre-registration in PlatformDB.</p>
 <p><strong>Upgrading from v1?</strong> If you already run Pryv.io 1.x and want to move its user data into a fresh v2 install, use the <a href="https://github.com/pryv/dev-migrate-v1-v2"><code>dev-migrate-v1-v2</code></a> toolkit &#x2014; it exports from a v1 MongoDB and writes a v2-compatible backup that <code>bin/backup.js --restore</code> can import. See the toolkit&#x2019;s README for the current source/target matrix (MongoDB v1 source &#x2192; MongoDB v2 target is supported; PostgreSQL v2 target is not yet).</p>
 <h2 id="obtain-an-ssl-certificate"><!--obtain-an-ssl-certificate-->Obtain an SSL certificate</h2>
 <p>What type of certificate you need depends on the topology &#x2014; see the <a href="/customer-resources/ssl-certificate/">SSL certificate guide</a>. Briefly:</p>

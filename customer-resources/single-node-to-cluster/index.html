@@ -5,22 +5,28 @@
   <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
 <![endif]--><link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Roboto:400,300,500,700,400italic|Roboto+Condensed:400,300,700"><link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/styles/docco.min.css"><link rel="stylesheet" type="text/css" href="/assets/fonts/ss-gizmo.min.css"><link rel="stylesheet" type="text/css" href="/assets/style.css"></head><body class="single-node-to-cluster with-toc"><header id="page-header"><nav class="navbar navbar-default navbar-fixed-top" role="navigation"><div class="container-fluid"><div class="navbar-header"><a class="navbar-brand logo" href="/" title="Developers home"><img src="/assets/images/logo-256-black.png" alt="Developers home"></a><button class="navbar-toggle" type="button" data-toggle="collapse" data-target="#main-nav"><span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button></div><div class="collapse navbar-collapse" id="main-nav"><ul class="nav navbar-nav"><li class="dropdown"><a class="dropdown-toggle" href="#" data-toggle="dropdown">Guides <b class="caret"></b></a><ul class="dropdown-menu"><li><a href="/getting-started/">Getting started</a></li><li><a href="/concepts/">API concepts</a></li><li><a href="/data-in-pryv/">Data In Pryv</a></li><li><a href="/guides/data-modelling/">Data modelling</a></li><li><a href="/guides/app-guidelines/">App guidelines</a></li><li><a href="/external-resources/">Apps &amp; Libs</a></li><li><a href="/guides/webhooks/">Webhooks</a></li><li><a href="/guides/custom-auth/">Custom auth</a></li><li><a href="/guides/consent/">Consent request</a></li><li><a href="/guides/audit-logs/">Audit logs</a></li></ul></li><li class="dropdown"><a class="dropdown-toggle" href="#" data-toggle="dropdown">Reference <b class="caret"></b></a><ul class="dropdown-menu"><li><a href="/reference/">API reference</a></li><li><a href="/reference-admin/">Admin API reference</a></li><li><a href="/reference-system/">System API reference</a></li><li><a href="/event-types/">Event types</a></li><li><a href="/open-api/">Open API (Postman)</a></li><li><a href="/change-log/">API change log</a></li></ul></li><li class="dropdown"><a class="dropdown-toggle" href="#" data-toggle="dropdown">FAQ <b class="caret"></b></a><ul class="dropdown-menu"><li><a href="/faq-api/">API</a></li><li><a href="/faq-infra/">Infrastructure</a></li></ul></li><li><a href="https://github.com/pryv/open-pryv.io">Open Pryv.io</a></li><li><a href="/customer-resources/">Setup</a></li><li><a href="/roadmap/">Roadmap</a></li></ul><div class="navbar-right"><p class="navbar-text version"><a href="/change-log/" title="View change log">API version: <strong>2.0.0-pre</strong></a></p></div></div></div></nav></header><div class="container container-narrow" id="main-wrapper"><div id="main"><h1 class="page-title" id="pryvio--single-core-to-multi-core-upgrade"><!--pryvio--single-core-to-multi-core-upgrade-->Pryv.io &#x2014; single-core to multi-core upgrade</h1><p>This guide describes how to upgrade a running single-core Pryv.io deployment to a multi-core setup, where several cores share the same platform and split users among themselves.</p>
 <blockquote>
-<p><strong>Since v2 (2026)</strong> there is <strong>no data migration involved</strong>. The platform DB (rqlite) is already in place on the single-core install &#x2014; going multi-core is a <strong>config-only</strong> change plus adding one or more cores. No separate register, DNS or static-web machines to provision, and no user data to copy. Users that already existed on the single core stay on that core; new registrations are distributed across all available cores.</p>
+<p><strong>Since v2 (2026)</strong> there is <strong>no data migration involved</strong>. The platform DB (rqlite) is already in place on the single-core install &#x2014; going multi-core is a <strong>config-only</strong> change plus issuing a sealed bundle for each new core. No separate register, DNS or static-web machines to provision, and no user data to copy. Users that already existed on the single core stay on that core; new registrations are distributed across all available cores.</p>
+<p><strong>Since v2.0.0</strong> the procedure is driven by the <code>bin/bootstrap.js</code> CLI on the existing core: one command per new core produces a passphrase-encrypted bundle, the new core boots in <code>--bootstrap</code> mode and joins the cluster over mutually-authenticated TLS automatically. The previous edit-override-YAML-by-hand workflow is preserved as an Appendix for offline-style installs.</p>
 <p>This page is the platform-operator narrative around the upstream <a href="https://github.com/pryv/open-pryv.io/blob/master/SINGLE-TO-MULTIPLE.md">SINGLE-TO-MULTIPLE.md</a>, which contains the exact config snippets and verification commands.</p>
 </blockquote>
 <h2 id="table-of-contents-"><!--table-of-contents--->Table of contents <!-- omit in toc --></h2>
 <ol>
 <li><a href="#prerequisites">Prerequisites</a></li>
 <li><a href="#outcome-at-a-glance">Outcome at a glance</a></li>
+<li><a href="#how-adding-a-core-works">How adding a core works</a></li>
 <li><a href="#decide-on-a-dns-strategy">Decide on a DNS strategy</a></li>
 <li><a href="#pick-a-wildcard-ssl-strategy">Pick a wildcard SSL strategy</a></li>
 <li><a href="#step-1--set-up-dns">Step 1 &#x2014; Set up DNS</a></li>
-<li><a href="#step-2--reconfigure-the-existing-core">Step 2 &#x2014; Reconfigure the existing core</a></li>
-<li><a href="#step-3--restart-and-verify-the-first-core">Step 3 &#x2014; Restart and verify the first core</a></li>
-<li><a href="#step-4--deploy-the-second-core">Step 4 &#x2014; Deploy the second core</a></li>
-<li><a href="#step-5--verify-cross-core-operation">Step 5 &#x2014; Verify cross-core operation</a></li>
+<li><a href="#step-2--switch-the-existing-core-to-multi-core-mode">Step 2 &#x2014; Switch the existing core to multi-core mode</a></li>
+<li><a href="#step-3--issue-a-bootstrap-bundle-for-the-new-core">Step 3 &#x2014; Issue a bootstrap bundle for the new core</a></li>
+<li><a href="#step-4--transfer-bundle--passphrase-to-the-new-core">Step 4 &#x2014; Transfer bundle + passphrase to the new core</a></li>
+<li><a href="#step-5--boot-the-new-core-in---bootstrap-mode">Step 5 &#x2014; Boot the new core in <code>--bootstrap</code> mode</a></li>
+<li><a href="#step-6--verify-cross-core-operation">Step 6 &#x2014; Verify cross-core operation</a></li>
+<li><a href="#cluster-security-at-a-glance">Cluster security at a glance</a></li>
+<li><a href="#operations-managing-in-flight-bundles">Operations: managing in-flight bundles</a></li>
 <li><a href="#nginx--reverse-proxy-notes">Nginx / reverse-proxy notes</a></li>
 <li><a href="#rollback">Rollback</a></li>
+<li><a href="#appendix--manual-bootstrap-no-cli">Appendix &#x2014; manual bootstrap (no CLI)</a></li>
 </ol>
 <h2 id="prerequisites"><!--prerequisites-->Prerequisites</h2>
 <ul>
@@ -29,6 +35,7 @@
 <li>At least one more machine or Dokku app for the second core.</li>
 <li>A base-storage database (PostgreSQL or MongoDB) for the second core &#x2014; separate from the first core&#x2019;s.</li>
 <li>The wildcard (or per-core) SSL certificate covering the new domain.</li>
+<li><code>openssl</code> available on the existing core (used by the bootstrap CLI to mint the cluster CA on first run &#x2014; already a system dep on any Pryv.io host).</li>
 </ul>
 <h2 id="outcome-at-a-glance"><!--outcome-at-a-glance-->Outcome at a glance</h2>
 <table>
@@ -66,41 +73,66 @@
 <td><code>{username}.mc.example.com</code> or per-core URLs (DNSless)</td>
 </tr>
 <tr>
-<td>Config flag</td>
-<td><code>dnsLess.isActive: true</code></td>
-<td><code>dnsLess.isActive: false</code>, <code>core.id</code> + <code>dns.domain</code></td>
+<td>Raft channel</td>
+<td>local only (loopback)</td>
+<td>mutually-authenticated TLS between cores</td>
+</tr>
+<tr>
+<td>Adding a core</td>
+<td>n/a</td>
+<td>one CLI invocation issues a sealed bundle</td>
 </tr>
 </tbody>
 </table>
+<h2 id="how-adding-a-core-works"><!--how-adding-a-core-works-->How adding a core works</h2>
+<p>The existing core (call it <code>core-a</code>) keeps a self-signed <strong>cluster CA</strong> in <code>/etc/pryv/ca/</code> and a token store in <code>/var/lib/pryv/bootstrap-tokens.json</code>. To add a new core (<code>core-b</code>):</p>
+<ol>
+<li>On <code>core-a</code>, run <code>bin/bootstrap.js new-core --id core-b --ip &lt;ip&gt;</code>. This:
+<ul>
+<li>generates the cluster CA on first run (one time only &#x2014; back up <code>/etc/pryv/ca/</code>),</li>
+<li>issues a node cert + key signed by the CA, scoped to <code>core-b</code>,</li>
+<li>mints a one-time join token (24 h TTL by default),</li>
+<li>pre-registers <code>core-b</code> in PlatformDB as <code>available:false</code> and publishes its DNS records,</li>
+<li>bundles everything &#x2014; identity, platform secrets, TLS material, ack URL, token &#x2014; into a passphrase-encrypted file.</li>
+</ul>
+</li>
+<li>Transfer the bundle file and the passphrase to <code>core-b</code> over <strong>separate</strong> secure channels.</li>
+<li>On <code>core-b</code>, run <code>bin/master.js --bootstrap &lt;bundle&gt; --bootstrap-passphrase-file &lt;pass&gt;</code>. This:
+<ul>
+<li>decrypts and validates the bundle,</li>
+<li>writes <code>override-config.yml</code> and the TLS files to disk,</li>
+<li>POSTs an ack to <code>core-a</code> (TLS pinned to the bundled CA),</li>
+<li>on success, deletes the bundle file (the join token is one-shot),</li>
+<li>chains into normal startup &#x2014; joining the rqlite cluster over mTLS.</li>
+</ul>
+</li>
+</ol>
+<p>Once the ack lands, <code>core-a</code> flips <code>core-b</code> to <code>available:true</code> in PlatformDB. Both cores now serve the cluster.</p>
 <h2 id="decide-on-a-dns-strategy"><!--decide-on-a-dns-strategy-->Decide on a DNS strategy</h2>
 <p>Two shapes of multi-core deployment are supported:</p>
 <ol>
-<li><strong>Embedded DNS</strong> &#x2014; the cores answer DNS queries for <code>*.mc.example.com</code>. You publish NS records at the registrar that delegate the Pryv.io subdomain to the cores.</li>
-<li><strong>Externally-managed DNS (DNSless multi-core)</strong> &#x2014; an external DNS provider (Cloudflare, Route 53, internal DNS, load balancer) resolves core hostnames. Cores advertise explicit <code>core.url</code> values via the platform DB and the client SDK uses the discovery endpoint rather than DNS to find the right core.</li>
+<li><strong>Embedded DNS</strong> &#x2014; the cores answer DNS queries for <code>*.mc.example.com</code>. You publish NS records at the registrar that delegate the Pryv.io subdomain to the cores. The bootstrap CLI publishes the per-core <code>{core-id}.{domain}</code> and <code>lsc.{domain}</code> records into PlatformDB; you don&#x2019;t maintain them by hand.</li>
+<li><strong>Externally-managed DNS (DNSless multi-core)</strong> &#x2014; an external DNS provider (Cloudflare, Route 53, internal DNS, load balancer) resolves core hostnames. Cores advertise explicit <code>core.url</code> values via the platform DB and the client SDK uses the discovery endpoint rather than DNS to find the right core. Use the CLI&#x2019;s <code>--url &lt;https://&#x2026;&gt;</code> flag when issuing the bundle.</li>
 </ol>
 <p>In both cases, an <code>lsc.{domain}</code> A record listing every core IP is needed for rqlite peer discovery.</p>
-<p>See <a href="https://github.com/pryv/open-pryv.io/blob/master/SINGLE-TO-MULTIPLE.md#dnsless-multi-core-externally-managed-dns">INSTALL &#x2014; DNSless multi-core</a> for the externally-managed variant.</p>
+<p>See <a href="https://github.com/pryv/open-pryv.io/blob/master/SINGLE-TO-MULTIPLE.md#dnsless-multi-core-externally-managed-dns">SINGLE-TO-MULTIPLE.md &#x2014; DNSless multi-core</a> for the externally-managed variant.</p>
 <h2 id="pick-a-wildcard-ssl-strategy"><!--pick-a-wildcard-ssl-strategy-->Pick a wildcard SSL strategy</h2>
 <ul>
 <li>Embedded DNS: one <strong>wildcard</strong> cert for <code>*.mc.example.com</code> used by all cores.</li>
 <li>DNSless: per-core plain certs for each <code>core.url</code>.</li>
 </ul>
-<p>See the <a href="/customer-resources/ssl-certificate/">SSL certificate guide</a>.</p>
+<p>Note: this is the <strong>public-facing</strong> SSL cert &#x2014; separate from the <strong>cluster CA</strong> the bootstrap CLI creates for the Raft channel. See the <a href="/customer-resources/ssl-certificate/">SSL certificate guide</a> for the distinction.</p>
 <h2 id="step-1--set-up-dns"><!--step-1--set-up-dns-->Step 1 &#x2014; Set up DNS</h2>
 <p><strong>Embedded DNS variant</strong> &#x2014; publish at the registrar:</p>
 <pre><code>dns1.mc.example.com  3600  IN  A   &lt;core-a-ip&gt;
 dns2.mc.example.com  3600  IN  A   &lt;core-b-ip&gt;
 mc                   3600  IN  NS  dns1.mc.example.com.
 mc                   3600  IN  NS  dns2.mc.example.com.
-
-# rqlite peer discovery &#x2014; must list every core
-lsc.mc.example.com   60    IN  A   &lt;core-a-ip&gt;
-lsc.mc.example.com   60    IN  A   &lt;core-b-ip&gt;
 </code></pre>
-<p>If you have a single machine to start with, repeat its IP in both <code>dns1</code> / <code>dns2</code> and the <code>lsc</code> record; add the second IP in Step 4.</p>
-<p><strong>DNSless variant</strong> &#x2014; publish A records at your provider for each <code>core.url</code>, plus the <code>lsc.{domain}</code> record.</p>
-<h2 id="step-2--reconfigure-the-existing-core"><!--step-2--reconfigure-the-existing-core-->Step 2 &#x2014; Reconfigure the existing core</h2>
-<p>Edit the existing core&#x2019;s override YAML &#x2014; see the exact shape in <a href="https://github.com/pryv/open-pryv.io/blob/master/SINGLE-TO-MULTIPLE.md#2-update-the-first-cores-config">SINGLE-TO-MULTIPLE.md &#x2014; Update the first core&#x2019;s config</a>. The salient changes:</p>
+<p>You do <strong>not</strong> need to maintain <code>lsc.mc.example.com</code> or per-core records by hand &#x2014; the bootstrap CLI publishes them into PlatformDB and the embedded DNS server serves them. (You only maintain them by hand in the manual-bootstrap appendix.)</p>
+<p><strong>DNSless variant</strong> &#x2014; publish A records at your provider for each <code>core.url</code>, plus the <code>lsc.{domain}</code> record listing every core&#x2019;s IP.</p>
+<h2 id="step-2--switch-the-existing-core-to-multi-core-mode"><!--step-2--switch-the-existing-core-to-multi-core-mode-->Step 2 &#x2014; Switch the existing core to multi-core mode</h2>
+<p>The existing core is in single-core (dnsLess) mode. Edit its config to identify itself in the cluster:</p>
 <pre><code class="language-yaml"># REMOVE (single-core / dnsLess)
 # dnsLess:
 #   isActive: true
@@ -110,94 +142,144 @@ dnsLess:
   isActive: false
 
 core:
-  id: core-a              # unique identifier for this core
+  id: core-a              # this core&apos;s identifier
   ip: &lt;host-public-ip&gt;
   available: true
 
 dns:
   domain: mc.example.com  # shared domain for all cores
   active: false           # set to true only if the core itself should answer DNS queries
-
-storages:
-  engines:
-    rqlite:
-      raftPort: 4002      # must be reachable from peer cores
 </code></pre>
-<p><code>storages.platform.engine</code> is already <code>rqlite</code> &#x2014; no change needed.</p>
-<h2 id="step-3--restart-and-verify-the-first-core"><!--step-3--restart-and-verify-the-first-core-->Step 3 &#x2014; Restart and verify the first core</h2>
-<p>Restart <code>bin/master.js</code>. On startup the core will:</p>
+<p>Restart <code>bin/master.js</code>. The core identifies itself as <code>core-a</code> and is reachable at <code>https://core-a.mc.example.com/</code>. The embedded rqlited continues as a single-node cluster &#x2014; until the first new core joins.</p>
+<h2 id="step-3--issue-a-bootstrap-bundle-for-the-new-core"><!--step-3--issue-a-bootstrap-bundle-for-the-new-core-->Step 3 &#x2014; Issue a bootstrap bundle for the new core</h2>
+<p>On <code>core-a</code> (the existing core, which holds the cluster CA):</p>
+<pre><code class="language-bash">node bin/bootstrap.js new-core \
+    --id core-b \
+    --ip 1.2.3.4 \
+    --hosting us-east-1 \
+    --out /tmp/core-b.bundle.age
+</code></pre>
+<p>The CLI prints something like:</p>
+<pre><code>[ca] new cluster CA generated at /etc/pryv/ca
+[ca] BACK UP THIS DIRECTORY &#x2014; losing it means you cannot add cores later.
+
+Bundle written:
+  file       : /tmp/core-b.bundle.age
+  passphrase : AbCd-EfGh-IjKl-MnOp
+  expires    : 2026-04-18T08:42:00.000Z
+  ack URL    : https://core-a.mc.example.com/system/admin/cores/ack
+</code></pre>
+<blockquote>
+<p><strong>Back up <code>/etc/pryv/ca/</code> immediately</strong> after the first run. The CA private key never leaves this host. If you lose it, you cannot add or rotate cores without standing up a new cluster.</p>
+</blockquote>
+<p>The CLI:</p>
 <ul>
-<li>Use the embedded rqlited for all platform operations.</li>
-<li>Generate user API URLs as <code>https://{username}.{dns.domain}/</code>.</li>
-<li>Identify itself as <code>core-a</code> and write its entry (id, ip, available) into PlatformDB.</li>
+<li>generated the cluster CA (only on the very first invocation),</li>
+<li>pre-registered <code>core-b</code> in PlatformDB as <code>available:false</code>,</li>
+<li>appended <code>1.2.3.4</code> to the <code>lsc.mc.example.com</code> DNS record,</li>
+<li>added a <code>core-b.mc.example.com</code> A record,</li>
+<li>minted a one-time, 24 h-TTL join token.</li>
 </ul>
-<p>Sanity checks (commands from upstream):</p>
-<pre><code class="language-bash"># Service info now reports multi-core URLs
-curl -s https://core-a.mc.example.com/reg/service/info
-# &#x2192; api: https://{username}.mc.example.com/
+<p>For DNSless multi-core, add <code>--url https://api2.example.com</code> so the explicit URL is included in the bundle.</p>
+<h2 id="step-4--transfer-bundle--passphrase-to-the-new-core"><!--step-4--transfer-bundle--passphrase-to-the-new-core-->Step 4 &#x2014; Transfer bundle + passphrase to the new core</h2>
+<p>Send the bundle file and the passphrase <strong>on different channels</strong>:</p>
+<ul>
+<li>file via <code>scp</code> / <code>rsync</code> / managed file transfer,</li>
+<li>passphrase via password manager / Signal / sealed envelope.</li>
+</ul>
+<p>The bundle is encrypted with AES-256-GCM keyed off the passphrase via scrypt, but the passphrase is the only thing standing between an attacker who steals the file and full cluster admin access. Don&#x2019;t put both in the same email.</p>
+<h2 id="step-5--boot-the-new-core-in---bootstrap-mode"><!--step-5--boot-the-new-core-in---bootstrap-mode-->Step 5 &#x2014; Boot the new core in <code>--bootstrap</code> mode</h2>
+<p>On <code>core-b</code> (a fresh host with a base storage already provisioned and <code>bin/master.js</code> installed):</p>
+<pre><code class="language-bash"># Write the passphrase to a file readable only by the master process
+echo &quot;AbCd-EfGh-IjKl-MnOp&quot; &gt; /root/core-b.pass
+chmod 600 /root/core-b.pass
 
-# Existing users are reachable at their subdomain
-curl -s https://existinguser.mc.example.com/auth/login -X POST ...
-
-# Core discovery works for existing users
-curl -s &apos;https://core-a.mc.example.com/reg/cores?username=existinguser&apos;
-# &#x2192; { core: { url: &quot;https://core-a.mc.example.com&quot; } }
+node bin/master.js \
+    --bootstrap /root/core-b.bundle.age \
+    --bootstrap-passphrase-file /root/core-b.pass
 </code></pre>
-<p>Until Step 4, the rqlite cluster has a single node &#x2014; that&#x2019;s fine.</p>
-<h2 id="step-4--deploy-the-second-core"><!--step-4--deploy-the-second-core-->Step 4 &#x2014; Deploy the second core</h2>
-<p>Install the same core version on a second machine (Docker image or native). Give it its own base-storage DB (PostgreSQL/MongoDB) &#x2014; cores never share base storage. Override YAML:</p>
-<pre><code class="language-yaml">core:
-  id: core-b
-  ip: &lt;core-b-ip&gt;
-  available: true
+<p>The master process:</p>
+<ul>
+<li>decrypts and validates the bundle,</li>
+<li>writes <code>override-config.yml</code> to its config directory and <code>/etc/pryv/tls/{ca,node}.{crt,key}</code> (mode 0600 for the key),</li>
+<li>POSTs an ack to the URL embedded in the bundle, with TLS pinned to the bundled CA,</li>
+<li>on success, deletes the bundle file (the token is single-use; replay attempts get a 401 from the ack endpoint),</li>
+<li>continues into normal startup &#x2014; <code>rqlited</code> joins the cluster over mTLS.</li>
+</ul>
+<p>The ack response includes a snapshot of the cluster&#x2019;s cores so you can sanity-check what you&#x2019;ve joined before the master proceeds with normal startup.</p>
+<h2 id="step-6--verify-cross-core-operation"><!--step-6--verify-cross-core-operation-->Step 6 &#x2014; Verify cross-core operation</h2>
+<p>Upstream gives the exact curl sequence &#x2014; <a href="https://github.com/pryv/open-pryv.io/blob/master/SINGLE-TO-MULTIPLE.md#6-verify-cross-core-operation">SINGLE-TO-MULTIPLE.md &#x2014; Verify cross-core operation</a>. The essentials:</p>
+<pre><code class="language-bash"># Both cores listed, both available
+curl -s https://core-a.mc.example.com/system/admin/cores -H &apos;Authorization: &lt;admin-key&gt;&apos;
+# &#x2192; { cores: [
+#       { id: &quot;core-a&quot;, available: true, userCount: N },
+#       { id: &quot;core-b&quot;, available: true, userCount: 0 }
+#   ]}
 
-dns:
-  domain: mc.example.com
-
-storages:
-  engines:
-    rqlite:
-      raftPort: 4002      # same Raft port, must be reachable from core-a
-    postgresql:            # or mongodb
-      host: &lt;core-b-pg-host&gt;
-      database: pryv_db_b
-      # &#x2026; core-b&apos;s own credentials
-</code></pre>
-<p>Start <code>bin/master.js</code> on core-b. Its embedded rqlited uses DNS discovery (<code>lsc.mc.example.com</code>) to find core-a and joins the existing cluster &#x2014; no manual cluster bootstrapping.</p>
-<p><strong>Firewall reminder:</strong> the rqlite Raft port (default 4002) is peer-to-peer and does <strong>not</strong> go through nginx. Open it between cores.</p>
-<h2 id="step-5--verify-cross-core-operation"><!--step-5--verify-cross-core-operation-->Step 5 &#x2014; Verify cross-core operation</h2>
-<p>Upstream gives the exact curl sequence &#x2014; <a href="https://github.com/pryv/open-pryv.io/blob/master/SINGLE-TO-MULTIPLE.md#5-verify-cross-core-operation">SINGLE-TO-MULTIPLE.md &#x2014; Verify cross-core operation</a>. The essentials:</p>
-<pre><code class="language-bash"># 1. Register a new user on core-b &#x2014; it should land on core-b
+# Register a user on core-b
 curl -s https://core-b.mc.example.com/users -X POST \
   -H &apos;Content-Type: application/json&apos; \
   -d &apos;{&quot;appId&quot;:&quot;test&quot;,&quot;username&quot;:&quot;newuser&quot;,&quot;password&quot;:&quot;pass&quot;,&quot;email&quot;:&quot;new@test.com&quot;,&quot;invitationtoken&quot;:&quot;enjoy&quot;,&quot;languageCode&quot;:&quot;en&quot;}&apos;
 
-# 2. Discover from core-a &#x2014; should return core-b&apos;s URL
+# Discover from core-a &#x2014; should return core-b&apos;s URL
 curl -s &apos;https://core-a.mc.example.com/reg/cores?username=newuser&apos;
 # &#x2192; { core: { url: &quot;https://core-b.mc.example.com&quot; } }
-
-# 3. List all cores (admin)
-curl -s https://core-a.mc.example.com/system/admin/cores -H &apos;Authorization: &lt;admin-key&gt;&apos;
-# &#x2192; { cores: [{ id: &quot;core-a&quot;, userCount: N }, { id: &quot;core-b&quot;, userCount: M }] }
 </code></pre>
 <p>Then run the <a href="/customer-resources/platform-validation/">platform validation checklist</a> and the <a href="/customer-resources/healthchecks/">healthchecks</a> &#x2014; once against each core.</p>
+<h2 id="cluster-security-at-a-glance"><!--cluster-security-at-a-glance-->Cluster security at a glance</h2>
+<ul>
+<li><strong>Raft channel uses mTLS.</strong> Bootstrap-issued cores ship with TLS material wired into <code>override-config.yml</code>. Both ends of every Raft connection verify the peer&#x2019;s cert against the cluster CA &#x2014; a stranger on the network cannot join or impersonate a peer.</li>
+<li><strong>The cluster CA private key lives only on the issuing core</strong>, in <code>/etc/pryv/ca/ca.key</code> (mode 0600). Only this host can issue new node certs. Back up this directory off-host.</li>
+<li><strong>Join tokens are one-shot.</strong> A token verifies exactly once at the ack endpoint and is then burned; replays return 401. Default TTL 24 h.</li>
+<li><strong>Bundles are AES-256-GCM encrypted</strong> with a scrypt-derived key. Tampering breaks GCM auth at decrypt time.</li>
+<li><strong>The Raft port (default 4002) does not need to be VPN-protected</strong> between cores by default &#x2014; <code>verifyClient: true</code> rejects plain TCP.</li>
+</ul>
+<p>See <a href="https://github.com/pryv/open-pryv.io/blob/master/INSTALL.md#cluster-security">INSTALL.md &#x2014; Cluster security</a> for the full operator-level reference.</p>
+<h2 id="operations-managing-in-flight-bundles"><!--operations-managing-in-flight-bundles-->Operations: managing in-flight bundles</h2>
+<pre><code class="language-bash"># List active (un-consumed, un-expired) tokens
+node bin/bootstrap.js list-tokens
+# coreId           expiresAt                  issuedAt
+# core-c           2026-04-18T08:42:00.000Z   2026-04-17T08:42:00.000Z
+
+# Operator changes their mind &#x2014; revoke a token AND undo the pre-registration
+node bin/bootstrap.js revoke-token core-c --ip 5.6.7.8
+# Revoked 1 active token(s) for core-c.
+# Cleaned up DNS/PlatformDB: coreInfoDeleted=true, perCoreDeleted=true, lscIpsAfter=[1.2.3.4]
+</code></pre>
+<p>If <code>--ip</code> is omitted, only the token is revoked; the DNS / PlatformDB pre-registration stays. Pass <code>--ip &lt;ip&gt;</code> to fully unwind the issuance.</p>
 <h2 id="nginx--reverse-proxy-notes"><!--nginx--reverse-proxy-notes-->Nginx / reverse-proxy notes</h2>
 <p>Each core still needs the same two upstreams as before &#x2014; API on 3000 and HFS on 4000 &#x2014; see <a href="https://github.com/pryv/open-pryv.io/blob/master/INSTALL.md#running--behind-nginx">INSTALL &#x2014; Running behind nginx</a>. Extra items to remember in multi-core:</p>
 <ol>
 <li><strong>HFS Host header</strong> &#x2014; keep <code>proxy_set_header Host 127.0.0.1:4000;</code> for the HFS locations.</li>
 <li><strong>Socket.IO</strong> &#x2014; WebSocket-only upgrade handling for <code>/socket.io/</code>. In cluster mode the core refuses HTTP long-polling.</li>
 <li><strong>Upload size</strong> &#x2014; <code>client_max_body_size</code> matches <code>uploads.maxSizeMb</code>.</li>
-<li><strong>Raft port (4002)</strong> &#x2014; not through nginx; a straight TCP path between cores.</li>
+<li><strong>Raft port (4002)</strong> &#x2014; not through nginx; a straight TCP path between cores. With mTLS enabled, opening it on the public network is acceptable.</li>
 </ol>
 <h2 id="rollback"><!--rollback-->Rollback</h2>
 <p>If something goes wrong, you can revert to single-core without losing data:</p>
 <ol>
 <li>Stop the second core.</li>
+<li>On the first core, run <code>node bin/bootstrap.js revoke-token &lt;id&gt; --ip &lt;ip&gt;</code> for each removed core to clean up DNS + PlatformDB.</li>
 <li>Put the first core&#x2019;s config back to <code>dnsLess.isActive: true</code> with its previous <code>dnsLess.publicUrl</code>, and remove <code>core.id</code> / <code>dns.domain</code>.</li>
 <li>Restart &#x2014; the embedded rqlited runs as a standalone node again with the same platform data.</li>
 </ol>
 <p><strong>No data migration in either direction</strong> &#x2014; rqlite is authoritative throughout and base storage was never shared, so user data stays where it already is.</p>
 <p>If you were running on Pryv.io v1 and still need the legacy procedure, it is archived as the <a href="/customer-resources/register-migration/">v1 register migration reference</a>. None of the v1 steps apply to a v2 install.</p>
+<h2 id="appendix--manual-bootstrap-no-cli"><!--appendix--manual-bootstrap-no-cli-->Appendix &#x2014; manual bootstrap (no CLI)</h2>
+<p>The <code>bin/bootstrap.js</code> CLI is the recommended path for every multi-core install. The manual flow is preserved for two cases:</p>
+<ul>
+<li><strong>Offline-style installs</strong> where the new core can never reach the existing core to ack (air-gapped tenant, maintenance window where the existing core is intentionally unavailable, etc.).</li>
+<li><strong>Operators who want full control</strong> over each step (e.g. integrating an existing internal PKI in place of the self-signed cluster CA).</li>
+</ul>
+<p>Upstream documents the five manual steps in <a href="https://github.com/pryv/open-pryv.io/blob/master/SINGLE-TO-MULTIPLE.md#appendix--manual-bootstrap-no-cli">SINGLE-TO-MULTIPLE.md &#x2014; Appendix &#x2014; manual bootstrap (no CLI)</a>:</p>
+<ol>
+<li>Generate a cluster CA (or supply your own).</li>
+<li>Issue a node cert for the new core.</li>
+<li>Pre-register the new core in PlatformDB (<code>bin/dns-records.js</code> for DNS, plus the cores table).</li>
+<li>Hand-write <code>override-config.yml</code> on the new core &#x2014; copying platform secrets from the existing core.</li>
+<li>Start the new core; <code>Platform.registerSelf()</code> writes its entry as <code>available:true</code>.</li>
+</ol>
+<p>The CLI path collapses these into two operator commands and removes the race in step 3 plus the secret-copying mistake in step 4. <strong>Use the CLI unless you specifically can&#x2019;t.</strong></p>
 </div><nav id="toc"></nav></div><footer id="page-footer"><nav class="navbar navbar-default"><div class="container-fluid"><div id="footer-nav"><ul class="nav navbar-nav"><li><a href="https://github.com/pryv">GitHub</a></li></ul></div></div></nav></footer><script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script><script src="/assets/bootstrap.min.js"></script><script src="/assets/js/toc.min.js"></script><!-- TOC generation--><script>jQuery(document).ready(function($) {
   // Header is about 51 pixels. This equals to 'header + fuzz', fuzz was
   // determined experimentally.

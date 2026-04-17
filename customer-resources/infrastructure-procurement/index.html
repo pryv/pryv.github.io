@@ -312,7 +312,7 @@
 <tr>
 <td>4002</td>
 <td>tcp</td>
-<td>rqlite Raft consensus &#x2014; must be reachable between all cores</td>
+<td>rqlite Raft consensus &#x2014; must be reachable between all cores. <strong>Mutually-authenticated TLS by default</strong> when cores are added via the bootstrap CLI; a VPN between cores is no longer required as a baseline.</td>
 </tr>
 <tr>
 <td>4001</td>
@@ -321,6 +321,7 @@
 </tr>
 </tbody>
 </table>
+<p>Cores added via <code>bin/bootstrap.js new-core</code> ship with <code>storages.engines.rqlite.tls.{caFile, certFile, keyFile, verifyClient: true}</code> enabled &#x2014; both ends of every Raft connection verify the peer&#x2019;s cert against the cluster CA. Plain TCP attempts on port 4002 are rejected. If you opt out of mTLS (set <code>tls: null</code>, the default for fresh installs that have never run the bootstrap CLI), opening port 4002 still requires a private network or VPN between cores.</p>
 <p>Outbound &#x2014; from the core:</p>
 <ul>
 <li>tcp/443 for fetching event-type/assets definitions (configurable or pinnable), OAuth callbacks and <code>service-mail</code> (if used).</li>

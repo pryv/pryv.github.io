@@ -19,6 +19,7 @@
 <li><a href="#4-dns-multi-core-only">4. DNS (multi-core only)</a></li>
 <li><a href="#5-base-storage-postgresql--mongodb-reachable">5. Base storage (PostgreSQL / MongoDB) reachable</a></li>
 <li><a href="#6-optional-hfs-port-reachable">6. (Optional) HFS port reachable</a></li>
+<li><a href="#7-mtls-handshake-on-raft-multi-core-only">7. mTLS handshake on Raft (multi-core only)</a></li>
 </ol>
 </li>
 <li><a href="#troubleshoot">Troubleshoot</a>
@@ -89,6 +90,18 @@
 <pre><code class="language-bash">curl -i -X OPTIONS ${PUBLIC_URL}/someuser/events/abc/series
 </code></pre>
 <p><strong>Expected:</strong> a 2xx or a documented 4xx from the HFS stack. A 502/504 means the reverse proxy can&#x2019;t reach port 4000.</p>
+<h3 id="7-mtls-handshake-on-raft-multi-core-only"><!--7-mtls-handshake-on-raft-multi-core-only-->7. mTLS handshake on Raft (multi-core only)</h3>
+<p>Skip in single-core mode and in multi-core deployments that opted out of mTLS (<code>storages.engines.rqlite.tls: null</code>).</p>
+<p>For deployments configured by the bootstrap CLI, the cluster CA cert is at <code>/etc/pryv/tls/ca.crt</code> on every core, and rqlite&#x2019;s HTTP API speaks the same cert chain. Verify a peer&#x2019;s cert chains to the bundled CA:</p>
+<pre><code class="language-bash"># On core-a, against core-b&apos;s rqlite HTTP port (default 4001).
+# Replace &lt;core-b-host&gt; with what core-b&apos;s node cert SAN advertises (its
+# hostname or IP).
+curl --cacert /etc/pryv/tls/ca.crt \
+     --resolve &lt;core-b-host&gt;:4001:&lt;core-b-ip&gt; \
+     https://&lt;core-b-host&gt;:4001/status
+</code></pre>
+<p><strong>Expected:</strong> an HTTP 200 with rqlited&#x2019;s status JSON. A TLS handshake failure (<code>certificate verify failed</code>, <code>unknown CA</code>) means either the CA cert on this host is wrong, the peer is not actually using the cluster CA, or <code>verifyClient: true</code> is rejecting your client cert (in which case add <code>--cert /etc/pryv/tls/node.crt --key /etc/pryv/tls/node.key</code>).</p>
+<p>If <code>dig</code>/<code>curl</code> lookups don&#x2019;t resolve <code>&lt;core-b-host&gt;</code> from this machine, use <code>--resolve</code> (as shown) to short-circuit DNS.</p>
 <h2 id="troubleshoot"><!--troubleshoot-->Troubleshoot</h2>
 <h3 id="core-does-not-start"><!--core-does-not-start-->Core does not start</h3>
 <p>Inspect the logs:</p>

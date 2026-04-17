@@ -50,6 +50,9 @@
 </tbody>
 </table>
 <p>A wildcard certificate requires the <strong>DNS-01</strong> ACME challenge.</p>
+<blockquote>
+<p><strong>Public-facing TLS vs cluster CA.</strong> This page is about the <strong>public-facing</strong> SSL cert that clients (apps, browsers, SDKs) see when they hit <code>https://{username}.{domain}/</code>. In multi-core deployments, the <code>bin/bootstrap.js</code> CLI also creates a <strong>separate, internal cluster CA</strong> (<code>/etc/pryv/ca/</code>) used only for mutually-authenticated TLS on the rqlite Raft channel between cores. The two are independent: you still need a publicly-trusted cert for the API. The cluster CA is self-signed by design &#x2014; it never sees the public internet &#x2014; and is managed entirely by the bootstrap CLI. See <a href="/customer-resources/single-node-to-cluster/#cluster-security-at-a-glance">single-node to cluster &#x2014; Cluster security at a glance</a>.</p>
+</blockquote>
 <h2 id="where-the-certificate-plugs-in"><!--where-the-certificate-plugs-in-->Where the certificate plugs in</h2>
 <h3 id="built-in-https-core-terminates-tls"><!--built-in-https-core-terminates-tls-->Built-in HTTPS (core terminates TLS)</h3>
 <p>Set the paths in your override YAML &#x2014; the core will load them directly:</p>
