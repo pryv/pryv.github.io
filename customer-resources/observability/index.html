@@ -1,0 +1,161 @@
+<!DOCTYPE html><html class="no-js" lang="en"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="description" property="og:description" content="Pryv API reference and resources for developers"><meta name="author" content="Pryv SA"><meta property="og:type" content="website"><meta name="image" property="og:image" content="/assets/images/logo-256.png"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Observability (APM) | Pryv API</title><link rel="icon" href="/assets/images/favicon-black.ico" type="image/x-icon"><link rel="apple-touch-icon" sizes="120x120" href="/assets/images/apple-touch-icon-120x120-black.png"><link rel="apple-touch-icon" sizes="152x152" href="/assets/images/apple-touch-icon-152x152-black.png"><link rel="apple-touch-icon" sizes="180x180" href="/assets/images/apple-touch-icon-180x180-black.png"><!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+<!--[if lt IE 9]>
+  <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+  <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+<![endif]--><link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Roboto:400,300,500,700,400italic|Roboto+Condensed:400,300,700"><link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/styles/docco.min.css"><link rel="stylesheet" type="text/css" href="/assets/fonts/ss-gizmo.min.css"><link rel="stylesheet" type="text/css" href="/assets/style.css"></head><body class="observability with-toc"><header id="page-header"><nav class="navbar navbar-default navbar-fixed-top" role="navigation"><div class="container-fluid"><div class="navbar-header"><a class="navbar-brand logo" href="/" title="Developers home"><img src="/assets/images/logo-256-black.png" alt="Developers home"></a><button class="navbar-toggle" type="button" data-toggle="collapse" data-target="#main-nav"><span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button></div><div class="collapse navbar-collapse" id="main-nav"><ul class="nav navbar-nav"><li class="dropdown"><a class="dropdown-toggle" href="#" data-toggle="dropdown">Guides <b class="caret"></b></a><ul class="dropdown-menu"><li><a href="/getting-started/">Getting started</a></li><li><a href="/concepts/">API concepts</a></li><li><a href="/data-in-pryv/">Data In Pryv</a></li><li><a href="/guides/data-modelling/">Data modelling</a></li><li><a href="/guides/app-guidelines/">App guidelines</a></li><li><a href="/external-resources/">Apps &amp; Libs</a></li><li><a href="/guides/webhooks/">Webhooks</a></li><li><a href="/guides/custom-auth/">Custom auth</a></li><li><a href="/guides/consent/">Consent request</a></li><li><a href="/guides/audit-logs/">Audit logs</a></li></ul></li><li class="dropdown"><a class="dropdown-toggle" href="#" data-toggle="dropdown">Reference <b class="caret"></b></a><ul class="dropdown-menu"><li><a href="/reference/">API reference</a></li><li><a href="/reference-admin/">Admin API reference</a></li><li><a href="/reference-system/">System API reference</a></li><li><a href="/event-types/">Event types</a></li><li><a href="/open-api/">Open API (Postman)</a></li><li><a href="/change-log/">API change log</a></li></ul></li><li class="dropdown"><a class="dropdown-toggle" href="#" data-toggle="dropdown">FAQ <b class="caret"></b></a><ul class="dropdown-menu"><li><a href="/faq-api/">API</a></li><li><a href="/faq-infra/">Infrastructure</a></li></ul></li><li><a href="https://github.com/pryv/open-pryv.io">Open Pryv.io</a></li><li><a href="/customer-resources/">Setup</a></li><li><a href="/roadmap/">Roadmap</a></li></ul><div class="navbar-right"><p class="navbar-text version"><a href="/change-log/" title="View change log">API version: <strong>2.0.0-pre</strong></a></p></div></div></div></nav></header><div class="container container-narrow" id="main-wrapper"><div id="main"><h1 class="page-title" id="observability-apm"><!--observability-apm-->Observability (APM)</h1><p>Open Pryv.io v2 ships an <strong>optional</strong> observability layer that forwards HTTP transactions, datastore calls, and error reports to a third-party Application Performance Monitoring (APM) provider. It is <strong>off by default</strong>; when enabled it activates a provider-agnostic instrumentation fa&#xE7;ade with a single concrete provider today: <strong>New Relic</strong>.</p>
+<p>The fa&#xE7;ade is designed so additional providers (Datadog, OpenTelemetry, Sentry&#x2026;) can be dropped in later without changes to core business code; new providers land as separate plans.</p>
+<blockquote>
+<p><strong>Data handling note</strong> &#x2014; enabling observability means the operator has decided it is acceptable to ship request metadata (paths, status codes, timings, external host URLs) to the provider&#x2019;s cloud. Request bodies, authorisation headers and cookies are <strong>never</strong> forwarded (high-security mode is hard-coded on).</p>
+</blockquote>
+<h2 id="table-of-contents-"><!--table-of-contents--->Table of contents <!-- omit in toc --></h2>
+<ol>
+<li><a href="#overview">Overview</a></li>
+<li><a href="#enabling-new-relic-on-a-cluster">Enabling New Relic on a cluster</a></li>
+<li><a href="#log-level-tuning">Log-level tuning</a></li>
+<li><a href="#hostname-labelling">Hostname labelling</a></li>
+<li><a href="#rotating-the-license-key">Rotating the license key</a></li>
+<li><a href="#disabling">Disabling</a></li>
+<li><a href="#validation-queries-nrql">Validation queries (NRQL)</a></li>
+<li><a href="#caveats">Caveats</a></li>
+<li><a href="#adding-a-new-provider-later">Adding a new provider later</a></li>
+</ol>
+<h2 id="overview"><!--overview-->Overview</h2>
+<ul>
+<li><strong>Opt-in</strong>: a cluster with no observability config has no APM code paths loaded and no runtime cost.</li>
+<li><strong>Cluster-wide config</strong>: license key + app name + log level live in the cluster&#x2019;s PlatformDB. Rotating the key is a single write; no per-core YAML edit + rsync required.</li>
+<li><strong>Secrets at rest</strong>: the license key is AES-256-GCM encrypted in PlatformDB, with a key derived (via HKDF-SHA256) from <code>auth.adminAccessKey</code> and a per-key purpose label.</li>
+<li><strong>High-security mode</strong>: enforced on the underlying agent. Request bodies and auth/cookie headers are stripped.</li>
+<li><strong>Default log forwarding</strong>: errors only. Operators explicitly raise verbosity when they want warnings / info / debug to ship.</li>
+<li><strong>Hostname reporting</strong>: transactions report under the core&#x2019;s FQDN (parsed from <code>core.url</code>) &#x2014; the same label operators see in <code>/reg/hostings</code>, the LE cert SAN, and the core&#x2019;s dashboards.</li>
+</ul>
+<h2 id="enabling-new-relic-on-a-cluster"><!--enabling-new-relic-on-a-cluster-->Enabling New Relic on a cluster</h2>
+<p>Prerequisites:</p>
+<ul>
+<li>A New Relic <strong>Ingest &#x2013; License</strong> key (40-char hex). Get it at <strong>Administration &#x2192; API keys &#x2192; Ingest License</strong> in the New Relic web console.</li>
+<li><code>auth.adminAccessKey</code> must be set and identical across every core in the cluster (operator-sync secret; same requirement as <code>letsEncrypt.atRestKey</code>).</li>
+</ul>
+<p>On any core in the cluster, set the license key and enable the provider:</p>
+<pre><code class="language-bash">node bin/observability.js newrelic set-license-key &lt;LICENSE_KEY&gt;
+node bin/observability.js enable newrelic
+</code></pre>
+<p>Then perform a rolling restart of every core (one at a time, wait until healthy before restarting the next). The agent loads the license key once per process at <code>require()</code> time, so an in-place config change on a running core is a no-op until that core restarts.</p>
+<p>Verify:</p>
+<pre><code class="language-bash">node bin/observability.js show
+</code></pre>
+<pre><code>enabled:          true
+provider:         newrelic
+appName:          open-pryv.io (pryv.me)
+logLevel:         error
+hostname:         core-use1.pryv.me
+newrelic licenseKey set: yes
+</code></pre>
+<h2 id="log-level-tuning"><!--log-level-tuning-->Log-level tuning</h2>
+<p>Default is <strong>error-only</strong>: only <code>logger.error()</code> calls reach the provider. <code>info</code> / <code>warn</code> / <code>debug</code> are captured by the usual boiler file + console logs.</p>
+<p>Raise verbosity during active debugging:</p>
+<pre><code class="language-bash">node bin/observability.js set-log-level warn    # errors + warnings
+node bin/observability.js set-log-level info    # errors + warnings + info
+</code></pre>
+<p>Followed by a rolling restart. Higher log levels cost more New Relic events and ship lower-signal chatter; revert to <code>error</code> when the incident is closed.</p>
+<h2 id="hostname-labelling"><!--hostname-labelling-->Hostname labelling</h2>
+<p>Transactions, infrastructure rows and external segments are labelled with the core&#x2019;s FQDN, taken from <code>new URL(core.url).hostname</code>. For a typical multi-core deployment that means New Relic shows:</p>
+<ul>
+<li><code>core-use1.pryv.me</code></li>
+<li><code>core-euc1.pryv.me</code></li>
+</ul>
+<p>&#x2026;matching the values operators already see in <code>/reg/hostings</code> and in LE certs. No separate &#x201C;APM host name&#x201D; field to curate.</p>
+<p>Single-core / DNSless deployments fall back to <code>single.&lt;dns.domain&gt;</code> when <code>core.url</code> is not set.</p>
+<h2 id="rotating-the-license-key"><!--rotating-the-license-key-->Rotating the license key</h2>
+<pre><code class="language-bash">node bin/observability.js newrelic set-license-key &lt;NEW_KEY&gt;
+</code></pre>
+<p>Then a rolling restart of every core. The key is stored AES-256-GCM encrypted in PlatformDB; the CLI&#x2019;s <code>show</code> command never echoes it.</p>
+<h2 id="disabling"><!--disabling-->Disabling</h2>
+<p>Two ways:</p>
+<ol>
+<li>
+<p><strong>Cluster-wide, via PlatformDB (recommended)</strong>:</p>
+<pre><code class="language-bash">node bin/observability.js disable
+</code></pre>
+<p>Then rolling restart.</p>
+</li>
+<li>
+<p><strong>Local kill-switch (emergency)</strong>: set <code>observability.enabled: false</code> in that core&#x2019;s <code>override-config.yml</code>. The local override always wins over PlatformDB &#x2014; useful when one core is misbehaving and you need to silence it immediately without touching cluster state. Restart the affected core only.</p>
+</li>
+</ol>
+<h2 id="validation-queries-nrql"><!--validation-queries-nrql-->Validation queries (NRQL)</h2>
+<p>Useful queries to paste in the New Relic web console after enabling on a staging cluster:</p>
+<pre><code class="language-sql">-- Are my cores showing transactions?
+SELECT count(*) FROM Transaction WHERE host LIKE &apos;core-%.pryv.me&apos; FACET host SINCE 10 minutes ago
+
+-- Is sensitive data being stripped?
+SELECT count(*) FROM Transaction WHERE request.headers.authorization IS NOT NULL SINCE 1 hour ago
+-- Expected: 0 (high-security mode strips the header)
+
+-- Log forwarding at the current log level
+SELECT count(*) FROM PryvLog FACET level SINCE 30 minutes ago
+
+-- External call latency (cross-core forwards, rqlite, ACME, etc.)
+SELECT average(duration) FROM ExternalService FACET externalHostname SINCE 1 hour ago
+</code></pre>
+<h2 id="caveats"><!--caveats-->Caveats</h2>
+<ul>
+<li><strong>Agent startup cost</strong>: enabling observability adds ~150&#x2013;300 ms to each Node process&#x2019;s boot. In <code>NODE_ENV=test</code> the boot shim bypasses the agent entirely so test suites are unaffected.</li>
+<li><strong>Optional dependency</strong>: the <code>newrelic</code> package is listed under <code>optionalDependencies</code> &#x2014; installs that can&#x2019;t fetch it still succeed; observability simply refuses to activate.</li>
+<li><strong>No zero-downtime key rotation</strong>: the agent reads the license key once at <code>require()</code> time. Rolling restart is required for rotation.</li>
+<li><strong>License scope</strong>: the image does not bundle any New Relic license key. Operators bring their own.</li>
+<li><strong>Third-party processing</strong>: understand your jurisdiction&#x2019;s requirements before shipping transaction metadata to New Relic&#x2019;s US or EU cloud. GDPR / HIPAA operators should double-check.</li>
+</ul>
+<h2 id="adding-a-new-provider-later"><!--adding-a-new-provider-later-->Adding a new provider later</h2>
+<p>The fa&#xE7;ade at <code>components/business/src/observability/</code> exposes a fixed method set: <code>isActive()</code>, <code>setTransactionName()</code>, <code>recordError()</code>, <code>recordCustomEvent()</code>, <code>startBackgroundTransaction()</code>.</p>
+<p>A new provider is a sibling directory under <code>components/business/src/observability/providers/&lt;id&gt;/</code> exporting:</p>
+<ul>
+<li><code>boot.js</code> &#x2014; <code>require()</code>s the vendor agent and calls <code>observability.init(adapter)</code>.</li>
+<li><code>adapter.js</code> &#x2014; object implementing the five fa&#xE7;ade methods, delegating to the agent.</li>
+</ul>
+<p>The boot shim at <code>bin/_observability-boot.js</code> dispatches based on <code>PRYV_OBSERVABILITY_PROVIDER</code>. No change to business code, CLI base, or PlatformDB shape is required when adding a provider.</p>
+</div><nav id="toc"></nav></div><footer id="page-footer"><nav class="navbar navbar-default"><div class="container-fluid"><div id="footer-nav"><ul class="nav navbar-nav"><li><a href="https://github.com/pryv">GitHub</a></li></ul></div></div></nav></footer><script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script><script src="/assets/bootstrap.min.js"></script><script src="/assets/js/toc.min.js"></script><!-- TOC generation--><script>jQuery(document).ready(function($) {
+  // Header is about 51 pixels. This equals to 'header + fuzz', fuzz was
+  // determined experimentally.
+  var offset = 90;
+
+  // Display TOC on the left side of the page.
+  $('#toc').toc({
+    selector: '#main h1:not(.page-title),#main h2,#main h3',
+    ulClass: 'nav'
+  });
+
+  // Synchronise scroll/click motion with TOC display.
+  $(document).ready(function() {
+    // NOTE This is done at onLoad since we need to wait for all CSS
+    // to appear.
+    $('body').scrollspy({
+      target: '#toc',
+      offset: offset
+    });
+    scrollBy(0, 1); // make it scroll to be sure scrollspy gets it
+    
+    // fix offset when navigating
+    $('#toc li a, a.toc-anchor').click(function (e) {
+      e.preventDefault();
+      var target = $(this).attr('href');
+      window.location.hash = target;
+      
+      $(target)[0].scrollIntoView();
+      if ($(window).scrollTop() + $(window).height() !== $(document).height()) {
+        //only adjust when not at bottom
+        scrollBy(0, -offset + 40);
+      }
+      return true;
+    });
+  
+  });
+});
+</script><!-- Code blocks highlighting--><script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/highlight.min.js"></script><script>hljs.initHighlightingOnLoad();
+</script><!-- Google Analytics--><script>var _gaq = _gaq || [];
+_gaq.push(['_setAccount', 'UA-36589447-2']);
+_gaq.push(['_trackPageview']);
+(function() {
+  var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+  ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+  var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+})();</script></body></html>
