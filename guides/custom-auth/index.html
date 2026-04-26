@@ -45,7 +45,17 @@ module.exports = function (context, callback) {
 };
 </code></pre>
 <h3 id="how-to-set-up-the-custom-auth-step"><!--how-to-set-up-the-custom-auth-step-->How to set up the custom auth step</h3>
-<p>You can add the custom auth step using the admin panel, available on <code>https://adm.DOMAIN</code>.</p>
+<blockquote>
+<p><strong>Since v2 (2026)</strong> the custom auth step is wired up directly through the unified config file &#x2014; there is no admin-panel GUI in v2.</p>
+</blockquote>
+<p>Drop your <code>customAuthStepFn.js</code> (an example body is given in <a href="#what-is-the-custom-auth-step">What is the custom auth step</a> above) somewhere on each core, then set the two <code>customExtensions.*</code> keys in <code>override-config.yml</code>:</p>
+<pre><code class="language-yaml">customExtensions:
+  defaultFolder: /etc/pryv/extensions   # absolute path; folder must exist on every core
+  customAuthStepFn: customAuthStepFn.js # filename only, resolved against defaultFolder
+</code></pre>
+<p>Restart the core (<code>systemctl restart open-pryv</code> or your operator&#x2019;s equivalent) for the function to be loaded. Each core in a multi-core cluster needs the same file at the same path &#x2014; keep them in sync via your configuration-management tool.</p>
+<h4 id="v1-procedure-legacy"><!--v1-procedure-legacy-->v1 procedure (legacy)</h4>
+<p>Pryv.io v1 exposed a web admin panel at <code>https://adm.${DOMAIN}</code> where the custom auth step file was uploaded through the GUI. v1 is no longer maintained &#x2014; operators on the v1 line still have the panel for as long as their deployment lives, but new platforms run v2 and edit <code>override-config.yml</code> directly.</p>
 <h2 id="authenticate-data-access-with-pryvio"><!--authenticate-data-access-with-pryvio-->Authenticate data access with Pryv.io</h2>
 <p>In this section, we illustrate the usage of a custom auth step through a basic use case. Bob wants to share his data with Alice, and creates an access for her on the stream &#x201C;Health&#x201D; with a &#x201C;read&#x201D; permission (more information on the <strong>Access structure</strong> <a href="/reference/#data-structure-access">here</a>).</p>
 <p>When Alice is using the access that was provided to her, the custom auth step will allow to verify Alice&#x2019;s identity. This implies the creation of a &#x201C;verification&#x201D; access for Alice that will only be used to validate her identity.</p>

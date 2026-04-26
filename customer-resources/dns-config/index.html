@@ -3,139 +3,244 @@
 <!--[if lt IE 9]>
   <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
   <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
-<![endif]--><link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Roboto:400,300,500,700,400italic|Roboto+Condensed:400,300,700"><link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/styles/docco.min.css"><link rel="stylesheet" type="text/css" href="/assets/fonts/ss-gizmo.min.css"><link rel="stylesheet" type="text/css" href="/assets/style.css"></head><body class="dns-config with-toc"><header id="page-header"><nav class="navbar navbar-default navbar-fixed-top" role="navigation"><div class="container-fluid"><div class="navbar-header"><a class="navbar-brand logo" href="/" title="Developers home"><img src="/assets/images/logo-256-black.png" alt="Developers home"></a><button class="navbar-toggle" type="button" data-toggle="collapse" data-target="#main-nav"><span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button></div><div class="collapse navbar-collapse" id="main-nav"><ul class="nav navbar-nav"><li class="dropdown"><a class="dropdown-toggle" href="#" data-toggle="dropdown">Guides <b class="caret"></b></a><ul class="dropdown-menu"><li><a href="/getting-started/">Getting started</a></li><li><a href="/concepts/">API concepts</a></li><li><a href="/data-in-pryv/">Data In Pryv</a></li><li><a href="/guides/data-modelling/">Data modelling</a></li><li><a href="/guides/app-guidelines/">App guidelines</a></li><li><a href="/external-resources/">Apps &amp; Libs</a></li><li><a href="/guides/webhooks/">Webhooks</a></li><li><a href="/guides/custom-auth/">Custom auth</a></li><li><a href="/guides/consent/">Consent request</a></li><li><a href="/guides/audit-logs/">Audit logs</a></li></ul></li><li class="dropdown"><a class="dropdown-toggle" href="#" data-toggle="dropdown">Reference <b class="caret"></b></a><ul class="dropdown-menu"><li><a href="/reference/">API reference</a></li><li><a href="/reference-admin/">Admin API reference</a></li><li><a href="/reference-system/">System API reference</a></li><li><a href="/event-types/">Event types</a></li><li><a href="/open-api/">Open API (Postman)</a></li><li><a href="/change-log/">API change log</a></li></ul></li><li class="dropdown"><a class="dropdown-toggle" href="#" data-toggle="dropdown">FAQ <b class="caret"></b></a><ul class="dropdown-menu"><li><a href="/faq-api/">API</a></li><li><a href="/faq-infra/">Infrastructure</a></li></ul></li><li><a href="https://github.com/pryv/open-pryv.io">Open Pryv.io</a></li><li><a href="/customer-resources/">Setup</a></li><li><a href="/roadmap/">Roadmap</a></li></ul><div class="navbar-right"><p class="navbar-text version"><a href="/change-log/" title="View change log">API version: <strong>2.0.0-pre</strong></a></p></div></div></div></nav></header><div class="container container-narrow" id="main-wrapper"><div id="main"><h1 class="page-title" id="pryvio-dns-zone-configuration"><!--pryvio-dns-zone-configuration-->Pryv.io DNS zone configuration</h1><p>This guide describes how to add DNS records in your Pryv.io associated domain DNS zone.</p>
+<![endif]--><link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Roboto:400,300,500,700,400italic|Roboto+Condensed:400,300,700"><link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/styles/docco.min.css"><link rel="stylesheet" type="text/css" href="/assets/fonts/ss-gizmo.min.css"><link rel="stylesheet" type="text/css" href="/assets/style.css"></head><body class="dns-config with-toc"><header id="page-header"><nav class="navbar navbar-default navbar-fixed-top" role="navigation"><div class="container-fluid"><div class="navbar-header"><a class="navbar-brand logo" href="/" title="Developers home"><img src="/assets/images/logo-256-black.png" alt="Developers home"></a><button class="navbar-toggle" type="button" data-toggle="collapse" data-target="#main-nav"><span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button></div><div class="collapse navbar-collapse" id="main-nav"><ul class="nav navbar-nav"><li class="dropdown"><a class="dropdown-toggle" href="#" data-toggle="dropdown">Guides <b class="caret"></b></a><ul class="dropdown-menu"><li><a href="/getting-started/">Getting started</a></li><li><a href="/concepts/">API concepts</a></li><li><a href="/data-in-pryv/">Data In Pryv</a></li><li><a href="/guides/data-modelling/">Data modelling</a></li><li><a href="/guides/app-guidelines/">App guidelines</a></li><li><a href="/external-resources/">Apps &amp; Libs</a></li><li><a href="/guides/webhooks/">Webhooks</a></li><li><a href="/guides/custom-auth/">Custom auth</a></li><li><a href="/guides/consent/">Consent request</a></li><li><a href="/guides/audit-logs/">Audit logs</a></li></ul></li><li class="dropdown"><a class="dropdown-toggle" href="#" data-toggle="dropdown">Reference <b class="caret"></b></a><ul class="dropdown-menu"><li><a href="/reference/">API reference</a></li><li><a href="/reference-admin/">Admin API reference</a></li><li><a href="/reference-system/">System API reference</a></li><li><a href="/event-types/">Event types</a></li><li><a href="/open-api/">Open API (Postman)</a></li><li><a href="/change-log/">API change log</a></li></ul></li><li class="dropdown"><a class="dropdown-toggle" href="#" data-toggle="dropdown">FAQ <b class="caret"></b></a><ul class="dropdown-menu"><li><a href="/faq-api/">API</a></li><li><a href="/faq-infra/">Infrastructure</a></li></ul></li><li><a href="https://github.com/pryv/open-pryv.io">Open Pryv.io</a></li><li><a href="/customer-resources/">Setup</a></li><li><a href="/roadmap/">Roadmap</a></li></ul><div class="navbar-right"><p class="navbar-text version"><a href="/change-log/" title="View change log">API version: <strong>2.0.0-pre</strong></a></p></div></div></div></nav></header><div class="container container-narrow" id="main-wrapper"><div id="main"><h1 class="page-title" id="pryvio-dns-zone-configuration"><!--pryvio-dns-zone-configuration-->Pryv.io DNS zone configuration</h1><p>This guide describes how to declare DNS records that Pryv.io&#x2019;s embedded DNS server will answer for your associated domain.</p>
+<blockquote>
+<p><strong>Since v2 (2026)</strong> DNS is served by the core binary&#x2019;s <strong>embedded DNS server</strong> (module <code>components/dns-server/</code>), not by a dedicated container. There are <strong>two places</strong> records can come from:</p>
+<ul>
+<li><strong>Static entries</strong> &#x2014; declared in YAML (<code>dns.staticEntries</code> + <code>dns.records.root</code> in <code>override-config.yml</code>) and reloaded on restart. Authoritative: they shadow anything runtime.</li>
+<li><strong>Runtime entries</strong> &#x2014; stored in PlatformDB (rqlite, cluster-wide) and picked up by the DNS server on its periodic refresh. Written by the ACME orchestrator (transient <code>_acme-challenge.*</code> TXT records) and by operators via the <code>bin/dns-records.js</code> CLI or the <code>POST /reg/records</code> / <code>DELETE /reg/records/:subdomain</code> admin endpoints.</li>
+</ul>
+<p>There is no longer a <code>service-config-leader</code> / admin-panel GUI &#x2014; the unified config file is the source of truth for static records, and the CLI / admin API are the source of truth for runtime records.</p>
+</blockquote>
 <h2 id="table-of-contents-"><!--table-of-contents--->Table of contents <!-- omit in toc --></h2>
 <ol>
-<li><a href="#usage">Usage</a>
+<li><a href="#when-do-i-need-this">When do I need this?</a></li>
+<li><a href="#topology-prerequisites">Topology prerequisites</a></li>
+<li><a href="#static-records-yaml">Static records (YAML)</a>
 <ol>
-<li><a href="#settings-location">Settings location</a></li>
-<li><a href="#key-format">Key format</a></li>
+<li><a href="#static-subdomains--dnsstaticentries">Static subdomains &#x2014; <code>dns.staticEntries</code></a></li>
+<li><a href="#root-records--dnsrecordsroot">Root records &#x2014; <code>dns.records.root</code></a></li>
+<li><a href="#reserved-subdomains">Reserved subdomains</a></li>
 </ol>
 </li>
-<li><a href="#a-record">A Record</a>
+<li><a href="#runtime-records-platformdb">Runtime records (PlatformDB)</a>
 <ol>
-<li><a href="#root">Root</a></li>
+<li><a href="#bindns-recordsjs-cli"><code>bin/dns-records.js</code> CLI</a></li>
+<li><a href="#admin-http-endpoints">Admin HTTP endpoints</a></li>
 </ol>
 </li>
-<li><a href="#cname-record">CNAME Record</a></li>
-<li><a href="#txt-record">TXT Record</a>
+<li><a href="#record-type-reference">Record type reference</a>
 <ol>
-<li><a href="#root-txt">Root TXT</a></li>
+<li><a href="#a--aaaa">A / AAAA</a></li>
+<li><a href="#cname">CNAME</a></li>
+<li><a href="#txt">TXT</a></li>
+<li><a href="#spf">SPF</a></li>
+<li><a href="#mx">MX</a></li>
+<li><a href="#ns--caa--soa">NS / CAA / SOA</a></li>
 </ol>
 </li>
-<li><a href="#spf-record">SPF Record</a></li>
-<li><a href="#mx-record">MX Record</a></li>
-<li><a href="#previous-version">Previous version</a></li>
+<li><a href="#v1-procedure-legacy">v1 procedure (legacy)</a></li>
 </ol>
-<h2 id="usage"><!--usage-->Usage</h2>
-<p>This document is useful for you if you wish to do one of the following with the Pryv.io associated domain:</p>
+<h2 id="when-do-i-need-this"><!--when-do-i-need-this-->When do I need this?</h2>
+<p>This page is for operators whose Pryv.io deployment runs in <strong>DNS-active</strong> mode &#x2014; i.e. the embedded DNS server answers for the domain (<code>dns.active: true</code>). It is <strong>not</strong> needed if your deployment runs in <strong>DNSless</strong> mode (<code>dnsLess.isActive: true</code>) or if you delegate DNS to a third party (Route 53, Cloudflare, Gandi, Infomaniak&#x2026;).</p>
+<p>Typical reasons to add records:</p>
 <ul>
-<li>Define hostnames or aliases in the domain such as my_service.${DOMAIN}, as it is done for the pryv.me Register: reg.pryv.me</li>
-<li>Send emails from some-name.${DOMAIN}, such as noreply@pryv.me</li>
-<li>Perform a DNS validation for a SSL certificate</li>
+<li>Publish operator-owned subdomains (<code>sw.${DOMAIN}</code>, <code>mail.${DOMAIN}</code>, <code>my-service.${DOMAIN}</code>).</li>
+<li>Publish root-level records (<code>A</code>, <code>MX</code>, <code>TXT</code>, <code>CAA</code>, <code>NS</code>, <code>SOA</code>).</li>
+<li>Satisfy DNS-based validation challenges (ACME DNS-01 &#x2014; in v2 the built-in ACME orchestrator handles this automatically; you only write TXT records manually if you run ACME externally).</li>
 </ul>
-<p>Technically, this document describes how to add DNS records of type:</p>
+<h2 id="topology-prerequisites"><!--topology-prerequisites-->Topology prerequisites</h2>
+<p>Before any record is served, the core must be configured to run the embedded DNS server:</p>
+<pre><code class="language-yaml">dns:
+  domain: example.com     # your primary domain &#x2014; do not include a leading dot
+  active: true            # start the embedded DNS server
+  port: 53                # in prod, bind DNS to 53 (docker typically maps host 53/udp &#x2192; container 53/udp)
+  ip: &apos;0.0.0.0&apos;           # bind address
+  defaultTTL: 300         # seconds
+</code></pre>
+<p>In multi-core, the DNS server on each core reads from the same PlatformDB and returns consistent answers cluster-wide.</p>
+<h2 id="static-records-yaml"><!--static-records-yaml-->Static records (YAML)</h2>
+<h3 id="static-subdomains--dnsstaticentries"><!--static-subdomains--dnsstaticentries-->Static subdomains &#x2014; <code>dns.staticEntries</code></h3>
+<p><code>dns.staticEntries</code> is a map from subdomain &#x2192; record type(s). Each entry replaces the subdomain-level answer served by the DNS server &#x2014; runtime records in PlatformDB for the same subdomain are shadowed (a drift warning is logged on startup if both exist).</p>
+<pre><code class="language-yaml">dns:
+  staticEntries:
+    sw:
+      a: [&apos;192.0.2.10&apos;, &apos;192.0.2.11&apos;]           # two cores behind a round-robin
+    mail:
+      a: [&apos;192.0.2.10&apos;]
+    www:
+      cname: &apos;my-site.example.com&apos;
+    txt-demo:
+      txt: [&apos;hello from pryv&apos;]
+</code></pre>
+<h3 id="root-records--dnsrecordsroot"><!--root-records--dnsrecordsroot-->Root records &#x2014; <code>dns.records.root</code></h3>
+<p>Root-level records (apex / <code>@</code>) for the zone live under <code>dns.records.root</code>:</p>
+<pre><code class="language-yaml">dns:
+  records:
+    root:
+      a: [&apos;192.0.2.10&apos;, &apos;192.0.2.11&apos;]
+      aaaa: []
+      ns: [&apos;ns1.example.com&apos;, &apos;ns2.example.com&apos;]
+      mx:
+        - { name: &apos;mail.example.com&apos;, priority: 10, ttl: 3600 }
+        - { name: &apos;mail-fallback.example.com&apos;, priority: 50, ttl: 3600 }
+      txt: [&apos;v=spf1 include:_mailcust.example.com ?all&apos;]
+      caa: [&apos;0 issue &quot;letsencrypt.org&quot;&apos;]
+      soa: null                                   # null = auto-generated
+</code></pre>
+<h3 id="reserved-subdomains"><!--reserved-subdomains-->Reserved subdomains</h3>
+<p><code>reg</code>, <code>access</code>, and <code>mfa</code> are <strong>reserved</strong> by the distribution. Every core answers those routes itself, so the embedded DNS resolves them to all available cores&#x2019; IPs automatically. Do not list them in <code>staticEntries</code> &#x2014; any entry is ignored in favour of the auto-resolution.</p>
+<h2 id="runtime-records-platformdb"><!--runtime-records-platformdb-->Runtime records (PlatformDB)</h2>
+<p>Runtime records live in the cluster-wide PlatformDB (rqlite) and are served by every core&#x2019;s DNS server. They are the right place for:</p>
 <ul>
-<li>A</li>
-<li>CNAME</li>
-<li>TXT</li>
-<li>SPF</li>
+<li><strong>Transient validation records</strong> &#x2014; the built-in ACME orchestrator writes <code>_acme-challenge.&lt;hostname&gt;</code> TXT records here automatically during DNS-01 challenges.</li>
+<li><strong>Operator-owned dynamic entries</strong> that you want to add or remove without restarting the core.</li>
 </ul>
-<h3 id="settings-location"><!--settings-location-->Settings location</h3>
-<p>These settings can either be changed through the admin panel or through the <code>config-leader/conf/platform.yml</code> file under <code>DNS_SETTINGS</code>:</p>
-<pre><code class="language-yaml">DNS_SETTINGS:
-  name: &quot;DNS settings&quot;
-  settings:
-    ...
+<h3 id="bindns-recordsjs-cli"><!--bindns-recordsjs-cli--><code>bin/dns-records.js</code> CLI</h3>
+<p>Run from the core&#x2019;s repository root. The CLI talks to PlatformDB directly and works whether <code>master</code> is running or not &#x2014; the DNS server picks up changes on its next periodic refresh (30 s by default).</p>
+<pre><code class="language-bash">node bin/dns-records.js list                      # list all runtime records
+node bin/dns-records.js load records.yaml         # upsert records from YAML
+node bin/dns-records.js load records.yaml --dry-run
+node bin/dns-records.js load records.yaml --replace  # wipe existing then load
+node bin/dns-records.js delete &lt;subdomain&gt;        # remove a subdomain
+node bin/dns-records.js export [file.yaml]        # dump current records as YAML
 </code></pre>
-<p>As YAML is not error-resilient, make sure that you do not leave formatting errors during editing, otherwise the configuration will not be applied.<br>
-Using the admin panel, you will be provided with an error when applying the update. When editing the <code>platform.yml</code> file directly, you will find an error in the <em>config-leader</em> logs when followers will fetch their confiuration.</p>
-<h3 id="key-format"><!--key-format-->Key format</h3>
-<p>All DNS lookups are made in <strong>lower case</strong>, so make sure that the keys that you define for A, CNAME and TXT records are set in lower case.<br>
-This requires to manually lower casing keys such as the ones provided for DNS validation.</p>
-<h2 id="a-record"><!--a-record-->A Record</h2>
-<p>To associate the <code>123.123.123.123</code> IP address to the hostname <code>my-service.${DOMAIN}</code>, enter:</p>
-<pre><code class="language-yaml">DNS_SETTINGS:
-  ...
-  settings:
-    DNS_CUSTOM_ENTRIES:
-      ...
-      value:
-        my-service:
-          ip: &quot;123.123.123.123&quot;
+<p>YAML shape for <code>load</code>:</p>
+<pre><code class="language-yaml">records:
+  - subdomain: _acme-challenge
+    records:
+      txt: [&apos;validation-token-from-acme-client&apos;]
+  - subdomain: www
+    records:
+      a: [&apos;192.0.2.10&apos;]
 </code></pre>
-<h3 id="root"><!--root-->Root</h3>
-<p>You can also define a TYPE A record for your root domain <code>${DOMAIN}</code>, such as <a href="http://pryv.me">pryv.me</a>.</p>
-<pre><code class="language-yaml">DNS_SETTINGS:
-  ...
-  settings:
-    DNS_ROOT_DOMAIN_A_RECORD: 
-      description: &quot;DNS A record for ${DOMAIN} (The IP adress serving an eventual web page accessible by: http://{DOMAIN})&quot;
-      value: &quot;123.123.123.123&quot;
+<h3 id="admin-http-endpoints"><!--admin-http-endpoints-->Admin HTTP endpoints</h3>
+<p>Token-authenticated routes on <code>reg/records</code> (auth via <code>auth.adminAccessKey</code>):</p>
+<ul>
+<li><code>POST /reg/records</code> &#x2014; create or replace a subdomain&#x2019;s records (payload mirrors one entry of the YAML above).</li>
+<li><code>DELETE /reg/records/:subdomain</code> &#x2014; remove a subdomain.</li>
+</ul>
+<p>These are the surfaces used by integrations that manage DNS programmatically (e.g. an external ACME client pushing TXT challenges).</p>
+<h2 id="record-type-reference"><!--record-type-reference-->Record type reference</h2>
+<h3 id="a--aaaa"><!--a--aaaa-->A / AAAA</h3>
+<p>IPv4 / IPv6 host records. Lists.</p>
+<pre><code class="language-yaml"># static
+dns:
+  staticEntries:
+    my-service:
+      a: [&apos;192.0.2.10&apos;]
+      aaaa: [&apos;2001:db8::10&apos;]
 </code></pre>
-<h2 id="cname-record"><!--cname-record-->CNAME Record</h2>
-<p>To associate a CNAME alias pointing to <code>my-site.my-domain.com</code> from <code>www.${DOMAIN}</code>, enter:</p>
-<pre><code class="language-yaml">DNS_SETTINGS:
-  ...
-  settings:
-    DNS_CUSTOM_ENTRIES:
-      ...
-      value:
-        my-service:
-          alias:
-            name: &quot;my-site.my-domain.com&quot;
+<h3 id="cname"><!--cname-->CNAME</h3>
+<p>Alias. Single string.</p>
+<pre><code class="language-yaml">dns:
+  staticEntries:
+    www:
+      cname: &apos;my-site.example.com&apos;
 </code></pre>
-<h2 id="txt-record"><!--txt-record-->TXT Record</h2>
-<p>To associate the strings <code>&quot;hi there&quot;</code> and <code>&quot;my-dns-challenge&quot;</code> to the TXT records of <code>challenge.${DOMAIN}</code>, enter:</p>
-<pre><code class="language-yaml">DNS_SETTINGS:
-  ...
-  settings:
-    DNS_CUSTOM_ENTRIES:
-      ...
-      value:
-        challenge:
-          description:
-            - &quot;hi there&quot;
-            - &quot;my-dns-challenge&quot;
+<h3 id="txt"><!--txt-->TXT</h3>
+<p>Array of strings. One entry = one TXT RR; multiple entries = multiple TXT RRs for the same name.</p>
+<pre><code class="language-yaml">dns:
+  staticEntries:
+    challenge:
+      txt: [&apos;hi there&apos;, &apos;my-dns-challenge&apos;]
 </code></pre>
-<h3 id="root-txt"><!--root-txt-->Root TXT</h3>
-<p>In order to set a TXT record at the root of your domain hostname, such as <code>&quot;root-dns-challenge&quot;</code>, enter under <code>DNS_ROOT_TXT_ARRAY</code>:</p>
-<pre><code class="language-yaml">DNS_SETTINGS:
-  ...
-  settings:
-    DNS_ROOT_TXT_ARRAY:
-      description: &quot;DNS TXT records for @ value for ${DOMAIN}. Ex.: [\&quot;_globalsign-domain-verification=n3PT\&quot;,\&quot;v=spf1 include:_mailcust.gandi.net ?all\&quot;]&quot;
-      value:
-        - &quot;hi there&quot;
-        - &quot;my-dns-challenge&quot;
+<h3 id="spf"><!--spf-->SPF</h3>
+<p>SPF records are just TXT records at the root &#x2014; place them under <code>dns.records.root.txt</code>:</p>
+<pre><code class="language-yaml">dns:
+  records:
+    root:
+      txt: [&apos;v=spf1 include:_mailcust.example.com ?all&apos;]
 </code></pre>
-<h2 id="spf-record"><!--spf-record-->SPF Record</h2>
-<p>SPF records are simply TXT records located at the root of the domain. They are defined as following:</p>
-<pre><code class="language-yaml">DNS_SETTINGS:
-  ...
-  settings:
-    DNS_ROOT_TXT_ARRAY:
-      ...
-      value:
-        - &quot;${SPF_RECORD}&quot;
+<h3 id="mx"><!--mx-->MX</h3>
+<p>Array of objects with <code>name</code>, <code>priority</code>, optional <code>ttl</code>:</p>
+<pre><code class="language-yaml">dns:
+  records:
+    root:
+      mx:
+        - { name: &apos;mail.example.com&apos;,          priority: 10, ttl: 10800 }
+        - { name: &apos;mail-fallback.example.com&apos;, priority: 50, ttl: 10800 }
 </code></pre>
-<h2 id="mx-record"><!--mx-record-->MX Record</h2>
-<p>You can enter an array of MX Records, providing the <code>name</code>, <code>priority</code> and <code>ttl</code> (Time To Live) values for each of these as following:</p>
-<pre><code class="language-yaml">DNS_SETTINGS:
-  ...
-  settings:
-    DNS_MX_RECORDS:
-      ...
-      value:
-        - name: my.mail.com
-          priority: 10
-          ttl: 10800
-        - name: my.other.mail.org
-          priority: 50
-          ttl: 10800
-</code></pre>
-<h2 id="previous-version"><!--previous-version-->Previous version</h2>
-<p>The previous guide for DNS configuration is still available <a href="/assets/docs/20190501-dns-config-v3.pdf">here</a>.</p>
+<h3 id="ns--caa--soa"><!--ns--caa--soa-->NS / CAA / SOA</h3>
+<p><code>dns.records.root.{ns, caa, soa}</code> &#x2014; <code>ns</code> and <code>caa</code> are arrays of strings, <code>soa</code> is either <code>null</code> (auto-generated) or a string in standard SOA record format.</p>
+<h2 id="v1-procedure-legacy"><!--v1-procedure-legacy-->v1 procedure (legacy)</h2>
+<p>Operators still running Pryv.io v1 used <code>service-config-leader</code> to edit <code>config-leader/conf/platform.yml</code> under <code>DNS_SETTINGS</code>. That mechanism <strong>does not exist in v2</strong> &#x2014; the table below maps each v1 variable to its v2 equivalent for convenience when migrating:</p>
+<table>
+<thead>
+<tr>
+<th>v1 <code>platform.yml</code> variable</th>
+<th>v2 equivalent</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>DNS_SETTINGS.settings.DNS_CUSTOM_ENTRIES.value.&lt;sub&gt;.ip</code></td>
+<td><code>dns.staticEntries.&lt;sub&gt;.a[]</code></td>
+</tr>
+<tr>
+<td><code>DNS_SETTINGS.settings.DNS_CUSTOM_ENTRIES.value.&lt;sub&gt;.alias.name</code></td>
+<td><code>dns.staticEntries.&lt;sub&gt;.cname</code></td>
+</tr>
+<tr>
+<td><code>DNS_SETTINGS.settings.DNS_CUSTOM_ENTRIES.value.&lt;sub&gt;.description</code></td>
+<td><code>dns.staticEntries.&lt;sub&gt;.txt[]</code></td>
+</tr>
+<tr>
+<td><code>DNS_SETTINGS.settings.DNS_ROOT_DOMAIN_A_RECORD.value</code></td>
+<td><code>dns.records.root.a[]</code></td>
+</tr>
+<tr>
+<td><code>DNS_SETTINGS.settings.DNS_ROOT_TXT_ARRAY.value</code></td>
+<td><code>dns.records.root.txt[]</code></td>
+</tr>
+<tr>
+<td><code>DNS_SETTINGS.settings.DNS_MX_RECORDS.value[]</code></td>
+<td><code>dns.records.root.mx[]</code></td>
+</tr>
+</tbody>
+</table>
+<h3 id="older-v1-dnsjson"><!--older-v1-dnsjson-->Older v1 (<code>dns.json</code>)</h3>
+<p>Pryv.io v1 deployments older than the <code>service-config-leader</code> switch stored DNS records as JSON in <code>pryv/dns/conf/dns.json</code> (single-node) or <code>reg-master/dns/conf/dns.json</code> and <code>reg-slave/dns/conf/dns.json</code> (cluster). All keys lived under a top-level <code>dns</code> property. v2 equivalent:</p>
+<table>
+<thead>
+<tr>
+<th>v1 <code>dns.json</code> key</th>
+<th>v2 equivalent</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>dns.staticDataInDomain.&lt;sub&gt;.ip</code></td>
+<td><code>dns.staticEntries.&lt;sub&gt;.a[]</code></td>
+</tr>
+<tr>
+<td><code>dns.staticDataInDomain.&lt;sub&gt;.alias.name</code></td>
+<td><code>dns.staticEntries.&lt;sub&gt;.cname</code> (string)</td>
+</tr>
+<tr>
+<td><code>dns.staticDataInDomain.&lt;sub&gt;.description</code> (string <strong>or</strong> array)</td>
+<td><code>dns.staticEntries.&lt;sub&gt;.txt[]</code></td>
+</tr>
+<tr>
+<td><code>dns.domain_A</code></td>
+<td><code>dns.records.root.a[]</code></td>
+</tr>
+<tr>
+<td><code>dns.rootTXT.description[]</code></td>
+<td><code>dns.records.root.txt[]</code></td>
+</tr>
+<tr>
+<td><code>dns.mail[]</code> (<code>{name, ip, ttl, priority}</code>)</td>
+<td><code>dns.records.root.mx[]</code> (<code>{name, priority, ttl}</code>) &#x2014; <code>ip</code> is no longer carried; resolve the MX target&#x2019;s A/AAAA via its own zone entry</td>
+</tr>
+</tbody>
+</table>
+<p>Notes when porting:</p>
+<ul>
+<li><strong>Lower-case keys.</strong> The v1 server lower-cased subdomains; v2&#x2019;s YAML keys must already be lower-case (no implicit normalisation).</li>
+<li><strong>JSON &#x2192; YAML.</strong> v1&#x2019;s JSON was edit-fragile (a stray comma stopped the DNS server from booting). The v2 YAML loader is more permissive but still validated on startup; bad shape fails fast with a logged error from <code>components/dns-server/</code>.</li>
+<li><strong>SPF.</strong> v1 documented SPF as a <code>rootTXT</code> entry, which is correct in v2 too &#x2014; place the <code>v=spf1 &#x2026;</code> string in <code>dns.records.root.txt[]</code>.</li>
+</ul>
 </div><nav id="toc"></nav></div><footer id="page-footer"><nav class="navbar navbar-default"><div class="container-fluid"><div id="footer-nav"><ul class="nav navbar-nav"><li><a href="https://github.com/pryv">GitHub</a></li></ul></div></div></nav></footer><script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script><script src="/assets/bootstrap.min.js"></script><script src="/assets/js/toc.min.js"></script><!-- TOC generation--><script>jQuery(document).ready(function($) {
   // Header is about 51 pixels. This equals to 'header + fuzz', fuzz was
   // determined experimentally.

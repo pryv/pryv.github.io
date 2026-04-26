@@ -340,8 +340,40 @@
 <li>Network interfaces (packets, bytes, errors)</li>
 </ul>
 <p>Application-level: the core exposes standard Node.js process metrics via its logs, and each of its HTTP ports (3000, 4000) responds to basic liveness checks &#x2014; see the <a href="/customer-resources/healthchecks/">healthchecks guide</a>.</p>
-<h2 id="previous-versions-of-this-document"><!--previous-versions-of-this-document-->Previous versions of this document</h2>
-<p>The v1 &#x201C;Deployment design guide&#x201D; is still available as <a href="/assets/docs/deployment_design_guide_v6.pdf">PDF</a> for reference.</p>
+<h2 id="v1-procedure-legacy"><!--v1-procedure-legacy-->v1 procedure (legacy)</h2>
+<p>Pryv.io v1 used a three-role topology &#x2014; a <code>web</code> machine (NGINX), a two-node <code>registry</code> (config-leader + config-follower) and one or more <code>core</code> machines, partitioned by username and optionally spread across privacy zones. High availability relied on Pacemaker/Heartbeat. None of those roles exist in v2: the <code>core</code> binary handles registration in-process, and the operator&#x2019;s reverse proxy replaces the <code>web</code> role.</p>
+<p>The per-core sizing orders of magnitude from the v1 design guide are still useful as v2 baselines, since the inner workers (api / hfs / previews) remain the bottleneck:</p>
+<table>
+<thead>
+<tr>
+<th>Resource</th>
+<th>Limit per core</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Read/write requests</td>
+<td>~2000 rqps each</td>
+</tr>
+<tr>
+<td>Image-preview requests</td>
+<td>~100 rqps</td>
+</tr>
+<tr>
+<td>Attachment reads</td>
+<td>~600 rqps</td>
+</tr>
+<tr>
+<td>Attachment writes</td>
+<td>&#x2248; storage throughput / 2</td>
+</tr>
+<tr>
+<td>Users per core</td>
+<td>&lt; 10000</td>
+</tr>
+</tbody>
+</table>
+<p>Minimum starting point per core: <strong>4 GB RAM, 2 CPU, 15 GB data disk</strong> (raise data disk in line with retained events + attachments).</p>
 </div><nav id="toc"></nav></div><footer id="page-footer"><nav class="navbar navbar-default"><div class="container-fluid"><div id="footer-nav"><ul class="nav navbar-nav"><li><a href="https://github.com/pryv">GitHub</a></li></ul></div></div></nav></footer><script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script><script src="/assets/bootstrap.min.js"></script><script src="/assets/js/toc.min.js"></script><!-- TOC generation--><script>jQuery(document).ready(function($) {
   // Header is about 51 pixels. This equals to 'header + fuzz', fuzz was
   // determined experimentally.

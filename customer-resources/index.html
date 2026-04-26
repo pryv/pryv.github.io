@@ -9,9 +9,6 @@
 <ul>
 <li><a href="https://github.com/pryv/open-pryv.io">open-pryv.io</a>: Main API server (core + register + mail + MFA + HFS + previews)</li>
 <li><a href="https://github.com/pryv/dev-migrate-v1-v2">dev-migrate-v1-v2</a>: Toolkit to migrate user data from Open Pryv.io 1.x to v2</li>
-<li><a href="https://github.com/pryv/service-config-leader">service-config-leader</a>: Configuration management centralization (v1)</li>
-<li><a href="https://github.com/pryv/service-config-follower">service-config-follower</a>: Subscribe to config-leader (v1)</li>
-<li><a href="https://github.com/pryv/service-ssl-certificate">service-ssl-certificate</a>: Let&#x2019;s Encrypt automated certificate request (v1)</li>
 </ul>
 <h2 id="upgrading-from-v1"><!--upgrading-from-v1-->Upgrading from v1</h2>
 <p>If you already run Open Pryv.io 1.x and want to move your users to v2:</p>
@@ -21,6 +18,12 @@
 <li>Import that backup into the v2 install with <code>node bin/backup.js --restore /path/to/backup</code> &#x2014; see the <a href="/customer-resources/backup/">backup guide</a>.</li>
 </ol>
 <p>See the toolkit&#x2019;s README for the current source/target support matrix.</p>
+<p>The following repositories powered the v1 multi-container topology and are kept online as historical references only &#x2014; v2 deployments should not use them:</p>
+<ul>
+<li><a href="https://github.com/pryv/service-config-leader">service-config-leader</a> / <a href="https://github.com/pryv/service-config-follower">service-config-follower</a>: centralized configuration management (replaced in v2 by <code>override-config.yml</code> merged onto <code>config/default-config.yml</code> at startup).</li>
+<li><a href="https://github.com/pryv/service-ssl-certificate">service-ssl-certificate</a>: Let&#x2019;s Encrypt automation (replaced in v2 by the built-in <code>letsEncrypt.*</code> config block &#x2014; see <a href="/customer-resources/ssl-certificate/">SSL certificate</a>).</li>
+</ul>
+<p>If you are migrating a v1 register service, the historical <a href="/customer-resources/register-migration/">register migration guide</a> is still online &#x2014; but in v2 the register role is built into the core binary, so use <a href="/customer-resources/core-migration/">core migration</a> instead.</p>
 <h2 id="documents"><!--documents-->Documents</h2>
 <ul>
 <li>
@@ -82,16 +85,12 @@ You will also find information about how to operate your Pryv.io platform.</p>
 <p>This document describes how to migrate a Pryv.io core service to a different machine.</p>
 </li>
 <li>
-<p>Register migration (v1 only): <a href="/customer-resources/register-migration/">HTML</a></p>
-<p>Historical reference for migrating a v1 register service. In v2 the register role is built into the core binary &#x2014; use <a href="/customer-resources/core-migration/">core migration</a> instead.</p>
-</li>
-<li>
 <p>Single-node to Cluster upgrade: <a href="/customer-resources/single-node-to-cluster/">HTML</a></p>
 <p>This document describes how to upgrade a Pryv.io single-node installation to a cluster one.</p>
 </li>
 <li>
-<p>(deprecated) User deletion: <a href="/assets/docs/20190919-pryv.io-delete-user-v1.pdf">PDF</a></p>
-<p>This document presents a tool which allows to delete Pryv.io users. From Pryv.io 1.6, user deletion is available through the <a href="/reference-admin/#delete-user">admin API</a></p>
+<p>User deletion</p>
+<p>In v2 (<code>open-pryv.io</code>), user deletion is an in-process API call: <code>DELETE /users/:username</code> (method id <code>auth.delete</code>). It removes the user&#x2019;s events, streams, attachments, high-frequency series and audit log in one operation. Authenticate either with the user&#x2019;s own personal token or with the platform <code>adminAccessKey</code>. See the <a href="/reference-system/#delete-user">system API reference</a>. The v1 <code>pryv-cli delete-user</code> Docker tool is not used in v2 &#x2014; there is no separate CLI container.</p>
 </li>
 <li>
 <p>How to backup: <a href="/customer-resources/backup/">HTML</a></p>

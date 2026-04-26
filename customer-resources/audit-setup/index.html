@@ -4,6 +4,9 @@
   <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
   <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
 <![endif]--><link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Roboto:400,300,500,700,400italic|Roboto+Condensed:400,300,700"><link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/styles/docco.min.css"><link rel="stylesheet" type="text/css" href="/assets/fonts/ss-gizmo.min.css"><link rel="stylesheet" type="text/css" href="/assets/style.css"></head><body class="audit-setup with-toc"><header id="page-header"><nav class="navbar navbar-default navbar-fixed-top" role="navigation"><div class="container-fluid"><div class="navbar-header"><a class="navbar-brand logo" href="/" title="Developers home"><img src="/assets/images/logo-256-black.png" alt="Developers home"></a><button class="navbar-toggle" type="button" data-toggle="collapse" data-target="#main-nav"><span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button></div><div class="collapse navbar-collapse" id="main-nav"><ul class="nav navbar-nav"><li class="dropdown"><a class="dropdown-toggle" href="#" data-toggle="dropdown">Guides <b class="caret"></b></a><ul class="dropdown-menu"><li><a href="/getting-started/">Getting started</a></li><li><a href="/concepts/">API concepts</a></li><li><a href="/data-in-pryv/">Data In Pryv</a></li><li><a href="/guides/data-modelling/">Data modelling</a></li><li><a href="/guides/app-guidelines/">App guidelines</a></li><li><a href="/external-resources/">Apps &amp; Libs</a></li><li><a href="/guides/webhooks/">Webhooks</a></li><li><a href="/guides/custom-auth/">Custom auth</a></li><li><a href="/guides/consent/">Consent request</a></li><li><a href="/guides/audit-logs/">Audit logs</a></li></ul></li><li class="dropdown"><a class="dropdown-toggle" href="#" data-toggle="dropdown">Reference <b class="caret"></b></a><ul class="dropdown-menu"><li><a href="/reference/">API reference</a></li><li><a href="/reference-admin/">Admin API reference</a></li><li><a href="/reference-system/">System API reference</a></li><li><a href="/event-types/">Event types</a></li><li><a href="/open-api/">Open API (Postman)</a></li><li><a href="/change-log/">API change log</a></li></ul></li><li class="dropdown"><a class="dropdown-toggle" href="#" data-toggle="dropdown">FAQ <b class="caret"></b></a><ul class="dropdown-menu"><li><a href="/faq-api/">API</a></li><li><a href="/faq-infra/">Infrastructure</a></li></ul></li><li><a href="https://github.com/pryv/open-pryv.io">Open Pryv.io</a></li><li><a href="/customer-resources/">Setup</a></li><li><a href="/roadmap/">Roadmap</a></li></ul><div class="navbar-right"><p class="navbar-text version"><a href="/change-log/" title="View change log">API version: <strong>2.0.0-pre</strong></a></p></div></div></div></nav></header><div class="container container-narrow" id="main-wrapper"><div id="main"><h1 class="page-title" id="pryvio-audit-configuration"><!--pryvio-audit-configuration-->Pryv.io audit configuration</h1><p>This document describes how to configure the Audit feature for your Pryv.io platform.</p>
+<blockquote>
+<p><strong>Since v2 (2026)</strong> audit is configured entirely through the unified config (<code>override-config.yml</code> merged on top of <code>config/default-config.yml</code> at startup) under the <code>audit:</code> block. There is no longer a <code>platform.yml</code> file or admin-panel GUI &#x2014; one config file, applied on core restart, is the surface for filters, syslog options and templates alike.</p>
+</blockquote>
 <h2 id="table-of-contents-"><!--table-of-contents--->Table of contents <!-- omit in toc --></h2>
 <ol>
 <li><a href="#outputs">Outputs</a></li>
@@ -26,101 +29,163 @@
 <li><a href="#syslog">Syslog</a>
 <ol>
 <li><a href="#templating">Templating</a></li>
+<li><a href="#plugin-format">Plugin format</a></li>
 </ol>
 </li>
 <li><a href="#support">Support</a></li>
 <li><a href="#performance">Performance</a></li>
+<li><a href="#v1--v2-config-mapping">v1 &#x2192; v2 config mapping</a></li>
 <li><a href="#previous-version">Previous version</a></li>
 </ol>
 <h2 id="outputs"><!--outputs-->Outputs</h2>
 <p>Audit data can be written to any or both of the following:</p>
 <ul>
-<li>in a dedicated <strong>storage</strong> where it will be indexed for <a href="/guides/audit-logs/">querying through the Events API</a></li>
+<li>in a dedicated <strong>storage</strong> where it will be indexed for <a href="/guides/audit-logs/">querying through the Events API</a> (engine-pluggable; default <code>auditStorage</code> engine is SQLite)</li>
 <li>in the host machine&#x2019;s <strong>syslog</strong> to which you can setup your own listeners</li>
 </ul>
 <h2 id="filtering"><!--filtering-->Filtering</h2>
-<p>for both of these outputs, you can define which API method you log by filtering per <a href="/reference/#method-ids">method-id</a>.</p>
-<p>You can find these settings in the platform configuration under the <strong>Audit settings</strong> tab, in the <code>AUDIT_STORAGE_FILTER</code> and <code>AUDIT_SYSLOG_FILTER</code> variables:</p>
-<p>In the Admin panel:</p>
-<pre><code class="language-json">{
-  &quot;methods&quot;: {
-    &quot;include&quot;: [&quot;access.create&quot;, &quot;events.all&quot;],
-    &quot;exclude&quot;: [&quot;events.get&quot;]
-  }
-}
-</code></pre>
-<p>In the <code>platform.yml</code> file:</p>
-<pre><code class="language-yaml">methods:
-  include: [&quot;accesses.create&quot;, &quot;events.all&quot;]
-  exclude: [&quot;events.get&quot;]
+<p>For both outputs, you define which API method is logged by filtering per <a href="/reference/#method-ids">method-id</a>. The two filter blocks share the same shape; they live under <code>audit.storage.filter</code> and <code>audit.syslog.filter</code> in <code>override-config.yml</code>.</p>
+<pre><code class="language-yaml">audit:
+  active: true
+  storage:
+    filter:
+      methods:
+        include: [&apos;accesses.create&apos;, &apos;events.all&apos;]
+        exclude: [&apos;events.get&apos;]
+  syslog:
+    filter:
+      methods:
+        include: [&apos;all&apos;]
+        exclude: []
 </code></pre>
 <h2 id="rules"><!--rules-->Rules</h2>
 <h3 id="you-must-specify-at-least-one-of-them"><!--you-must-specify-at-least-one-of-them-->You must specify at least one of them</h3>
-<p>At least one of the arrays must contain a valid value.</p>
+<p>At least one of <code>include</code> / <code>exclude</code> must contain a valid value.</p>
 <h3 id="you-can-aggregate-per-resource"><!--you-can-aggregate-per-resource-->You can aggregate per resource</h3>
-<p>The Pryv.io <a href="/reference/#method-ids">API method ids</a> are built in the format <code>{resource}.{verb}</code>, for example: <code>events.get</code>.<br>
-Audit filters accept aggregation of all methods for a particular resource using <code>all</code> for the verb, for example: <code>events.all</code></p>
+<p>The Pryv.io <a href="/reference/#method-ids">API method ids</a> are built in the format <code>{resource}.{verb}</code>, for example: <code>events.get</code>.
+Audit filters accept aggregation of all methods for a particular resource using <code>all</code> for the verb, for example: <code>events.all</code>.</p>
 <h2 id="examples"><!--examples-->Examples</h2>
 <h3 id="log-everything"><!--log-everything-->log everything</h3>
-<pre><code class="language-json">{
-  &quot;methods&quot;: {
-    &quot;include&quot;: [&quot;all&quot;],
-    &quot;exclude&quot;: []
-  }
-}
+<pre><code class="language-yaml">audit:
+  storage:
+    filter:
+      methods:
+        include: [&apos;all&apos;]
+        exclude: []
 </code></pre>
 <h3 id="log-nothing"><!--log-nothing-->log nothing</h3>
-<pre><code class="language-json">{
-  &quot;methods&quot;: {
-    &quot;include&quot;: [],
-    &quot;exclude&quot;: [&quot;all&quot;]
-  }
-}
+<pre><code class="language-yaml">audit:
+  storage:
+    filter:
+      methods:
+        include: []
+        exclude: [&apos;all&apos;]
 </code></pre>
 <h3 id="log-a-few-api-methods"><!--log-a-few-api-methods-->log a few API methods</h3>
-<pre><code class="language-json">{
-  &quot;methods&quot;: {
-    &quot;include&quot;: [&quot;access.create&quot;, &quot;accesses.delete&quot;],
-    &quot;exclude&quot;: []
-  }
-}
+<pre><code class="language-yaml">audit:
+  storage:
+    filter:
+      methods:
+        include: [&apos;accesses.create&apos;, &apos;accesses.delete&apos;]
+        exclude: []
 </code></pre>
 <h3 id="log-everything-but-a-few"><!--log-everything-but-a-few-->log everything, but a few</h3>
-<pre><code class="language-json">{
-  &quot;methods&quot;: {
-    &quot;include&quot;: [],
-    &quot;exclude&quot;: [&quot;events.get&quot;]
-  }
-}
+<pre><code class="language-yaml">audit:
+  storage:
+    filter:
+      methods:
+        include: [&apos;all&apos;]
+        exclude: [&apos;events.get&apos;]
 </code></pre>
 <h3 id="log-all-events-methods-but-get"><!--log-all-events-methods-but-get-->log all events methods, but get</h3>
-<pre><code class="language-json">{
-  &quot;methods&quot;: {
-    &quot;include&quot;: [&quot;events.all&quot;],
-    &quot;exclude&quot;: [&quot;events.get&quot;]
-  }
-}
+<pre><code class="language-yaml">audit:
+  storage:
+    filter:
+      methods:
+        include: [&apos;events.all&apos;]
+        exclude: [&apos;events.get&apos;]
 </code></pre>
 <h2 id="syslog"><!--syslog-->Syslog</h2>
 <p><strong>Introductory notes about syslog:</strong></p>
-<p><em>The syslog protocol is using a socket in order to transmit messages. For Linux, this socket is a SOCK_STREAM unix socket, which is identified by the name /dev/log. The syslog deamon for Ubuntu is rsyslogd, its configuration files are located in /etc/rsyslog.conf and /etc/rsyslog.d/</em>. In particular, the default logging rules can be found in /etc/rsyslog.d/50-default.conf. These rules typically tell to which actual log files the socket messages will be pipped to (e.g. /var/log/syslog), according to the message type (see the <a href="https://en.wikipedia.org/wiki/Syslog">Syslog wiki</a> for more details about Facility and Security levels).*</p>
-<p>If activated, the Pryv.io service will write to the host machines syslog. This is useful if you wish to enable security logging, for actions such as blocking an IP address after it has performed too many forbidden requests using tools such as <a href="https://www.fail2ban.org/wiki/index.php/Main_Page">fail2ban</a>.</p>
+<p><em>The syslog protocol uses a socket to transmit messages. For Linux, this socket is a <code>SOCK_STREAM</code> UNIX socket identified by the name <code>/dev/log</code>. The syslog daemon on Ubuntu is <code>rsyslogd</code>; its configuration files are located in <code>/etc/rsyslog.conf</code> and <code>/etc/rsyslog.d/</code>. In particular, the default logging rules can be found in <code>/etc/rsyslog.d/50-default.conf</code>. These rules typically tell to which actual log files the socket messages will be piped (e.g. <code>/var/log/syslog</code>), according to the message type (see the <a href="https://en.wikipedia.org/wiki/Syslog">Syslog wiki</a> for more details about Facility and Severity levels).</em></p>
+<p>When activated, Pryv.io writes to the host machine&#x2019;s syslog. This is useful to enable security logging for actions such as blocking an IP address after too many forbidden requests using tools like <a href="https://www.fail2ban.org/wiki/index.php/Main_Page">fail2ban</a>.</p>
+<p>Syslog options are configured under <code>audit.syslog.options</code>:</p>
+<pre><code class="language-yaml">audit:
+  syslog:
+    options:
+      host: localhost
+      #port: 514
+      protocol: unix
+      #path: /dev/log         # defaults to /dev/log on Linux
+      localhost: &apos;&apos;
+      app_name: pryv-audit
+</code></pre>
 <p>A Pryv.io audit log will look like this in the syslog:</p>
-<pre><code class="language-json">Oct 26 14:58:46 co1-pryv-li pryv-audit[57]: ck6j759f000011ps2octzo1ds audit-log/pryv-api createdBy:system [&quot;access-ck6j78uj600011ss2neygkpub&quot;,&quot;action-events.get&quot;] {&quot;source&quot;:{&quot;name&quot;:&quot;http&quot;,&quot;ip&quot;:&quot;85.5.192.175&quot;},&quot;action&quot;:&quot;events.get&quot;,&quot;query&quot;:{&quot;toTime&quot;:&quot;9900000000&quot;,&quot;fromTime&quot;:&quot;-9900000000&quot;,&quot;limit&quot;:&quot;1&quot;,&quot;sortAscending&quot;:&quot;true&quot;,&quot;state&quot;:&quot;all&quot;}}
+<pre><code>Oct 26 14:58:46 co1-pryv-li pryv-audit[57]: ck6j759f000011ps2octzo1ds audit-log/pryv-api createdBy:system [&quot;access-ck6j78uj600011ss2neygkpub&quot;,&quot;action-events.get&quot;] {&quot;source&quot;:{&quot;name&quot;:&quot;http&quot;,&quot;ip&quot;:&quot;85.5.192.175&quot;},&quot;action&quot;:&quot;events.get&quot;,&quot;query&quot;:{&quot;toTime&quot;:&quot;9900000000&quot;,&quot;fromTime&quot;:&quot;-9900000000&quot;,&quot;limit&quot;:&quot;1&quot;,&quot;sortAscending&quot;:&quot;true&quot;,&quot;state&quot;:&quot;all&quot;}}
 </code></pre>
 <h3 id="templating"><!--templating-->Templating</h3>
-<p>You can edit its template using the <code>AUDIT_SYSLOG_FORMAT</code> platform parameter:</p>
-<pre><code class="language-json">{
-  &quot;template&quot;: &quot;{userid} {type} createdBy:{createdBy} {streamIds} {content}&quot;,
-  &quot;level&quot;: &quot;notice&quot;
-}
+<p>Templates live under <code>audit.syslog.formats.&lt;key&gt;</code>. The <code>default</code> key is the fallback template applied to every audit event whose type has no dedicated entry:</p>
+<pre><code class="language-yaml">audit:
+  syslog:
+    formats:
+      default:
+        template: &quot;{userid} {type} createdBy:{createdBy} {streamIds} {content}&quot;
+        level: notice
 </code></pre>
+<p>Available placeholders: <code>{userid}</code>, <code>{type}</code>, <code>{createdBy}</code>, <code>{streamIds}</code>, <code>{content}</code>. <code>level</code> is one of <code>notice</code>, <code>warning</code>, <code>error</code>, <code>critical</code>, <code>alert</code>, <code>emerg</code>.</p>
+<p>Audit event types emitted by the core:</p>
+<ul>
+<li><code>audit-log/pryv-api</code> &#x2014; successful API call</li>
+<li><code>audit-log/pryv-api-error</code> &#x2014; errored API call</li>
+</ul>
+<p>You can define a dedicated template for either (the map key matches the part after <code>audit-log/</code>, e.g. <code>pryv-api-error</code>).</p>
+<h3 id="plugin-format"><!--plugin-format-->Plugin format</h3>
+<p>Instead of a template string, a format entry can point at an external JavaScript plugin that returns <code>{ level, message }</code> (or <code>null</code> to skip):</p>
+<pre><code class="language-yaml">audit:
+  syslog:
+    formats:
+      pryv-api-error:
+        plugin: &apos;plugins/audit-error-formatter.js&apos;
+</code></pre>
+<p>Paths are resolved relative to the core root.</p>
 <h2 id="support"><!--support-->Support</h2>
-<p>You can get in touch with Pryv&#x2019;s support at <a href="https://github.com/pryv/open-pryv.io/issues">Open Pryv - Issues and question</a></p>
+<p>You can get in touch with Pryv&#x2019;s support at <a href="https://github.com/pryv/open-pryv.io/issues">Open Pryv - Issues and questions</a>.</p>
 <h2 id="performance"><!--performance-->Performance</h2>
-<p>As both syslog and storage logging require additionnal processing, we recommend to activate logging only for the methods that require it.</p>
-<h2 id="previous-version"><!--previous-version-->Previous version</h2>
-<p>For audit configuration previous to Pryv.io 1.7, please see the <a href="/assets/docs/20190718-pryv.io-audit-v5.pdf">PDF</a>.</p>
+<p>Both syslog and storage logging require additional processing &#x2014; we recommend activating logging only for the methods that require it.</p>
+<h2 id="v1--v2-config-mapping"><!--v1--v2-config-mapping-->v1 &#x2192; v2 config mapping</h2>
+<p>For operators migrating from v1:</p>
+<table>
+<thead>
+<tr>
+<th>v1 <code>platform.yml</code> variable</th>
+<th>v2 key in <code>override-config.yml</code></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>AUDIT_STORAGE_FILTER</code></td>
+<td><code>audit.storage.filter</code></td>
+</tr>
+<tr>
+<td><code>AUDIT_SYSLOG_FILTER</code></td>
+<td><code>audit.syslog.filter</code></td>
+</tr>
+<tr>
+<td><code>AUDIT_SYSLOG_FORMAT</code></td>
+<td><code>audit.syslog.formats.default</code></td>
+</tr>
+</tbody>
+</table>
+<p>In v1 the filter payload was a JSON-encoded string edited through the admin panel&#x2019;s <em>Audit settings</em> tab; in v2 it is plain YAML under the unified config file.</p>
+<h2 id="v1-procedure-legacy"><!--v1-procedure-legacy-->v1 procedure (legacy)</h2>
+<p>In v1 the audit pipeline was split across two extra Docker containers in front of and behind the cores:</p>
+<ul>
+<li><strong><code>pryv/router</code></strong> sat between NGINX and the cores (<code>upstream core_server { server core_router:1337; }</code>), tagged each request with the resolved username, and fanned writes out to <code>--core-audit core:3000 --core-audit core:3001</code>. Logging level was set with <code>ROUTER_LOG=info</code>.</li>
+<li><strong><code>pryv/audit</code></strong> ran as a separate process on <code>:5000</code>, configured through <code>core/audit/conf/audit.json</code> (<code>core.url</code>, <code>dataFolder=/app/data</code>, <code>http.port=5000</code>, <code>logs.{prefix,console,file}</code>).</li>
+<li><strong>rsyslog</strong> wrote per-username files at <code>/var/log/pryv/audit/%programname%/%$.username%/audit.log</code>, rotated monthly with <code>rotate 12 missingok notifempty</code>.</li>
+<li>The list of audited methods, the syslog format and the storage filter were edited through the <strong>admin panel</strong> <em>Audit settings</em> tab and stored as JSON-encoded strings in <code>config-leader/conf/platform.yml</code> under <code>AUDIT_STORAGE_FILTER</code>, <code>AUDIT_SYSLOG_FILTER</code> and <code>AUDIT_SYSLOG_FORMAT</code>.</li>
+</ul>
+<p>None of those processes or paths exist in v2 &#x2014; the audit subsystem is in-process inside the core binary, configured via the <code>audit.*</code> keys covered above. The mapping table in the previous section translates each v1 variable to its v2 key.</p>
 </div><nav id="toc"></nav></div><footer id="page-footer"><nav class="navbar navbar-default"><div class="container-fluid"><div id="footer-nav"><ul class="nav navbar-nav"><li><a href="https://github.com/pryv">GitHub</a></li></ul></div></div></nav></footer><script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script><script src="/assets/bootstrap.min.js"></script><script src="/assets/js/toc.min.js"></script><!-- TOC generation--><script>jQuery(document).ready(function($) {
   // Header is about 51 pixels. This equals to 'header + fuzz', fuzz was
   // determined experimentally.
