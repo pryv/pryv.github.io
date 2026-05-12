@@ -156,10 +156,11 @@ rm -rf pryv/influxdb/data/*
 <p>Yes.</p>
 <p><strong>v2</strong> &#x2014; the core has three modes, all covered in <a href="https://github.com/pryv/open-pryv.io/blob/master/INSTALL.md">INSTALL</a>:</p>
 <ol>
-<li><strong>Built-in HTTPS</strong>: let the core terminate TLS by setting <code>http.ssl.keyFile</code> / <code>http.ssl.certFile</code> in the override config.</li>
-<li><strong>Behind your own reverse proxy (recommended for production)</strong>: leave <code>http.ssl</code> unset, run the core on plain HTTP, and terminate TLS in your NGINX/Caddy/ALB. A ready-to-use NGINX snippet for all three ports (API 3000, HFS 4000) is in <a href="https://github.com/pryv/open-pryv.io/blob/master/INSTALL.md#running--behind-nginx">INSTALL &#x2014; Running behind nginx</a>.</li>
+<li><strong>Built-in HTTPS</strong> (the quick / out-of-the-box path): let the core terminate TLS by setting <code>http.ssl.keyFile</code> / <code>http.ssl.certFile</code> in the override config, or use the <code>letsEncrypt.*</code> block for managed ACME. High-frequency series traffic is also routed in-process from the public port to the HFS worker on <code>:4000</code> &#x2014; set <code>cluster.hfsWorkers: 1</code> (or more) to enable HFS; no extra ingress required.</li>
+<li><strong>Behind your own reverse proxy (recommended for high-throughput / production)</strong>: leave <code>http.ssl</code> unset, run the core on plain HTTP (<code>http.port: 3000</code>), and terminate TLS in your nginx / Caddy / ALB. nginx is more efficient than the in-process dispatcher and unlocks edge features (rate-limiting, header munging, static assets). A ready-to-use nginx vhost &#x2014; including the HFS path rules and Socket.IO WebSocket upgrade &#x2014; is at <a href="https://github.com/pryv/open-pryv.io/blob/master/docs/nginx-ingress-sample.conf"><code>docs/nginx-ingress-sample.conf</code></a>.</li>
 <li><strong>backloop.dev</strong> for dev/test.</li>
 </ol>
+<p>For HFS specifically, SDKs read <code>features.noHF</code> on <code>/service/info</code> to decide whether the deployment serves HF &#x2014; this is auto-derived from <code>cluster.hfsWorkers</code> (set to <code>true</code> when <code>hfsWorkers === 0</code>), so SDKs short-circuit cleanly on no-HF deployments instead of failing opaquely. Operators can hand-override with <code>service.features.noHF: true|false</code> in the override config.</p>
 <p><strong>v1</strong> &#x2014; edit the NGINX config shipped with the stack:</p>
 <p>In the <code>nginx/conf/nginx.conf</code> file, comment out the following lines by adding a <code>#</code> at their beginning:</p>
 <pre><code class="language-nginx">#ssl_certificate      /app/conf/secret/DOMAIN-bundle.crt;
