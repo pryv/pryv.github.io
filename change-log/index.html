@@ -44,6 +44,15 @@
 <ul>
 <li>Toolkit at <a href="https://github.com/pryv/dev-migrate-v1-v2"><code>dev-migrate-v1-v2</code></a>: exports v1 user data (MongoDB) and produces a v2-compatible backup directory that <code>bin/backup.js --restore</code> can import.</li>
 </ul>
+<p><strong>Access versioning</strong> (Plan 66)</p>
+<ul>
+<li><code>accesses.update</code> is <strong>back</strong> (was removed in early v2). <code>PUT /accesses/{id}</code> mutates the head, snapshots the prior state into history, and bumps the access&#x2019;s <code>serial</code>. Mutable fields: <code>name</code>, <code>deviceName</code>, <code>permissions</code>, <code>expireAfter</code> / <code>expires</code>, <code>clientData</code>. See <a href="/reference/#accesses.update">Update access</a>.</li>
+<li>New <code>GET /accesses/{id}</code> (<a href="/reference/#accesses.getOne">Get one access</a>) accepting either bare <code>&lt;base&gt;</code> or composite <code>&lt;base&gt;:&lt;serial&gt;</code> ids. Composite with an older serial returns the historical snapshot + a <code>current</code> hint. Pass <code>?includeHistory=true</code> for the full version history.</li>
+<li>Composite-id wire format: <code>access.id</code> / <code>access.createdBy</code> / <code>access.modifiedBy</code> now serialise as <code>&lt;base&gt;:&lt;serial&gt;</code> once an access has been updated at least once. Never-updated accesses still serialise as bare cuid &#x2014; fully backwards-compatible. Use <a href="https://github.com/pryv/lib-js/blob/master/components/pryv/src/utils.js"><code>pryv.utils.parseAccessRef</code></a> (lib-js &#x2265; 3.1.0) to extract <code>{ base, serial }</code>.</li>
+<li>Composite-id conflict: <code>accesses.update</code> and <code>accesses.delete</code> require the caller&#x2019;s <code>{id}</code> to match the current head&#x2019;s serial. A stale composite returns <strong><code>409 stale-resource</code></strong> with <code>data: { provided, currentSerial }</code>; refetch and retry.</li>
+<li>New socket.io event <code>accessUpdated</code> fired after every successful <code>accesses.update</code>, alongside the existing coarse-grained <code>accessesChanged</code>. Payload: <code>{ type: &apos;access-updated&apos;, accessId: &apos;&lt;base&gt;:&lt;serial&gt;&apos;, serial }</code>.</li>
+<li>Chain rules: shared-access permissions must remain a subset of their managing app; narrowing a parent rejects with <code>offendingChildren</code> if any managed child would be orphaned. Expiry chain enforced on both <code>accesses.update</code> AND retrofitted on <code>accesses.create</code> (<strong>breaking</strong> if you previously created shared accesses with longer expiry than the parent app).</li>
+</ul>
 <p><strong>Known gaps in 2.0.0-pre</strong></p>
 <ul>
 <li><strong>OAuth2 authorization-code flow</strong> (RFC 6749 <code>/oauth2/authorize</code>, <code>/oauth2/token</code>, client registration, refresh tokens, PKCE) is <strong>not</strong> in this preview. Clients that need OAuth2-style authorization must continue using the existing <code>/reg/access</code> polling flow (now core-affinity aware in multi-core deployments).</li>
