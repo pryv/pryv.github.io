@@ -1,0 +1,284 @@
+<!DOCTYPE html><html class="no-js" lang="en"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="description" property="og:description" content="Pryv API reference and resources for developers"><meta name="author" content="Pryv SA"><meta property="og:type" content="website"><meta name="image" property="og:image" content="/assets/images/logo-256.png"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Cross-account Messaging &amp; Consent (CMC) | Pryv API</title><link rel="icon" href="/assets/images/favicon-black.ico" type="image/x-icon"><link rel="apple-touch-icon" sizes="120x120" href="/assets/images/apple-touch-icon-120x120-black.png"><link rel="apple-touch-icon" sizes="152x152" href="/assets/images/apple-touch-icon-152x152-black.png"><link rel="apple-touch-icon" sizes="180x180" href="/assets/images/apple-touch-icon-180x180-black.png"><!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+<!--[if lt IE 9]>
+  <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+  <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+<![endif]--><link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Roboto:400,300,500,700,400italic|Roboto+Condensed:400,300,700"><link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/styles/docco.min.css"><link rel="stylesheet" type="text/css" href="/assets/fonts/ss-gizmo.min.css"><link rel="stylesheet" type="text/css" href="/assets/style.css"></head><body class="cross-account-messaging with-toc"><header id="page-header"><nav class="navbar navbar-default navbar-fixed-top" role="navigation"><div class="container-fluid"><div class="navbar-header"><a class="navbar-brand logo" href="/" title="Developers home"><img src="/assets/images/logo-256-black.png" alt="Developers home"></a><button class="navbar-toggle" type="button" data-toggle="collapse" data-target="#main-nav"><span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button></div><div class="collapse navbar-collapse" id="main-nav"><ul class="nav navbar-nav"><li class="dropdown"><a class="dropdown-toggle" href="#" data-toggle="dropdown">Guides <b class="caret"></b></a><ul class="dropdown-menu"><li><a href="/getting-started/">Getting started</a></li><li><a href="/concepts/">API concepts</a></li><li><a href="/data-in-pryv/">Data In Pryv</a></li><li><a href="/guides/data-modelling/">Data modelling</a></li><li><a href="/guides/app-guidelines/">App guidelines</a></li><li><a href="/external-resources/">Apps &amp; Libs</a></li><li><a href="/guides/webhooks/">Webhooks</a></li><li><a href="/guides/custom-auth/">Custom auth</a></li><li><a href="/guides/consent/">Consent request</a></li><li><a href="/guides/cross-account-messaging/">Cross-account messaging (CMC)</a></li><li><a href="/guides/audit-logs/">Audit logs</a></li></ul></li><li class="dropdown"><a class="dropdown-toggle" href="#" data-toggle="dropdown">Reference <b class="caret"></b></a><ul class="dropdown-menu"><li><a href="/reference/">API reference</a></li><li><a href="/reference-admin/">Admin API reference</a></li><li><a href="/reference-system/">System API reference</a></li><li><a href="/event-types/">Event types</a></li><li><a href="/open-api/">Open API (Postman)</a></li><li><a href="/change-log/">API change log</a></li></ul></li><li class="dropdown"><a class="dropdown-toggle" href="#" data-toggle="dropdown">FAQ <b class="caret"></b></a><ul class="dropdown-menu"><li><a href="/faq-api/">API</a></li><li><a href="/faq-infra/">Infrastructure</a></li></ul></li><li><a href="https://github.com/pryv/open-pryv.io">Open Pryv.io</a></li><li><a href="/customer-resources/">Setup</a></li><li><a href="/roadmap/">Roadmap</a></li></ul><div class="navbar-right"><p class="navbar-text version"><a href="/change-log/" title="View change log">API version: <strong>2.0.0-pre</strong></a></p></div></div></div></nav></header><div class="container container-narrow" id="main-wrapper"><div id="main"><h1 class="page-title" id="cross-account-messaging--consent-cmc"><!--cross-account-messaging--consent-cmc-->Cross-account Messaging &amp; Consent (CMC)</h1><p>This guide describes how to use <strong>CMC</strong> &#x2014; Pryv.io&#x2019;s built-in protocol for federated, cross-account consent, chat and system notifications. With CMC, two Pryv accounts (which may live on different platforms) can mutually issue and receive data-grants, exchange chat messages, and send system alerts &#x2014; all on top of standard Pryv events / streams / accesses.</p>
+<p>It complements the <a href="/guides/consent/">Consent request guide</a>, which covers the classical single-account consent flow (one app obtaining an access token on one user&#x2019;s account). CMC is what you reach for when consent flows BETWEEN two end-user accounts.</p>
+<h2 id="table-of-contents-"><!--table-of-contents--->Table of contents <!-- omit in toc --></h2>
+<!-- no toc -->
+<ol>
+<li><a href="#when-to-use-cmc">When to use CMC</a></li>
+<li><a href="#concepts">Concepts</a></li>
+<li><a href="#streams-reserved-by-the-plugin">Streams reserved by the plugin</a></li>
+<li><a href="#event-types">Event types</a></li>
+<li><a href="#the-handshake-a-worked-example">The handshake &#x2014; a worked example</a></li>
+<li><a href="#sending-chat-messages">Sending chat messages</a></li>
+<li><a href="#sending-system-notifications">Sending system notifications</a></li>
+<li><a href="#revoking">Revoking</a></li>
+<li><a href="#lib-js-helpers">Lib-js helpers</a></li>
+<li><a href="#further-reading">Further reading</a></li>
+</ol>
+<h2 id="when-to-use-cmc"><!--when-to-use-cmc-->When to use CMC</h2>
+<p>Use CMC when:</p>
+<ul>
+<li>Two <strong>end-user accounts</strong> need to share data (e.g. a patient grants their doctor read access to selected streams; a study collector receives data from N participants).</li>
+<li>The data flow is <strong>bi-directional</strong> &#x2014; chat exchanges, system alerts back-and-forth &#x2014; not just one-shot reads.</li>
+<li>You want <strong>scope changes</strong> (widening / narrowing the data-grant) to be a first-class user action with audit trail.</li>
+<li>The two accounts may be on <strong>different Pryv.io platforms</strong> (federated). The plugin handles the inter-platform HTTPS plumbing for you.</li>
+</ul>
+<p>If your use-case is &#x201C;one app authenticating to one user&#x2019;s account&#x201D;, stick with the standard <a href="/reference/#authenticate-your-app">access-request flow</a>.</p>
+<h2 id="concepts"><!--concepts-->Concepts</h2>
+<p>A CMC interaction always involves <strong>two parties</strong>:</p>
+<ul>
+<li><strong>Requester</strong> &#x2014; the actor asking for consent (e.g. the doctor&#x2019;s app, a study collector, a research institution).</li>
+<li><strong>Accepter</strong> &#x2014; the data-owner whose account is being asked.</li>
+</ul>
+<p>The handshake creates <strong>two paired accesses</strong>:</p>
+<ul>
+<li>A <strong>data-grant</strong> access on the accepter&#x2019;s account, issued to the requester. Carries the offer&#x2019;s permissions (e.g. <code>fertility:read</code>).</li>
+<li>A <strong>back-channel</strong> access on the requester&#x2019;s account, issued to the accepter. Carries delivery rights for chat and system messages flowing in the reverse direction.</li>
+</ul>
+<p>Together these two accesses form a <strong>CMC consent</strong>. Either party may revoke at any time.</p>
+<h2 id="streams-reserved-by-the-plugin"><!--streams-reserved-by-the-plugin-->Streams reserved by the plugin</h2>
+<p>The plugin auto-provisions a small reserved namespace on every account on first CMC use:</p>
+<pre><code>:_cmc:                      reserved root
+  :_cmc:inbox               one-shot lifecycle delivery (consent/* events from peers)
+  :_cmc:apps                parent of user-creatable app scopes
+    :_cmc:apps:&lt;app-code&gt;   user-creatable, one per app
+      &lt;user-defined paths&gt;  e.g. :study-A, :campaign-2026
+        :chats              auto-created at acceptance time
+          :chats:&lt;peer&gt;     one chat thread per peer
+        :collectors         auto-created at acceptance time
+          :collectors:&lt;peer&gt; one system channel per peer
+  :_cmc:_internal           plugin-internal hidden region (capability mint, retry queue)
+</code></pre>
+<p>Apps must NEVER write to <code>:_cmc:_internal:*</code>. They write to their own <code>:_cmc:apps:&lt;app-code&gt;:*</code> streams; the plugin handles everything inside <code>:_cmc:_internal:*</code> and <code>:_cmc:inbox</code>.</p>
+<h2 id="event-types"><!--event-types-->Event types</h2>
+<p>CMC types follow the Pryv <code>&lt;class&gt;/&lt;format&gt;</code> convention. Implementation formats are suffixed with <code>-cmc</code> so the <a href="/event-types/">data-types directory</a> groups CMC entries together within shared classes.</p>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>When you write it</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>consent/request-cmc</code></td>
+<td>Requester writes to start a request. The plugin mints a capability URL.</td>
+</tr>
+<tr>
+<td><code>consent/accept-cmc</code></td>
+<td>Accepter writes to accept (carries the capability URL from the request).</td>
+</tr>
+<tr>
+<td><code>consent/refuse-cmc</code></td>
+<td>Accepter writes to refuse.</td>
+</tr>
+<tr>
+<td><code>consent/revoke-cmc</code></td>
+<td>Either party writes to revoke an established consent.</td>
+</tr>
+<tr>
+<td><code>message/chat-cmc</code></td>
+<td>Either party writes a chat to their per-peer chat stream.</td>
+</tr>
+<tr>
+<td><code>notification/alert-cmc</code></td>
+<td>Either party sends a system alert (level + title + body).</td>
+</tr>
+<tr>
+<td><code>notification/ack-cmc</code></td>
+<td>Acknowledge a previously-received alert.</td>
+</tr>
+<tr>
+<td><code>consent/scope-request-cmc</code></td>
+<td>Collector proposes a scope change.</td>
+</tr>
+<tr>
+<td><code>consent/scope-update-cmc</code></td>
+<td>User-side accepts / applies a scope change.</td>
+</tr>
+<tr>
+<td><code>consent/back-channel-cmc</code></td>
+<td>Plugin-internal handshake step. Apps don&#x2019;t write these.</td>
+</tr>
+</tbody>
+</table>
+<p><code>consent/back-channel-cmc</code> is not app-facing &#x2014; the plugin emits and consumes it transparently as part of the handshake.</p>
+<h2 id="the-handshake--a-worked-example"><!--the-handshake--a-worked-example-->The handshake &#x2014; a worked example</h2>
+<p>Imagine <strong>Alice</strong> (a study participant) wants to grant <strong>Bob</strong> (a research collector) read access to her <code>fertility</code> stream, with chat enabled.</p>
+<p><strong>1. Alice creates an app-scope stream.</strong> Once per app:</p>
+<pre><code class="language-js">await aliceConn.api([{ method: &apos;streams.create&apos;, params: {
+  id: &apos;:_cmc:apps:my-study&apos;, parentId: &apos;:_cmc:apps&apos;, name: &apos;My Study&apos;
+}}]);
+// Optionally a per-request sub-path for finer-grained scoping:
+await aliceConn.api([{ method: &apos;streams.create&apos;, params: {
+  id: &apos;:_cmc:apps:my-study:cohort-2026&apos;, parentId: &apos;:_cmc:apps:my-study&apos;, name: &apos;Cohort 2026&apos;
+}}]);
+</code></pre>
+<p><strong>2. Alice writes the consent request.</strong> This triggers the capability mint:</p>
+<pre><code class="language-js">const res = await aliceConn.api([{ method: &apos;events.create&apos;, params: {
+  streamIds: [&apos;:_cmc:apps:my-study:cohort-2026&apos;],
+  type: &apos;consent/request-cmc&apos;,
+  content: {
+    to: null,                               // null = open invite via capability URL
+    capabilityRequested: true,
+    request: {
+      title:       { en: &apos;Cohort 2026 &#x2014; share fertility data&apos; },
+      description: { en: &apos;Sharing fertility data with the cohort 2026 research team.&apos; },
+      consent:     { en: &apos;I consent to share my fertility data for cohort 2026 research.&apos; },
+      permissions: [ { streamId: &apos;fertility&apos;, level: &apos;read&apos; } ]
+    },
+    requesterMeta: { username: &apos;alice&apos;, appId: &apos;my-study&apos; }
+  }
+}}]);
+const triggerId = res[0].event.id;
+</code></pre>
+<p>The plugin stamps <code>content.capabilityUrl</code> on the trigger event within milliseconds. Alice&#x2019;s app reads it back and shares it with Bob (via email, QR code, etc.).</p>
+<p><strong>3. Bob accepts via the capability URL:</strong></p>
+<pre><code class="language-js">await bobConn.api([{ method: &apos;events.create&apos;, params: {
+  streamIds: [&apos;:_cmc:apps:my-study&apos;],   // Bob&apos;s local app-scope stream
+  type: &apos;consent/accept-cmc&apos;,
+  content: { capabilityUrl, accessName: &apos;cmc-cohort-2026&apos; }
+}}]);
+</code></pre>
+<p>The plugin on Bob&#x2019;s side:</p>
+<ul>
+<li>reads the offer via the capability,</li>
+<li>mints a <strong>data-grant access</strong> on Bob&#x2019;s account (with <code>fertility:read</code> + the chat / system anchor permissions),</li>
+<li>delivers <code>consent/accept-cmc</code> back to Alice&#x2019;s <code>:_cmc:_internal:responses:&lt;capId&gt;</code> stream.</li>
+</ul>
+<p><strong>4. Alice&#x2019;s side automatically:</strong></p>
+<ul>
+<li>mints the <strong>back-channel access</strong> for Bob,</li>
+<li>provisions the chat / collectors anchor streams,</li>
+<li>POSTs <code>consent/back-channel-cmc</code> to Bob&#x2019;s <code>:_cmc:inbox</code> (so Bob&#x2019;s data-grant gets the back-channel apiEndpoint stamped on it),</li>
+<li>mirrors a copy of the accept event onto Alice&#x2019;s own <code>:_cmc:inbox</code> so Alice&#x2019;s app sees it.</li>
+</ul>
+<p>Alice&#x2019;s app subscribes to <code>:_cmc:inbox</code> to be notified:</p>
+<pre><code class="language-js">const aliceConn2 = new pryv.Connection(aliceApiEndpoint);
+const monitor = aliceConn2.monitor({ streams: [&apos;:_cmc:inbox&apos;] });
+monitor.on(&apos;event&apos;, (event) =&gt; {
+  if (event.type === &apos;consent/accept-cmc&apos; &amp;&amp; event.content?.from?.username === &apos;bob&apos;) {
+    console.log(&apos;Bob accepted! Data-grant URL:&apos;, event.content.grantedAccess.apiEndpoint);
+  }
+});
+</code></pre>
+<p>After the handshake, both sides have:</p>
+<ul>
+<li>a chat stream <code>:_cmc:apps:my-study:cohort-2026:chats:&lt;peer-slug&gt;</code>,</li>
+<li>a system channel <code>:_cmc:apps:my-study:cohort-2026:collectors:&lt;peer-slug&gt;</code>,</li>
+<li>the access pair pre-wired for bi-directional delivery.</li>
+</ul>
+<h2 id="sending-chat-messages"><!--sending-chat-messages-->Sending chat messages</h2>
+<p>To chat, write <code>message/chat-cmc</code> to your per-peer chat stream:</p>
+<pre><code class="language-js">const peerSlug = pryv.cmc.counterpartySlug({ username: &apos;bob&apos;, host: &apos;pryv.example&apos; });
+const myChatStream = pryv.cmc.chatStreamUnder(&apos;:_cmc:apps:my-study:cohort-2026&apos;, peerSlug);
+
+await aliceConn.api([{ method: &apos;events.create&apos;, params: {
+  streamIds: [myChatStream],
+  type: &apos;message/chat-cmc&apos;,
+  content: { content: &apos;Hello from Alice&apos; }
+}}]);
+</code></pre>
+<p>The plugin delivers the chat to Bob&#x2019;s matching chat stream within ~100ms. Bob&#x2019;s app subscribes to the same stream-id pattern (with Alice&#x2019;s slug) to read incoming chats.</p>
+<h2 id="sending-system-notifications"><!--sending-system-notifications-->Sending system notifications</h2>
+<p>System notifications carry richer structure than chats &#x2014; a level (info / warning / critical), localised title + body, and optionally an ack-request:</p>
+<pre><code class="language-js">const myCollectorStream = pryv.cmc.collectorStreamUnder(&apos;:_cmc:apps:my-study:cohort-2026&apos;, peerSlug);
+
+await collectorConn.api([{ method: &apos;events.create&apos;, params: {
+  streamIds: [myCollectorStream],
+  type: &apos;notification/alert-cmc&apos;,
+  content: {
+    level: &apos;warning&apos;,
+    title: { en: &apos;Daily survey reminder&apos; },
+    body:  { en: &apos;You haven\&apos;t submitted today\&apos;s survey yet.&apos; },
+    code:  &apos;survey-reminder&apos;,
+    ackRequired: true
+  }
+}}]);
+</code></pre>
+<p>If <code>ackRequired</code> is true, the recipient sends a <code>notification/ack-cmc</code> back referencing the alert event-id.</p>
+<h2 id="revoking"><!--revoking-->Revoking</h2>
+<p>Either party can revoke the consent at any time:</p>
+<pre><code class="language-js">await aliceConn.api([{ method: &apos;events.create&apos;, params: {
+  streamIds: [&apos;:_cmc:apps:my-study:cohort-2026&apos;],
+  type: &apos;consent/revoke-cmc&apos;,
+  content: {
+    accessId: backChannelAccessId,         // the local access being revoked
+    reason: { en: &apos;study complete&apos; }
+  }
+}}]);
+</code></pre>
+<p>The plugin tears down both sides of the access pair. The chat / collectors history is preserved (events are not deleted) but no further messages will be delivered.</p>
+<h2 id="lib-js-helpers"><!--lib-js-helpers-->Lib-js helpers</h2>
+<p>The <code>pryv</code> JS library exposes a <code>pryv.cmc</code> namespace with pure helpers for stream-id and slug computation:</p>
+<pre><code class="language-js">const pryv = require(&apos;pryv&apos;);
+
+pryv.cmc.NS;                                     // &apos;:_cmc:&apos;
+pryv.cmc.appScope(&apos;my-app&apos;);                     // &apos;:_cmc:apps:my-app&apos;
+pryv.cmc.counterpartySlug({ username: &apos;bob&apos;, host: &apos;pryv.example&apos; });  // &apos;bob--pryv-example&apos;
+pryv.cmc.chatStreamUnder(&apos;:_cmc:apps:my-app:study-A&apos;, &apos;bob--pryv-example&apos;);
+// &#x2192; &apos;:_cmc:apps:my-app:study-A:chats:bob--pryv-example&apos;
+
+// Extract { username, host } from an apiEndpoint URL using your service.api template:
+const serviceInfo = await pryv.utils.fetchAndAssertServiceInfo(serviceInfoUrl);
+const actor = pryv.cmc.extractActor(apiEndpoint, serviceInfo.api);
+// &#x2192; { username: &apos;alice&apos;, host: &apos;pryv.example&apos; }
+</code></pre>
+<p>The full set of helpers + event-type constants are in <a href="https://github.com/pryv/lib-js/blob/master/components/pryv/src/cmc.js"><code>pryv.cmc</code></a>.</p>
+<h2 id="further-reading"><!--further-reading-->Further reading</h2>
+<ul>
+<li><a href="https://github.com/pryv/open-pryv.io/blob/master/components/cmc/IMPLEMENTERS-GUIDE.md">Implementer&#x2019;s Guide (open-pryv.io)</a> &#x2014; the deep-dive reference for app developers integrating CMC.</li>
+<li><a href="https://github.com/pryv/open-pryv.io/blob/master/components/cmc/INTERNALS.md">Internals (open-pryv.io)</a> &#x2014; operator / contributor reference, with full sequence diagrams.</li>
+<li><a href="/guides/consent/">Consent request guide</a> &#x2014; the classical single-account consent flow; pair this guide with that one when designing your data-collection architecture.</li>
+<li><a href="/event-types/">Event types directory</a> &#x2014; the canonical class/format catalogue, including the <code>consent/*</code>, <code>message/chat-cmc</code>, and <code>notification/*-cmc</code> types.</li>
+</ul>
+</div><nav id="toc"></nav></div><footer id="page-footer"><nav class="navbar navbar-default"><div class="container-fluid"><div id="footer-nav"><ul class="nav navbar-nav"><li><a href="https://github.com/pryv">GitHub</a></li></ul></div></div></nav></footer><script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script><script src="/assets/bootstrap.min.js"></script><script src="/assets/js/toc.min.js"></script><!-- TOC generation--><script>jQuery(document).ready(function($) {
+  // Header is about 51 pixels. This equals to 'header + fuzz', fuzz was
+  // determined experimentally.
+  var offset = 90;
+
+  // Display TOC on the left side of the page.
+  $('#toc').toc({
+    selector: '#main h1:not(.page-title),#main h2,#main h3',
+    ulClass: 'nav'
+  });
+
+  // Synchronise scroll/click motion with TOC display.
+  $(document).ready(function() {
+    // NOTE This is done at onLoad since we need to wait for all CSS
+    // to appear.
+    $('body').scrollspy({
+      target: '#toc',
+      offset: offset
+    });
+    scrollBy(0, 1); // make it scroll to be sure scrollspy gets it
+    
+    // fix offset when navigating
+    $('#toc li a, a.toc-anchor').click(function (e) {
+      e.preventDefault();
+      var target = $(this).attr('href');
+      window.location.hash = target;
+      
+      $(target)[0].scrollIntoView();
+      if ($(window).scrollTop() + $(window).height() !== $(document).height()) {
+        //only adjust when not at bottom
+        scrollBy(0, -offset + 40);
+      }
+      return true;
+    });
+  
+  });
+});
+</script><!-- Code blocks highlighting--><script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/highlight.min.js"></script><script>hljs.initHighlightingOnLoad();
+</script><!-- Google Analytics--><script>var _gaq = _gaq || [];
+_gaq.push(['_setAccount', 'UA-36589447-2']);
+_gaq.push(['_trackPageview']);
+(function() {
+  var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+  ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+  var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+})();</script></body></html>
