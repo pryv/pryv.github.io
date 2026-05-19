@@ -64,6 +64,10 @@
 <li>Backwards-compat: nothing legacy changes; deployments that don&#x2019;t use CMC see the namespace as inert. No migration required.</li>
 <li>Client SDK: <a href="https://github.com/pryv/lib-js/tree/feature/cmc/components/pryv/src/cmc.js"><code>pryv.cmc</code></a> helper module ships in <code>pryv</code> lib-js &#x2265; 3.2.0-pre.1 &#x2014; slug + stream-id builders + parsers so app code constructs canonical paths without depending on the server-internal modules. Design docs: <a href="https://github.com/pryv/open-pryv.io/blob/feature/cmc/components/cmc/README.md"><code>components/cmc/README.md</code></a>, <a href="https://github.com/pryv/open-pryv.io/blob/feature/cmc/components/cmc/IMPLEMENTERS-GUIDE.md"><code>IMPLEMENTERS-GUIDE.md</code></a>, <a href="https://github.com/pryv/open-pryv.io/blob/feature/cmc/components/cmc/INTERNALS.md"><code>INTERNALS.md</code></a>.</li>
 </ul>
+<p><strong>Fixes</strong></p>
+<ul>
+<li><strong>Password-reset email</strong> (2.0.0-pre.3): the <code>account.requestPasswordReset</code> mail now reliably embeds the platform&#x2019;s password-reset URL even when that config value is populated by an override or extra-config plugin. Previously, in some boot orderings the captured config slice missed the value and the Pug template rendered a relative <code>?resetToken=&#x2026;</code> href that Outlook/Apple Mail QuickLook silently dropped. New template substitution <code>#{RESET_LINK}</code> provides the pre-composed full URL &#x2014; existing templates using <code>#{RESET_URL}?resetToken=#{RESET_TOKEN}</code> keep working unchanged.</li>
+</ul>
 <p><strong>Known gaps in 2.0.0-pre</strong></p>
 <ul>
 <li><strong>OAuth2 authorization-code flow</strong> (RFC 6749 <code>/oauth2/authorize</code>, <code>/oauth2/token</code>, client registration, refresh tokens, PKCE) is <strong>not</strong> in this preview. Clients that need OAuth2-style authorization must continue using the existing <code>/reg/access</code> polling flow (now core-affinity aware in multi-core deployments).</li>
