@@ -174,8 +174,9 @@ monitor.on(&apos;event&apos;, (event) =&gt; {
 </ul>
 <h2 id="sending-chat-messages"><!--sending-chat-messages-->Sending chat messages</h2>
 <p>To chat, write <code>message/chat-cmc</code> to your per-peer chat stream:</p>
-<pre><code class="language-js">const peerSlug = pryv.cmc.counterpartySlug({ username: &apos;bob&apos;, host: &apos;pryv.example&apos; });
-const myChatStream = pryv.cmc.chatStreamUnder(&apos;:_cmc:apps:my-study:cohort-2026&apos;, peerSlug);
+<pre><code class="language-js">const cmc = require(&apos;@pryv/cmc&apos;);
+const peerSlug = cmc.counterpartySlug({ username: &apos;bob&apos;, host: &apos;pryv.example&apos; });
+const myChatStream = cmc.chatStreamUnder(&apos;:_cmc:apps:my-study:cohort-2026&apos;, peerSlug);
 
 await aliceConn.api([{ method: &apos;events.create&apos;, params: {
   streamIds: [myChatStream],
@@ -184,9 +185,10 @@ await aliceConn.api([{ method: &apos;events.create&apos;, params: {
 }}]);
 </code></pre>
 <p>The plugin delivers the chat to Bob&#x2019;s matching chat stream within ~100ms. Bob&#x2019;s app subscribes to the same stream-id pattern (with Alice&#x2019;s slug) to read incoming chats.</p>
+<p><strong>Features gating.</strong> If the original invite was issued with <code>content.request.features.chat: false</code>, both sides&#x2019; <code>events.create</code> rejects with <code>cmc-chat-disabled</code> and no delivery happens. The flag is binding on the relationship&#x2019;s lifetime; default-permit on omission. Use <code>cmc.sendChat()</code> for the lifecycle-aware wrapper that surfaces the rejection as a <code>CmcError({ id: cmc.errorIds.CHAT_DISABLED })</code>.</p>
 <h2 id="sending-system-notifications"><!--sending-system-notifications-->Sending system notifications</h2>
 <p>System notifications carry richer structure than chats &#x2014; a level (info / warning / critical), localised title + body, and optionally an ack-request:</p>
-<pre><code class="language-js">const myCollectorStream = pryv.cmc.collectorStreamUnder(&apos;:_cmc:apps:my-study:cohort-2026&apos;, peerSlug);
+<pre><code class="language-js">const myCollectorStream = cmc.collectorStreamUnder(&apos;:_cmc:apps:my-study:cohort-2026&apos;, peerSlug);
 
 await collectorConn.api([{ method: &apos;events.create&apos;, params: {
   streamIds: [myCollectorStream],
@@ -201,6 +203,7 @@ await collectorConn.api([{ method: &apos;events.create&apos;, params: {
 }}]);
 </code></pre>
 <p>If <code>ackRequired</code> is true, the recipient sends a <code>notification/ack-cmc</code> back referencing the alert event-id.</p>
+<p><strong>Features gating.</strong> Mirrors the chat behaviour: <code>features.systemMessaging: false</code> on the original invite blocks <code>notification/alert-cmc</code> + <code>notification/ack-cmc</code> sends with <code>cmc-system-messaging-disabled</code>. <code>consent/scope-request-cmc</code> and <code>consent/scope-update-cmc</code> are protocol-level and remain permitted regardless of the flag.</p>
 <h2 id="revoking"><!--revoking-->Revoking</h2>
 <p>Either party can revoke the consent at any time:</p>
 <pre><code class="language-js">await aliceConn.api([{ method: &apos;events.create&apos;, params: {
@@ -214,21 +217,68 @@ await collectorConn.api([{ method: &apos;events.create&apos;, params: {
 </code></pre>
 <p>The plugin tears down both sides of the access pair. The chat / collectors history is preserved (events are not deleted) but no further messages will be delivered.</p>
 <h2 id="lib-js-helpers"><!--lib-js-helpers-->Lib-js helpers</h2>
-<p>The <code>pryv</code> JS library exposes a <code>pryv.cmc</code> namespace with pure helpers for stream-id and slug computation:</p>
+<p>CMC client helpers live in the <strong>sibling package</strong> <a href="https://www.npmjs.com/package/@pryv/cmc"><code>@pryv/cmc</code></a> &#x2014; install alongside <code>pryv</code>:</p>
+<pre><code>npm install pryv @pryv/cmc
+</code></pre>
 <pre><code class="language-js">const pryv = require(&apos;pryv&apos;);
+const cmc = require(&apos;@pryv/cmc&apos;);
 
-pryv.cmc.NS;                                     // &apos;:_cmc:&apos;
-pryv.cmc.appScope(&apos;my-app&apos;);                     // &apos;:_cmc:apps:my-app&apos;
-pryv.cmc.counterpartySlug({ username: &apos;bob&apos;, host: &apos;pryv.example&apos; });  // &apos;bob--pryv-example&apos;
-pryv.cmc.chatStreamUnder(&apos;:_cmc:apps:my-app:study-A&apos;, &apos;bob--pryv-example&apos;);
+// Level-0 &#x2014; pure helpers (no network):
+cmc.NS;                                                                  // &apos;:_cmc:&apos;
+cmc.appScope(&apos;my-app&apos;);                                                  // &apos;:_cmc:apps:my-app&apos;
+cmc.counterpartySlug({ username: &apos;bob&apos;, host: &apos;pryv.example&apos; });         // &apos;bob--pryv-example&apos;
+cmc.chatStreamUnder(&apos;:_cmc:apps:my-app:study-A&apos;, &apos;bob--pryv-example&apos;);
 // &#x2192; &apos;:_cmc:apps:my-app:study-A:chats:bob--pryv-example&apos;
 
-// Extract { username, host } from an apiEndpoint URL using your service.api template:
-const serviceInfo = await pryv.utils.fetchAndAssertServiceInfo(serviceInfoUrl);
-const actor = pryv.cmc.extractActor(apiEndpoint, serviceInfo.api);
-// &#x2192; { username: &apos;alice&apos;, host: &apos;pryv.example&apos; }
+// Level-1 &#x2014; lifecycle wrappers (take a pryv.Connection):
+const conn = new pryv.Connection(aliceApiEndpoint);
+
+// Provider issues an invite (writes consent/request-cmc + waits for capabilityUrl).
+const { inviteEventId, capabilityUrl } = await cmc.createInvite(conn, {
+  appCode: &apos;my-study&apos;,
+  scopeStreamId: &apos;:_cmc:apps:my-study:cohort-2026&apos;,
+  displayName: &apos;My study&apos;,
+  requestedPermissions: [{ streamId: &apos;fertility&apos;, level: &apos;read&apos; }],
+  mode: &apos;single-use&apos;,
+  // Optional per-invite TTL override &#x2014; server bounds to [60s, 30d];
+  // omit for the 7-day default. Out-of-range rejects with
+  // cmc-capability-ttl-out-of-range.
+  // expiresAt: Math.floor(Date.now() / 1000) + 3600,
+  // Optional features negotiation &#x2014; omitted defaults to true for both.
+  // Setting either to false makes that channel binding-disabled for the
+  // resulting relationship; sends will reject with cmc-chat-disabled /
+  // cmc-system-messaging-disabled.
+  features: { chat: true, systemMessaging: true },
+});
+
+// Accepter accepts (returns local data-grant access id + counterparty identity).
+const { dataGrantAccessId } = await cmc.acceptInvite(bobConn, capabilityUrl, {
+  scopeStreamId: &apos;:_cmc:apps:my-study&apos;,
+});
+
+// Provider polls inbox for the accept arrival.
+const { grantedAccessApiEndpoint } = await cmc.waitForAccept(conn, {
+  fromUsername: &apos;bob&apos;, appCode: &apos;my-study&apos;, timeoutMs: 15000,
+});
+
+// Either side can chat / alert / revoke:
+await cmc.sendChat(conn, { scopeStreamId, peerSlug, content: &apos;Hello&apos; });
+await cmc.sendSystemAlert(conn, { scopeStreamId, peerSlug, level: &apos;info&apos;,
+  title: { en: &apos;Reminder&apos; }, body: { en: &apos;Daily survey reminder&apos; } });
+await cmc.revokeRelationship(conn, { inviteEventId });
+// or revoke from accepter side by data-grant access id:
+await cmc.revokeAcceptance(bobConn, { scopeStreamId, accessId: dataGrantAccessId });
+
+// Frozen catalogue mirroring the server-side error ids.
+cmc.errorIds.CAPABILITY_TTL_OUT_OF_RANGE;     // &apos;cmc-capability-ttl-out-of-range&apos;
+cmc.errorIds.CHAT_DISABLED;                   // &apos;cmc-chat-disabled&apos;
+cmc.errorIds.SYSTEM_MESSAGING_DISABLED;       // &apos;cmc-system-messaging-disabled&apos;
+cmc.errorIds.CLIENTDATA_CMC_FORBIDDEN;        // &apos;cmc-clientdata-cmc-forbidden&apos;
+cmc.errorIds.RESERVED_STREAM_UNDELETABLE;     // &apos;cmc-reserved-stream-undeletable&apos;
+cmc.errorIds.COUNTERPARTY_IDENTITY_MISSING;   // &apos;cmc-counterparty-identity-missing&apos;
+// + the lifecycle / handler / chat-routing ids &#x2014; see source for the full list.
 </code></pre>
-<p>The full set of helpers + event-type constants are in <a href="https://github.com/pryv/lib-js/blob/master/components/pryv/src/cmc.js"><code>pryv.cmc</code></a>.</p>
+<p>Full surface + JSDoc: <a href="https://github.com/pryv/lib-js/blob/master/components/pryv-cmc/src/index.js"><code>@pryv/cmc/src/index.js</code></a>. Mirror of the server-side <code>CmcErrorIds</code> lives at <a href="https://github.com/pryv/open-pryv.io/blob/master/components/cmc/src/errorIds.ts"><code>components/cmc/src/errorIds.ts</code></a>.</p>
 <h2 id="further-reading"><!--further-reading-->Further reading</h2>
 <ul>
 <li><a href="https://github.com/pryv/open-pryv.io/blob/master/components/cmc/IMPLEMENTERS-GUIDE.md">Implementer&#x2019;s Guide (open-pryv.io)</a> &#x2014; the deep-dive reference for app developers integrating CMC.</li>
