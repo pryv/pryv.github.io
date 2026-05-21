@@ -1,0 +1,215 @@
+<!DOCTYPE html><html class="no-js" lang="en"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="description" property="og:description" content="Pryv API reference and resources for developers"><meta name="author" content="Pryv SA"><meta property="og:type" content="website"><meta name="image" property="og:image" content="/assets/images/logo-256.png"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Privacy by design and by default with Pryv.io | Pryv API</title><link rel="icon" href="/assets/images/favicon-black.ico" type="image/x-icon"><link rel="apple-touch-icon" sizes="120x120" href="/assets/images/apple-touch-icon-120x120-black.png"><link rel="apple-touch-icon" sizes="152x152" href="/assets/images/apple-touch-icon-152x152-black.png"><link rel="apple-touch-icon" sizes="180x180" href="/assets/images/apple-touch-icon-180x180-black.png"><!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+<!--[if lt IE 9]>
+  <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+  <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+<![endif]--><link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Roboto:400,300,500,700,400italic|Roboto+Condensed:400,300,700"><link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/styles/docco.min.css"><link rel="stylesheet" type="text/css" href="/assets/fonts/ss-gizmo.min.css"><link rel="stylesheet" type="text/css" href="/assets/style.css"></head><body class="privacy-by-design with-toc"><header id="page-header"><nav class="navbar navbar-default navbar-fixed-top" role="navigation"><div class="container-fluid"><div class="navbar-header"><a class="navbar-brand logo" href="/" title="Developers home"><img src="/assets/images/logo-256-black.png" alt="Developers home"></a><button class="navbar-toggle" type="button" data-toggle="collapse" data-target="#main-nav"><span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button></div><div class="collapse navbar-collapse" id="main-nav"><ul class="nav navbar-nav"><li class="dropdown"><a class="dropdown-toggle" href="#" data-toggle="dropdown">Guides <b class="caret"></b></a><ul class="dropdown-menu"><li><a href="/getting-started/">Getting started</a></li><li><a href="/concepts/">API concepts</a></li><li><a href="/data-in-pryv/">Data In Pryv</a></li><li><a href="/guides/data-modelling/">Data modelling</a></li><li><a href="/guides/app-guidelines/">App guidelines</a></li><li><a href="/external-resources/">Apps &amp; Libs</a></li><li><a href="/guides/webhooks/">Webhooks</a></li><li><a href="/guides/custom-auth/">Custom auth</a></li><li><a href="/guides/consent/">Consent request</a></li><li><a href="/guides/cross-account-messaging/">Cross-account messaging (CMC)</a></li><li><a href="/guides/audit-logs/">Audit logs</a></li><li><a href="/guides/privacy-by-design/">Privacy by design &amp; by default</a></li></ul></li><li class="dropdown"><a class="dropdown-toggle" href="#" data-toggle="dropdown">Reference <b class="caret"></b></a><ul class="dropdown-menu"><li><a href="/reference/">API reference</a></li><li><a href="/reference-admin/">Admin API reference</a></li><li><a href="/reference-system/">System API reference</a></li><li><a href="/event-types/">Event types</a></li><li><a href="/open-api/">Open API (Postman)</a></li><li><a href="/change-log/">API change log</a></li></ul></li><li class="dropdown"><a class="dropdown-toggle" href="#" data-toggle="dropdown">FAQ <b class="caret"></b></a><ul class="dropdown-menu"><li><a href="/faq-api/">API</a></li><li><a href="/faq-infra/">Infrastructure</a></li></ul></li><li><a href="https://github.com/pryv/open-pryv.io">Open Pryv.io</a></li><li><a href="/customer-resources/">Setup</a></li><li><a href="/roadmap/">Roadmap</a></li></ul><div class="navbar-right"><p class="navbar-text version"><a href="/change-log/" title="View change log">API version: <strong>2.0.0-pre</strong></a></p></div></div></div></nav></header><div class="container container-narrow" id="main-wrapper"><div id="main"><h1 class="page-title" id="privacy-by-design-and-by-default-with-pryvio"><!--privacy-by-design-and-by-default-with-pryvio-->Privacy by design and by default with Pryv.io</h1><p>In this guide we address developers building data-collecting applications who want to understand how Pryv.io supports privacy by design and privacy by default.
+It describes Pryv.io&#x2019;s architectural choices, the platform defaults that protect personal data out of the box, and what remains in the developer&#x2019;s hands.</p>
+<h2 id="table-of-contents"><!--table-of-contents-->Table of contents</h2>
+<ol>
+<li><a href="#introduction">Introduction</a></li>
+<li><a href="#why-a-developer-should-care">Why a developer should care</a></li>
+<li><a href="#glossary">Glossary</a></li>
+<li><a href="#privacy-by-design-in-pryv-io">Privacy by design in Pryv.io</a>
+<ol>
+<li><a href="#the-standard-pattern-and-its-limits">The standard pattern and its limits</a></li>
+<li><a href="#pryv-io-s-architecture">Pryv.io&#x2019;s architecture</a></li>
+<li><a href="#data-model-subject-and-context-segregation">Data model: subject and context segregation</a></li>
+</ol>
+</li>
+<li><a href="#privacy-by-default-in-pryv-io">Privacy by default in Pryv.io</a>
+<ol>
+<li><a href="#the-opt-in-pattern">The opt-in pattern</a></li>
+<li><a href="#twelve-platform-defaults">Twelve platform defaults</a></li>
+</ol>
+</li>
+<li><a href="#what-stays-in-the-developer-s-hands">What stays in the developer&#x2019;s hands</a></li>
+<li><a href="#privacy-enhancing-technologies">Privacy-enhancing technologies</a></li>
+<li><a href="#references">References</a></li>
+</ol>
+<h2 id="introduction"><!--introduction-->Introduction</h2>
+<p>The new <a href="https://www.fedlex.admin.ch/eli/cc/2022/491/en">FADP</a> and <a href="https://gdpr.eu">GDPR</a> require all organizations to be able to answer, on demand, a list of data-subject questions: <em>send me a copy of all my data</em>, <em>tell me who has accessed my data</em>, <em>prove that you have my consent</em>, <em>let me modify who can access my data</em>, <em>delete my personal data</em>.</p>
+<p>These obligations land on developers and IT engineering, not just on legal teams. The platform you build on either makes these answers easy to produce &#x2014; or it doesn&#x2019;t.</p>
+<p>Pryv.io was designed from the start so that <strong>the platform answers most of these questions for you, by construction</strong>. This guide walks through what that means in practice: the architecture that makes privacy structural rather than an afterthought, the data model that gives you granular consent for free, and the platform defaults that protect personal data the moment your app goes live.</p>
+<h2 id="why-a-developer-should-care"><!--why-a-developer-should-care-->Why a developer should care</h2>
+<p>In the past decades, organizations moved from treating personal data as a <strong>data asset</strong> to recognizing it as a <strong>data debt</strong>. Vast amounts of personal data were collected; regulations and user expectations caught up; established data-governance practices became outdated.</p>
+<p>Developers building today inherit that debt unless the substrate they use clears it for them. Designing for privacy from the beginning &#x2014; privacy by design &#x2014; is much cheaper than retrofitting it later. And shipping privacy-protective defaults &#x2014; privacy by default &#x2014; raises the level of trust with your users, which translates into better sign-up rates, better retention, and more willingness to share data.</p>
+<h2 id="glossary"><!--glossary-->Glossary</h2>
+<ul>
+<li><strong>Data Subject</strong>: the individual the personal data relates to.</li>
+<li><strong>Data Controller</strong>: the organization that determines the purposes and means of processing personal data.</li>
+<li><strong>Data Processor</strong>: the organization that processes personal data on behalf of the Data Controller.</li>
+<li><strong>Processing register</strong> (Art.30): a record of general information on the type of personal data you process and to what end.</li>
+<li><strong>Subcontractor agreement</strong> (Art.28): defines the conditions under which a Data Processor undertakes to carry out personal data processing on behalf of a Data Controller.</li>
+</ul>
+<h2 id="privacy-by-design-in-pryvio"><!--privacy-by-design-in-pryvio-->Privacy by design in Pryv.io</h2>
+<p>Privacy by design means proactively considering privacy throughout the data lifecycle, starting from the very first design phase. Article 25(1) of the GDPR requires controllers to integrate data-protection principles at the time the means for processing are determined &#x2014; not as a later add-on.</p>
+<h3 id="the-standard-pattern-and-its-limits"><!--the-standard-pattern-and-its-limits-->The standard pattern and its limits</h3>
+<p>Most platforms put access control next to the data, like this:</p>
+<pre><code>Processes &#x2500;&#x2500;direct access&#x2500;&#x2500;&#x25BA; Personal Data
+              &#x2502;
+              &#x25BC;
+         Audit / Logs (after-the-fact, manual)
+</code></pre>
+<p>The consequences:</p>
+<ul>
+<li>Processes have <strong>direct</strong> access to personal data.</li>
+<li>Per-resource access is <strong>not tracked</strong> &#x2014; audit is procedural and retroactive.</li>
+<li>The process registry is maintained <strong>manually</strong>; it drifts; when an auditor asks &#x201C;show me your Art.30 register&#x201D; you run a spreadsheet exercise.</li>
+</ul>
+<h3 id="pryvios-architecture"><!--pryvios-architecture-->Pryv.io&#x2019;s architecture</h3>
+<p>Pryv.io puts Access Control on its own layer, between every process and any personal data:</p>
+<pre><code>       Data Governance
+              &#x2502;
+              &#x25BC;
+Processes &#x2500;&#x25BA;Access Control &#x2500;&#x25BA;Personal Data
+              &#x2502;
+              &#x25BC;
+   Audit / Logs per-Data-Subject (invariant, automatic)
+</code></pre>
+<ul>
+<li>Access Control is a <strong>separate enforcement layer</strong>. No process talks directly to storage; every request resolves through an Access object (a token granting specific permissions on specific streams).</li>
+<li>Governance is applied <strong>per-process AND per-data-subject</strong> &#x2014; every access on every subject&#x2019;s account carries its own permission scope, its own audit trail, and its own version chain.</li>
+<li>The <strong>process registry is self-documented</strong>: <code>GET /accesses</code> plus the audit log together IS your Art.30 records-of-processing register, derivable on demand. No spreadsheet exercise.</li>
+</ul>
+<p>This isn&#x2019;t a recommended deployment pattern. It&#x2019;s what the platform ships.</p>
+<h3 id="data-model-subject-and-context-segregation"><!--data-model-subject-and-context-segregation-->Data model: subject and context segregation</h3>
+<p>The standard relational model &#x2014; one schema organized for processing purposes (customer table, account table, service-record table) &#x2014; has three privacy problems:</p>
+<ul>
+<li>It is not related to the data subject&#x2019;s understanding (&#x201C;which rows in the customer table are mine?&#x201D; doesn&#x2019;t have a clean answer).</li>
+<li>Access enforcement is difficult to track per-record.</li>
+<li>Consent text becomes a wall-of-text privacy policy that very few users read.</li>
+</ul>
+<p>Pryv.io segregates data by <strong>data subject AND context</strong> instead:</p>
+<ul>
+<li>Every event belongs to one subject&#x2019;s account.</li>
+<li>Events are organized in <strong>streams</strong> representing context &#x2014; <code>health/vitals/temperature</code>, <code>health/sleep</code>, <code>diary/notes</code>, <code>nutrition/meals</code>, etc.</li>
+<li>Each access permission targets a specific stream (or subtree): <code>{ streamId: &quot;health&quot;, level: &quot;read&quot; }</code> grants read access to everything under <code>health/*</code> and nothing else.</li>
+</ul>
+<p>The subject sees explicit grants when accepting an application:</p>
+<pre><code>App &quot;Personal Log Book&quot; requests:
+ - Edit &quot;Nutrition&quot;
+ - Edit &quot;Diary&quot;
+ - Read &quot;Advices&quot;
+
+[Accept]  [Refuse]
+</code></pre>
+<p>instead of a wall of legalese.</p>
+<p>This segregation is the structural substrate for:</p>
+<ul>
+<li><strong>Granular consent</strong> (<a href="https://gdpr.eu/article-7-how-to-get-consent-to-collect-personal-data/">Art.7</a>) &#x2014; each requested permission is separately presentable and acceptable.</li>
+<li><strong>Data minimisation</strong> (Art.5(1)&#xA9;) &#x2014; the application reads exactly what its grant covers, nothing else.</li>
+<li><strong>Portability</strong> (<a href="https://gdpr.eu/article-20-right-to-data-portability/">Art.20</a>) &#x2014; per-stream-subtree export is a natural operation.</li>
+<li><strong>Erasure</strong> (<a href="https://gdpr.eu/article-17-right-to-be-forgotten/">Art.17</a>) &#x2014; per-stream-subtree deletion is too.</li>
+</ul>
+<p>And your data stays usable by machines &#x2014; events carry a structured <code>type: class/format</code> JSON Schema, so analytics and ML pipelines consume them like any tabular store.</p>
+<p>For a deeper walkthrough of the data model, see the <a href="/guides/data-modelling.html">Data modelling</a> guide.</p>
+<h2 id="privacy-by-default-in-pryvio"><!--privacy-by-default-in-pryvio-->Privacy by default in Pryv.io</h2>
+<p>Privacy by default means <strong>automatically protecting personal data without any action from the data subject</strong>. Article 25(2) of the GDPR puts it this way: by default, only personal data necessary for each specific purpose are processed.</p>
+<h3 id="the-opt-in-pattern"><!--the-opt-in-pattern-->The opt-in pattern</h3>
+<p>Most cookie banners ship the privacy anti-pattern:</p>
+<blockquote>
+<p><em>&#x201C;This site uses cookies to provide you with an optimal browsing experience. By continuing to visit this site, you agree to the use of these cookies.&#x201D;</em></p>
+</blockquote>
+<p>Privacy is opt-out: the user must navigate to preferences to <strong>deactivate</strong> processing they didn&#x2019;t actively choose.</p>
+<p>Privacy by default flips this:</p>
+<blockquote>
+<p><em>&#x201C;By default, non-necessary cookies are deactivated. You can help us improving our website by activating analytics cookies.&#x201D;</em></p>
+<p>[ACTIVATE] [CONTINUE]</p>
+</blockquote>
+<p>Privacy is opt-in: the user must explicitly <strong>activate</strong> the processing categories they want to enable.</p>
+<p>The reference auth flow shipped with Pryv.io &#x2014; <a href="https://github.com/pryv/app-web-auth3">app-web-auth3</a> &#x2014; implements this pattern by default. The auth screen surfaces the requested permissions explicitly, per stream and per level (read / write / contribute / manage); Accept and Refuse buttons are visually balanced; the granted permissions are stored on the access and remain revocable at any time via <code>DELETE /accesses/:id</code>.</p>
+<p>The auth UI primitive doesn&#x2019;t support the anti-pattern &#x2014; you can&#x2019;t accidentally ship a &#x201C;by continuing you agree&#x201D; flow even if you wanted to.</p>
+<p>See the <a href="/guides/consent.html">Consent implementation</a> guide for the detailed walkthrough.</p>
+<h3 id="twelve-platform-defaults"><!--twelve-platform-defaults-->Twelve platform defaults</h3>
+<p>When an auditor asks &#x201C;show me what&#x2019;s privacy-protective by default&#x201D;, point at this catalogue:</p>
+<ul>
+<li><strong>Default-deny on permissions.</strong> Every access starts with empty <code>permissions: []</code>. You explicitly grant scope; nothing is read by default.</li>
+<li><strong>Audit-on by default.</strong> The audit primitive is invariant &#x2014; no config flag turns it off. Every API call against every subject&#x2019;s account is captured at write time.</li>
+<li><strong>TLS enforced.</strong> Let&#x2019;s Encrypt integration makes HTTPS the default. HTTP-only is a deliberate dev-mode opt-in.</li>
+<li><strong>Hosting region pinned per user.</strong> Once a subject is assigned to a core, all their event data lives on that core exclusively. Residency is architectural, not configurable per event.</li>
+<li><strong>Stream-permission granularity.</strong> Permissions are per-stream-subtree. There is no &#x201C;public&#x201D; tier &#x2014; sensitive data can&#x2019;t be accidentally exposed to a world-readable surface that doesn&#x2019;t exist.</li>
+<li><strong>Data-minimal audit.</strong> The audit log captures method + access reference + URL query + integrity hash. It <strong>never</strong> captures the request body. Audit storage is safe to retain at long horizons because it contains no event content.</li>
+<li><strong>Schema validation at ingest.</strong> Every event is validated against the declared event type&#x2019;s JSON Schema (<code>ajv-draft-04</code>) on <code>create</code> AND <code>update</code>. Out-of-shape or out-of-range payloads are rejected with HTTP 400.</li>
+<li><strong>Zero mandatory subprocessors.</strong> Default deployment talks to zero third-party services beyond your chosen cloud provider. SMTP, SMS, observability, Let&#x2019;s Encrypt &#x2014; every integration is opt-in.</li>
+<li><strong>Credentials never leak via logs.</strong> Every log call passes through a redaction layer that strips <code>auth=...</code> tokens and <code>password</code> / <code>passwordHash</code> fields. Credentials don&#x2019;t leak to external aggregators.</li>
+<li><strong>Cross-account sharing requires explicit subject consent.</strong> Pryv.io&#x2019;s <a href="/guides/cross-account-messaging.html">CMC primitive</a> requires the subject to write a <code>consent/accept-cmc</code> event before any cross-account data flow begins.</li>
+<li><strong>Operator secrets encrypted at rest.</strong> Let&#x2019;s Encrypt account keys, observability license keys, SMTP credentials are AES-256-GCM encrypted with HKDF-derived keys.</li>
+<li><strong>Withdrawal API exists by default.</strong> <code>DELETE /accesses/:id</code> is always available. A subject holding their personal token can revoke any access without third-party participation.</li>
+</ul>
+<h2 id="what-stays-in-the-developers-hands"><!--what-stays-in-the-developers-hands-->What stays in the developer&#x2019;s hands</h2>
+<p>The defaults above are structural &#x2014; Pryv.io enforces them. But Art.25(2) also has axes the platform can&#x2019;t decide for you:</p>
+<ul>
+<li>Are app tokens minted with the <strong>smallest possible scope</strong>? Pryv.io lets you grant any scope; choosing the smallest is your editorial discipline.</li>
+<li>Is your subject&#x2019;s <strong>notice-of-collection presented by default</strong>? The consent text plus the access&#x2019;s <code>clientData</code> conventions (see the <a href="/guides/consent.html">Consent implementation</a> guide) give you the durable, audit-traceable record; what the notice <strong>says</strong> is yours to write.</li>
+<li>Is <strong>data retention set to the shortest necessary period</strong>? Pryv.io doesn&#x2019;t enforce retention; your operational pruning pipeline does.</li>
+<li>Is your custom auth UI using the <strong>opt-in pattern</strong> rather than the &#x201C;by continuing you agree&#x201D; anti-pattern? If you rebrand <code>app-web-auth3</code>, the default pattern is opt-in; custom UI is your responsibility to align.</li>
+</ul>
+<h2 id="privacy-enhancing-technologies"><!--privacy-enhancing-technologies-->Privacy-enhancing technologies</h2>
+<p>Cryptography-based PETs that you can layer on top of Pryv.io&#x2019;s substrate:</p>
+<ul>
+<li><strong>Pseudonymisation</strong> &#x2014; personal-data fields replaced by artificial identifiers before analysis or sharing. The access + stream model already provides structural pseudonymisation; a randomised-alias primitive is on the roadmap.</li>
+<li><strong>Proxy re-encryption</strong> &#x2014; data is encrypted per segment with the data subject&#x2019;s public keys; the backend re-crypts for accredited recipients on demand. Defends against full-dataset breach because the attacker needs the secret keys of accredited recipients. A working proof of concept is available at <a href="https://github.com/perki/test-proxy-re-encrypt">github.com/perki/test-proxy-re-encrypt</a>.</li>
+<li><strong>Multiparty computation</strong> (federated learning, mining data without revealing sensitive information) &#x2014; multiple parties compute a function over their private inputs without revealing them.</li>
+<li><strong>Homomorphic encryption</strong> &#x2014; computations performed on encrypted data without decrypting it.</li>
+<li><strong>Differential privacy</strong> &#x2014; calibrated noise added to statistical releases so that individual data points cannot be re-identified.</li>
+</ul>
+<p>Pryv.io&#x2019;s architecture doesn&#x2019;t preclude any of these &#x2014; they sit on top of the platform substrate. The choice of which PETs to add is yours.</p>
+<h2 id="references"><!--references-->References</h2>
+<ul>
+<li><a href="https://gdpr.eu">GDPR full text</a> &#x2014; official EU regulation.</li>
+<li><a href="https://gdpr.eu/article-25-data-protection-by-design">Article 25 &#x2014; Data protection by design and by default</a>.</li>
+<li><a href="https://www.fedlex.admin.ch/eli/cc/2022/491/en">Swiss Federal Act on Data Protection (FADP)</a>.</li>
+<li><a href="/guides/consent.html">Consent implementation with Pryv.io</a> &#x2014; companion guide.</li>
+<li><a href="/guides/audit-logs.html">Audit logs</a> &#x2014; companion guide.</li>
+<li><a href="/guides/cross-account-messaging.html">Cross-account messaging (CMC)</a> &#x2014; CMC consent flow.</li>
+<li><a href="/guides/data-modelling.html">Data modelling</a> &#x2014; streams + events deep dive.</li>
+<li><a href="/guides/app-guidelines.html">App guidelines</a> &#x2014; implementer-facing patterns.</li>
+<li><a href="https://github.com/pryv/app-web-auth3">app-web-auth3 on GitHub</a> &#x2014; the reference auth web app.</li>
+</ul>
+</div><nav id="toc"></nav></div><footer id="page-footer"><nav class="navbar navbar-default"><div class="container-fluid"><div id="footer-nav"><ul class="nav navbar-nav"><li><a href="https://github.com/pryv">GitHub</a></li></ul></div></div></nav></footer><script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script><script src="/assets/bootstrap.min.js"></script><script src="/assets/js/toc.min.js"></script><!-- TOC generation--><script>jQuery(document).ready(function($) {
+  // Header is about 51 pixels. This equals to 'header + fuzz', fuzz was
+  // determined experimentally.
+  var offset = 90;
+
+  // Display TOC on the left side of the page.
+  $('#toc').toc({
+    selector: '#main h1:not(.page-title),#main h2,#main h3',
+    ulClass: 'nav'
+  });
+
+  // Synchronise scroll/click motion with TOC display.
+  $(document).ready(function() {
+    // NOTE This is done at onLoad since we need to wait for all CSS
+    // to appear.
+    $('body').scrollspy({
+      target: '#toc',
+      offset: offset
+    });
+    scrollBy(0, 1); // make it scroll to be sure scrollspy gets it
+    
+    // fix offset when navigating
+    $('#toc li a, a.toc-anchor').click(function (e) {
+      e.preventDefault();
+      var target = $(this).attr('href');
+      window.location.hash = target;
+      
+      $(target)[0].scrollIntoView();
+      if ($(window).scrollTop() + $(window).height() !== $(document).height()) {
+        //only adjust when not at bottom
+        scrollBy(0, -offset + 40);
+      }
+      return true;
+    });
+  
+  });
+});
+</script><!-- Code blocks highlighting--><script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/highlight.min.js"></script><script>hljs.initHighlightingOnLoad();
+</script><!-- Google Analytics--><script>var _gaq = _gaq || [];
+_gaq.push(['_setAccount', 'UA-36589447-2']);
+_gaq.push(['_trackPageview']);
+(function() {
+  var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+  ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+  var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+})();</script></body></html>
