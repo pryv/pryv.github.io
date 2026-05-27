@@ -324,7 +324,8 @@
 <p>Cores added via <code>bin/bootstrap.js new-core</code> ship with <code>storages.engines.rqlite.tls.{caFile, certFile, keyFile, verifyClient: true}</code> enabled &#x2014; both ends of every Raft connection verify the peer&#x2019;s cert against the cluster CA. Plain TCP attempts on port 4002 are rejected. If you opt out of mTLS (set <code>tls: null</code>, the default for fresh installs that have never run the bootstrap CLI), opening port 4002 still requires a private network or VPN between cores.</p>
 <p>Outbound &#x2014; from the core:</p>
 <ul>
-<li>tcp/443 for fetching event-type/assets definitions (configurable or pinnable), OAuth callbacks and <code>service-mail</code> (if used).</li>
+<li>tcp/443 for fetching event-type/assets definitions (configurable or pinnable), OAuth callbacks, and SMTP (TLS) if you enable email sending. Legacy deployments running the standalone <code>pryv/service-mail</code> process also need outbound <code>:443</code> to reach it.</li>
+<li>tcp/587 or tcp/465 for SMTP (when <code>services.email.method: in-process</code>, the v2-recommended path), depending on whether your relay uses STARTTLS or implicit TLS.</li>
 </ul>
 <h2 id="operational-concerns"><!--operational-concerns-->Operational concerns</h2>
 <h3 id="system-hardening"><!--system-hardening-->System hardening</h3>
