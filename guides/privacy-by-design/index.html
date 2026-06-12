@@ -103,7 +103,7 @@ Processes &#x2500;&#x25BA;Access Control &#x2500;&#x25BA;Personal Data
 <li><strong>Erasure</strong> (<a href="https://gdpr.eu/article-17-right-to-be-forgotten/">Art.17</a>) &#x2014; per-stream-subtree deletion is too.</li>
 </ul>
 <p>And your data stays usable by machines &#x2014; events carry a structured <code>type: class/format</code> JSON Schema, so analytics and ML pipelines consume them like any tabular store.</p>
-<p>For a deeper walkthrough of the data model, see the <a href="/guides/data-modelling.html">Data modelling</a> guide.</p>
+<p>For a deeper walkthrough of the data model, see the <a href="/guides/data-modelling/">Data modelling</a> guide.</p>
 <h2 id="privacy-by-default-in-pryvio"><!--privacy-by-default-in-pryvio-->Privacy by default in Pryv.io</h2>
 <p>Privacy by default means <strong>automatically protecting personal data without any action from the data subject</strong>. Article 25(2) of the GDPR puts it this way: by default, only personal data necessary for each specific purpose are processed.</p>
 <h3 id="the-opt-in-pattern"><!--the-opt-in-pattern-->The opt-in pattern</h3>
@@ -120,7 +120,7 @@ Processes &#x2500;&#x25BA;Access Control &#x2500;&#x25BA;Personal Data
 <p>Privacy is opt-in: the user must explicitly <strong>activate</strong> the processing categories they want to enable.</p>
 <p>The reference auth flow shipped with Pryv.io &#x2014; <a href="https://github.com/pryv/app-web-auth3">app-web-auth3</a> &#x2014; implements this pattern by default. The auth screen surfaces the requested permissions explicitly, per stream and per level (read / write / contribute / manage); Accept and Refuse buttons are visually balanced; the granted permissions are stored on the access and remain revocable at any time via <code>DELETE /accesses/:id</code>.</p>
 <p>The auth UI primitive doesn&#x2019;t support the anti-pattern &#x2014; you can&#x2019;t accidentally ship a &#x201C;by continuing you agree&#x201D; flow even if you wanted to.</p>
-<p>See the <a href="/guides/consent.html">Consent implementation</a> guide for the detailed walkthrough.</p>
+<p>See the <a href="/guides/consent/">Consent implementation</a> guide for the detailed walkthrough.</p>
 <h3 id="twelve-platform-defaults"><!--twelve-platform-defaults-->Twelve platform defaults</h3>
 <p>When an auditor asks &#x201C;show me what&#x2019;s privacy-protective by default&#x201D;, point at this catalogue:</p>
 <ul>
@@ -133,7 +133,7 @@ Processes &#x2500;&#x25BA;Access Control &#x2500;&#x25BA;Personal Data
 <li><strong>Schema validation at ingest.</strong> Every event is validated against the declared event type&#x2019;s JSON Schema (<code>ajv-draft-04</code>) on <code>create</code> AND <code>update</code>. Out-of-shape or out-of-range payloads are rejected with HTTP 400.</li>
 <li><strong>Zero mandatory subprocessors.</strong> Default deployment talks to zero third-party services beyond your chosen cloud provider. SMTP, SMS, observability, Let&#x2019;s Encrypt &#x2014; every integration is opt-in.</li>
 <li><strong>Credentials never leak via logs.</strong> Every log call passes through a redaction layer that strips <code>auth=...</code> tokens and <code>password</code> / <code>passwordHash</code> fields. Credentials don&#x2019;t leak to external aggregators.</li>
-<li><strong>Cross-account sharing requires explicit subject consent.</strong> Pryv.io&#x2019;s <a href="/guides/cross-account-messaging.html">CMC primitive</a> requires the subject to write a <code>consent/accept-cmc</code> event before any cross-account data flow begins.</li>
+<li><strong>Cross-account sharing requires explicit subject consent.</strong> Pryv.io&#x2019;s <a href="/guides/cross-account-messaging/">CMC primitive</a> requires the subject to write a <code>consent/accept-cmc</code> event before any cross-account data flow begins.</li>
 <li><strong>Operator secrets encrypted at rest.</strong> Let&#x2019;s Encrypt account keys, observability license keys, SMTP credentials are AES-256-GCM encrypted with HKDF-derived keys.</li>
 <li><strong>Withdrawal API exists by default.</strong> <code>DELETE /accesses/:id</code> is always available. A subject holding their personal token can revoke any access without third-party participation.</li>
 </ul>
@@ -141,7 +141,7 @@ Processes &#x2500;&#x25BA;Access Control &#x2500;&#x25BA;Personal Data
 <p>The defaults above are structural &#x2014; Pryv.io enforces them. But Art.25(2) also has axes the platform can&#x2019;t decide for you:</p>
 <ul>
 <li>Are app tokens minted with the <strong>smallest possible scope</strong>? Pryv.io lets you grant any scope; choosing the smallest is your editorial discipline.</li>
-<li>Is your subject&#x2019;s <strong>notice-of-collection presented by default</strong>? The consent text plus the access&#x2019;s <code>clientData</code> conventions (see the <a href="/guides/consent.html">Consent implementation</a> guide) give you the durable, audit-traceable record; what the notice <strong>says</strong> is yours to write.</li>
+<li>Is your subject&#x2019;s <strong>notice-of-collection presented by default</strong>? The consent text plus the access&#x2019;s <code>clientData</code> conventions (see the <a href="/guides/consent/">Consent implementation</a> guide) give you the durable, audit-traceable record; what the notice <strong>says</strong> is yours to write.</li>
 <li>Is <strong>data retention set to the shortest necessary period</strong>? Pryv.io doesn&#x2019;t enforce retention; your operational pruning pipeline does.</li>
 <li>Is your custom auth UI using the <strong>opt-in pattern</strong> rather than the &#x201C;by continuing you agree&#x201D; anti-pattern? If you rebrand <code>app-web-auth3</code>, the default pattern is opt-in; custom UI is your responsibility to align.</li>
 </ul>
@@ -160,11 +160,11 @@ Processes &#x2500;&#x25BA;Access Control &#x2500;&#x25BA;Personal Data
 <li><a href="https://gdpr.eu">GDPR full text</a> &#x2014; official EU regulation.</li>
 <li><a href="https://gdpr.eu/article-25-data-protection-by-design">Article 25 &#x2014; Data protection by design and by default</a>.</li>
 <li><a href="https://www.fedlex.admin.ch/eli/cc/2022/491/en">Swiss Federal Act on Data Protection (FADP)</a>.</li>
-<li><a href="/guides/consent.html">Consent implementation with Pryv.io</a> &#x2014; companion guide.</li>
-<li><a href="/guides/audit-logs.html">Audit logs</a> &#x2014; companion guide.</li>
-<li><a href="/guides/cross-account-messaging.html">Cross-account messaging (CMC)</a> &#x2014; CMC consent flow.</li>
-<li><a href="/guides/data-modelling.html">Data modelling</a> &#x2014; streams + events deep dive.</li>
-<li><a href="/guides/app-guidelines.html">App guidelines</a> &#x2014; implementer-facing patterns.</li>
+<li><a href="/guides/consent/">Consent implementation with Pryv.io</a> &#x2014; companion guide.</li>
+<li><a href="/guides/audit-logs/">Audit logs</a> &#x2014; companion guide.</li>
+<li><a href="/guides/cross-account-messaging/">Cross-account messaging (CMC)</a> &#x2014; CMC consent flow.</li>
+<li><a href="/guides/data-modelling/">Data modelling</a> &#x2014; streams + events deep dive.</li>
+<li><a href="/guides/app-guidelines/">App guidelines</a> &#x2014; implementer-facing patterns.</li>
 <li><a href="https://github.com/pryv/app-web-auth3">app-web-auth3 on GitHub</a> &#x2014; the reference auth web app.</li>
 </ul>
 </div><nav id="toc"></nav></div><footer id="page-footer"><nav class="navbar navbar-default"><div class="container-fluid"><div id="footer-nav"><ul class="nav navbar-nav"><li><a href="https://github.com/pryv">GitHub</a></li></ul></div></div></nav></footer><script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script><script src="/assets/bootstrap.min.js"></script><script src="/assets/js/toc.min.js"></script><!-- TOC generation--><script>jQuery(document).ready(function($) {
