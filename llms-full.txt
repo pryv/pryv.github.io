@@ -1,0 +1,430 @@
+# Pryv.io — llms-full.txt
+
+Single-page, agent-readable reference for Pryv.io: what it is, how its data
+model works, and the two concrete ways to act on a user's account (the
+`pryv` JavaScript library, raw REST). If you are an AI agent helping a user
+or building against Pryv.io, read this once at session start; follow the
+links into https://pryv.github.io/ only when you need exhaustive detail.
+
+Canonical URL: https://pryv.github.io/llms-full.txt
+Index: https://pryv.github.io/llms.txt
+Last updated: 2026-06-12
+
+Feedback: if you or your user hit a problem with these instructions or with
+the platform, file a GitHub issue at
+https://github.com/pryv/open-pryv.io/issues — this is the SINGLE tracker
+for all agent-related issues (docs problems, API behavior, client-library
+bugs); maintainers route internally.
+
+---
+
+## 1. What Pryv.io is
+
+Pryv.io is an open-source middleware for managing personal and health data.
+Key properties:
+
+- **User-owned accounts.** Each user has an account on a Pryv.io platform —
+  a per-user data vault addressed by username. The user holds the
+  authoritative credentials and grants per-app access.
+- **Granular consent.** Apps never get the user's password; they obtain an
+  *access* (a token) scoped to specific streams with a specific permission
+  level, through an OAuth-like consent flow.
+- **Typed events in a stream tree.** All data is stored as timestamped
+  events; each event has a type (e.g. `mass/kg`, `note/txt`) and belongs to
+  one or more streams (containers organized as a tree).
+- **Self-hostable.** The reference server is open-source:
+  https://github.com/pryv/open-pryv.io — a single Node.js binary / Docker
+  image (`pryvio/open-pryv.io`) bundling API, registration, MFA,
+  high-frequency series, previews and email.
+
+| Pointer | URL |
+|---|---|
+| Developer docs (this site) | https://pryv.github.io/ |
+| Full API reference | https://pryv.github.io/reference/ |
+| Concepts | https://pryv.github.io/concepts/ |
+| Getting started | https://pryv.github.io/getting-started/ |
+| Event type catalogue (human) | https://pryv.github.io/event-types/ |
+| Event type catalogue (JSON) | https://pryv.github.io/event-types/flat.json |
+| JS client library (npm `pryv`) | https://github.com/pryv/lib-js |
+| Open-source server | https://github.com/pryv/open-pryv.io |
+| Lab platform for experiments | https://pryv.me (register: https://pryv.github.io/app-web-auth3/access/register.html?pryvServiceInfoUrl=https://reg.pryv.me/service/info) |
+| Feedback (GitHub issues) | https://github.com/pryv/open-pryv.io/issues |
+
+**Lab platform:** pryv.me is a free demo platform for development and
+experiments. Service info: `https://reg.pryv.me/service/info`. Do not store
+production or sensitive data there.
+
+---
+
+## 2. Service discovery and API endpoints
+
+### Service info
+
+Every Pryv.io platform self-describes at a single unauthenticated endpoint:
+
+    GET {serviceInfoUrl}            e.g. https://reg.pryv.me/service/info
+
+Response fields: `api` (API endpoint template, e.g.
+`https://{username}.pryv.me/`), `register`, `access`, `name`, `home`,
+`support`, `terms`, `eventTypes` (URL of the validated event-type list),
+`version`, and optional `assets` + `features` (e.g. `features.contentQueries`).
+
+Always start from service info instead of hard-coding URLs — platforms
+differ in topology.
+
+### Endpoint shapes
+
+Two URL styles exist; the `api` template in service info tells you which:
+
+- DNS-based: `https://{username}.{domain}/` (e.g. `https://alice.pryv.me/`)
+- DNS-less (path-based): `https://{hostname}/{username}/`
+
+### The apiEndpoint form
+
+Credentials are commonly carried as a single **apiEndpoint** string with the
+token embedded:
+
+    https://{token}@{username}.pryv.me/
+
+This is what the auth flow returns and what `pryv.Connection` consumes.
+Treat any apiEndpoint string as a secret.
+
+### Authentication on raw HTTP calls
+
+- Preferred: `Authorization: {token}` header
+- Alternative: `?auth={token}` query parameter (GET / Socket.IO)
+- Also accepted: HTTP Basic with the token
+
+### Responses, metadata, errors
+
+- JSON in/out (`application/json`), max request size 10MB.
+- Every response carries `meta`: `{ apiVersion, serverTime, serial }`
+  (`serverTime` is Unix epoch in seconds, float — use it to sync clocks)
+  and headers `API-Version` + `Pryv-Access-Id`.
+- Errors: `{ "error": { "id": "...", "message": "...", "data": {...} } }`.
+  Common ids: `invalid-access-token`, `forbidden`, `unknown-resource`,
+  `invalid-parameters-format`, `item-already-exists`.
+
+### Batch calls
+
+    POST /  with body: [ { "method": "events.create", "params": {...} }, ... ]
+
+Returns `{ "results": [...] }` in call order. Use for bulk writes.
+
+---
+
+## 3. Data model
+
+### Events
+
+An event is a timestamped piece of typed data. Fields:
+
+| Field | Type | Notes |
+|---|---|---|
+| `id` | string | server-generated (cuid) unless provided |
+| `streamIds` | string[] | required — streams it belongs to (`streamId` singular is deprecated) |
+| `time` | number | Unix epoch seconds, float; defaults to now |
+| `duration` | number? | period events; `null` while "running" |
+| `type` | string | `{category}/{format}`, e.g. `mass/kg`, `note/txt`, `position/wgs84` |
+| `content` | any | shape depends on `type` |
+| `description` | string? | free-text comment |
+| `attachments` | object[] | read-only: `{ id, fileName, type, size, readToken }` |
+| `clientData` | object? | app-private metadata; prefix keys with your app id |
+| `trashed` | boolean? | see lifecycle below |
+| `created/createdBy/modified/modifiedBy` | — | read-only audit fields |
+
+Lifecycle: first DELETE → `trashed: true`; second DELETE → permanent
+deletion (a deletion record `{ id, deleted }` remains queryable for sync).
+
+### Streams
+
+Containers for events, organized as a tree:
+
+| Field | Type | Notes |
+|---|---|---|
+| `id` | string | unique; can be set at creation (else slugified from name) |
+| `name` | string | unique among siblings |
+| `parentId` | string? | `null` = root level |
+| `children` | stream[] | read-only on get |
+| `clientData`, `trashed`, audit fields | | as for events |
+
+System streams (account fields like email) are predefined per platform and
+not editable through the streams API.
+
+### Accesses (tokens + permissions)
+
+Three types:
+
+- **personal** — full account access; obtained by trusted apps via
+  `auth.login` (username + password). Most third-party apps never see one.
+- **app** — what your app should use; obtained via the auth flow (§5),
+  scoped by `permissions`.
+- **shared** — for person-to-person sharing; created by users or apps.
+
+Permission object: `{ "streamId": "...", "level": "read" | "contribute" |
+"manage" | "create-only" }`. `streamId: "*"` means all streams. Child
+streams inherit; deeper permissions override. `create-only` allows reading
+own creations + creating, but not updating/deleting.
+
+Key access fields: `id`, `token`, `apiEndpoint` (read-only, full endpoint
+with token), `type`, `name`, `permissions`, `expireAfter` (seconds, at
+creation) / `expires` (read-only timestamp), `clientData`, `lastUsed`.
+
+### Event types
+
+Types are strings `{category}/{format}`. The validated catalogue a platform
+enforces is at the URL given by service info's `eventTypes` field —
+canonical copy: https://pryv.github.io/event-types/flat.json (source repo:
+https://github.com/pryv/data-types). Unknown types are accepted but not
+validated, unless the platform restricts them.
+
+**Rule for agents recording data:** look the type up in the catalogue
+first and write `content` matching the declared schema (e.g. `mass/kg`
+content is a number). Only fall back to `note/txt` for genuinely free-form
+content — typed events are what make the data portable across apps.
+
+High-frequency variants are prefixed: `series:mass/kg` (see §7).
+
+### Querying events
+
+`events.get` parameters: `fromTime`, `toTime`, `streams`, `types`,
+`sortAscending`, `skip`, `limit`, `state` (`default|trashed|all`),
+`modifiedSince`, `includeDeletions`, `running`.
+
+- Stream filtering supports boolean queries:
+  `{"any":["a","b"], "all":["c"], "not":["d"]}`.
+- Content queries (if `features.contentQueries` in service info): `content`
+  and `clientData` accept arrays of conditions on dot-paths, operators
+  `eq, neq, in, exists, gt, gte, lt, lte, prefix` — e.g.
+  `[{"path":"drug.codes.atc","op":"eq","value":"N02BE01"}]`.
+
+---
+
+## 4. API surface map
+
+Full details per method: https://pryv.github.io/reference/ . All paths are
+relative to the user's API endpoint.
+
+### Events
+| Method | Call |
+|---|---|
+| events.get | `GET /events` |
+| events.getOne | `GET /events/{id}` (`includeHistory`) |
+| events.create | `POST /events` (multipart to attach files) |
+| events.update | `PUT /events/{id}` |
+| events.delete | `DELETE /events/{id}` (trash, then permanent) |
+| events.addAttachment | `POST /events/{id}` (multipart) |
+| events.getAttachment | `GET /events/{id}/{fileId}[/{fileName}]` (`readToken` works without auth header) |
+| events.deleteAttachment | `DELETE /events/{id}/{fileId}` |
+
+### Streams
+| Method | Call |
+|---|---|
+| streams.get | `GET /streams` (`parentId`, `state`) |
+| streams.create | `POST /streams` |
+| streams.update | `PUT /streams/{id}` |
+| streams.delete | `DELETE /streams/{id}` (`mergeEventsWithParent`) |
+
+### Accesses (app management of its own + shared accesses)
+| Method | Call |
+|---|---|
+| accesses.get | `GET /accesses` |
+| accesses.getOne | `GET /accesses/{id}` (`includeHistory`) |
+| accesses.create | `POST /accesses` |
+| accesses.update | `PUT /accesses/{id}` |
+| accesses.delete | `DELETE /accesses/{id}` (revoke) |
+| getAccessInfo | `GET /access-info` — what the current token is/can do |
+
+Note (API v2): after an update, an access id becomes composite
+(`{base}:{serial}`); using a stale id returns 409.
+
+### Profile (key-value stores)
+`GET|PUT /profile/app` (app token), `GET|PUT /profile/public`,
+`GET|PUT /profile/private` (personal token).
+
+### Account & auth (trusted apps / personal token only)
+`POST /auth/login`, `POST /auth/logout`, `GET /account`, `PUT /account`,
+`POST /account/change-password`, `POST /account/request-password-reset`,
+`POST /account/reset-password`. MFA (if enabled): `POST /mfa/activate`,
+`/mfa/confirm`, `/mfa/challenge`, `/mfa/verify`, `/mfa/deactivate`,
+`/mfa/recover`.
+
+### Webhooks (see §7)
+`GET|POST /webhooks`, `GET|PUT|DELETE /webhooks/{id}`,
+`POST /webhooks/{id}/test`.
+
+### Audit
+API calls are audited; audit records are exposed as events with types
+`log/user-api` and `log/user-api-error` (query them via `events.get`). The
+legacy `GET /audit/logs` endpoint is deprecated.
+
+### Admin / system
+Platform-operator APIs are documented separately:
+https://pryv.github.io/reference-admin/ and
+https://pryv.github.io/reference-system/ . Not relevant for app agents.
+
+---
+
+## 5. The app auth flow (how an app obtains a token)
+
+OAuth-like, polling-based. Reference: https://pryv.github.io/reference/#authenticate-your-app
+
+1. `GET {serviceInfoUrl}` → read the `access` URL.
+2. `POST {access}` with:
+
+       {
+         "requestingAppId": "my-app-id",
+         "requestedPermissions": [
+           { "streamId": "heart", "defaultName": "Heart rate", "level": "contribute" }
+         ],
+         "languageCode": "en"
+       }
+
+   (`defaultName` is used to create the stream if it doesn't exist yet.
+   Optional: `expireAfter`, `clientData`, `returnURL`, `deviceName`.)
+3. Response `status: "NEED_SIGNIN"` with `authUrl`, `key`, `poll`,
+   `poll_rate_ms`.
+4. Send the user to `authUrl` (browser/webview) — they sign in or create an
+   account and accept/refuse the permissions (the consent pages are served
+   by the platform; the standard implementation is
+   https://github.com/pryv/app-web-auth3).
+5. Poll `GET {poll}` every `poll_rate_ms` until:
+   - `status: "ACCEPTED"` → `apiEndpoint` (token included) — store it;
+   - `status: "REFUSED"` → give up gracefully.
+
+With lib-js this whole flow is wrapped (see §6: `pryv.Auth.setupAuth` in
+the browser, `Service.startAccessRequest`/`pollAccessRequest` headless).
+
+---
+
+## 6. The `pryv` JavaScript library (lib-js)
+
+Repo: https://github.com/pryv/lib-js — works in Node (≥20) and browsers.
+
+Install / import:
+
+    npm install pryv
+    const pryv = require('pryv');
+
+Browser bundles: `https://api.pryv.com/lib-js/pryv.js` (ES5) or
+`pryv-es6.js`; add-on npm packages `@pryv/socket.io` (live changes),
+`@pryv/monitor` (polling monitor).
+
+### Talk to an account (you have an apiEndpoint)
+
+    const connection = new pryv.Connection('https://{token}@{user}.pryv.me/');
+    const accessInfo = await connection.accessInfo();          // what can I do?
+    const result = await connection.get('events', { limit: 20 });
+
+    // batch (auto-chunked above 1000 calls):
+    const results = await connection.api([
+      { method: 'streams.create', params: { id: 'heart', name: 'Heart' } },
+      { method: 'events.create', params: { streamIds: ['heart'], type: 'frequency/bpm', content: 61 } }
+    ]);
+
+    // large result sets, streamed per event:
+    await connection.getEventsStreamed({ fromTime: 0 }, e => { /* each event */ });
+
+    // event with a file attachment (Node):
+    await connection.createEventWithFile(
+      { streamIds: ['docs'], type: 'picture/attached' }, './photo.jpg');
+
+### Platform-level (you have a service info URL)
+
+    const service = new pryv.Service('https://reg.pryv.me/service/info');
+    const info = await service.info();
+    // trusted apps only:
+    const connection = await service.login(username, password, 'my-app-id');
+
+### Auth flow
+
+Browser (visual login button + popup consent):
+
+    const authSettings = {
+      spanButtonID: 'pryv-button',
+      authRequest: { requestingAppId: 'my-app-id', requestedPermissions: [...] },
+      onStateChange: async (state) => {
+        if (state.id === pryv.Browser.AuthStates.AUTHORIZED) {
+          const connection = await pryv.connectFromKey(state.key, serviceInfoUrl);
+        }
+      }
+    };
+    await pryv.Browser.setupAuth(authSettings, 'https://reg.pryv.me/service/info');
+
+Headless / CLI (poll yourself):
+
+    const auth = await service.startAccessRequest(authRequest);
+    // show auth.authUrl to the user, then:
+    let res; do { await sleep(auth.pollRateMs); res = await service.pollAccessRequest(auth.poll); }
+    while (res.status === 'NEED_SIGNIN');
+    if (res.status === 'ACCEPTED') { const connection = await service.connectFromKey(auth.key); }
+
+Useful utilities: `pryv.utils.extractTokenAndAPIEndpoint(apiEndpoint)`,
+`service.apiEndpointFor(username, token)`,
+`connection.getLatestByContent(path, values)` (content-query helper),
+`service.supportsContentQueries()`, `service.supportsHF()`.
+
+---
+
+## 7. Change notifications and high-frequency data
+
+### Webhooks
+
+`POST /webhooks` with `{ "url": "https://your-server/hook" }` (app or
+personal token). Pryv.io POSTs
+`{ "messages": ["eventsChanged"|"streamsChanged"|"accessesChanged"|"systemBoot"], "meta": {...} }`
+on changes — then *you* query what changed (`events.get` with
+`modifiedSince`). Throttled by `minIntervalMs`; failed deliveries retried
+up to `maxRetries`. Guide: https://pryv.github.io/guides/webhooks/
+
+### Socket.IO
+
+Live in-browser/Node notifications: connect to
+`https://{username}.{domain}/{username}?auth={token}` (Socket.IO 2.x),
+listen for `eventsChanged` / `streamsChanged` / `accessesChanged`, call API
+methods via `socket.emit('{method.id}', params, callback)`. lib-js add-on:
+`@pryv/socket.io`.
+
+### High-frequency series
+
+For sampled signals (Hz-rate sensor data), use `series:{type}` events
+(e.g. `series:frequency/bpm`) and append points in `flatJSON` format:
+
+    POST /events/{id}/series
+    { "format": "flatJSON", "fields": ["deltaTime", "value"],
+      "points": [[0, 61], [1, 62]] }
+
+`deltaTime` is seconds relative to the holder event's `time`. Batch across
+events: `POST /series/batch`. Retrieve: `GET /events/{id}/series`. Not all
+platforms enable HF (`service.supportsHF()`).
+
+---
+
+## 8. Self-hosting (open-pryv.io)
+
+To run a platform yourself: https://github.com/pryv/open-pryv.io — single
+Node.js binary (`bin/master.js`) or Docker image `pryvio/open-pryv.io`.
+PostgreSQL (default) or SQLite storage; built-in registration, MFA,
+Let's Encrypt/ACME, multi-core clustering. The repo has its own AGENTS.md
+with a full orientation for coding agents — read it before contributing.
+Operator guides: https://pryv.github.io/customer-resources/
+
+---
+
+## 9. Practical agent guidance
+
+- Start from `GET {serviceInfoUrl}` — never assume pryv.me URL shapes hold
+  on other platforms.
+- Use an **app access** with the narrowest permissions that work; ask for
+  `expireAfter` when the access is short-lived.
+- Respect types: check the event-type catalogue before writing; prefer
+  structured types over `note/txt`.
+- Timestamps are Unix epoch **seconds** (float), not milliseconds.
+- Batch writes with `connection.api([...])` / `POST /` instead of N
+  sequential calls.
+- For sync scenarios, poll with `modifiedSince` + `includeDeletions`
+  rather than re-fetching everything.
+- Cross-check library versions on npm (`pryv`), not on stale forks.
+- Problems with these docs or the API? File at
+  https://github.com/pryv/open-pryv.io/issues (single tracker — agents may
+  draft the issue text for their user).
