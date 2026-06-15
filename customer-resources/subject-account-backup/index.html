@@ -1,0 +1,200 @@
+<!DOCTYPE html><html class="no-js" lang="en"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="description" property="og:description" content="Pryv API reference and resources for developers"><meta name="author" content="Pryv SA"><meta property="og:type" content="website"><meta name="image" property="og:image" content="/assets/images/logo-256.png"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Subject Account Backup (DSAR / Portability) | Pryv API</title><link rel="icon" href="/assets/images/favicon-black.ico" type="image/x-icon"><link rel="apple-touch-icon" sizes="120x120" href="/assets/images/apple-touch-icon-120x120-black.png"><link rel="apple-touch-icon" sizes="152x152" href="/assets/images/apple-touch-icon-152x152-black.png"><link rel="apple-touch-icon" sizes="180x180" href="/assets/images/apple-touch-icon-180x180-black.png"><!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+<!--[if lt IE 9]>
+  <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+  <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+<![endif]--><link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Roboto:400,300,500,700,400italic|Roboto+Condensed:400,300,700"><link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/styles/docco.min.css"><link rel="stylesheet" type="text/css" href="/assets/fonts/ss-gizmo.min.css"><link rel="stylesheet" type="text/css" href="/assets/style.css"></head><body class="subject-account-backup with-toc"><header id="page-header"><nav class="navbar navbar-default navbar-fixed-top" role="navigation"><div class="container-fluid"><div class="navbar-header"><a class="navbar-brand logo" href="/" title="Developers home"><img src="/assets/images/logo-256-black.png" alt="Developers home"></a><button class="navbar-toggle" type="button" data-toggle="collapse" data-target="#main-nav"><span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button></div><div class="collapse navbar-collapse" id="main-nav"><ul class="nav navbar-nav"><li class="dropdown"><a class="dropdown-toggle" href="#" data-toggle="dropdown">Guides <b class="caret"></b></a><ul class="dropdown-menu"><li><a href="/getting-started/">Getting started</a></li><li><a href="/concepts/">API concepts</a></li><li><a href="/data-in-pryv/">Data In Pryv</a></li><li><a href="/guides/data-modelling/">Data modelling</a></li><li><a href="/guides/app-guidelines/">App guidelines</a></li><li><a href="/external-resources/">Apps &amp; Libs</a></li><li><a href="/guides/webhooks/">Webhooks</a></li><li><a href="/guides/custom-auth/">Custom auth</a></li><li><a href="/guides/consent/">Consent request</a></li><li><a href="/guides/cross-account-messaging/">Cross-account messaging (CMC)</a></li><li><a href="/guides/audit-logs/">Audit logs</a></li><li><a href="/guides/privacy-by-design/">Privacy by design &amp; by default</a></li></ul></li><li class="dropdown"><a class="dropdown-toggle" href="#" data-toggle="dropdown">Reference <b class="caret"></b></a><ul class="dropdown-menu"><li><a href="/reference/">API reference</a></li><li><a href="/reference-admin/">Admin API reference</a></li><li><a href="/reference-system/">System API reference</a></li><li><a href="/event-types/">Event types</a></li><li><a href="/open-api/">Open API (Postman)</a></li><li><a href="/change-log/">API change log</a></li></ul></li><li class="dropdown"><a class="dropdown-toggle" href="#" data-toggle="dropdown">FAQ <b class="caret"></b></a><ul class="dropdown-menu"><li><a href="/faq-api/">API</a></li><li><a href="/faq-infra/">Infrastructure</a></li></ul></li><li><a href="https://github.com/pryv/open-pryv.io">Open Pryv.io</a></li><li><a href="/customer-resources/">Setup</a></li><li><a href="/roadmap/">Roadmap</a></li><li><a href="https://pryv.github.io/www/">ASSOCIATION</a></li></ul><div class="navbar-right"><p class="navbar-text version"><a href="/change-log/" title="View change log">API version: <strong>2.0.0-pre</strong></a></p></div></div></div></nav></header><div class="container container-narrow" id="main-wrapper"><div id="main"><h1 class="page-title" id="subject-account-backup-dsar--portability"><!--subject-account-backup-dsar--portability-->Subject Account Backup (DSAR / Portability)</h1><p>This guide describes the <strong>subject-facing</strong> backup tools &#x2014; what an operator points a data subject at when they file a right-of-access (GDPR Art.15), portability (Art.20), or equivalent (CCPA &#xA7;1798.110, PIPEDA Principle 4.9, Swiss nLPD Art.25, HIPAA-privacy &#xA7;164.524) disclosure request. These are distinct from the operator-side disaster-recovery <a href="./backup"><code>bin/backup.js</code></a> tool &#x2014; that runs server-side with raw storage access for the operator&#x2019;s own backups, while the subject-facing tools run against the public API as the subject themself.</p>
+<h2 id="two-flavors-one-library"><!--two-flavors-one-library-->Two flavors, one library</h2>
+<p>Both flavors use the same underlying library and produce a portable account dump suitable for handing to the subject:</p>
+<ul>
+<li><strong>CLI</strong> &#x2014; <a href="https://github.com/pryv/pryv-account-backup"><code>pryv-account-backup</code></a>. Subjects (or implementers acting on a subject&#x2019;s behalf) clone the repo, <code>npm install</code>, run <code>npm start</code>. Useful for technical subjects, scripted batch exports, and any environment where binary data matters (attachments, HFS series, webhook configurations, sha256 integrity manifest).</li>
+<li><strong>Web app</strong> &#x2014; <a href="https://github.com/pryv/pryv-account-backup-webapp"><code>pryv-account-backup-webapp</code></a>. Static site you deploy on your domain. Subjects log in via a web form, click <strong>Start backup</strong>, download a series of ZIP files. Minimum-friction for non-technical subjects; covers the read-side text resources.</li>
+</ul>
+<p>Both flavors are git-clone-distributed &#x2014; neither is on the npm registry. Pin to a tagged release via <code>github:pryv/&lt;repo&gt;#&lt;tag&gt;</code> in your fork&#x2019;s <code>package.json</code>.</p>
+<h2 id="whats-in-a-bundle"><!--whats-in-a-bundle-->What&#x2019;s in a bundle</h2>
+<p>Per-user backup output (CLI writes to a folder; webapp writes to a series of ZIP files):</p>
+<table>
+<thead>
+<tr>
+<th>Resource</th>
+<th style="text-align:center">CLI</th>
+<th style="text-align:center">Web app</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Account info</td>
+<td style="text-align:center">&#x2705;</td>
+<td style="text-align:center">&#x2705;</td>
+<td><code>account.json</code> &#x2014; username, language, system-streams account tree</td>
+</tr>
+<tr>
+<td>Streams hierarchy</td>
+<td style="text-align:center">&#x2705;</td>
+<td style="text-align:center">&#x2705;</td>
+<td><code>streams.json</code> (<code>?state=all</code> if trashed data included)</td>
+</tr>
+<tr>
+<td>Accesses (current)</td>
+<td style="text-align:center">&#x2705;</td>
+<td style="text-align:center">&#x2705;</td>
+<td><code>accesses.json</code></td>
+</tr>
+<tr>
+<td>Accesses (deletions + expired)</td>
+<td style="text-align:center">&#x2705;</td>
+<td style="text-align:center">&#x2705;</td>
+<td><code>accesses-all.json</code> &#x2014; full disclosure-history view for Art.15(1)&#xA9;</td>
+</tr>
+<tr>
+<td>Profile (private + public)</td>
+<td style="text-align:center">&#x2705;</td>
+<td style="text-align:center">&#x2705;</td>
+<td><code>profile_private.json</code> / <code>profile_public.json</code></td>
+</tr>
+<tr>
+<td>Per-app profiles</td>
+<td style="text-align:center">&#x2705;</td>
+<td style="text-align:center">&#x2705;</td>
+<td><code>app_profiles/profile_app_&lt;accessId&gt;.json</code> per <code>app</code>-type access</td>
+</tr>
+<tr>
+<td>Audit log</td>
+<td style="text-align:center">&#x2705;</td>
+<td style="text-align:center">&#x2705;</td>
+<td><code>audit_logs.json</code> &#x2014; fetched via the standard events API on the <code>:_audit:*</code> store streams</td>
+</tr>
+<tr>
+<td>Events (initial run)</td>
+<td style="text-align:center">&#x2705;</td>
+<td style="text-align:center">&#x2705;</td>
+<td><code>events-YYYY-MM.json</code> &#x2014; one per UTC month in the discovered range</td>
+</tr>
+<tr>
+<td>Events (incremental run)</td>
+<td style="text-align:center">&#x2705;</td>
+<td style="text-align:center">&#x2705;</td>
+<td><code>events-incremental-&lt;TS&gt;.json</code> &#x2014; only events <code>modified &gt; T</code></td>
+</tr>
+<tr>
+<td>Per-access version history (opt-in)</td>
+<td style="text-align:center">&#x2705;</td>
+<td style="text-align:center">&#x2705;</td>
+<td><code>accesses-history/&lt;accessId&gt;.json</code> per access</td>
+</tr>
+<tr>
+<td>Attachments (opt-in)</td>
+<td style="text-align:center">&#x2705;</td>
+<td style="text-align:center">&#x274C;</td>
+<td><code>attachments/&lt;eventId&gt;_&lt;filename&gt;</code> &#x2014; binary streams; webapp omits to keep the bundle subject-portable</td>
+</tr>
+<tr>
+<td>High-frequency series data</td>
+<td style="text-align:center">&#x2705;</td>
+<td style="text-align:center">&#x274C;</td>
+<td><code>hf-data/&lt;eventId&gt;.json</code> per <code>series:*</code> event</td>
+</tr>
+<tr>
+<td>Webhooks per access</td>
+<td style="text-align:center">&#x2705;</td>
+<td style="text-align:center">&#x274C;</td>
+<td><code>webhooks.json</code> aggregated by <code>accessId</code></td>
+</tr>
+<tr>
+<td>sha256 integrity manifest</td>
+<td style="text-align:center">&#x2705;</td>
+<td style="text-align:center">&#x274C;</td>
+<td><code>manifest.json</code> &#x2014; tamper-evidence for third-party auditors</td>
+</tr>
+</tbody>
+</table>
+<p>The webapp&#x2019;s coverage is the read-side text resources + their incremental story. If the subject&#x2019;s account uses attachments, HFS series, or has webhooks, point them at the CLI; otherwise the webapp is the more ergonomic path.</p>
+<h2 id="incremental-backup"><!--incremental-backup-->Incremental backup</h2>
+<p>Both flavors persist a small state object after each successful run:</p>
+<ul>
+<li>CLI: <code>.state.json</code> sentinel in the backup directory.</li>
+<li>Web app: <code>localStorage</code> keyed by the subject&#x2019;s apiEndpoint.</li>
+</ul>
+<p>On the next run, the tool fetches only events + audit rows with <code>modified &gt; T</code> where <code>T</code> is the previous <code>runStartedAt</code>. Small resources (accesses, streams, profile, webhooks) are full-re-fetched each run because their payloads are small. Binary outputs (attachments, HFS, webapp ZIPs) skip on file-presence.</p>
+<h2 id="audit-log-handling"><!--audit-log-handling-->Audit log handling</h2>
+<p>Audit is a regular <code>@pryv/datastore</code> mounted at the <code>:_audit:*</code> store prefix on every Pryv core. The backup tools query audit via the standard events API:</p>
+<pre><code>GET /events?streams=[&quot;:_audit:accesses&quot;,&quot;:_audit:actions&quot;]&amp;modifiedSince=T&amp;includeDeletions=true
+</code></pre>
+<p>The output filename <code>audit_logs.json</code> and content shape are stable across v0.4.0+ &#x2014; third-party consumers that keyed on the file path continue to work.</p>
+<p>The dedicated <code>/audit/logs</code> route was <strong>removed</strong> from open-pryv.io on 2026-06-15 (commit <code>19d1c11f</code>). Older backup-tool versions that call this route directly are now production-broken for the audit-log section of the bundle against any deployment running that build. <strong>v0.6.0 is the minimum required subject-side backup tool version</strong> &#x2014; older versions silently produce empty <code>audit_logs.json</code> files (or hit 404s).</p>
+<h2 id="operator-security-note"><!--operator-security-note-->Operator security note</h2>
+<p>The bundle carries <code>profile_private.json</code>, which includes the subject&#x2019;s MFA recovery codes (<code>profile.mfa.recoveryCodes</code> &#x2014; 10 SMS-bypass tokens) when MFA is enabled. <strong>Treat downloaded bundles as a secret on par with a password-reset link.</strong> Transport over a secure channel; document destruction policy; consider asking the subject to rotate MFA recovery codes after the disclosure is complete.</p>
+<p>This applies to BOTH the CLI and webapp output. The recovery codes ride verbatim because the subject is entitled to their full MFA state &#x2014; but a leaked bundle becomes a MFA-bypass vector.</p>
+<h2 id="mfa-enabled-subjects"><!--mfa-enabled-subjects-->MFA-enabled subjects</h2>
+<p>The webapp does <strong>not</strong> handle MFA challenges. If the subject has MFA enabled, point them at the CLI flavor &#x2014; the CLI inherits MFA handling from lib-js&#x2019;s <code>Service.login</code> SMS-challenge flow.</p>
+<h2 id="deploy-the-web-app"><!--deploy-the-web-app-->Deploy the web app</h2>
+<pre><code class="language-bash">git clone https://github.com/pryv/pryv-account-backup-webapp.git
+cd pryv-account-backup-webapp
+npm install
+npm run build              # produces dist/
+</code></pre>
+<p>Serve <code>dist/</code> from any static HTTP server <strong>on the same origin as the Pryv API</strong> (or with CORS configured for cross-origin access). For local development:</p>
+<pre><code class="language-bash">npm run serve              # esbuild dev server at http://127.0.0.1:8080
+</code></pre>
+<p>Production deployment is a static-file copy &#x2014; no backend, no Express, no Docker.</p>
+<h2 id="cli-walkthrough"><!--cli-walkthrough-->CLI walkthrough</h2>
+<pre><code class="language-bash">git clone https://github.com/pryv/pryv-account-backup.git
+cd pryv-account-backup
+npm install
+npm start
+</code></pre>
+<p>The CLI prompts for service-info URL, username, password, trashed-data inclusion, attachments inclusion, events chunk size, per-access version history inclusion. The output lands in <code>./backup/&lt;apiEndpoint&gt;/</code>. Restore via <code>npm run restore &lt;path-to-backup-directory&gt;</code> (marked experimental &#x2014; audit / webhooks / accesses are deliberately not replayed).</p>
+<h2 id="related"><!--related-->Related</h2>
+<ul>
+<li>Operator-side disaster-recovery backup: <a href="./backup"><code>bin/backup.js</code></a>.</li>
+<li>Library + CLI source: <a href="https://github.com/pryv/pryv-account-backup"><code>pryv-account-backup</code></a> + its <code>AGENTS.md</code>.</li>
+<li>Sample web app: <a href="https://github.com/pryv/pryv-account-backup-webapp"><code>pryv-account-backup-webapp</code></a> + its <code>AGENTS.md</code>.</li>
+<li>Previous-generation operator-hosted backup service (archived): <a href="https://github.com/pryv/example-service-bluebutton"><code>pryv/example-service-bluebutton</code></a>. Superseded by the webapp.</li>
+</ul>
+</div><nav id="toc"></nav></div><footer id="page-footer"><nav class="navbar navbar-default"><div class="container-fluid"><div id="footer-nav"><ul class="nav navbar-nav"><li><a href="https://github.com/pryv">GitHub</a></li></ul></div></div></nav></footer><script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script><script src="/assets/bootstrap.min.js"></script><script src="/assets/js/toc.min.js"></script><!-- TOC generation--><script>jQuery(document).ready(function($) {
+  // Header is about 51 pixels. This equals to 'header + fuzz', fuzz was
+  // determined experimentally.
+  var offset = 90;
+
+  // Display TOC on the left side of the page.
+  $('#toc').toc({
+    selector: '#main h1:not(.page-title),#main h2,#main h3',
+    ulClass: 'nav'
+  });
+
+  // Synchronise scroll/click motion with TOC display.
+  $(document).ready(function() {
+    // NOTE This is done at onLoad since we need to wait for all CSS
+    // to appear.
+    $('body').scrollspy({
+      target: '#toc',
+      offset: offset
+    });
+    scrollBy(0, 1); // make it scroll to be sure scrollspy gets it
+    
+    // fix offset when navigating
+    $('#toc li a, a.toc-anchor').click(function (e) {
+      e.preventDefault();
+      var target = $(this).attr('href');
+      window.location.hash = target;
+      
+      $(target)[0].scrollIntoView();
+      if ($(window).scrollTop() + $(window).height() !== $(document).height()) {
+        //only adjust when not at bottom
+        scrollBy(0, -offset + 40);
+      }
+      return true;
+    });
+  
+  });
+});
+</script><!-- Code blocks highlighting--><script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/highlight.min.js"></script><script>hljs.initHighlightingOnLoad();
+</script><!-- Google Analytics--><script>var _gaq = _gaq || [];
+_gaq.push(['_setAccount', 'UA-36589447-2']);
+_gaq.push(['_trackPageview']);
+(function() {
+  var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+  ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+  var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+})();</script></body></html>
