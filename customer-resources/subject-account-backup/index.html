@@ -7,7 +7,7 @@
 <h2 id="two-flavors-one-library"><!--two-flavors-one-library-->Two flavors, one library</h2>
 <p>Both flavors use the same underlying library and produce a portable account dump suitable for handing to the subject:</p>
 <ul>
-<li><strong>CLI</strong> &#x2014; <a href="https://github.com/pryv/pryv-account-backup"><code>pryv-account-backup</code></a>. Subjects (or implementers acting on a subject&#x2019;s behalf) clone the repo, <code>npm install</code>, run <code>npm start</code>. Useful for technical subjects, scripted batch exports, and any environment where binary data matters (attachments, HFS series, webhook configurations, sha256 integrity manifest).</li>
+<li><strong>CLI</strong> &#x2014; <a href="https://github.com/pryv/pryv-account-backup"><code>pryv-account-backup</code></a>. Subjects (or implementers acting on a subject&#x2019;s behalf) clone the repo, <code>npm install</code>, run <code>npm start</code>. Useful for technical subjects, scripted batch exports, and the auditor-facing per-file sha256 integrity manifest.</li>
 <li><strong>Web app</strong> &#x2014; <a href="https://github.com/pryv/pryv-account-backup-webapp"><code>pryv-account-backup-webapp</code></a>. Static site you deploy on your domain. Subjects log in via a web form, click <strong>Start backup</strong>, download a series of ZIP files. Minimum-friction for non-technical subjects; covers the read-side text resources.</li>
 </ul>
 <p>Both flavors are git-clone-distributed &#x2014; neither is on the npm registry. Pin to a tagged release via <code>github:pryv/&lt;repo&gt;#&lt;tag&gt;</code> in your fork&#x2019;s <code>package.json</code>.</p>
@@ -86,37 +86,44 @@
 <tr>
 <td>Attachments (opt-in)</td>
 <td style="text-align:center">&#x2705;</td>
-<td style="text-align:center">&#x274C;</td>
-<td><code>attachments/&lt;eventId&gt;_&lt;filename&gt;</code> &#x2014; binary streams; webapp omits to keep the bundle subject-portable</td>
+<td style="text-align:center">&#x2705;</td>
+<td><code>attachments/&lt;eventId&gt;_&lt;fileName&gt;</code> &#x2014; binary streams piped chunk-by-chunk through the <code>StorageWriter</code> (CLI + webapp since v0.7.0)</td>
 </tr>
 <tr>
-<td>High-frequency series data</td>
+<td>High-frequency series data (opt-out)</td>
 <td style="text-align:center">&#x2705;</td>
-<td style="text-align:center">&#x274C;</td>
-<td><code>hf-data/&lt;eventId&gt;.json</code> per <code>series:*</code> event</td>
+<td style="text-align:center">&#x2705;</td>
+<td><code>hf-data/&lt;eventId&gt;.json</code> per <code>series:*</code> event (CLI + webapp since v0.7.0)</td>
 </tr>
 <tr>
-<td>Webhooks per access</td>
+<td>Webhooks per access (opt-out)</td>
 <td style="text-align:center">&#x2705;</td>
-<td style="text-align:center">&#x274C;</td>
-<td><code>webhooks.json</code> aggregated by <code>accessId</code></td>
+<td style="text-align:center">&#x2705;</td>
+<td><code>webhooks.json</code> aggregated by <code>accessId</code> (CLI + webapp since v0.7.0); expired (401/403) tokens skipped silently and non-fatally</td>
+</tr>
+<tr>
+<td>Portable sync state</td>
+<td style="text-align:center">&#x2705;</td>
+<td style="text-align:center">&#x2705;</td>
+<td><code>sync-state.json</code> &#x2014; kv-only snapshot (<code>lastRunAt</code> + per-resource <code>lastModifiedSince</code> + tool/format version). CLI auto-reads on the next run; webapp accepts it as an upload on the login screen for cross-browser / cross-device incremental</td>
 </tr>
 <tr>
 <td>sha256 integrity manifest</td>
 <td style="text-align:center">&#x2705;</td>
 <td style="text-align:center">&#x274C;</td>
-<td><code>manifest.json</code> &#x2014; tamper-evidence for third-party auditors</td>
+<td><code>manifest.json</code> &#x2014; tamper-evidence for third-party auditors; webapp omits by design (the ZIP is signed by the operator&#x2019;s TLS already)</td>
 </tr>
 </tbody>
 </table>
-<p>The webapp&#x2019;s coverage is the read-side text resources + their incremental story. If the subject&#x2019;s account uses attachments, HFS series, or has webhooks, point them at the CLI; otherwise the webapp is the more ergonomic path.</p>
+<p>Both flavors now cover every read-side resource. The only artefact the webapp does not produce is the per-file sha256 integrity manifest &#x2014; auditor-facing, available only on the CLI side. For subjects whose disclosure is going to a third-party auditor that wants tamper-evidence, route them at the CLI.</p>
 <h2 id="incremental-backup"><!--incremental-backup-->Incremental backup</h2>
 <p>Both flavors persist a small state object after each successful run:</p>
 <ul>
-<li>CLI: <code>.state.json</code> sentinel in the backup directory.</li>
+<li>CLI: <code>.sync-state.json</code> (hidden operational store) sentinel in the backup directory; auto-migrates from a pre-v0.7.0 <code>.state.json</code> on first read.</li>
 <li>Web app: <code>localStorage</code> keyed by the subject&#x2019;s apiEndpoint.</li>
 </ul>
-<p>On the next run, the tool fetches only events + audit rows with <code>modified &gt; T</code> where <code>T</code> is the previous <code>runStartedAt</code>. Small resources (accesses, streams, profile, webhooks) are full-re-fetched each run because their payloads are small. Binary outputs (attachments, HFS, webapp ZIPs) skip on file-presence.</p>
+<p>Both also write a <strong>portable <code>sync-state.json</code></strong> (no leading dot) at run-end &#x2014; CLI lands it next to the JSON resources; webapp embeds it inside the final ZIP. The subject keeps it alongside the backup; on the next run the file drives cross-session / cross-device incremental. The webapp&#x2019;s pre-login state panel offers an upload picker for the file (along with a per-saved-state Reset action), so a subject who switches browser / clears site data / runs from a different device still gets a true incremental backup.</p>
+<p>On the next run, the tool fetches only events + audit rows with <code>modified &gt; T</code> where <code>T</code> is the previous <code>runStartedAt</code>. Small resources (accesses, streams, profile) are full-re-fetched each run because their payloads are small; refs for attachments / HFS series / webhooks are populated by tee-parsing the events + accesses streams, drained by the per-method modules, and pruned at run-end (their work is per-run, not carried across runs).</p>
 <h2 id="audit-log-handling"><!--audit-log-handling-->Audit log handling</h2>
 <p>Audit is a regular <code>@pryv/datastore</code> mounted at the <code>:_audit:*</code> store prefix on every Pryv core. The backup tools query audit via the standard events API:</p>
 <pre><code>GET /events?streams=[&quot;:_audit:accesses&quot;,&quot;:_audit:actions&quot;]&amp;modifiedSince=T&amp;includeDeletions=true
@@ -144,7 +151,7 @@ cd pryv-account-backup
 npm install
 npm start
 </code></pre>
-<p>The CLI prompts for service-info URL, username, password, trashed-data inclusion, attachments inclusion, events chunk size, per-access version history inclusion. The output lands in <code>./backup/&lt;apiEndpoint&gt;/</code>. Restore via <code>npm run restore &lt;path-to-backup-directory&gt;</code> (marked experimental &#x2014; audit / webhooks / accesses are deliberately not replayed).</p>
+<p>The CLI prompts for service-info URL, username, password, trashed-data inclusion, attachments inclusion, events chunk size, per-access version history inclusion. The output lands in <code>./backup/&lt;apiEndpoint&gt;/</code>, with a portable <code>sync-state.json</code> next to the JSON resources. Restore via <code>npm run restore &lt;path-to-backup-directory&gt;</code> (marked experimental &#x2014; audit / webhooks / accesses are deliberately not replayed).</p>
 <h2 id="related"><!--related-->Related</h2>
 <ul>
 <li>Operator-side disaster-recovery backup: <a href="./backup"><code>bin/backup.js</code></a>.</li>
