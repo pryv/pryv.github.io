@@ -166,6 +166,28 @@ It sends then a notification message to Dr. Tom about the new event that was pos
 <h3 id="frequency-limit"><!--frequency-limit-->Frequency limit</h3>
 <p>In case you are dealing with possibly frequent data changes, you might encounter a surge of data changes. In order to avoid notifying the external service too often, webhook executions have a frequency limit <code>minIntervalMs</code>. If multiple changes of different resources occur during a short interval, they will be bundled in the <code>messages</code> array of the webhook request payload.</p>
 <p>The <code>minIntervalMs</code> parameter can be configured by the Pryv.io platform administrator.</p>
+<h3 id="scoped-notifications"><!--scoped-notifications-->Scoped notifications</h3>
+<p>By default a webhook fires on <strong>every</strong> change in the account. If your service only cares about some of the data, you can attach one or more named <strong>scopes</strong> when creating the webhook (and change them later via <a href="/reference/#methods-webhooks-webhooks-update">webhooks.update</a>).</p>
+<p>Each scope is <code>{ kind, query }</code>:</p>
+<ul>
+<li><code>kind</code> &#x2014; <code>events</code> (default), <code>streams</code> or <code>accesses</code>.</li>
+<li><code>query</code> &#x2014; a filter shaped like the parameters of the matching read method. For <code>events</code> this is an <a href="/reference/#get-events">events.get</a> query (<code>streams</code>, <code>types</code>, <code>content</code>, <code>clientData</code>); for <code>streams</code> a <code>{ streams }</code> query; for <code>accesses</code> an accesses filter.</li>
+</ul>
+<pre><code class="language-json">{
+  &quot;url&quot;: &quot;https://notifications.service.com/pryv&quot;,
+  &quot;scopes&quot;: {
+    &quot;newReadings&quot;: { &quot;kind&quot;: &quot;events&quot;, &quot;query&quot;: { &quot;streams&quot;: [&quot;measurements&quot;], &quot;types&quot;: [&quot;mass/kg&quot;] } },
+    &quot;structure&quot;:   { &quot;kind&quot;: &quot;streams&quot;, &quot;query&quot;: { &quot;streams&quot;: [&quot;measurements&quot;] } }
+  }
+}
+</code></pre>
+<p>A scoped webhook is notified <strong>only</strong> of changes matching one of its scopes, and the <code>messages</code> array of the request payload then carries the matched <strong>scope keys</strong> instead of the coarse <code>eventsChanged</code> / <code>streamsChanged</code> values &#x2014; so your endpoint knows exactly which subscription fired:</p>
+<pre><code class="language-json">{
+  &quot;messages&quot;: [&quot;newReadings&quot;],
+  &quot;meta&quot;: { &quot;apiVersion&quot;: &quot;...&quot;, &quot;serial&quot;: &quot;...&quot;, &quot;serverTime&quot;: 1234567890.123 }
+}
+</code></pre>
+<p>The same scoping mechanism is available over the Socket.io transport &#x2014; see <a href="/reference/#scoped-subscriptions-websockets">scoped subscriptions</a> in the API reference.</p>
 <h3 id="retries"><!--retries-->Retries</h3>
 <p>In case of failure to send an HTTP POST request, such as a response status outside the 200-299 range  or timeout, the webhook will retry the request at exponentially increasing intervals.</p>
 <p>This backpressure mechanism is in place to allow the external service to stabilise in case it becomes overloaded.</p>

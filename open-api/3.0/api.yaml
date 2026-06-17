@@ -4,7 +4,7 @@ info:
   version: 2.0.0-pre
   title: Pryv.io API
   contact:
-    url: https://github.com/pryv/open-pryv.io/issues
+    email: support@pryv.com
   license:
     name: MIT
     url: https://opensource.org/licenses/MIT
@@ -196,7 +196,7 @@ paths:
               $ref: "#/components/schemas/false"
   /:
     post:
-      description: Sends a batch of API methods calls in one go (e.g. for to syncing
+      description: Sends a batch of API methods calls in one go (e.g. for syncing
         offline changes when resuming connectivity).
       operationId: callBatch
       responses:
@@ -259,6 +259,19 @@ paths:
           in: query
         - name: types
           description: If set, only events of any of the listed types will be returned.
+          required: false
+          in: query
+        - name: content
+          description: If set, only events whose `content` matches all the conditions will
+            be returned. See [content query](#data-structure-content-query) for
+            the condition syntax, supported operators and availability. Server
+            support is advertised by `features.contentQueries` in [service
+            info](#service-info).
+          required: false
+          in: query
+        - name: clientData
+          description: Same as `content`, applied to the events' `clientData`. Conditions
+            from both parameters must all match.
           required: false
           in: query
         - name: running
@@ -627,6 +640,9 @@ paths:
         Only returns accesses that are active when making the request. To include accesses that have expired or were deleted, use
 
         the `includeExpired` or `includeDeletions` parameters respectively.
+
+
+        In v2 the returned `id`, `createdBy`, and `modifiedBy` fields use the composite reference format `<base>:<serial>` for accesses that have been updated at least once. Never-updated accesses still serialise as bare cuid (`<base>`) for full backwards-compatibility. Parse with `pryv.utils.parseAccessRef(ref)` if you need to extract the version.
       operationId: accesses.get
       parameters:
         - name: includeExpired
@@ -647,8 +663,12 @@ paths:
                 - type: array
                   items: deleted [accesses](#data-structure-access)
     post:
-      description: Creates a new access. You can only create accesses whose
+      description: >-
+        Creates a new access. You can only create accesses whose
         permissions are a subset of those granted to your own access token.
+
+
+        **v2 behaviour change** (Pryv.io ≥ 2.0.0-pre.X): when an `app` access creates a `shared` access scoped under it, the new shared's `expires` (resolved from `expireAfter` if provided) cannot exceed the managing app's `expires`. Violations return `invalid-operation` with `data: { parentExpires, requestedExpires }`. Personal-issued accesses are not subject to this check (personal accesses typically have no `expires`).
       operationId: accesses.create
       responses:
         "201":
@@ -666,6 +686,101 @@ paths:
             schema:
               $ref: "#/components/schemas/access"
   "/accesses/{id}":
+    get:
+      description: >-
+        Returns the access identified by `{id}`. The id can be either:
+
+
+        - **bare** `<base>` — returns the current head row.
+
+        - **composite** `<base>:<serial>` matching the current head's serial — returns the current head row.
+
+        - **composite** `<base>:<serial>` referring to an *older* serial — returns the historical snapshot from that version, alongside a `current` hint pointing at the live head's composite id. Mirrors GitHub's `GET /repos/X/Y/commits/<sha>` behaviour for ref-by-version.
+
+        - any other id (unknown base, or a serial that never existed) — `404 unknown-resource`.
+
+
+        Pass `?includeHistory=true` to also return the full chronological history of the access (oldest first) in a `history` array. Default `false` — the singular case covers the typical "audit this access" use case without the list-side overhead.
+
+
+        App callers can only fetch their own access (self) or shared accesses they directly manage; other access ids return `404 unknown-resource` to avoid info leakage.
+      operationId: accesses.getOne
+      parameters:
+        - name: includeHistory
+          description: If `true`, include the chronological history of the access.
+            Defaults to `false`.
+          required: false
+          in: query
+        - name: id
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                - $ref: "#/components/schemas/access"
+                - type: string
+                - type: array
+                  items: "[accesses](#data-structure-access)"
+        "404":
+          description: unknown-resource
+    put:
+      description: >-
+        Updates the access identified by `{id}`. Each successful update
+        mutates the head row, snapshots the prior state into history, and bumps
+        the access's `serial`. The returned access carries the new wire-format
+        composite id `<base>:<serial>` (or bare `<base>` when never updated).
+
+
+        **Mutable fields** (whitelist): `name`, `deviceName`, `permissions`, `expireAfter` / `expires`, `clientData`. Anything else returns `invalid-parameters-format`.
+
+
+        **Caller-vs-target matrix**:
+
+        - `personal` accesses are immutable (no caller can update them).
+
+        - An `app` access can update only the `shared` accesses it directly manages.
+
+        - `shared` accesses cannot update anything.
+
+        - No self-update via this method (self-revoke stays available via `accesses.delete`).
+
+
+        **Chain rules enforced on update**:
+
+        - A managed `shared`'s new `permissions` must remain a subset of its managing `app`'s permissions.
+
+        - Narrowing an `app`'s permissions (or `expires`) is strict-rejected if any managed `shared` would now sit outside the new scope or outlive the new expiry. The error includes `data.offendingChildren: [ids]` so the caller can resolve children first and retry.
+
+        - A managed `shared`'s `expires` cannot exceed its managing `app`'s `expires` (parent with `expires: null` imposes no cap).
+
+
+        **Composite-id conflict**: the `{id}` must match the current head's `serial`. A stale composite returns `409 stale-resource` with `data: { provided, currentSerial }`; refetch the access via [Get one access](#methods-accesses-accesses-getOne) and retry with the current head id. Bare `<base>` is only valid on a never-updated access.
+
+
+        On success, the server emits an `accessesChanged` socket.io event (coarse-grained) and an `accessUpdated` event with payload `{ type: 'access-updated', accessId, serial }` (fine-grained).
+      operationId: accesses.update
+      parameters:
+        - name: id
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                - $ref: "#/components/schemas/access"
+        "400":
+          description: invalid-operation
+        "403":
+          description: forbidden
+        "404":
+          description: unknown-resource
+        "409":
+          description: stale-resource
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties: {}
     delete:
       description: >-
         Deletes the specified access. Personal accesses can delete any
@@ -673,6 +788,9 @@ paths:
         an app access deletes the shared ones it created.
 
         All accesses can also perform a self-delete unless a forbidden `selfRevoke` permission has been set.
+
+
+        **v2 behaviour change** (Pryv.io ≥ 2.0.0-pre.X): the `{id}` is composite-aware — pass the composite `<base>:<serial>` you last observed via [Get accesses](#methods-accesses-accesses-get) or [Get one access](#methods-accesses-accesses-getOne). A stale composite returns `409 stale-resource` with `data: { provided, currentSerial }`; refetch and retry. Bare `<base>` is only valid on a never-updated access.
       operationId: accesses.delete
       parameters:
         - name: id
@@ -1509,6 +1627,38 @@ components:
           type: array
           items:
             type: Run objects
+        scopes:
+          description: >-
+            Optional map of **named scopes** that restrict the webhook to
+            specific changes. When omitted, the webhook fires on every change in
+            the account (default, unfiltered behaviour).
+
+
+            Each entry is keyed by a name you choose and has the shape `{ kind, query }`:
+
+
+            - `kind` — one of `events` (default), `streams` or `accesses`.
+
+            - `query` — a filter shaped like the parameters of the matching read method: an [events.get](#get-events) query for `events` (`streams`, `types`, `content`, `clientData`), a `{ streams }` query for `streams`, or an accesses filter for `accesses`.
+
+
+            A scoped webhook receives notifications **only** for changes matching one of its scopes. Instead of the coarse `eventsChanged` / `streamsChanged` messages, the [data changes payload](#with-webhooks) then carries the **matched scope keys** — so your endpoint knows *which* subscription fired without inspecting the data:
+
+
+            ```json
+
+            {
+              "scopes": {
+                "newReadings": { "kind": "events", "query": { "streams": ["measurements"], "types": ["mass/kg"] } },
+                "structure":   { "kind": "streams", "query": { "streams": ["measurements"] } }
+              }
+            }
+
+            ```
+
+
+            `scopes` is alterable: include it in an [update webhook](#methods-webhooks-webhooks-update) call to change the subscriptions of an existing webhook.
+          type: object
         created:
           readOnly: true
           required: true
@@ -1563,6 +1713,7 @@ components:
           items:
             type: errors
     streams-query: {}
+    content-query: {}
     identifier:
       type: string
     timestamp:

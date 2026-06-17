@@ -150,15 +150,13 @@ paths:
                   description: The user's e-mail address, used for password retrieval.
                   type: string
                 invitationToken:
-                  description: >-
+                  description: >
                     An invitation token, necessary when users registration is limited
                     to a specific set of users.
 
                     Platform administrators may limit users registration by configuring a list of authorized invitation tokens.
 
                     If this is not the case, users registration is open to everyone and this parameter can be omitted.
-
-
                   type: string
                 language:
                   description: The user's preferred language as a 2-letter ISO language code.
@@ -210,9 +208,13 @@ paths:
           description: INVALID_EMAIL
   "/{email}/username":
     get:
-      description: Get the username of a Pryv.io account according to the given email.
+      description: >-
+        Get the username of a Pryv.io account according to the given email.
         This API method can be disabled in the [platform
         configuration](https://pryv.github.io/reference-admin/#platform-settings).
+
+
+        On multi-node platforms that store identifiers pseudonymised, a node that does not host the requested account answers with a `307` redirect to the account's home node — the home node URL is also returned in a `{ "server": "<url>" }` JSON body for clients that do not follow redirects automatically. The home node resolves and returns the username. Clients that follow redirects (including the official libraries) handle this transparently; single-node platforms answer directly without a redirect.
       operationId: email.username.get
       parameters:
         - name: email
@@ -277,5 +279,183 @@ paths:
             application/json:
               schema:
                 - type: object
+  /reg/access:
+    post:
+      description: >-
+        Creates a new access authorization request. The requesting app
+        calls this method, then polls
+
+        the returned URL until the user accepts or refuses the request.
+
+        This implements the Pryv.io OAuth-like authorization flow.
+      operationId: access.create
+      responses:
+        "201":
+          content:
+            application/json:
+              schema:
+                - type: string
+                - type: string
+                - type: string
+                - type: number
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                requestingAppId:
+                  description: The id of the app requesting access.
+                  type: string
+                requestedPermissions:
+                  description: The permissions requested by the app.
+                  type: array of permission objects
+                returnURL:
+                  description: An optional URL to redirect the user to after accepting or
+                    refusing.
+                  type: string
+                clientData:
+                  description: Optional metadata the requesting app wants to attach to the
+                    request.
+                  type: object
+  "/reg/access/{key}":
+    get:
+      description: >-
+        Polls the status of a pending access request. The requesting app
+        calls this periodically
+
+        until it receives `ACCEPTED`, `REFUSED`, or `ERROR`.
+
+
+        Possible statuses: `NEED_SIGNIN` (waiting), `ACCEPTED` (token issued), `REFUSED`, `ERROR`.
+      operationId: access.poll
+      parameters:
+        - name: key
+          description: The polling key returned by [Create access
+            request](#create-access-request).
+          required: true
+          in: query
+        - name: key
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                - type: string
+                - type: string
+                - type: string
+                - type: string
+    post:
+      description: >-
+        Updates the state of an access request. Called by the auth page
+        after the user has
+
+        signed in and accepted or refused the permissions.
+      operationId: access.update
+      parameters:
+        - name: key
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                - type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                status:
+                  description: "The new status: `ACCEPTED`, `REFUSED`, `ERROR`, or `REDIRECTED`."
+                  type: string
+                username:
+                  description: (Required when `ACCEPTED`) The username granting the access.
+                  type: string
+                token:
+                  description: (Required when `ACCEPTED`) The token for the access.
+                  type: string
+  /access/invitationtoken/check:
+    post:
+      description: >-
+        Checks whether an invitation token is valid. Returns plain text
+        `true` or `false`.
+
+        Used when user registration is limited to holders of valid invitation tokens.
+      operationId: invitationtoken.check
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                - type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                invitationtoken:
+                  description: The invitation token to verify.
+                  type: string
+  /reg/admin/invitations:
+    get:
+      description: Lists all invitation tokens configured on the platform. Requires
+        admin authorization.
+      operationId: invitations.list
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                - type: array
+  /reg/admin/invitations/post:
+    get:
+      description: Generates new invitation tokens. Requires admin authorization.
+      operationId: invitations.generate
+      parameters:
+        - name: count
+          description: "Number of tokens to generate (default: 1)."
+          required: true
+          in: query
+        - name: message
+          description: Optional description for the generated tokens.
+          required: false
+          in: query
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                - type: object
+  /reg/records:
+    post:
+      description: >-
+        Admin endpoint for updating runtime DNS entries (e.g. ACME
+        challenge records for SSL
+
+        certificate provisioning). Records are persisted to PlatformDB and propagated to all
+
+        cores in a multi-core deployment. Requires admin authorization.
+      operationId: dns.records
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                - type: string
+                - type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                subdomain:
+                  description: The subdomain to set records for.
+                  type: string
+                records:
+                  description: 'The DNS records to set (e.g. `{ "TXT": "challenge-value" }`).'
+                  type: object
 components:
   schemas: {}

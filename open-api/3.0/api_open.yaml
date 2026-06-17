@@ -63,9 +63,140 @@ paths:
       operationId: auth.logout
       responses:
         "200": {}
+  /mfa/activate:
+    post:
+      description: >-
+        Initiates the MFA activation flow for a given Pryv.io user,
+        triggering the MFA challenge.
+
+
+        Requires a personal token as [authorization](#basics-authorization), which should be obtained during a prior [Login call](#methods-auth-auth-login).
+      operationId: mfa.activate
+      responses:
+        "302":
+          content:
+            application/json:
+              schema:
+                - type: string
+      requestBody:
+        description: The parameters depend entirely on the chosen MFA method and will be
+          forwarded as-is to the service generating the challenge. Make sure to
+          URL encode parameters if they appear in query parameters.
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/false"
+  /mfa/confirm:
+    post:
+      description: >-
+        Confirms the MFA activation by verifying the MFA challenge
+        triggered by a prior [MFA activation call](#methods-mfa-mfa-activate).
+
+
+        Requires a MFA session token as [authorization](#basics-authorization).
+      operationId: mfa.confirm
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                - type: array
+                  items: strings
+        "403":
+          description: forbidden
+      requestBody:
+        description: The parameters depend entirely on the chosen MFA method and will be
+          forwarded to the service verifying the challenge.
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/false"
+  /mfa/challenge:
+    post:
+      description: >-
+        Triggers the MFA challenge, depending on the chosen MFA method
+        (e.g. send a verification code by SMS).
+
+
+        Requires a MFA session token as [authorization](#basics-authorization).
+      operationId: mfa.challenge
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                - type: string
+        "403":
+          description: forbidden
+  /mfa/verify:
+    post:
+      description: >-
+        Verifies the MFA challenge triggered by a prior [MFA challenge
+        call](#methods-mfa-mfa-challenge).
+
+
+        Requires a MFA session token as [authorization](#basics-authorization).
+      operationId: mfa.verify
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                - type: string
+        "403":
+          description: forbidden
+      requestBody:
+        description: The parameters depend entirely on the chosen MFA method and will be
+          forwarded to the service verifying the challenge.
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/false"
+  /mfa/deactivate:
+    post:
+      description: |-
+        Deactivate MFA for a given Pryv.io user.
+
+        Requires a personal token as [authorization](#basics-authorization).
+      operationId: mfa.deactivate
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                - type: string
+  /mfa/recover:
+    post:
+      description: >-
+        Deactivate MFA for a given Pryv.io user using a MFA recovery code.
+
+
+        This is useful when [Deactivate MFA](#methods-mfa-mfa-deactivate) can not be used (in case of 2nd factor loss).
+
+        Instead, requires a MFA recovery code (obtained when [confirming the MFA activation](#methods-mfa-mfa-confirm)), as well as the usual [Login](#methods-auth-auth-login) parameters.
+      operationId: mfa.recover
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                - type: string
+        "400":
+          description: invalid-parameter
+      requestBody:
+        description: Similar to the usual [Login](#methods-auth-auth-login) parameters,
+          as well as
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/false"
   /:
     post:
-      description: Sends a batch of API methods calls in one go (e.g. for to syncing
+      description: Sends a batch of API methods calls in one go (e.g. for syncing
         offline changes when resuming connectivity).
       operationId: callBatch
       responses:
@@ -128,6 +259,19 @@ paths:
           in: query
         - name: types
           description: If set, only events of any of the listed types will be returned.
+          required: false
+          in: query
+        - name: content
+          description: If set, only events whose `content` matches all the conditions will
+            be returned. See [content query](#data-structure-content-query) for
+            the condition syntax, supported operators and availability. Server
+            support is advertised by `features.contentQueries` in [service
+            info](#service-info).
+          required: false
+          in: query
+        - name: clientData
+          description: Same as `content`, applied to the events' `clientData`. Conditions
+            from both parameters must all match.
           required: false
           in: query
         - name: running
@@ -305,6 +449,93 @@ paths:
             application/json:
               schema:
                 - $ref: "#/components/schemas/event"
+  "/events/{id}/series":
+    get:
+      description: >-
+        Retrieves HF series data points from a HF event.
+
+        Returns data in order of ascending deltaTime between "fromTime" and "toTime".
+
+        Data is returned as input, no sampling or aggregation is performed.
+      operationId: hfs.get
+      parameters:
+        - name: fromDeltaTime
+          description: Only returns data points later than this deltaTime. If no value is
+            given the query will return data starting at the earliest deltaTime
+            in the series.
+          required: false
+          in: query
+        - name: toDeltaTime
+          description: Only returns data points earlier than this deltaTime. If no value
+            is given the server will return only data that is in the past.
+          required: false
+          in: query
+        - name: id
+      responses:
+        "200":
+          description: OK
+    post:
+      description: >-
+        Adds new HF series data points to a HF event.
+
+
+        The HF series data will only store one set of values for any given deltaTime. This means you can update existing data points by 'adding' new data with the original deltaTime.
+      operationId: hfs.add
+      parameters:
+        - name: id
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                - type: string
+        "400":
+          description: invalid-operation
+      requestBody:
+        description: The new HF series data point(s), see [HF
+          series](#data-structure-high-frequency-series).
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/high-frequency-series"
+  /series/batch:
+    post:
+      description: >-
+        Adds data to multiple HF series (stored in multiple HF events) in a
+        single atomic operation. This is the fastest way to append data to Pryv;
+        it allows transferring many data points in a single request.
+
+
+        For this operation to be successful, all of the following conditions must be fulfilled:
+
+          - The access token needs write permissions to all series identified by "eventId".
+          - All events referred to must be HF events (type starts with the string "series:").
+          - Fields identified in each individual message must match those specified by the type of the HF event; there must be no duplicates.
+          - All the values in every data point must conform to the type specification.
+
+        If any part of the batch message is invalid, the entire batch is aborted and the returned result body identifies the error.
+      operationId: hfs.addBatch
+      responses:
+        "201":
+          content:
+            application/json:
+              schema:
+                - type: string
+        "400":
+          description: invalid-request-structure
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                format:
+                  description: The format string "seriesBatch".
+                  type: string
+                data:
+                  description: "Array of batch entries. Each batch entry is defined as follows:"
+                  type: array
   /streams:
     get:
       description: Gets the accessible streams hierarchy.
@@ -409,6 +640,9 @@ paths:
         Only returns accesses that are active when making the request. To include accesses that have expired or were deleted, use
 
         the `includeExpired` or `includeDeletions` parameters respectively.
+
+
+        In v2 the returned `id`, `createdBy`, and `modifiedBy` fields use the composite reference format `<base>:<serial>` for accesses that have been updated at least once. Never-updated accesses still serialise as bare cuid (`<base>`) for full backwards-compatibility. Parse with `pryv.utils.parseAccessRef(ref)` if you need to extract the version.
       operationId: accesses.get
       parameters:
         - name: includeExpired
@@ -429,8 +663,12 @@ paths:
                 - type: array
                   items: deleted [accesses](#data-structure-access)
     post:
-      description: Creates a new access. You can only create accesses whose
+      description: >-
+        Creates a new access. You can only create accesses whose
         permissions are a subset of those granted to your own access token.
+
+
+        **v2 behaviour change** (Pryv.io ≥ 2.0.0-pre.X): when an `app` access creates a `shared` access scoped under it, the new shared's `expires` (resolved from `expireAfter` if provided) cannot exceed the managing app's `expires`. Violations return `invalid-operation` with `data: { parentExpires, requestedExpires }`. Personal-issued accesses are not subject to this check (personal accesses typically have no `expires`).
       operationId: accesses.create
       responses:
         "201":
@@ -448,6 +686,101 @@ paths:
             schema:
               $ref: "#/components/schemas/access"
   "/accesses/{id}":
+    get:
+      description: >-
+        Returns the access identified by `{id}`. The id can be either:
+
+
+        - **bare** `<base>` — returns the current head row.
+
+        - **composite** `<base>:<serial>` matching the current head's serial — returns the current head row.
+
+        - **composite** `<base>:<serial>` referring to an *older* serial — returns the historical snapshot from that version, alongside a `current` hint pointing at the live head's composite id. Mirrors GitHub's `GET /repos/X/Y/commits/<sha>` behaviour for ref-by-version.
+
+        - any other id (unknown base, or a serial that never existed) — `404 unknown-resource`.
+
+
+        Pass `?includeHistory=true` to also return the full chronological history of the access (oldest first) in a `history` array. Default `false` — the singular case covers the typical "audit this access" use case without the list-side overhead.
+
+
+        App callers can only fetch their own access (self) or shared accesses they directly manage; other access ids return `404 unknown-resource` to avoid info leakage.
+      operationId: accesses.getOne
+      parameters:
+        - name: includeHistory
+          description: If `true`, include the chronological history of the access.
+            Defaults to `false`.
+          required: false
+          in: query
+        - name: id
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                - $ref: "#/components/schemas/access"
+                - type: string
+                - type: array
+                  items: "[accesses](#data-structure-access)"
+        "404":
+          description: unknown-resource
+    put:
+      description: >-
+        Updates the access identified by `{id}`. Each successful update
+        mutates the head row, snapshots the prior state into history, and bumps
+        the access's `serial`. The returned access carries the new wire-format
+        composite id `<base>:<serial>` (or bare `<base>` when never updated).
+
+
+        **Mutable fields** (whitelist): `name`, `deviceName`, `permissions`, `expireAfter` / `expires`, `clientData`. Anything else returns `invalid-parameters-format`.
+
+
+        **Caller-vs-target matrix**:
+
+        - `personal` accesses are immutable (no caller can update them).
+
+        - An `app` access can update only the `shared` accesses it directly manages.
+
+        - `shared` accesses cannot update anything.
+
+        - No self-update via this method (self-revoke stays available via `accesses.delete`).
+
+
+        **Chain rules enforced on update**:
+
+        - A managed `shared`'s new `permissions` must remain a subset of its managing `app`'s permissions.
+
+        - Narrowing an `app`'s permissions (or `expires`) is strict-rejected if any managed `shared` would now sit outside the new scope or outlive the new expiry. The error includes `data.offendingChildren: [ids]` so the caller can resolve children first and retry.
+
+        - A managed `shared`'s `expires` cannot exceed its managing `app`'s `expires` (parent with `expires: null` imposes no cap).
+
+
+        **Composite-id conflict**: the `{id}` must match the current head's `serial`. A stale composite returns `409 stale-resource` with `data: { provided, currentSerial }`; refetch the access via [Get one access](#methods-accesses-accesses-getOne) and retry with the current head id. Bare `<base>` is only valid on a never-updated access.
+
+
+        On success, the server emits an `accessesChanged` socket.io event (coarse-grained) and an `accessUpdated` event with payload `{ type: 'access-updated', accessId, serial }` (fine-grained).
+      operationId: accesses.update
+      parameters:
+        - name: id
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                - $ref: "#/components/schemas/access"
+        "400":
+          description: invalid-operation
+        "403":
+          description: forbidden
+        "404":
+          description: unknown-resource
+        "409":
+          description: stale-resource
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties: {}
     delete:
       description: >-
         Deletes the specified access. Personal accesses can delete any
@@ -455,6 +788,9 @@ paths:
         an app access deletes the shared ones it created.
 
         All accesses can also perform a self-delete unless a forbidden `selfRevoke` permission has been set.
+
+
+        **v2 behaviour change** (Pryv.io ≥ 2.0.0-pre.X): the `{id}` is composite-aware — pass the composite `<base>:<serial>` you last observed via [Get accesses](#methods-accesses-accesses-get) or [Get one access](#methods-accesses-accesses-getOne). A stale composite returns `409 stale-resource` with `data: { provided, currentSerial }`; refetch and retry. Bare `<base>` is only valid on a never-updated access.
       operationId: accesses.delete
       parameters:
         - name: id
@@ -515,6 +851,109 @@ paths:
               schema:
                 - type: "[key-value](#methods-key-value-)"
                 - type: "[key-value](#methods-key-value-)"
+  /webhooks:
+    get:
+      description: Gets manageable webhooks. Only returns webhooks that were created
+        by the access, unless you are using a personal access which returns all
+        existing webhooks in the user's account.
+      operationId: webhooks.get
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                - type: array
+                  items: "[webhooks](#data-structure-webhook)"
+    post:
+      description: Creates a new webhook. You can only create webhooks with `app` and
+        `shared` accesses.
+      operationId: webhooks.create
+      responses:
+        "201":
+          content:
+            application/json:
+              schema:
+                - $ref: "#/components/schemas/webhook"
+      requestBody:
+        description: An object with the new webhook's data
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/webhook"
+  "/webhooks/{id}":
+    get:
+      description: Fetches a specific webhook. Only returns a webhook if it was
+        created by the access, unless you are using a personal access which is
+        allowed to fetch any existing webhook in the user's account.
+      operationId: webhooks.getOne
+      parameters:
+        - name: id
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                - $ref: "#/components/schemas/webhook"
+    put:
+      description: >-
+        Modifies the webhook. You can only modify webhooks with the access
+        that was used to create them, unless you are using a personal token.
+
+        Updating the `state` to `active` resets the `currentRetries` counter.
+      operationId: webhooks.update
+      parameters:
+        - name: id
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                - $ref: "#/components/schemas/webhook"
+        "409":
+          description: item-already-exists
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties: {}
+    delete:
+      description: Deletes the specified webhook. You can only delete webhooks with
+        the access that was used to create them, unless you are using a personal
+        token.
+      operationId: webhooks.delete
+      parameters:
+        - name: id
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                - $ref: "#/components/schemas/item-deletion"
+  "/webhooks/{id}/test":
+    post:
+      description: Sends a post request containing a message called `test` to the URL
+        of the specified webhook's `url`. You can only test webhooks with the
+        access that was used to create them, unless you are using a personal
+        token.
+      operationId: webhooks.test
+      parameters:
+        - name: id
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                - $ref: "#/components/schemas/webhook"
+        "400":
+          description: unknown-referenced-resource
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties: {}
   /followed-slices:
     get:
       description: Gets followed slices.
@@ -1188,6 +1627,38 @@ components:
           type: array
           items:
             type: Run objects
+        scopes:
+          description: >-
+            Optional map of **named scopes** that restrict the webhook to
+            specific changes. When omitted, the webhook fires on every change in
+            the account (default, unfiltered behaviour).
+
+
+            Each entry is keyed by a name you choose and has the shape `{ kind, query }`:
+
+
+            - `kind` — one of `events` (default), `streams` or `accesses`.
+
+            - `query` — a filter shaped like the parameters of the matching read method: an [events.get](#get-events) query for `events` (`streams`, `types`, `content`, `clientData`), a `{ streams }` query for `streams`, or an accesses filter for `accesses`.
+
+
+            A scoped webhook receives notifications **only** for changes matching one of its scopes. Instead of the coarse `eventsChanged` / `streamsChanged` messages, the [data changes payload](#with-webhooks) then carries the **matched scope keys** — so your endpoint knows *which* subscription fired without inspecting the data:
+
+
+            ```json
+
+            {
+              "scopes": {
+                "newReadings": { "kind": "events", "query": { "streams": ["measurements"], "types": ["mass/kg"] } },
+                "structure":   { "kind": "streams", "query": { "streams": ["measurements"] } }
+              }
+            }
+
+            ```
+
+
+            `scopes` is alterable: include it in an [update webhook](#methods-webhooks-webhooks-update) call to change the subscriptions of an existing webhook.
+          type: object
         created:
           readOnly: true
           required: true
@@ -1242,6 +1713,7 @@ components:
           items:
             type: errors
     streams-query: {}
+    content-query: {}
     identifier:
       type: string
     timestamp:
