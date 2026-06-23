@@ -1,11 +1,11 @@
-<!DOCTYPE html><html class="no-js" lang="en"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="description" property="og:description" content="Pryv API reference and resources for developers"><meta name="author" content="Pryv SA"><meta property="og:type" content="website"><meta name="image" property="og:image" content="/assets/images/logo-256.png"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Pryv.io Backup | Pryv API</title><link rel="icon" href="/assets/images/favicon-black.ico" type="image/x-icon"><link rel="apple-touch-icon" sizes="120x120" href="/assets/images/apple-touch-icon-120x120-black.png"><link rel="apple-touch-icon" sizes="152x152" href="/assets/images/apple-touch-icon-152x152-black.png"><link rel="apple-touch-icon" sizes="180x180" href="/assets/images/apple-touch-icon-180x180-black.png"><!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+<!DOCTYPE html><html class="no-js" lang="en"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="description" property="og:description" content="Pryv API reference and resources for developers"><meta name="author" content="Pryv"><meta property="og:type" content="website"><meta name="image" property="og:image" content="/assets/images/logo-256.png"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Pryv.io Backup | Pryv API</title><link rel="icon" href="/assets/images/favicon-black.ico" type="image/x-icon"><link rel="apple-touch-icon" sizes="120x120" href="/assets/images/apple-touch-icon-120x120-black.png"><link rel="apple-touch-icon" sizes="152x152" href="/assets/images/apple-touch-icon-152x152-black.png"><link rel="apple-touch-icon" sizes="180x180" href="/assets/images/apple-touch-icon-180x180-black.png"><!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
 <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
 <!--[if lt IE 9]>
   <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
   <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
 <![endif]--><link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Roboto:400,300,500,700,400italic|Roboto+Condensed:400,300,700"><link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/styles/docco.min.css"><link rel="stylesheet" type="text/css" href="/assets/fonts/ss-gizmo.min.css"><link rel="stylesheet" type="text/css" href="/assets/style.css"></head><body class="backup with-toc"><header id="page-header"><nav class="navbar navbar-default navbar-fixed-top" role="navigation"><div class="container-fluid"><div class="navbar-header"><a class="navbar-brand logo" href="/" title="Developers home"><img src="/assets/images/logo-256-black.png" alt="Developers home"></a><button class="navbar-toggle" type="button" data-toggle="collapse" data-target="#main-nav"><span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button></div><div class="collapse navbar-collapse" id="main-nav"><ul class="nav navbar-nav"><li class="dropdown"><a class="dropdown-toggle" href="#" data-toggle="dropdown">Guides <b class="caret"></b></a><ul class="dropdown-menu"><li><a href="/getting-started/">Getting started</a></li><li><a href="/concepts/">API concepts</a></li><li><a href="/data-in-pryv/">Data In Pryv</a></li><li><a href="/guides/data-modelling/">Data modelling</a></li><li><a href="/guides/app-guidelines/">App guidelines</a></li><li><a href="/external-resources/">Apps &amp; Libs</a></li><li><a href="/guides/webhooks/">Webhooks</a></li><li><a href="/guides/custom-auth/">Custom auth</a></li><li><a href="/guides/consent/">Consent request</a></li><li><a href="/guides/cross-account-messaging/">Cross-account messaging (CMC)</a></li><li><a href="/guides/audit-logs/">Audit logs</a></li><li><a href="/guides/privacy-by-design/">Privacy by design &amp; by default</a></li></ul></li><li class="dropdown"><a class="dropdown-toggle" href="#" data-toggle="dropdown">Reference <b class="caret"></b></a><ul class="dropdown-menu"><li><a href="/reference/">API reference</a></li><li><a href="/reference-admin/">Admin API reference</a></li><li><a href="/reference-system/">System API reference</a></li><li><a href="/event-types/">Event types</a></li><li><a href="/open-api/">Open API (Postman)</a></li><li><a href="/change-log/">API change log</a></li></ul></li><li class="dropdown"><a class="dropdown-toggle" href="#" data-toggle="dropdown">FAQ <b class="caret"></b></a><ul class="dropdown-menu"><li><a href="/faq-api/">API</a></li><li><a href="/faq-infra/">Infrastructure</a></li></ul></li><li><a href="https://github.com/pryv/open-pryv.io">Open Pryv.io</a></li><li><a href="/customer-resources/">Setup</a></li><li><a href="/roadmap/">Roadmap</a></li><li><a href="https://pryv.github.io/www/">ASSOCIATION</a></li></ul><div class="navbar-right"><p class="navbar-text version"><a href="/change-log/" title="View change log">API version: <strong>2.0.0-pre</strong></a></p></div></div></div></nav></header><div class="container container-narrow" id="main-wrapper"><div id="main"><h1 class="page-title" id="pryvio-backup"><!--pryvio-backup-->Pryv.io Backup</h1><p>This guide describes how the <strong>operator</strong> backs up a Pryv.io platform and restores from a backup &#x2014; the disaster-recovery / migration story. For the <strong>subject-facing</strong> backup tools (what to point a data subject at when they file a DSAR / portability request), see <a href="./subject-account-backup">Subject Account Backup</a>.</p>
 <blockquote>
-<p><strong>Since v2 (2026)</strong> Pryv.io ships a built-in backup/restore tool, <code>bin/backup.js</code>. Prefer it over raw database dumps &#x2014; it understands Pryv.io&#x2019;s data model, backs up per user, supports incremental runs and can verify integrity on restore. Raw database/filesystem dumps are still documented below as a disaster-recovery alternative for operators who need them (offline DB snapshots, block-level volume backups, etc.).</p>
+<p><strong>Since v2 (2026)</strong> Pryv.io ships a built-in backup/restore tool, <code>bin/backup.js</code>. Prefer it over raw database dumps &#x2014; it understands Pryv.io&#x2019;s data model, backs up per user, supports incremental runs, can verify integrity on restore, and can <strong>encrypt its output on demand</strong> so no plaintext personal/health data touches the backup media. For any backup that leaves the host (off-site, outsourced, or third-party storage) you should <a href="#encrypting-the-backup">encrypt it</a>. Raw database/filesystem dumps are still documented below as a disaster-recovery alternative for operators who need them (offline DB snapshots, block-level volume backups, etc.).</p>
 </blockquote>
 <h2 id="table-of-contents-"><!--table-of-contents--->Table of contents <!-- omit in toc --></h2>
 <ol>
@@ -14,6 +14,7 @@
 <li><a href="#full-backup">Full backup</a></li>
 <li><a href="#incremental-backup">Incremental backup</a></li>
 <li><a href="#backup-a-single-user">Backup a single user</a></li>
+<li><a href="#encrypting-the-backup">Encrypting the backup</a></li>
 <li><a href="#restore">Restore</a></li>
 <li><a href="#whats-in-the-backup">What&#x2019;s in the backup</a></li>
 </ol>
@@ -21,7 +22,7 @@
 <li><a href="#alternative-raw-database--filesystem-dumps">Alternative: raw database + filesystem dumps</a>
 <ol>
 <li><a href="#what-to-back-up">What to back up</a></li>
-<li><a href="#dump-postgresql--mongodb">Dump PostgreSQL / MongoDB</a></li>
+<li><a href="#dump-postgresql">Dump PostgreSQL</a></li>
 <li><a href="#restore-raw-dumps">Restore raw dumps</a></li>
 </ol>
 </li>
@@ -33,6 +34,10 @@
 <pre><code class="language-bash">NODE_ENV=production node bin/backup.js --output /backups/pryv-$(date +%Y%m%d)
 </code></pre>
 <p>The backup is a directory containing gzipped chunk files and a <code>manifest.json</code>. Default chunk size is 50 MB compressed &#x2014; tune with <code>--max-chunk-size</code>.</p>
+<p>For any backup that leaves the host, add encryption &#x2014; the recommended form encrypts to a recipient public key so the backup host holds no decryption secret:</p>
+<pre><code class="language-bash">NODE_ENV=production node bin/backup.js --output /backups/pryv-$(date +%Y%m%d) --recipient-pubkey recipient.pub.pem
+</code></pre>
+<p>See <a href="#encrypting-the-backup">Encrypting the backup</a> for the key setup and the passphrase alternative.</p>
 <h3 id="incremental-backup"><!--incremental-backup-->Incremental backup</h3>
 <p>Point <code>--output</code> at an existing backup directory and add <code>--incremental</code>. The tool reads the previous <code>manifest.json</code> and exports only data that changed per user since the last backup:</p>
 <pre><code class="language-bash">node bin/backup.js --output /backups/pryv-rolling --incremental
@@ -41,6 +46,24 @@
 <h3 id="backup-a-single-user"><!--backup-a-single-user-->Backup a single user</h3>
 <pre><code class="language-bash">node bin/backup.js --output /backups/alice --user &lt;userId&gt;
 </code></pre>
+<h3 id="encrypting-the-backup"><!--encrypting-the-backup-->Encrypting the backup</h3>
+<p>Backups can be <strong>encrypted on demand</strong> so that no plaintext personal/health data ever touches the destination disk &#x2014; the bytes written to the backup media are ciphertext only. This is <strong>opt-in</strong>: without the flags below, the backup is plaintext as described above.</p>
+<p>There are two key models. Encryption composes with everything else (<code>--incremental</code>, <code>--max-chunk-size</code>, <code>--user</code>, <code>--no-compress</code>).</p>
+<p><strong>Recipient public key (recommended).</strong> A fresh random data key encrypts the backup and is itself wrapped with a recipient <strong>RSA public key</strong>. The machine producing the backup never holds a secret that can decrypt its own output &#x2014; only the holder of the matching private key can restore it. This is the strongest posture when the backup is shipped to outsourced or third-party storage.</p>
+<pre><code class="language-bash"># one-time: generate a recipient keypair, keep the private key offline/secure
+openssl genpkey -algorithm RSA -pkeyopt rsa_keygen_bits:3072 -out recipient.key.pem
+openssl pkey -in recipient.key.pem -pubout -out recipient.pub.pem
+
+# backup, encrypting to the public key
+node bin/backup.js --output /backups/pryv-$(date +%Y%m%d) --recipient-pubkey recipient.pub.pem
+</code></pre>
+<p><strong>Passphrase.</strong> Simpler, but the same machine can decrypt its own backups. The data key is derived from a passphrase; pass it via <code>--encrypt-passphrase</code> or, to keep it out of the process list, the <code>PRYV_BACKUP_PASSPHRASE</code> environment variable.</p>
+<pre><code class="language-bash">PRYV_BACKUP_PASSPHRASE=&apos;&#x2026;&apos; node bin/backup.js --output /backups/pryv-$(date +%Y%m%d)
+</code></pre>
+<p>An encrypted backup carries a small cleartext <code>encryption.json</code> at its root (crypto headers + the wrapped key only &#x2014; never user data) plus a self-contained <code>decrypt-backup.mjs</code> and <code>RESTORE-README.md</code>, so the key holder can decrypt it with only Node.js installed, even on a machine without Pryv.io.</p>
+<blockquote>
+<p><strong>Disaster recovery:</strong> if the key (or passphrase) is lost, the backup is unrecoverable &#x2014; that is the point. Manage the recipient private key / passphrase like any other root secret, and keep it separate from the backup media.</p>
+</blockquote>
 <h3 id="restore"><!--restore-->Restore</h3>
 <p>Into an <strong>empty</strong> install (recommended):</p>
 <pre><code class="language-bash">node bin/backup.js --restore /backups/pryv-20260414
@@ -49,6 +72,11 @@
 <ul>
 <li><code>--overwrite</code> &#x2014; clear the target user&#x2019;s data first and reimport.</li>
 <li><code>--skip-conflicts</code> &#x2014; leave conflicting users alone; only import the rest.</li>
+</ul>
+<p>Restore auto-detects an encrypted backup (from its <code>encryption.json</code>) and asks for the matching secret:</p>
+<ul>
+<li><code>--private-key recipient.key.pem</code> (plus <code>--private-key-passphrase</code> if the key file is itself passphrase-protected) for a backup made with <code>--recipient-pubkey</code>.</li>
+<li><code>--decrypt-passphrase &apos;&#x2026;&apos;</code> (or <code>PRYV_BACKUP_PASSPHRASE</code>) for a backup made with a passphrase.</li>
 </ul>
 <p>Useful restore flags:</p>
 <ul>
@@ -61,7 +89,7 @@
 <ul>
 <li>account info (system-stream events, emails, etc.)</li>
 <li>streams and events (including integrity hashes)</li>
-<li>accesses, followed-slices</li>
+<li>accesses</li>
 <li>attachments (file blobs)</li>
 <li>high-frequency series</li>
 <li>audit records (if audit is active)</li>
@@ -71,7 +99,7 @@
 <p>Use this path when you need full block-level or native-DB snapshots &#x2014; for example when integrating with an existing backup solution, or when planning a bit-identical disaster-recovery restore.</p>
 <h3 id="what-to-back-up"><!--what-to-back-up-->What to back up</h3>
 <ol>
-<li><strong>Base storage database</strong> &#x2014; PostgreSQL (recommended) or MongoDB &#x2014; holds events, streams, accesses.</li>
+<li><strong>Base storage database</strong> &#x2014; PostgreSQL &#x2014; holds events, streams, accesses. (If using the SQLite base-storage engine instead, its per-user files live under <code>data/users/</code>, covered by step 2.)</li>
 <li><strong>Per-user filesystem data</strong> &#x2014; the <code>data/users/</code> tree holds SQLite DBs (audit, user index, per-user account) and attachment files. See <a href="https://github.com/pryv/open-pryv.io/blob/master/INSTALL.md#data-directories">INSTALL &#x2014; Data directories</a>.</li>
 <li><strong>Series engine data</strong> &#x2014; if using InfluxDB for HFS, back up InfluxDB. If using PostgreSQL for HFS, it is already covered by step 1.</li>
 <li><strong>Previews</strong> (<code>data/previews/</code>) &#x2014; optional; previews can be regenerated from attachments.</li>
@@ -79,12 +107,8 @@
 <li><strong>Your override YAML(s)</strong> &#x2014; the override-config file(s) passed to <code>bin/master.js</code>.</li>
 </ol>
 <p>Stop the core (or the specific user&#x2019;s activity) before dumping to avoid half-written events between step 1 and step 2.</p>
-<h3 id="dump-postgresql--mongodb"><!--dump-postgresql--mongodb-->Dump PostgreSQL / MongoDB</h3>
-<p><strong>PostgreSQL</strong>:</p>
+<h3 id="dump-postgresql"><!--dump-postgresql-->Dump PostgreSQL</h3>
 <pre><code class="language-bash">pg_dump -U postgres -Fc pryv_db &gt; /backups/pryv-$(date +%Y%m%d).dump
-</code></pre>
-<p><strong>MongoDB</strong>:</p>
-<pre><code class="language-bash">mongodump --db=pryv-node --out=/backups/pryv-mongodump-$(date +%Y%m%d)
 </code></pre>
 <p><strong>InfluxDB</strong> (only if used):</p>
 <pre><code class="language-bash">influxd backup -portable /backups/pryv-influx-$(date +%Y%m%d)
@@ -95,9 +119,6 @@
 <pre><code class="language-bash"># PostgreSQL
 createdb -U postgres pryv_db
 pg_restore -U postgres -d pryv_db /backups/pryv-20260414.dump
-
-# MongoDB
-mongorestore /backups/pryv-mongodump-20260414
 
 # InfluxDB (if used)
 influxd restore -portable /backups/pryv-influx-20260414
