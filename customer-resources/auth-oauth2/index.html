@@ -1,0 +1,178 @@
+<!DOCTYPE html><html class="no-js" lang="en"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="description" property="og:description" content="Pryv API reference and resources for developers"><meta name="author" content="Pryv"><meta property="og:type" content="website"><meta name="image" property="og:image" content="/assets/images/logo-256.png"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Pryv.io OAuth2 app authorization | Pryv API</title><link rel="icon" href="/assets/images/favicon-black.ico" type="image/x-icon"><link rel="apple-touch-icon" sizes="120x120" href="/assets/images/apple-touch-icon-120x120-black.png"><link rel="apple-touch-icon" sizes="152x152" href="/assets/images/apple-touch-icon-152x152-black.png"><link rel="apple-touch-icon" sizes="180x180" href="/assets/images/apple-touch-icon-180x180-black.png"><!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+<!--[if lt IE 9]>
+  <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+  <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+<![endif]--><link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Roboto:400,300,500,700,400italic|Roboto+Condensed:400,300,700"><link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/styles/docco.min.css"><link rel="stylesheet" type="text/css" href="/assets/fonts/ss-gizmo.min.css"><link rel="stylesheet" type="text/css" href="/assets/style.css"></head><body class="OAuth2 app authorization with-toc"><header id="page-header"><nav class="navbar navbar-default navbar-fixed-top" role="navigation"><div class="container-fluid"><div class="navbar-header"><a class="navbar-brand logo" href="/" title="Developers home"><img src="/assets/images/logo-256-black.png" alt="Developers home"></a><button class="navbar-toggle" type="button" data-toggle="collapse" data-target="#main-nav"><span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button></div><div class="collapse navbar-collapse" id="main-nav"><ul class="nav navbar-nav"><li class="dropdown"><a class="dropdown-toggle" href="#" data-toggle="dropdown">Guides <b class="caret"></b></a><ul class="dropdown-menu"><li><a href="/getting-started/">Getting started</a></li><li><a href="/concepts/">API concepts</a></li><li><a href="/data-in-pryv/">Data In Pryv</a></li><li><a href="/guides/data-modelling/">Data modelling</a></li><li><a href="/guides/app-guidelines/">App guidelines</a></li><li><a href="/external-resources/">Apps &amp; Libs</a></li><li><a href="/guides/webhooks/">Webhooks</a></li><li><a href="/guides/custom-auth/">Custom auth</a></li><li><a href="/guides/consent/">Consent request</a></li><li><a href="/guides/cross-account-messaging/">Cross-account messaging (CMC)</a></li><li><a href="/guides/audit-logs/">Audit logs</a></li><li><a href="/guides/privacy-by-design/">Privacy by design &amp; by default</a></li></ul></li><li class="dropdown"><a class="dropdown-toggle" href="#" data-toggle="dropdown">Reference <b class="caret"></b></a><ul class="dropdown-menu"><li><a href="/reference/">API reference</a></li><li><a href="/reference-admin/">Admin API reference</a></li><li><a href="/reference-system/">System API reference</a></li><li><a href="/event-types/">Event types</a></li><li><a href="/open-api/">Open API (Postman)</a></li><li><a href="/change-log/">API change log</a></li></ul></li><li class="dropdown"><a class="dropdown-toggle" href="#" data-toggle="dropdown">FAQ <b class="caret"></b></a><ul class="dropdown-menu"><li><a href="/faq-api/">API</a></li><li><a href="/faq-infra/">Infrastructure</a></li></ul></li><li><a href="https://github.com/pryv/open-pryv.io">Open Pryv.io</a></li><li><a href="/customer-resources/">Setup</a></li><li><a href="/roadmap/">Roadmap</a></li><li><a href="https://pryv.github.io/www/">ASSOCIATION</a></li></ul><div class="navbar-right"><p class="navbar-text version"><a href="/change-log/" title="View change log">API version: <strong>2.0.0-pre</strong></a></p></div></div></div></nav></header><div class="container container-narrow" id="main-wrapper"><div id="main"><h1 class="page-title" id="pryvio-oauth2-app-authorization"><!--pryvio-oauth2-app-authorization-->Pryv.io OAuth2 app authorization</h1><p>This document is for <strong>app developers</strong> choosing how their application obtains access to a Pryv.io user account, and for <strong>platform operators</strong> deciding whether to enable the OAuth2 layer. Pryv.io v2 supports two app-authorization flows side by side:</p>
+<ul>
+<li>the <strong>Pryv-native access-request polling flow</strong> (<code>/reg/access</code> &#x2014; see <a href="/reference/#authenticate-your-app">Authenticate your app</a>), and</li>
+<li>a standard <strong>OAuth2 authorization-code flow</strong> (RFC 6749 + PKCE / RFC 7636) served by the core itself.</li>
+</ul>
+<p>Neither flow is deprecated. Pick per app using the decision matrix below.</p>
+<h2 id="table-of-contents-"><!--table-of-contents--->Table of contents <!-- omit in toc --></h2>
+<ol>
+<li><a href="#which-flow-should-my-app-use">Which flow should my app use?</a></li>
+<li><a href="#the-oauth2-flow-at-a-glance">The OAuth2 flow at a glance</a></li>
+<li><a href="#endpoints-and-discovery">Endpoints and discovery</a></li>
+<li><a href="#scopes">Scopes</a></li>
+<li><a href="#multi-core-deployments-the-apiendpoint-extension">Multi-core deployments: the <code>apiEndpoint</code> extension</a></li>
+<li><a href="#token-lifetimes-and-refresh">Token lifetimes and refresh</a></li>
+<li><a href="#client-registration">Client registration</a></li>
+<li><a href="#using-lib-js">Using lib-js</a></li>
+<li><a href="#related-documents">Related documents</a></li>
+</ol>
+<h2 id="which-flow-should-my-app-use"><!--which-flow-should-my-app-use-->Which flow should my app use?</h2>
+<table>
+<thead>
+<tr>
+<th>Your situation</th>
+<th>Recommended flow</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Self-hosted webapp with its own login UI, tightly integrated with one Pryv.io platform</td>
+<td><strong>Access-request polling</strong> (<code>/reg/access</code>) &#x2014; no client registration needed, works with the stock auth pages</td>
+</tr>
+<tr>
+<td>SaaS product serving many users, possibly across platforms</td>
+<td><strong>OAuth2</strong> &#x2014; standard redirect flow, refresh tokens, revocable app accounts</td>
+</tr>
+<tr>
+<td>Third-party SDK / integration built on a generic OAuth2 client library</td>
+<td><strong>OAuth2</strong> &#x2014; any RFC 6749-compliant library works against the discovery document</td>
+</tr>
+<tr>
+<td>Device or CLI without a browser</td>
+<td><strong>Access-request polling</strong> (display the URL / QR, poll for approval)</td>
+</tr>
+<tr>
+<td>Server-to-server access under an application identity (no end user in the loop)</td>
+<td><strong>OAuth2 <code>client_credentials</code></strong> grant</td>
+</tr>
+</tbody>
+</table>
+<p>Both flows end in the same thing: a Pryv.io <strong>app access</strong> whose token authenticates API calls. The difference is how the token is obtained and how its lifetime is managed.</p>
+<h2 id="the-oauth2-flow-at-a-glance"><!--the-oauth2-flow-at-a-glance-->The OAuth2 flow at a glance</h2>
+<ol>
+<li>Your app redirects the user&#x2019;s browser to <code>GET /oauth2/authorize</code> with <code>client_id</code>, <code>redirect_uri</code>, <code>scope</code>, <code>state</code>, and a PKCE <code>code_challenge</code> (S256 &#x2014; mandatory for every authorization-code request, public and confidential clients alike). Generate <code>state</code> as an unguessable random value and remember it for step 3.</li>
+<li>The user signs in and reviews the consent screen, which lists every permission your consent offer asks for (see <a href="#scopes">Scopes</a>); the user may untick individual permissions &#x2014; you receive only the kept subset.</li>
+<li>The browser is redirected back to your registered <code>redirect_uri</code> with an authorization <code>code</code> and your <code>state</code>. <strong>Verify the returned <code>state</code> matches the value you sent</strong> before proceeding &#x2014; this is your CSRF protection. The response also carries <code>iss</code> (RFC 9207); if your library supports it, confirm it equals the discovery document&#x2019;s issuer to guard against mix-up attacks.</li>
+<li>Your app exchanges the code at <code>POST /oauth2/token</code> (with the PKCE <code>code_verifier</code>) and receives the token response.</li>
+<li>API calls carry the access token as <code>Authorization: Bearer &lt;token&gt;</code>.</li>
+</ol>
+<p>The token response is the standard RFC 6749 &#xA7;5.1 JSON plus a Pryv extension field:</p>
+<pre><code class="language-json">{
+  &quot;access_token&quot;: &quot;...&quot;,
+  &quot;token_type&quot;: &quot;Bearer&quot;,
+  &quot;expires_in&quot;: 3600,
+  &quot;refresh_token&quot;: &quot;...&quot;,
+  &quot;scope&quot;: &quot;cmc:study-A&quot;,
+  &quot;apiEndpoint&quot;: &quot;https://{token}@{host}/{path}/&quot;
+}
+</code></pre>
+<h2 id="endpoints-and-discovery"><!--endpoints-and-discovery-->Endpoints and discovery</h2>
+<p>Each deployment publishes an RFC 8414 discovery document at:</p>
+<pre><code>GET https://&lt;deployment-base&gt;/.well-known/oauth-authorization-server
+</code></pre>
+<p>It advertises <code>authorization_endpoint</code>, <code>token_endpoint</code>, <code>scopes_supported</code>, <code>code_challenge_methods_supported</code> (<code>[&quot;S256&quot;]</code>) and the supported grant types. Point any generic OAuth2 client library at this document instead of hardcoding endpoint URLs.</p>
+<h2 id="scopes"><!--scopes-->Scopes</h2>
+<p>There are no coarse wildcard scopes: every grant is an explicit, granular permission set &#x2014; the same expressiveness as a native <code>accesses.create</code> permissions array, including per-stream levels (<code>read</code>, <code>contribute</code>, <code>manage</code>, <code>create-only</code>) and feature permissions such as <code>{&quot;feature&quot;: &quot;selfRevoke&quot;, &quot;setting&quot;: &quot;forbidden&quot;}</code>.</p>
+<p>The <code>scope</code> parameter carries exactly <strong>one consent-offer reference</strong>: <code>scope=cmc:&lt;offer-name&gt;</code>. The offer is a cross-account consent request your app account publishes once (with the permission list and the consent texts shown to the user); the platform operator registers it on your OAuth client under <code>&lt;offer-name&gt;</code>. At authorization time the server resolves the offer and the consent screen displays each permission.</p>
+<p><strong>All-or-nothing by default.</strong> Unless the offer sets <code>allowUserChoice: true</code>, the consent is take-it-or-leave-it: the user accepts the whole permission set or denies (no cherry-picking). Set <code>allowUserChoice: true</code> in your offer to let the user untick individual permissions &#x2014; and flag any entry your app cannot run without as <code>mandatory: true</code> so it stays locked (the user&#x2019;s only way to withhold it is to deny the whole request). The minted access always carries <strong>exactly the granted subset</strong>, so always read the effective grant (see below) rather than assuming the full offer.</p>
+<p>Two consequences worth designing for:</p>
+<ul>
+<li><strong>The grant is a durable consent on the user&#x2019;s account.</strong> The user can revoke it (or narrow it) at any time from their account tooling; revocation makes your next token refresh fail with <code>invalid_grant</code> (re-run the authorization flow), and narrowing propagates to the next refreshed access. Revocation targets the durable consent (the data-grant): deleting it breaks the refresh chain, but a session access token already minted stays valid until its own short expiry (&#x2264; 1 hour by default), so account tooling and UIs should revoke the data-grant rather than rely on any single access token expiring.</li>
+<li><strong>Always read the effective grant, not the requested one</strong> &#x2014; call <code>GET /access-info</code> with the access token to see the exact permissions you hold.</li>
+</ul>
+<h2 id="multi-core-deployments-the-apiendpoint-extension"><!--multi-core-deployments-the-apiendpoint-extension-->Multi-core deployments: the <code>apiEndpoint</code> extension</h2>
+<p>On a multi-core platform, each user&#x2019;s data lives on one specific core. The <code>/oauth2/*</code> endpoints are available on every core, but <strong>API calls must target the user&#x2019;s own core</strong>.</p>
+<ul>
+<li><strong>Clients SHOULD read the <code>apiEndpoint</code> field from the token response</strong> and use it as the base for all subsequent API calls. It already points at the right core (and embeds the token in Pryv&#x2019;s standard <a href="/reference/#api-endpoint">API endpoint format</a>).</li>
+<li><strong>Vanilla RFC 6749 clients</strong> that ignore <code>apiEndpoint</code> and call an arbitrary core will receive <strong>HTTP <code>421 Misdirected Request</code></strong> with an error body containing <code>coreUrl</code> &#x2014; the base URL of the user&#x2019;s core. Retry the same request against <code>coreUrl</code>.</li>
+</ul>
+<pre><code class="language-json">{
+  &quot;error&quot;: {
+    &quot;id&quot;: &quot;wrong-core&quot;,
+    &quot;message&quot;: &quot;User \&quot;alice\&quot; is hosted on a different core. Retry the request against the URL in `coreUrl`.&quot;,
+    &quot;coreUrl&quot;: &quot;https://core-b.example.com&quot;
+  }
+}
+</code></pre>
+<p><a href="https://github.com/pryv/lib-js">lib-js</a> handles this automatically.</p>
+<h2 id="token-lifetimes-and-refresh"><!--token-lifetimes-and-refresh-->Token lifetimes and refresh</h2>
+<p>Unlike Pryv-native app tokens (long-lived until revoked or expired via <code>expireAfter</code>), OAuth2 access tokens are <strong>short-lived</strong> (1 hour by default) and come with a <strong>refresh token</strong> (30-day sliding window, 90-day absolute cap, by default &#x2014; operators can tune all three). Refresh with:</p>
+<pre><code>POST /oauth2/token
+grant_type=refresh_token&amp;refresh_token=...&amp;client_id=...
+</code></pre>
+<p>Each refresh rotates the refresh token; the response carries a new access token, a new refresh token and the <code>apiEndpoint</code>. See <a href="/concepts/#accesses">access tokens</a> for how this relates to the general access model.</p>
+<h2 id="client-registration"><!--client-registration-->Client registration</h2>
+<p>App accounts are <strong>curated</strong>: an operator registers your application on the platform (dynamic client registration is not offered). To get a <code>client_id</code>, redirect URIs and &#x2014; for confidential clients &#x2014; a <code>client_secret</code>, contact the operator of the platform you are integrating with. Redirect URIs are matched <strong>exactly</strong> (RFC 8252; loopback <code>http://127.0.0.1</code> / <code>http://[::1]</code> redirect URIs may vary port).</p>
+<p>Operators: registration and rotation are done with the <code>bin/oauth-client.js</code> CLI &#x2014; see the <a href="https://github.com/pryv/open-pryv.io/blob/master/docs/oauth2.md">OAuth2 operator guide</a>.</p>
+<h2 id="using-lib-js"><!--using-lib-js-->Using lib-js</h2>
+<p>The <a href="https://github.com/pryv/lib-js"><code>pryv</code> JavaScript library</a> ships an <code>OAuth2Client</code> that wraps the whole browser flow &#x2014; discovery, PKCE, redirect, callback handling, refresh &#x2014; and returns a ready <code>pryv.Connection</code>:</p>
+<pre><code class="language-javascript">const client = new pryv.OAuth2Client({
+  authorizationServer: &apos;https://demo.datasafe.dev&apos;,
+  clientId: &apos;my-app&apos;,
+  redirectUri: &apos;https://my-app.example.com/callback&apos;,
+  scope: &apos;cmc:study-A&apos; // your registered consent-offer reference
+});
+// on your login page:
+await client.redirectToAuthorize();
+// on your callback page (pass the callback query string):
+const connection = await client.handleCallback(window.location.search);
+const info = await connection.get(&apos;access-info&apos;);
+</code></pre>
+<p>See the <a href="https://github.com/pryv/lib-js#oauth2">lib-js README</a> for details.</p>
+<h2 id="related-documents"><!--related-documents-->Related documents</h2>
+<ul>
+<li><a href="/reference/#authenticate-your-app">Authenticate your app (access-request polling)</a></li>
+<li><a href="/concepts/#accesses">API concepts &#x2014; accesses</a></li>
+<li><a href="https://github.com/pryv/open-pryv.io/blob/master/docs/oauth2.md">OAuth2 operator guide (open-pryv.io)</a></li>
+</ul>
+</div><nav id="toc"></nav></div><footer id="page-footer"><nav class="navbar navbar-default"><div class="container-fluid"><div id="footer-nav"><ul class="nav navbar-nav"><li><a href="https://github.com/pryv">GitHub</a></li></ul></div></div></nav></footer><script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script><script src="/assets/bootstrap.min.js"></script><script src="/assets/js/toc.min.js"></script><!-- TOC generation--><script>jQuery(document).ready(function($) {
+  // Header is about 51 pixels. This equals to 'header + fuzz', fuzz was
+  // determined experimentally.
+  var offset = 90;
+
+  // Display TOC on the left side of the page.
+  $('#toc').toc({
+    selector: '#main h1:not(.page-title),#main h2,#main h3',
+    ulClass: 'nav'
+  });
+
+  // Synchronise scroll/click motion with TOC display.
+  $(document).ready(function() {
+    // NOTE This is done at onLoad since we need to wait for all CSS
+    // to appear.
+    $('body').scrollspy({
+      target: '#toc',
+      offset: offset
+    });
+    scrollBy(0, 1); // make it scroll to be sure scrollspy gets it
+    
+    // fix offset when navigating
+    $('#toc li a, a.toc-anchor').click(function (e) {
+      e.preventDefault();
+      var target = $(this).attr('href');
+      window.location.hash = target;
+      
+      $(target)[0].scrollIntoView();
+      if ($(window).scrollTop() + $(window).height() !== $(document).height()) {
+        //only adjust when not at bottom
+        scrollBy(0, -offset + 40);
+      }
+      return true;
+    });
+  
+  });
+});
+</script><!-- Code blocks highlighting--><script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/highlight.min.js"></script><script>hljs.initHighlightingOnLoad();
+</script><!-- Google Analytics--><script>var _gaq = _gaq || [];
+_gaq.push(['_setAccount', 'UA-36589447-2']);
+_gaq.push(['_trackPageview']);
+(function() {
+  var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+  ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+  var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+})();</script></body></html>

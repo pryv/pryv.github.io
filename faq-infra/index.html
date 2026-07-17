@@ -27,13 +27,14 @@
 <p>We have run Pryv.io on the following public clouds: AWS, Microsoft Azure, Gandi.net, Exoscale.ch, Joyent, Fengqi.asia.</p>
 <h3 id="what-constraints-should-be-considered-when-choosing-a-host"><!--what-constraints-should-be-considered-when-choosing-a-host-->What constraints should be considered when choosing a host?</h3>
 <p>You must take into account the legislation covering the people whose data will be stored in the Pryv.io platform, such as US HIPAA, EU GDPR, Swiss DPA. This often includes requirements on the geographic location where the data is stored.</p>
-<h3 id="how-do-you-address-encryption-of-the-data-at-rest-as-medical-records-will-be-stored-in-mongodb-are-you-using-db-encryption-or-some-other-application-specific-encryption"><!--how-do-you-address-encryption-of-the-data-at-rest-as-medical-records-will-be-stored-in-mongodb-are-you-using-db-encryption-or-some-other-application-specific-encryption-->How do you address encryption of the data at rest? As medical records will be stored in MongoDB, are you using DB encryption or some other application specific encryption?</h3>
-<p>Pryv offers three options here:</p>
+<h3 id="how-do-you-address-encryption-of-the-data-at-rest"><!--how-do-you-address-encryption-of-the-data-at-rest-->How do you address encryption of the data at rest?</h3>
+<p>Pryv offers several options, from turnkey to fully self-managed:</p>
 <ul>
-<li>Application-level end-to-end encryption: your application(s) that will access Pryv.io encrypt the data before sending it and can decrypt it after reading it back. Pryv.io provides a data type to include metadata concerning the encryption used by your application. See: <a href="http://pryv.github.io/event-types/#encrypted">http://pryv.github.io/event-types/#encrypted</a></li>
-<li>Disk encryption: Linux has a solid story of disk encryption. If stored on such a disk, Pryv data is encrypted at rest as well.</li>
+<li><strong>Turnkey encrypted image variant</strong> (recommended starting point): the published <code>pryvio/open-pryv.io-encrypted</code> image layers an encrypted volume inside the container, so all of Pryv.io&#x2019;s data directories (events, attachments, series, audit, platform DB) sit on ciphertext at rest. It is off by default and you opt in with one switch; the base <code>pryvio/open-pryv.io</code> image is unchanged. Pluggable backends (LUKS / gocryptfs) and key sources (environment, file, a cloud KMS such as AWS KMS, or TPM/Tang via Clevis). See the <a href="https://github.com/pryv/container-encrypted-volume"><code>container-encrypted-volume</code></a> project and the Open Pryv.io <code>INSTALL.md</code> &#x201C;Encryption at rest&#x201D; section.</li>
+<li><strong>Host / cloud disk encryption</strong>: Linux has a solid disk-encryption story (LUKS, cloud-provider disk encryption, PostgreSQL TDE for an external database). If Pryv.io&#x2019;s data lives on such a volume, it is encrypted at rest. This stays fully under your infrastructure control.</li>
+<li><strong>Application-level end-to-end encryption</strong>: your application(s) encrypt the data before sending it and decrypt it after reading it back, so the server never sees plaintext. Pryv.io provides a data type to carry the encryption metadata. See: <a href="http://pryv.github.io/event-types/#encrypted">http://pryv.github.io/event-types/#encrypted</a></li>
 </ul>
-<p>The last option will probably the easiest to implement. It offers good protection against disks being stolen from the datacenter, while not increasing overall system complexity by much.</p>
+<p>The first two protect against stolen / decommissioned disks, off-host backups, and snapshots (the scope of HIPAA &#xA7;164.312(a)(2)(iv) and GDPR Art.32). They do not protect a running host &#x2014; for that, or for a server-blind model, use application-level end-to-end encryption. Platform <em>secrets</em> (TLS / ACME keys) are always encrypted at rest regardless.</p>
 <h3 id="self-managed-top-domain"><!--self-managed-top-domain-->Self-managed top-domain</h3>
 <p>This only applies to <strong>multi-core</strong> deployments that run the embedded DNS (i.e. <code>dnsLess.isActive: false</code>). Single-node v2 installs use <code>dnsLess</code> mode and do not need any of this.</p>
 <p>The embedded DNS served by each core must resolve all requests for the domain. Entries in the top-domain will look like:</p>
@@ -55,27 +56,27 @@ ${DOMAIN}	TTL_SECONDS IN NS ns2-${DOMAIN}
 ${DOMAIN}		${TTL_SECONDS}	IN		NS		ns2-${DOMAIN}.${TOP_DOMAIN}
 </code></pre>
 <h2 id="customize-registration-login-password-reset-pages"><!--customize-registration-login-password-reset-pages-->Customize registration, login, password-reset pages</h2>
-<p>We provide default web apps for registration, login, password-reset and auth request. The code is available on https://github.com/pryv/app-web-auth3.</p>
+<p>We provide default web apps for registration, login, password-reset and auth request. The code is available on https://github.com/pryv/app-web-user-account (formerly app-web-auth3).</p>
 <p>To customize it, fork the repository and activate <a href="https://pages.github.com/">GitHub Pages</a> on the <code>gh-pages</code> branch (an empty commit is enough to kick the build off).</p>
 <p>You then need to point the <code>/access/</code> path of your Pryv.io deployment at your fork:</p>
 <ul>
 <li>
 <p><strong>v2</strong> &#x2014; this is handled by your own reverse proxy. Add an <code>/access/</code> location to the NGINX config shown in <a href="https://github.com/pryv/open-pryv.io/blob/master/INSTALL.md#running--behind-nginx">INSTALL &#x2014; Running behind nginx</a>:</p>
 <pre><code class="language-nginx">location /access/ {
-  proxy_pass https://${CUSTOMER_ACCOUNT}.github.io/app-web-auth3/;
+  proxy_pass https://${CUSTOMER_ACCOUNT}.github.io/app-web-user-account/;
 }
 if ($request_uri !~* &quot;^/access/static/.*$&quot;) {
   rewrite ^/access/.*$ /access/index.html;
 }
 </code></pre>
-<p>Then set <code>access.defaultAuthUrl</code> in your platform configuration to the deployed consent page (e.g. <code>https://${DOMAIN}/access/access.html</code>) so that auth requests return the right <code>authUrl</code>.</p>
+<p>Then set <code>access.defaultAuthUrl</code> in your platform configuration to the deployed consent page (e.g. <code>https://${DOMAIN}/access/auth</code>) so that auth requests return the right <code>authUrl</code>.</p>
 </li>
 <li>
 <p><strong>v1</strong> &#x2014; edit the bundled NGINX config at <code>pryv/nginx/site.conf</code>. Change:</p>
-<pre><code>proxy_pass        https://pryv.github.io/app-web-auth3/;
+<pre><code>proxy_pass        https://pryv.github.io/app-web-user-account/;
 </code></pre>
 <p>to:</p>
-<pre><code>proxy_pass        https://${CUSTOMER_ACCOUNT}.github.io/app-web-auth3/;
+<pre><code>proxy_pass        https://${CUSTOMER_ACCOUNT}.github.io/app-web-user-account/;
 </code></pre>
 <p>and add the following in the <code>sw.${DOMAIN}</code> server scope:</p>
 <pre><code>if ($request_uri !~* &quot;^/access/static/.*$&quot;) {

@@ -72,7 +72,7 @@ mc                   3600  IN  NS  dns2.mc.example.com.
 <h2 id="set-up-health-monitoring"><!--set-up-health-monitoring-->Set up health monitoring</h2>
 <p>Wire the endpoints from the <a href="/customer-resources/healthchecks/">healthchecks guide</a> into your monitoring system. In multi-core, run the checks against each core.</p>
 <h2 id="customize-authentication--registration--password-reset-pages"><!--customize-authentication--registration--password-reset-pages-->Customize authentication / registration / password-reset pages</h2>
-<p>The default auth web app is <a href="https://github.com/pryv/app-web-auth3"><code>pryv/app-web-auth3</code></a>. To customize:</p>
+<p>The default auth web app is <a href="https://github.com/pryv/app-web-user-account"><code>pryv/app-web-user-account</code></a> (formerly <code>app-web-auth3</code>). To customize:</p>
 <ol>
 <li>Fork the repo and host your fork (GitHub Pages or your own server).</li>
 <li>Override these keys in your config (exact YAML shape &#x2014; see INSTALL / the default config):
@@ -84,7 +84,7 @@ mc                   3600  IN  NS  dns2.mc.example.com.
 </li>
 <li>If you still want to serve the auth pages under <code>https://${DOMAIN}/access/</code>, point that path in your reverse proxy at your fork (see <a href="/faq-infra/#customize-registration-login-password-reset-pages">FAQ &#x2014; customize registration pages</a>).</li>
 </ol>
-<p>Make sure to apply the <a href="https://github.com/pryv/app-web-auth3/blob/master/README.md#fork-repository-for-github-pages">fork change for GitHub Pages</a>.</p>
+<p>Make sure to apply the <a href="https://github.com/pryv/app-web-user-account/blob/master/README.md#fork-repository-for-github-pages">fork change for GitHub Pages</a>.</p>
 <h2 id="set-up-email-sending"><!--set-up-email-sending-->Set up email sending</h2>
 <p>Pryv.io can send transactional emails for account creation and password reset. v2 supports two delivery paths: <strong><code>in-process</code></strong> (recommended &#x2014; runs inside the api-server worker, no extra process, templates in PlatformDB) and <strong><code>microservice</code></strong> (legacy <code>pryv/service-mail</code> for existing deployments). Pick one via <code>services.email.method</code> and configure SMTP, sender identity and templates per the <a href="/customer-resources/emails-setup/">email configuration guide</a>.</p>
 <h2 id="define-your-data-model"><!--define-your-data-model-->Define your data model</h2>
