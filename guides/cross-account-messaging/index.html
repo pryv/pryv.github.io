@@ -40,6 +40,27 @@
 <li>A <strong>back-channel</strong> access on the requester&#x2019;s account, issued to the accepter. Carries delivery rights for chat and system messages flowing in the reverse direction.</li>
 </ul>
 <p>Together these two accesses form a <strong>CMC consent</strong>. Either party may revoke at any time.</p>
+<h3 id="delegable-data-grants-shared-vs-app"><!--delegable-data-grants-shared-vs-app-->Delegable data-grants (<code>shared</code> vs <code>app</code>)</h3>
+<p>By default the data-grant is a Pryv <code>shared</code> access, which <strong>cannot</strong> call the
+<code>accesses.*</code> methods. If the approved requester needs to <strong>re-delegate</strong>
+least-privilege, individually-named access to the services acting on its behalf
+(e.g. an orchestrator that hands each downstream participant its own scoped,
+audited access), the request can opt into an <strong><code>app</code></strong> data-grant by setting
+<code>request.accessType: &quot;app&quot;</code> on the offer (default <code>&quot;shared&quot;</code>):</p>
+<pre><code class="language-jsonc">{ &quot;type&quot;: &quot;consent/request-cmc&quot;,
+  &quot;content&quot;: {
+    &quot;request&quot;: {
+      &quot;title&quot;: {&quot;en&quot;: &quot;&#x2026;&quot;}, &quot;description&quot;: {&quot;en&quot;: &quot;&#x2026;&quot;}, &quot;consent&quot;: {&quot;en&quot;: &quot;&#x2026;&quot;},
+      &quot;permissions&quot;: [ { &quot;streamId&quot;: &quot;body&quot;, &quot;level&quot;: &quot;manage&quot; } ],
+      &quot;accessType&quot;: &quot;app&quot;       // default &quot;shared&quot; &#x2014; &quot;app&quot; makes the grant delegable
+    } } }
+</code></pre>
+<p>An <code>app</code> data-grant can <code>accesses.create</code> <strong>sub-accesses whose permissions are a
+subset of the grant</strong>, so the requester can issue a distinct, named access per
+downstream actor (writes attribute to that named access in the owner&#x2019;s audit
+trail). A <code>shared</code> grant stays non-delegable. Requires open-pryv.io &#x2265;
+<code>2.0.0-rc.9</code>. With the <code>@pryv/cmc</code> helper, pass <code>accessType</code> to <code>createInvite</code>
+(see <a href="#lib-js-helpers">Lib-js helpers</a>).</p>
 <h2 id="streams-reserved-by-the-plugin"><!--streams-reserved-by-the-plugin-->Streams reserved by the plugin</h2>
 <p>The plugin auto-provisions a small reserved namespace on every account on first CMC use:</p>
 <pre><code>:_cmc:                      reserved root
@@ -243,6 +264,9 @@ const { inviteEventId, capabilityUrl } = await cmc.createInvite(conn, {
   displayName: &apos;My study&apos;,
   requestedPermissions: [{ streamId: &apos;fertility&apos;, level: &apos;read&apos; }],
   mode: &apos;single-use&apos;,
+  // Optional: &apos;app&apos; issues a delegable data-grant (the requester can then
+  // accesses.create scoped sub-accesses); omit for the default &apos;shared&apos;.
+  // accessType: &apos;app&apos;,
   // Optional per-invite TTL override &#x2014; server bounds to [60s, 30d];
   // omit for the 7-day default. Out-of-range rejects with
   // cmc-capability-ttl-out-of-range.
