@@ -100,7 +100,7 @@ node bin/observability.js set-app-name &apos;open-pryv.io (example.com)&apos;
 # 4. turn it on, then rolling-restart every core
 node bin/observability.js enable
 </code></pre>
-<p><code>set-endpoint</code> refuses a non-HTTPS destination unless it is <code>localhost</code> or <code>127.0.0.1</code>, which keeps a local collector convenient without allowing plaintext egress.</p>
+<p>Plain <code>http://</code> is accepted when the collector is host-local: loopback, private (RFC1918) or link-local space, so a collector running as a sidecar container reached on the bridge gateway (<code>http://172.17.0.1:4318</code>, say) needs no certificate for a hop that never crosses a network. Cleartext to any routable address is refused, and the same rule is applied by the emitter at startup, not only by this command, so writing the value straight into PlatformDB or exporting it in the environment cannot get plaintext telemetry onto the wire.</p>
 <p>Check the effective configuration at any time &#x2014; credential values are never echoed:</p>
 <pre><code class="language-bash">node bin/observability.js show
 </code></pre>
