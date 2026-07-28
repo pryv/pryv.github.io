@@ -1,118 +1,151 @@
-<!DOCTYPE html><html class="no-js" lang="en"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="description" property="og:description" content="Pryv API reference and resources for developers"><meta name="author" content="Pryv"><meta property="og:type" content="website"><meta name="image" property="og:image" content="/assets/images/logo-256.png"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Observability (APM) | Pryv API</title><link rel="icon" href="/assets/images/favicon-black.ico" type="image/x-icon"><link rel="apple-touch-icon" sizes="120x120" href="/assets/images/apple-touch-icon-120x120-black.png"><link rel="apple-touch-icon" sizes="152x152" href="/assets/images/apple-touch-icon-152x152-black.png"><link rel="apple-touch-icon" sizes="180x180" href="/assets/images/apple-touch-icon-180x180-black.png"><!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+<!DOCTYPE html><html class="no-js" lang="en"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="description" property="og:description" content="Pryv API reference and resources for developers"><meta name="author" content="Pryv"><meta property="og:type" content="website"><meta name="image" property="og:image" content="/assets/images/logo-256.png"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Observability | Pryv API</title><link rel="icon" href="/assets/images/favicon-black.ico" type="image/x-icon"><link rel="apple-touch-icon" sizes="120x120" href="/assets/images/apple-touch-icon-120x120-black.png"><link rel="apple-touch-icon" sizes="152x152" href="/assets/images/apple-touch-icon-152x152-black.png"><link rel="apple-touch-icon" sizes="180x180" href="/assets/images/apple-touch-icon-180x180-black.png"><!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
 <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
 <!--[if lt IE 9]>
   <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
   <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
-<![endif]--><link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Roboto:400,300,500,700,400italic|Roboto+Condensed:400,300,700"><link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/styles/docco.min.css"><link rel="stylesheet" type="text/css" href="/assets/fonts/ss-gizmo.min.css"><link rel="stylesheet" type="text/css" href="/assets/style.css"></head><body class="observability with-toc"><header id="page-header"><nav class="navbar navbar-default navbar-fixed-top" role="navigation"><div class="container-fluid"><div class="navbar-header"><a class="navbar-brand logo" href="/" title="Developers home"><img src="/assets/images/logo-256-black.png" alt="Developers home"></a><button class="navbar-toggle" type="button" data-toggle="collapse" data-target="#main-nav"><span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button></div><div class="collapse navbar-collapse" id="main-nav"><ul class="nav navbar-nav"><li class="dropdown"><a class="dropdown-toggle" href="#" data-toggle="dropdown">Guides <b class="caret"></b></a><ul class="dropdown-menu"><li><a href="/getting-started/">Getting started</a></li><li><a href="/concepts/">API concepts</a></li><li><a href="/data-in-pryv/">Data In Pryv</a></li><li><a href="/guides/data-modelling/">Data modelling</a></li><li><a href="/guides/app-guidelines/">App guidelines</a></li><li><a href="/external-resources/">Apps &amp; Libs</a></li><li><a href="/guides/webhooks/">Webhooks</a></li><li><a href="/guides/custom-auth/">Custom auth</a></li><li><a href="/guides/consent/">Consent request</a></li><li><a href="/guides/cross-account-messaging/">Cross-account messaging (CMC)</a></li><li><a href="/guides/audit-logs/">Audit logs</a></li><li><a href="/guides/privacy-by-design/">Privacy by design &amp; by default</a></li></ul></li><li class="dropdown"><a class="dropdown-toggle" href="#" data-toggle="dropdown">Reference <b class="caret"></b></a><ul class="dropdown-menu"><li><a href="/reference/">API reference</a></li><li><a href="/reference-admin/">Admin API reference</a></li><li><a href="/reference-system/">System API reference</a></li><li><a href="/event-types/">Event types</a></li><li><a href="/open-api/">Open API (Postman)</a></li><li><a href="/change-log/">API change log</a></li></ul></li><li class="dropdown"><a class="dropdown-toggle" href="#" data-toggle="dropdown">FAQ <b class="caret"></b></a><ul class="dropdown-menu"><li><a href="/faq-api/">API</a></li><li><a href="/faq-infra/">Infrastructure</a></li></ul></li><li><a href="https://github.com/pryv/open-pryv.io">Open Pryv.io</a></li><li><a href="/customer-resources/">Setup</a></li><li><a href="/roadmap/">Roadmap</a></li><li><a href="https://pryv.github.io/www/">ASSOCIATION</a></li></ul><div class="navbar-right"><p class="navbar-text version"><a href="/change-log/" title="View change log">API version: <strong>2.0.0-pre</strong></a></p></div></div></div></nav></header><div class="container container-narrow" id="main-wrapper"><div id="main"><h1 class="page-title" id="observability-apm"><!--observability-apm-->Observability (APM)</h1><p>Open Pryv.io v2 ships an <strong>optional</strong> observability layer that forwards HTTP transactions, datastore calls, and error reports to a third-party Application Performance Monitoring (APM) provider. It is <strong>off by default</strong>; when enabled it activates a provider-agnostic instrumentation fa&#xE7;ade with a single concrete provider today: <strong>New Relic</strong>.</p>
-<p>The fa&#xE7;ade is designed so additional providers (Datadog, OpenTelemetry, Sentry&#x2026;) can be dropped in later without changes to core business code; new providers land as separate plans.</p>
+<![endif]--><link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Roboto:400,300,500,700,400italic|Roboto+Condensed:400,300,700"><link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/styles/docco.min.css"><link rel="stylesheet" type="text/css" href="/assets/fonts/ss-gizmo.min.css"><link rel="stylesheet" type="text/css" href="/assets/style.css"></head><body class="observability with-toc"><header id="page-header"><nav class="navbar navbar-default navbar-fixed-top" role="navigation"><div class="container-fluid"><div class="navbar-header"><a class="navbar-brand logo" href="/" title="Developers home"><img src="/assets/images/logo-256-black.png" alt="Developers home"></a><button class="navbar-toggle" type="button" data-toggle="collapse" data-target="#main-nav"><span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button></div><div class="collapse navbar-collapse" id="main-nav"><ul class="nav navbar-nav"><li class="dropdown"><a class="dropdown-toggle" href="#" data-toggle="dropdown">Guides <b class="caret"></b></a><ul class="dropdown-menu"><li><a href="/getting-started/">Getting started</a></li><li><a href="/concepts/">API concepts</a></li><li><a href="/data-in-pryv/">Data In Pryv</a></li><li><a href="/guides/data-modelling/">Data modelling</a></li><li><a href="/guides/app-guidelines/">App guidelines</a></li><li><a href="/external-resources/">Apps &amp; Libs</a></li><li><a href="/guides/webhooks/">Webhooks</a></li><li><a href="/guides/custom-auth/">Custom auth</a></li><li><a href="/guides/consent/">Consent request</a></li><li><a href="/guides/cross-account-messaging/">Cross-account messaging (CMC)</a></li><li><a href="/guides/audit-logs/">Audit logs</a></li><li><a href="/guides/privacy-by-design/">Privacy by design &amp; by default</a></li></ul></li><li class="dropdown"><a class="dropdown-toggle" href="#" data-toggle="dropdown">Reference <b class="caret"></b></a><ul class="dropdown-menu"><li><a href="/reference/">API reference</a></li><li><a href="/reference-admin/">Admin API reference</a></li><li><a href="/reference-system/">System API reference</a></li><li><a href="/event-types/">Event types</a></li><li><a href="/open-api/">Open API (Postman)</a></li><li><a href="/change-log/">API change log</a></li></ul></li><li class="dropdown"><a class="dropdown-toggle" href="#" data-toggle="dropdown">FAQ <b class="caret"></b></a><ul class="dropdown-menu"><li><a href="/faq-api/">API</a></li><li><a href="/faq-infra/">Infrastructure</a></li></ul></li><li><a href="https://github.com/pryv/open-pryv.io">Open Pryv.io</a></li><li><a href="/customer-resources/">Setup</a></li><li><a href="/roadmap/">Roadmap</a></li><li><a href="https://pryv.github.io/www/">ASSOCIATION</a></li></ul><div class="navbar-right"><p class="navbar-text version"><a href="/change-log/" title="View change log">API version: <strong>2.0.0-pre</strong></a></p></div></div></div></nav></header><div class="container container-narrow" id="main-wrapper"><div id="main"><h1 class="page-title" id="observability"><!--observability-->Observability</h1><p>Open Pryv.io v2 ships an <strong>optional</strong> observability layer that reports per-method usage metrics and server-side error reports to a monitoring backend of your choice, over <strong>OTLP/HTTP</strong>. It is <strong>off by default</strong>.</p>
+<p>No third-party monitoring agent runs inside the process, and nothing is auto-instrumented. Telemetry is <strong>constructed by the platform from a fixed allow-list</strong> and then sent. That distinction is the whole design: what can leave your deployment is a property of the platform&#x2019;s source code, not of an external agent&#x2019;s defaults, so it does not change when a dependency is upgraded.</p>
 <blockquote>
-<p><strong>Data handling note</strong> &#x2014; enabling observability means the operator has decided it is acceptable to ship request metadata (paths, status codes, timings, external host URLs) to the provider&#x2019;s cloud. Request bodies, authorisation headers and cookies are <strong>never</strong> forwarded (high-security mode is hard-coded on).</p>
+<p><strong>Data handling note.</strong> Enabling observability means performance metadata leaves your deployment for wherever you point it. The emitted surface is enumerated below and is deliberately anonymous, but you own the decision and &#x2014; unless you point it at a collector you host yourself &#x2014; it is a processing arrangement with a third party. Read <a href="#what-is-sent">What is sent</a> before enabling this on a deployment holding personal data.</p>
 </blockquote>
 <h2 id="table-of-contents-"><!--table-of-contents--->Table of contents <!-- omit in toc --></h2>
 <ol>
 <li><a href="#overview">Overview</a></li>
-<li><a href="#enabling-new-relic-on-a-cluster">Enabling New Relic on a cluster</a></li>
-<li><a href="#log-level-tuning">Log-level tuning</a></li>
-<li><a href="#hostname-labelling">Hostname labelling</a></li>
-<li><a href="#rotating-the-license-key">Rotating the license key</a></li>
+<li><a href="#what-is-sent">What is sent</a></li>
+<li><a href="#what-cannot-be-sent">What cannot be sent</a></li>
+<li><a href="#how-anonymous-is-it-exactly">How anonymous is it, exactly</a></li>
+<li><a href="#choosing-a-backend">Choosing a backend</a></li>
+<li><a href="#enabling-it">Enabling it</a></li>
+<li><a href="#the-reporting-interval">The reporting interval</a></li>
+<li><a href="#verifying-what-your-backend-holds">Verifying what your backend holds</a></li>
+<li><a href="#rotating-credentials">Rotating credentials</a></li>
 <li><a href="#disabling">Disabling</a></li>
-<li><a href="#validation-queries-nrql">Validation queries (NRQL)</a></li>
 <li><a href="#caveats">Caveats</a></li>
-<li><a href="#adding-a-new-provider-later">Adding a new provider later</a></li>
 </ol>
 <h2 id="overview"><!--overview-->Overview</h2>
+<p>A single emitter inside the core builds every datapoint from a compile-time vocabulary, validates it, aggregates it in memory, and posts it to your OTLP endpoint on a timer. Anything that does not match the vocabulary is dropped and counted, never sent.</p>
+<p>Configuration is cluster-wide, stored in PlatformDB, and managed with <code>bin/observability.js</code>. Credentials are encrypted at rest. Changes require a rolling restart of your cores: workers receive the resolved configuration from the master process when they start.</p>
+<h2 id="what-is-sent"><!--what-is-sent-->What is sent</h2>
+<p>This is the complete list. There is no &#x201C;and other diagnostic data&#x201D;.</p>
+<p><strong>Metrics</strong>, aggregated per reporting interval:</p>
+<table>
+<thead>
+<tr>
+<th>Metric</th>
+<th>Labels</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>api.method.calls</code></td>
+<td><code>method.id</code>, <code>status.class</code></td>
+</tr>
+<tr>
+<td><code>api.method.duration</code> (histogram, ms)</td>
+<td><code>method.id</code>, <code>status.class</code></td>
+</tr>
+<tr>
+<td><code>api.method.errors</code></td>
+<td><code>method.id</code>, <code>error.code</code></td>
+</tr>
+<tr>
+<td><code>telemetry.dropped</code></td>
+<td><code>reason</code></td>
+</tr>
+</tbody>
+</table>
 <ul>
-<li><strong>Opt-in</strong>: a cluster with no observability config has no APM code paths loaded and no runtime cost.</li>
-<li><strong>Cluster-wide config</strong>: license key + app name + log level live in the cluster&#x2019;s PlatformDB. Rotating the key is a single write; no per-core YAML edit + rsync required.</li>
-<li><strong>Secrets at rest</strong>: the license key is AES-256-GCM encrypted in PlatformDB, with a key derived (via HKDF-SHA256) from <code>auth.adminAccessKey</code> and a per-key purpose label.</li>
-<li><strong>High-security mode</strong>: enforced on the underlying agent. Request bodies and auth/cookie headers are stripped.</li>
-<li><strong>Default log forwarding</strong>: errors only. Operators explicitly raise verbosity when they want warnings / info / debug to ship.</li>
-<li><strong>Hostname reporting</strong>: transactions report under the core&#x2019;s FQDN (parsed from <code>core.url</code>) &#x2014; the same label operators see in <code>/reg/hostings</code>, the LE cert SAN, and the core&#x2019;s dashboards.</li>
+<li><code>method.id</code> is an API method identifier taken from the core&#x2019;s own method registry (for example <code>events.get</code>, <code>auth.login</code>). It is re-checked against that registry before every emission, so a value that is not a registered method id cannot be sent.</li>
+<li><code>status.class</code> is one of <code>2xx</code>, <code>3xx</code>, <code>4xx</code>, <code>5xx</code>.</li>
+<li><code>error.code</code> is one of the API&#x2019;s documented error ids (for example <code>invalid-access-token</code>), or <code>unknown</code>.</li>
+<li><code>telemetry.dropped</code> counts datapoints the emitter refused. A non-zero value means something tried to emit outside the vocabulary and was stopped; it is worth alerting on.</li>
 </ul>
-<h2 id="enabling-new-relic-on-a-cluster"><!--enabling-new-relic-on-a-cluster-->Enabling New Relic on a cluster</h2>
-<p>Prerequisites:</p>
+<p><strong>Process identity</strong>, attached to every batch: service name (the label you set), service version, the <strong>machine hostname</strong>, and a worker index.</p>
+<p><strong>Error reports</strong>, for server-side faults only (5xx, unexpected and unclassifiable errors; client mistakes such as a rejected token are counted, not reported):</p>
 <ul>
-<li>A New Relic <strong>Ingest &#x2013; License</strong> key (40-char hex). Get it at <strong>Administration &#x2192; API keys &#x2192; Ingest License</strong> in the New Relic web console.</li>
-<li><code>auth.adminAccessKey</code> must be set and identical across every core in the cluster (operator-sync secret; same requirement as <code>letsEncrypt.atRestKey</code>).</li>
+<li>the error code, and a <strong>hard-coded message</strong> looked up from the platform&#x2019;s own message catalogue by that code;</li>
+<li>the error class name (for example <code>Error</code>, <code>APIError</code>);</li>
+<li>the API method it occurred in;</li>
+<li>a <strong>stack trace rebuilt from repository-relative frames</strong>, plus a count of how many times that identical fault occurred in the interval.</li>
 </ul>
-<p>On any core in the cluster, set the license key and enable the provider:</p>
-<pre><code class="language-bash">node bin/observability.js newrelic set-license-key &lt;LICENSE_KEY&gt;
-node bin/observability.js enable newrelic
+<h2 id="what-cannot-be-sent"><!--what-cannot-be-sent-->What cannot be sent</h2>
+<p>Request URLs, query parameters, route parameters, request and response bodies, HTTP headers of any kind, usernames, stream / event / attachment identifiers, application log records, and <strong>error message text</strong>.</p>
+<p>None of these has a key in the emitted vocabulary, so no code path can emit them.</p>
+<p>Error messages are excluded permanently and on purpose. Messages routinely interpolate whatever failed &#x2014; <code>ENOENT: ... open &apos;/var-pryv/users/&lt;id&gt;/...&apos;</code>, &#x201C;user &lt;email&gt; not found&#x201D;, validation errors quoting the submitted value. The error <em>code</em> travels; the message stays in your own logs, where identifying data belongs.</p>
+<p>Stack frames are rebuilt rather than filtered. Each frame is decomposed into a function name and a source location, both checked against an allow-list, then reassembled. A frame that is not a repository-relative location or a Node internal is replaced by <code>at &lt;external&gt;</code>, so paths from outside the installation &#x2014; a global module directory, an operator&#x2019;s own plugin folder, a home directory &#x2014; are never emitted even in part.</p>
+<h2 id="how-anonymous-is-it-exactly"><!--how-anonymous-is-it-exactly-->How anonymous is it, exactly</h2>
+<p>The claim is: <strong>anonymous by construction, with a residual correlation risk at very low traffic volumes.</strong> We state it that way rather than as an unqualified guarantee, because the qualification is real.</p>
+<p>Two design choices carry it beyond simply omitting identifiers:</p>
+<ul>
+<li><strong>Error reports are aggregated by fault and stamped at the reporting interval</strong>, not at the instant of failure. A precise timestamp is a re-identification handle even when the content is clean: &#x201C;this method failed at 14:32:07.123 on this instance&#x201D; singles out one action to anyone holding a second timestamped signal &#x2014; your own audit log, for instance. The deliberate cost is that sub-interval ordering and exact error times are not available from telemetry.</li>
+<li><strong>The instance identifier is the machine hostname</strong>, never derived from your service URL or DNS domain. In DNS-based deployments user-facing hosts are <code>&lt;username&gt;.&lt;domain&gt;</code>, so a URL-derived hostname would have attached a username to every datapoint.</li>
+</ul>
+<p><strong>The residual</strong>: on a very low-traffic instance, &#x201C;one error in this interval&#x201D; can still correlate to the only active user. That follows from traffic volume rather than from what is emitted, so no schema change removes it. Widening <a href="#the-reporting-interval">the reporting interval</a> reduces it.</p>
+<p>If your deployment cannot accept even that, point the endpoint at a collector inside your own infrastructure &#x2014; then no third party is involved at all.</p>
+<h2 id="choosing-a-backend"><!--choosing-a-backend-->Choosing a backend</h2>
+<p>Any service that ingests OTLP/HTTP works: New Relic, Grafana, Datadog, Honeycomb, Elastic, or an OpenTelemetry Collector you run yourself. The platform sends the same payload to all of them, so the data-protection posture does not vary by vendor.</p>
+<p>A backend that only speaks gRPC or a proprietary protocol can be reached by putting an OpenTelemetry Collector in front of it. Running that collector inside your own trust boundary is also the recommended pattern when you want monitoring without a third-party processor.</p>
+<h2 id="enabling-it"><!--enabling-it-->Enabling it</h2>
+<p>From any core, with PlatformDB reachable:</p>
+<pre><code class="language-bash"># 1. where telemetry goes (the standard OTLP paths /v1/metrics and
+#    /v1/logs are appended to this base URL)
+node bin/observability.js set-endpoint https://otlp.eu01.nr-data.net
+
+# 2. whatever auth header that backend expects, stored encrypted at rest
+node bin/observability.js set-header api-key YOUR-KEY-HERE
+
+# 3. a label to tell your deployments apart in the backend&apos;s UI
+node bin/observability.js set-app-name &apos;open-pryv.io (example.com)&apos;
+
+# 4. turn it on, then rolling-restart every core
+node bin/observability.js enable
 </code></pre>
-<p>Then perform a rolling restart of every core (one at a time, wait until healthy before restarting the next). The agent loads the license key once per process at <code>require()</code> time, so an in-place config change on a running core is a no-op until that core restarts.</p>
-<p>Verify:</p>
+<p><code>set-endpoint</code> refuses a non-HTTPS destination unless it is <code>localhost</code> or <code>127.0.0.1</code>, which keeps a local collector convenient without allowing plaintext egress.</p>
+<p>Check the effective configuration at any time &#x2014; credential values are never echoed:</p>
 <pre><code class="language-bash">node bin/observability.js show
 </code></pre>
-<pre><code>enabled:          true
-provider:         newrelic
-appName:          open-pryv.io (pryv.me)
-logLevel:         error
-hostname:         core-use1.pryv.me
-newrelic licenseKey set: yes
+<p><code>show</code> also prints the emitted surface, so an operator can answer &#x201C;what does my backend see?&#x201D; without reading source.</p>
+<blockquote>
+<p>Keep the app name free of anything identifying. It is the one label you choose rather than the platform, it is validated only for shape, and it is attached to every batch.</p>
+</blockquote>
+<h2 id="the-reporting-interval"><!--the-reporting-interval-->The reporting interval</h2>
+<pre><code class="language-bash">node bin/observability.js set-interval 600     # seconds; 60-3600, default 300
 </code></pre>
-<h2 id="log-level-tuning"><!--log-level-tuning-->Log-level tuning</h2>
-<p>Default is <strong>error-only</strong>: only <code>logger.error()</code> calls reach the provider. <code>info</code> / <code>warn</code> / <code>debug</code> are captured by the usual boiler file + console logs.</p>
-<p>Raise verbosity during active debugging:</p>
-<pre><code class="language-bash">node bin/observability.js set-log-level warn    # errors + warnings
-node bin/observability.js set-log-level info    # errors + warnings + info
+<p>This is a <strong>privacy control</strong>, not only a tuning knob. It sets the granularity at which activity is observable, and it is the only lever on the low-traffic residual described above. Longer intervals weaken correlation and slow alerting; shorter intervals do the reverse. Values outside 60-3600 are clamped.</p>
+<h2 id="verifying-what-your-backend-holds"><!--verifying-what-your-backend-holds-->Verifying what your backend holds</h2>
+<p>Do not take this page&#x2019;s word for it. After enabling and restarting, ask the backend to enumerate what it actually received, and scope the query to a time window that starts after your restart &#x2014; older data will otherwise answer for the previous configuration.</p>
+<p>With New Relic, for example:</p>
+<pre><code class="language-sql">-- every metric name the account holds for this deployment
+SELECT uniques(metricName) FROM Metric
+WHERE service.name = &apos;open-pryv.io (example.com)&apos; SINCE &apos;&lt;restart time&gt;&apos;
+
+-- every attribute key present on those metrics
+SELECT keyset() FROM Metric
+WHERE service.name = &apos;open-pryv.io (example.com)&apos; SINCE &apos;&lt;restart time&gt;&apos;
 </code></pre>
-<p>Followed by a rolling restart. Higher log levels cost more New Relic events and ship lower-signal chatter; revert to <code>error</code> when the incident is closed.</p>
-<h2 id="hostname-labelling"><!--hostname-labelling-->Hostname labelling</h2>
-<p>Transactions, infrastructure rows and external segments are labelled with the core&#x2019;s FQDN, taken from <code>new URL(core.url).hostname</code>. For a typical multi-core deployment that means New Relic shows:</p>
-<ul>
-<li><code>core-use1.pryv.me</code></li>
-<li><code>core-euc1.pryv.me</code></li>
-</ul>
-<p>&#x2026;matching the values operators already see in <code>/reg/hostings</code> and in LE certs. No separate &#x201C;APM host name&#x201D; field to curate.</p>
-<p>Single-core / DNSless deployments fall back to <code>single.&lt;dns.domain&gt;</code> when <code>core.url</code> is not set.</p>
-<h2 id="rotating-the-license-key"><!--rotating-the-license-key-->Rotating the license key</h2>
-<pre><code class="language-bash">node bin/observability.js newrelic set-license-key &lt;NEW_KEY&gt;
+<p>Enumerate rather than spot-check for absence: a query for a specific identifier returning zero proves only that you guessed the identifier&#x2019;s shape correctly, whereas listing every key present proves the surface. The result should contain only the metric names and label keys listed under <a href="#what-is-sent">What is sent</a>.</p>
+<p>Watch <code>telemetry.dropped</code> as well. It should normally be zero or near it; a rising count means datapoints are being refused, and the <code>reason</code> label says why.</p>
+<h2 id="rotating-credentials"><!--rotating-credentials-->Rotating credentials</h2>
+<pre><code class="language-bash">node bin/observability.js set-header api-key NEW-KEY      # overwrite
+node bin/observability.js clear-headers                   # remove all
 </code></pre>
-<p>Then a rolling restart of every core. The key is stored AES-256-GCM encrypted in PlatformDB; the CLI&#x2019;s <code>show</code> command never echoes it.</p>
+<p>Then rolling-restart every core. Headers are stored AES-256-GCM encrypted at rest, with key material derived from the platform admin key.</p>
 <h2 id="disabling"><!--disabling-->Disabling</h2>
-<p>Two ways:</p>
-<ol>
-<li>
-<p><strong>Cluster-wide, via PlatformDB (recommended)</strong>:</p>
 <pre><code class="language-bash">node bin/observability.js disable
 </code></pre>
-<p>Then rolling restart.</p>
-</li>
-<li>
-<p><strong>Local kill-switch (emergency)</strong>: set <code>observability.enabled: false</code> in that core&#x2019;s <code>override-config.yml</code>. The local override always wins over PlatformDB &#x2014; useful when one core is misbehaving and you need to silence it immediately without touching cluster state. Restart the affected core only.</p>
-</li>
-</ol>
-<h2 id="validation-queries-nrql"><!--validation-queries-nrql-->Validation queries (NRQL)</h2>
-<p>Useful queries to paste in the New Relic web console after enabling on a staging cluster:</p>
-<pre><code class="language-sql">-- Are my cores showing transactions?
-SELECT count(*) FROM Transaction WHERE host LIKE &apos;core-%.pryv.me&apos; FACET host SINCE 10 minutes ago
-
--- Is sensitive data being stripped?
-SELECT count(*) FROM Transaction WHERE request.headers.authorization IS NOT NULL SINCE 1 hour ago
--- Expected: 0 (high-security mode strips the header)
-
--- Log forwarding at the current log level
-SELECT count(*) FROM PryvLog FACET level SINCE 30 minutes ago
-
--- External call latency (cross-core forwards, rqlite, ACME, etc.)
-SELECT average(duration) FROM ExternalService FACET externalHostname SINCE 1 hour ago
-</code></pre>
+<p>Then rolling-restart. For an immediate local kill switch that does not depend on PlatformDB, set <code>observability.enabled: false</code> in a core&#x2019;s own configuration &#x2014; a local <code>false</code> always wins, on that core, at its next start.</p>
 <h2 id="caveats"><!--caveats-->Caveats</h2>
 <ul>
-<li><strong>Agent startup cost</strong>: enabling observability adds ~150&#x2013;300 ms to each Node process&#x2019;s boot. In <code>NODE_ENV=test</code> the boot shim bypasses the agent entirely so test suites are unaffected.</li>
-<li><strong>Optional dependency</strong>: the <code>newrelic</code> package is listed under <code>optionalDependencies</code> &#x2014; installs that can&#x2019;t fetch it still succeed; observability simply refuses to activate.</li>
-<li><strong>No zero-downtime key rotation</strong>: the agent reads the license key once at <code>require()</code> time. Rolling restart is required for rotation.</li>
-<li><strong>License scope</strong>: the image does not bundle any New Relic license key. Operators bring their own.</li>
-<li><strong>Third-party processing</strong>: understand your jurisdiction&#x2019;s requirements before shipping transaction metadata to New Relic&#x2019;s US or EU cloud. GDPR / HIPAA operators should double-check.</li>
+<li><strong>Changes need a rolling restart.</strong> Workers receive the resolved configuration at fork time; there is no live reconfiguration.</li>
+<li><strong>Coverage is the API method surface.</strong> Requests are measured where the core dispatches API methods, which covers HTTP and socket calls alike. Background work (certificate renewal, webhook delivery, mail) is not instrumented yet.</li>
+<li><strong>Metrics are delta-reported per interval</strong>, so a backend configured to expect cumulative values will need its usual OTLP delta handling.</li>
+<li><strong>Aggregation trades detail for privacy</strong>, by decision. If you need the exact sequence of an incident, the source is your own logs, not this telemetry.</li>
+<li><strong>A failing backend never affects the API.</strong> Send failures are counted and logged locally; buffers are bounded and drop rather than grow.</li>
+<li><strong>Up to one interval of telemetry is lost on restart.</strong> Whatever has been aggregated but not yet sent is discarded when a worker stops, so a rolling restart leaves a gap of up to one reporting interval. Deliberate: buffered telemetry is not worth delaying a shutdown for.</li>
+<li><strong>Third-party processing.</strong> Understand your jurisdiction&#x2019;s requirements before shipping metadata to a vendor cloud, and prefer a self-hosted collector if you would rather not add a processor at all.</li>
+<li><strong>Ingested telemetry usually cannot be deleted on demand.</strong> Most vendors have no self-service purge; data expires with the account&#x2019;s retention window. Worth knowing before enabling, because a misconfiguration cannot be taken back.</li>
+<li><strong>Earlier versions behaved differently.</strong> Releases before this one used an in-process vendor agent, and a configuration defect meant that agent ran on its own defaults: request URLs, the <code>Host</code> header, route parameters carrying the username, and forwarded application log records all reached the vendor. If you enabled observability on an earlier version, assume that was the case for as long as it was on, and check what your account holds.</li>
 </ul>
-<h2 id="adding-a-new-provider-later"><!--adding-a-new-provider-later-->Adding a new provider later</h2>
-<p>The fa&#xE7;ade at <code>components/business/src/observability/</code> exposes a fixed method set: <code>isActive()</code>, <code>setTransactionName()</code>, <code>recordError()</code>, <code>recordCustomEvent()</code>, <code>startBackgroundTransaction()</code>.</p>
-<p>A new provider is a sibling directory under <code>components/business/src/observability/providers/&lt;id&gt;/</code> exporting:</p>
-<ul>
-<li><code>boot.js</code> &#x2014; <code>require()</code>s the vendor agent and calls <code>observability.init(adapter)</code>.</li>
-<li><code>adapter.js</code> &#x2014; object implementing the five fa&#xE7;ade methods, delegating to the agent.</li>
-</ul>
-<p>The boot shim at <code>bin/_observability-boot.js</code> dispatches based on <code>PRYV_OBSERVABILITY_PROVIDER</code>. No change to business code, CLI base, or PlatformDB shape is required when adding a provider.</p>
 </div><nav id="toc"></nav></div><footer id="page-footer"><nav class="navbar navbar-default"><div class="container-fluid"><div id="footer-nav"><ul class="nav navbar-nav"><li><a href="https://github.com/pryv">GitHub</a></li></ul></div></div></nav></footer><script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script><script src="/assets/bootstrap.min.js"></script><script src="/assets/js/toc.min.js"></script><!-- TOC generation--><script>jQuery(document).ready(function($) {
   // Header is about 51 pixels. This equals to 'header + fuzz', fuzz was
   // determined experimentally.
