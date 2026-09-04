@@ -1,41 +1,53 @@
-# Pryv.io
+# Pryv.io developer documentation
 
-> Pryv.io is an open-source middleware for managing personal and health data.
-> Each user owns an account (a per-user data vault); apps get scoped access
-> tokens with granular, per-stream permissions. Data is stored as typed
-> events organized in a tree of streams. The reference open-source server is
-> open-pryv.io; the JavaScript client library is the `pryv` npm package.
+> API reference, guides and setup documentation for Pryv.io, the middleware for privacy-compliant personal and health data.
 
-If you are an AI agent: fetch /llms-full.txt — the dense single-page
-technical reference — before driving the API or the client library.
-
-## Core
-
-- [llms-full.txt](https://pryv.github.io/llms-full.txt): single-page agent-readable technical reference (read this first)
-- [API reference](https://pryv.github.io/reference/): canonical REST/WebSocket reference
-- [Getting started](https://pryv.github.io/getting-started/): first API calls, step by step
-- [Concepts](https://pryv.github.io/concepts/): accounts, streams, events, accesses, permissions
-- [Data in Pryv](https://pryv.github.io/data-in-pryv/): data model deep-dive
-- [Event types](https://pryv.github.io/event-types/): the curated type catalogue (machine-readable: https://pryv.github.io/event-types/flat.json)
-
-## Client library
-
-- [lib-js on GitHub](https://github.com/pryv/lib-js): the `pryv` npm package — JS library for Node + browser apps
-- [pryv on npm](https://www.npmjs.com/package/pryv): install with `npm install pryv`
-
-## Server
-
-- [open-pryv.io](https://github.com/pryv/open-pryv.io): open-source server — single Node.js binary, Docker image `pryvio/open-pryv.io`; has its own AGENTS.md
-- [Setup guides](https://pryv.github.io/customer-resources/): operator-facing install, backup, SSL, MFA, multi-core topology
-
-## Optional
-
-- [API reference (admin)](https://pryv.github.io/reference-admin/): platform administration API
-- [API reference (system)](https://pryv.github.io/reference-system/): system-level API for platform operators
-- [Guides](https://pryv.github.io/guides/): app guidelines, audit logs, consent, data modelling, webhooks
-- [FAQ — API](https://pryv.github.io/faq-api/) and [FAQ — infrastructure](https://pryv.github.io/faq-infra/)
+## Reference
+- [API reference](https://pryv.github.io/reference/): all API methods with request and response examples
+- [System API](https://pryv.github.io/reference-system/)
+- [Admin API](https://pryv.github.io/reference-admin/)
+- [Event types](https://pryv.github.io/event-types/): flat.json at https://pryv.github.io/event-types/flat.json
+- [OpenAPI 3.0](https://pryv.github.io/open-api/): api.yaml, api_open.yaml, api_system.yaml, api_admin.yaml
 - [Functional specifications](https://pryv.github.io/functional-specifications/)
+- [Full reference dump](https://pryv.github.io/llms-full.txt)
 
-## Feedback
-
-- [GitHub issues](https://github.com/pryv/open-pryv.io/issues): single tracker for all agent-related feedback (docs, API behavior, client library)
+## Docs
+- [For AI agents and automation](https://pryv.github.io/agents/): How an AI agent or automated client can discover and consume the Pryv.io API - service info, OpenAPI definitions, event-type schemas, and machine-readable docs.
+- [app-web-user-account](https://pryv.github.io/apps/app-web-user-account/): Overview of app-web-user-account, the themeable reference web app for Pryv.io authentication and self-service account management, with links to the repository.
+- [API change log](https://pryv.github.io/change-log/): Release notes for the Pryv.io API, tracking breaking changes, new webhook and websocket features, storage options and version-by-version updates.
+- [API concepts](https://pryv.github.io/concepts/): Core concepts behind the Pryv.io API: events, streams, accesses, user accounts and servers, and how they model personal and health data.
+- [Setup](https://pryv.github.io/customer-resources/): Documents, files and guides for installing and operating Open Pryv.io v2, the single-binary API server, including upgrading from v1 deployments.
+- [Pryv.io audit configuration](https://pryv.github.io/customer-resources/audit-setup/): How to configure the Pryv.io v2 audit feature through the unified config: outputs, filtering rules, syslog templating and performance tuning.
+- [Pryv.io OAuth2 app authorization](https://pryv.github.io/customer-resources/auth-oauth2/): How Pryv.io apps obtain access to a user account, comparing the native access-request polling flow with the built-in OAuth2 authorization-code flow.
+- [Pryv.io Backup](https://pryv.github.io/customer-resources/backup/): How an operator backs up and restores a Pryv.io platform with the built-in bin/backup.js tool, including encrypted, incremental and raw-dump options.
+- [Pryv.io core migration](https://pryv.github.io/customer-resources/core-migration/): How to migrate a Pryv.io v2 core to a new machine: copy config and data, start the core on the destination host, and cut over DNS without downtime.
+- [Pryv.io DNS zone configuration](https://pryv.github.io/customer-resources/dns-config/): How to declare DNS records for Pryv.io's embedded DNS server, covering static YAML entries and runtime records managed via CLI and admin endpoints.
+- [Open Pryv.io email configuration](https://pryv.github.io/customer-resources/emails-setup/): How to configure transactional welcome and password-reset emails in Open Pryv.io, comparing the in-process and legacy microservice delivery paths.
+- [Pryv.io Healthchecks](https://pryv.github.io/customer-resources/healthchecks/): How to run regular healthcheck API calls against a Pryv.io deployment to monitor its status remotely, including setting up a dedicated healthcheck user.
+- [Pryv.io infrastructure procurement](https://pryv.github.io/customer-resources/infrastructure-procurement/): How system administrators provision the virtual machines and resources to run a Pryv.io platform, covering topology, sizing, firewalling and OS support.
+- [Pryv.io Multi-Factor Authentication configuration](https://pryv.github.io/customer-resources/mfa/): How to configure Multi-Factor Authentication for Pryv.io login, covering the default in-process TOTP authenticator app and SMS-based verification.
+- [Observability](https://pryv.github.io/customer-resources/observability/): How to enable Open Pryv.io's optional observability layer, reporting anonymous per-method usage metrics and server-side error reports over OTLP.
+- [Pryv.io platform validation guide](https://pryv.github.io/customer-resources/platform-validation/): A checklist to validate that a Pryv.io platform is up and running after install or upgrade, covering process, public URL, storage, DNS and cluster checks.
+- [Pryv.io platform setup guide](https://pryv.github.io/customer-resources/pryv.io-setup/): A step-by-step guide for IT operators to set up a Pryv.io platform from scratch, from provisioning and domains to certificates, install and customization.
+- [Quickstart: Docker, DNS-less, HTTP-only](https://pryv.github.io/customer-resources/quickstart-docker/): Boot a single-core Pryv.io on one host with Docker, no DNS and no TLS, using a Postgres sidecar and a complete override-config template.
+- [Pryv.io register migration (v1 only)](https://pryv.github.io/customer-resources/register-migration/): The historical procedure for migrating the Pryv.io v1 register service to a new machine, preserved for operators still on the pre-v2 multi-service setup.
+- [Pryv.io — single-core to multi-core upgrade](https://pryv.github.io/customer-resources/single-node-to-cluster/): How to upgrade a single-core Pryv.io deployment to multi-core with a config-only change, issuing bootstrap bundles so new cores join the cluster over TLS.
+- [Pryv.io SSL Certificate](https://pryv.github.io/customer-resources/ssl-certificate/): How to obtain and install the SSL certificate for a Pryv.io deployment, comparing built-in auto-renewal, reverse-proxy ACME and manual certbot strategies.
+- [Subject Account Backup (DSAR / Portability)](https://pryv.github.io/customer-resources/subject-account-backup/): The subject-facing backup tools for GDPR right-of-access and portability requests, available as a CLI and a web app that export a portable account dump.
+- [Pryv.io system streams](https://pryv.github.io/customer-resources/system-streams/): How to set up Pryv.io system streams through the unified config, covering account and other streams, their properties, and adding custom definitions.
+- [Data In Pryv](https://pryv.github.io/data-in-pryv/): White paper on how Pryv.io manages data: its privacy-first, decentralised architecture and the event-based data model at the heart of the platform.
+- [Apps & libs](https://pryv.github.io/external-resources/): Official Pryv.io libraries, SDK add-ons and example applications to help you build and integrate your own apps against the Pryv.io API.
+- [FAQ - API](https://pryv.github.io/faq-api/): Answers to common questions about the Pryv.io API, covering personal data, streams, event types, authentication, access sharing and notifications.
+- [FAQ - infrastructure](https://pryv.github.io/faq-infra/): Answers to common questions about the Pryv.io platform infrastructure: prerequisites, domain and SSL setup, page customization and administration.
+- [Get started with Pryv.io API](https://pryv.github.io/getting-started/): A hands-on tutorial for the Pryv.io API: create a user, obtain an access token, model data with streams and events, and manage accesses.
+- [App guidelines](https://pryv.github.io/guides/app-guidelines/): General guidelines for building platform-agnostic Pryv.io applications and libraries, including auto-configuration from the service information endpoint.
+- [Audit logs](https://pryv.github.io/guides/audit-logs/): A developer guide to Pryv.io audit logs: what they are, why they matter for compliance, and how to retrieve and filter them to track data activity.
+- [Consent implementation with Pryv.io](https://pryv.github.io/guides/consent/): How to implement user consent with Pryv.io to meet data-protection requirements, covering the consent request flow and a hands-on example.
+- [Cross-account Messaging & Consent (CMC)](https://pryv.github.io/guides/cross-account-messaging/): How to use CMC, Pryv.io's protocol for federated cross-account consent, chat and system notifications between two user accounts on any platform.
+- [Custom Authentication](https://pryv.github.io/guides/custom-auth/): How to add a custom authentication step to your Pryv.io platform to validate API requests against extra information or an external service.
+- [Data Modelling](https://pryv.github.io/guides/data-modelling/): A practical manual for designing your own Pryv.io data model, from declaring stream structures and event types to defining accesses and delegations.
+- [Privacy by design and by default with Pryv.io](https://pryv.github.io/guides/privacy-by-design/): How Pryv.io supports privacy by design and by default: its architecture, the platform defaults that protect personal data, and the developer's role.
+- [Pryv.io Webhooks](https://pryv.github.io/guides/webhooks/): How to implement notified systems with Pryv.io webhooks, why to use them, and a walkthrough of a common integration use case.
+- [lib-js: the JavaScript client](https://pryv.github.io/libraries/lib-js/): Overview of the official Pryv.io JavaScript/TypeScript client library (the `pryv` npm package) for Node.js and the browser, with links to the full docs.
+- [Open API 3.0](https://pryv.github.io/open-api/): Download the Pryv.io API, admin API and system API as OpenAPI 3.0 definition files and import them into Postman or other API tools.
+- [Pryv.io roadmap](https://pryv.github.io/roadmap/): The Pryv.io roadmap: upcoming releases and a history of shipped versions, including the v2 single-binary release under the BSD-3-Clause license.

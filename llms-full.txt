@@ -1,430 +1,678 @@
-# Pryv.io — llms-full.txt
+# Pryv.io API reference (full)
 
-Single-page, agent-readable reference for Pryv.io: what it is, how its data
-model works, and the two concrete ways to act on a user's account (the
-`pryv` JavaScript library, raw REST). If you are an AI agent helping a user
-or building against Pryv.io, read this once at session start; follow the
-links into https://pryv.github.io/ only when you need exhaustive detail.
+> Dense machine-readable dump of the API reference. Full HTML version: https://pryv.github.io/reference/
 
-Canonical URL: https://pryv.github.io/llms-full.txt
-Index: https://pryv.github.io/llms.txt
-Last updated: 2026-07-06
+# Basics
 
-Feedback: if you or your user hit a problem with these instructions or with
-the platform, file a GitHub issue at
-https://github.com/pryv/open-pryv.io/issues — this is the SINGLE tracker
-for all agent-related issues (docs problems, API behavior, client-library
-bugs); maintainers route internally.
+## API endpoint
+Depending on the Pryv.io setup or distribution, the root endpoint can have the following formats: Pryv Lab: `https://{username}.pryv.me` Own Domain: `https://{username}.{domain}` DNS-less (Open): `https://{hostname}/{username}` Each user ac
 
----
+## Call with HTTP
+The API serves regular REST-like HTTP requests, with the usual verbs for reading and manipulating data: - **GET** (parameters: query string)<br> for reading resources - **POST** (parameters: request body)<br> for creating new resources and 
 
-## 1. What Pryv.io is
+### Alternative HTTP request method
+For those having trouble with [HTTP access control (CORS) rules](https://developer.mozilla.org/en-US/docs/HTTP/Access_control_CORS), the API allows web apps to fake POST, PUT and DELETE requests through `application/x-www-form-urlencoded` P
 
-Pryv.io is an open-source middleware for managing personal and health data.
-Key properties:
+## Call with websockets
+The API supports real-time interaction by accepting websocket connections via [Socket.io 2.0](http://socket.io) For API versions prior to 1.5.8, use Socket.io 0.9.
 
-- **User-owned accounts.** Each user has an account on a Pryv.io platform —
-  a per-user data vault addressed by username. The user holds the
-  authoritative credentials and grants per-app access.
-- **Granular consent.** Apps never get the user's password; they obtain an
-  *access* (a token) scoped to specific streams with a specific permission
-  level, through an OAuth-like consent flow.
-- **Typed events in a stream tree.** All data is stored as timestamped
-  events; each event has a type (e.g. `mass/kg`, `note/txt`) and belongs to
-  one or more streams (containers organized as a tree).
-- **Self-hostable.** The reference server is open-source:
-  https://github.com/pryv/open-pryv.io — a single Node.js binary / Docker
-  image (`pryvio/open-pryv.io`) bundling API, registration, MFA,
-  high-frequency series, previews and email.
+### Connecting
+First, load the right Socket.IO client library. Then initialize the connection with the URL: Pryv Lab: ``` https://{username}.pryv.me/{username}?auth={accessToken} ``` Own Domain: ``` https://{username}.{domain}/{username}?auth={accessToken
 
-| Pointer | URL |
-|---|---|
-| Developer docs (this site) | https://pryv.github.io/ |
-| Full API reference | https://pryv.github.io/reference/ |
-| Concepts | https://pryv.github.io/concepts/ |
-| Getting started | https://pryv.github.io/getting-started/ |
-| Event type catalogue (human) | https://pryv.github.io/event-types/ |
-| Event type catalogue (JSON) | https://pryv.github.io/event-types/flat.json |
-| JS client library (npm `pryv`) | https://github.com/pryv/lib-js |
-| Open-source server | https://github.com/pryv/open-pryv.io |
-| Lab platform for experiments | https://pryv.me (register: https://pryv.github.io/app-web-user-account/register?pryvServiceInfoUrl=https://reg.pryv.me/service/info) |
-| Feedback (GitHub issues) | https://github.com/pryv/open-pryv.io/issues |
+### Call methods
+You call API methods by sending a corresponding Socket.IO [`{method-id}`](#method-ids) message, passing a parameters object and a callback: ```javascript // javascript socket.emit('{method-id}', {/*parameters*/}, function (error, result) { 
 
-**Lab platform:** pryv.me is a free demo platform for development and
-experiments. Service info: `https://reg.pryv.me/service/info`. Do not store
-production or sensitive data there.
+## Subscribe to changes
+Get notified when data changes by subscribing to messages. Available messages are: - `eventsChanged` - `streamsChanged` - `accessesChanged` - `systemBoot` (webhooks only) Messages do not include the content of the changes, but they describe
 
----
+### With websockets
+Get notified of data changes in a web application using websockets.
 
-## 2. Service discovery and API endpoints
+### Scoped subscriptions (websockets)
+By default a websocket connection receives the coarse `eventsChanged` / `streamsChanged` / `accessesChanged` messages above for **every** change in the account. You can instead register one or more **named scopes** so the server wakes you o
 
-### Service info
+### With webhooks
+Get notified of data changes in a web service using [webhooks](#webhook). An unfiltered webhook reports the coarse change types (`eventsChanged`, `streamsChanged`, …). A [scoped webhook](#webhook) (one created with a `scopes` map) instead r
 
-Every Pryv.io platform self-describes at a single unauthenticated endpoint:
+## Method ids
+Pryv.io API methods have ids that are available at each method's doc. For example, the id of the [Get events](#get-events) method is `events.get`. This id is useful in the following: - when calling an API method [using websockets](#call-wit
 
-    GET {serviceInfoUrl}            e.g. https://reg.pryv.me/service/info
+## Service info
+Service information provides a unified way for third party services to access the necessary information related to a Pryv.io platform as this route is served by any Pryv.io API endpoint. For many applications, the first step is to authentic
 
-Response fields: `api` (API endpoint template, e.g.
-`https://{username}.pryv.me/`), `register`, `access`, `name`, `home`,
-`support`, `terms`, `eventTypes` (URL of the validated event-type list),
-`version`, and optional `assets` + `features` (e.g. `features.contentQueries`).
+## Data format
+The API exchanges data with clients in JSON (MIME type `application/json`), except when uploading/downloading attached files. As input, the API accepts JSON payloads of maximum 10MB.
 
-Always start from service info instead of hard-coding URLs — platforms
-differ in topology.
+## Authorization
+All requests for retrieving and manipulating activity data must carry a valid [access token](#data-structure-access). The preferred method is to use the HTTP `Authorization` header. Access tokens are obtained via the [app authentication](#a
 
-### Endpoint shapes
+## Trusted apps verification
+These API methods require that the `appId` parameter and `Origin` (or `Referer`) header are trusted. Only Apps that need to use a Personal token are be registered as "Trusted Apps". These are usually: 1. The web app for the Authentication a
 
-Two URL styles exist; the `api` template in service info tells you which:
+## v2 additions and changes
+API methods added or whose semantics changed in **Pryv.io v2** (open-pryv.io ≥ 2.0.0-pre.X) are tagged with <span class="v2-tag"><span title="Added or changed in v2" class="label">v2</span></span> v2 is backwards-compatible by default: exis
 
-- DNS-based: `https://{username}.{domain}/` (e.g. `https://alice.pryv.me/`)
-- DNS-less (path-based): `https://{hostname}/{username}/`
+## Authenticate your app
+To authenticate users in your app, and thus for users to grant your app access to their data, you must: 1. Choose an app identifier (min. length 6 chars) 2. Fetch the [service information](#service-info) 3. Send an [auth request](#auth-requ
 
-### The apiEndpoint form
+### Auth request
+`[object Object]`
+The API endpoint to use is given by the [service information's](#service-info) `access` property.
+Parameters: requestingAppId, requestedPermissions, languageCode, returnURL, clientData, authUrl, serviceInfo, deviceName, expireAfter, referer
 
-Credentials are commonly carried as a single **apiEndpoint** string with the
-token embedded:
+### Poll request
+`[object Object]`
+The polling URL is given by the `poll` parameter in the result the [Auth Request](#auth-request) or a Poll request.
 
-    https://{token}@{username}.pryv.me/
+## Common metadata
+General API and server information.
 
-This is what the auth flow returns and what `pryv.Connection` consumes.
-Treat any apiEndpoint string as a secret.
+### In HTTP headers
+Every HTTP response has header:
 
-### Authentication on raw HTTP calls
+### In method results
+Every JSON method result has properties:
 
-- Preferred: `Authorization: {token}` header
-- Alternative: `?auth={token}` query parameter (GET / Socket.IO)
-- Also accepted: HTTP Basic with the token
+## Errors
+When an error occurs, the API returns a response with an `error` object (see [error](#data-structure-error) detailing the cause. (Over HTTP, the response status is set to 4xx or 5xx.) In this documentation, errors are identified by their `i
 
-### Responses, metadata, errors
+### Usual errors
+See also [error data structure](#data-structure-error).
 
-- JSON in/out (`application/json`), max request size 10MB.
-- Every response carries `meta`: `{ apiVersion, serverTime, serial }`
-  (`serverTime` is Unix epoch in seconds, float — use it to sync clocks)
-  and headers `API-Version` + `Pryv-Access-Id`.
-- Errors: `{ "error": { "id": "...", "message": "...", "data": {...} } }`.
-  Common ids: `invalid-access-token`, `forbidden`, `unknown-resource`,
-  `invalid-parameters-format`, `item-already-exists`.
+# API methods
 
-### Batch calls
+## Registration
+Method for user registration. This documentation has been moved to [System reference](/reference-system).
 
-    POST /  with body: [ { "method": "events.create", "params": {...} }, ... ]
+## Authentication
+Methods for trusted apps to login/logout users.
 
-Returns `{ "results": [...] }` in call order. Use for bulk writes.
+### Login user
+`POST /auth/login`
+Authenticates the user against the provided credentials, opening a personal access session. By default, the session is valid for 14 days after the last token usage. This duration is configurable in the platform parameters. This is one of th
+Parameters: username, password, appId
 
----
+### Logout user
+`POST /auth/logout`
+Terminates a personal access session by invalidating its access token (the user will have to login again). Simply provide the Authorization token in own of [the supported ways](/reference/#authorization), no request body is required.
 
-## 3. Data model
+## Multi-factor authentication
+Methods for handling multi-factor authentication (MFA) on top of the usual [Login method](#methods-auth-auth-login).
 
-### Events
-
-An event is a timestamped piece of typed data. Fields:
+### Login with MFA
+`POST /auth/login`
+Proxied [Login](#methods-auth-auth-login) call that initiates MFA authentication, when MFA is activated for the current user.
+
+### Activate MFA
+`POST /mfa/activate`
+Initiates the MFA activation flow for a given Pryv.io user, triggering the MFA challenge. Requires a personal token as [authorization](#basics-authorization), which should be obtained during a prior [Login call](#methods-auth-auth-login).
+
+### Confirm MFA activation
+`POST /mfa/confirm`
+Confirms the MFA activation by verifying the MFA challenge triggered by a prior [MFA activation call](#methods-mfa-mfa-activate). Requires a MFA session token as [authorization](#basics-authorization).
+
+### Trigger MFA challenge
+`POST /mfa/challenge`
+Triggers the MFA challenge, depending on the chosen MFA method (e.g. send a verification code by SMS). Requires a MFA session token as [authorization](#basics-authorization).
+
+### Verify MFA challenge
+`POST /mfa/verify`
+Verifies the MFA challenge triggered by a prior [MFA challenge call](#methods-mfa-mfa-challenge). Requires a MFA session token as [authorization](#basics-authorization).
+
+### Deactivate MFA
+`POST /mfa/deactivate`
+Deactivate MFA for a given Pryv.io user. Requires a personal token as [authorization](#basics-authorization).
+
+### Recover MFA
+`POST /mfa/recover`
+Deactivate MFA for a given Pryv.io user using a MFA recovery code. This is useful when [Deactivate MFA](#methods-mfa-mfa-deactivate) can not be used (in case of 2nd factor loss). Instead, requires a MFA recovery code (obtained when [confirm
+Parameters: recoveryCode
+
+## Call batch
+`POST /`
+Sends a batch of API methods calls in one go (e.g. for syncing offline changes when resuming connectivity).
+Parameters: method, params
+
+## Events
+Methods to retrieve and manipulate [events](#data-structure-event).
+
+### Get events
+`GET /events`
+Queries accessible events.
+Parameters: fromTime, toTime, streams, tags, types, content, clientData, running, sortAscending, skip, limit, state, modifiedSince, includeDeletions
+
+### Get one event
+`GET /events/{id}`
+Fetches a specific event. This request is mostly used to fetch an event's version history, allowing to review all the modifications to an event's data.
+Parameters: includeHistory
+
+### Create event
+`POST /events`
+Records a new event, in addition to JSON, this request accepts standard multipart/form-data content to support the creation of event with attached files in a single request. When sending a multipart request, one content part must hold the J
+
+### Update event
+`PUT /events/{id}`
+Modifies the event.
+Parameters: id, update
+
+### Add attachment(s)
+`POST /events/{id}`
+Adds one or more file attachments to the event. This request expects standard multipart/form-data content, with all content parts being the attached files.
+
+### Get attachment
+`GET /events/{id}/{fileId}[/{fileName}]`
+Gets the attached file. Accepts an arbitrary filename path suffix (ignored) for easier link readability. For this function using the `auth` query parameter is not accepted. You can either use the [access token](#data-structure-access) in th
+Parameters: readToken
+
+### Delete attachment
+`DELETE /events/{id}/{fileId}`
+Irreversibly deletes the attached file.
+Parameters: id, fileId
+
+### Delete event
+`DELETE /events/{id}`
+Trashes or deletes the specified event, depending on its current state: - If the event is not already in the trash, it will be moved to the trash (i.e. flagged as `trashed`) - If the event is already in the trash, it will be irreversibly de
+Parameters: id
+
+## HF events
+Methods to manipulate high-frequency data through HF events and [HF series](#data-structure-high-frequency-series).
+
+### Create HF event
+`POST /events`
+Creates a new event that will be holding [HF series](#data-structure-high-frequency-series).
+
+### Get HF series data points
+`GET /events/{id}/series`
+Retrieves HF series data points from a HF event. Returns data in order of ascending deltaTime between "fromTime" and "toTime". Data is returned as input, no sampling or aggregation is performed.
+Parameters: fromDeltaTime, toDeltaTime
+
+### Add HF series data points
+`POST /events/{id}/series`
+Adds new HF series data points to a HF event. The HF series data will only store one set of values for any given deltaTime. This means you can update existing data points by 'adding' new data with the original deltaTime.
+
+### Add HF series batch
+`POST /series/batch`
+Adds data to multiple HF series (stored in multiple HF events) in a single atomic operation. This is the fastest way to append data to Pryv; it allows transferring many data points in a single request. For this operation to be successful, a
+Parameters: format, data
+
+### Update HF event
+`PUT /events/{id}`
+Similar to the standard [Update event](#methods-events-events-update) method. You may update all non read-only fields, except `content` which is read-only for HF events.
+
+### Delete HF event
+`DELETE /events/{id}`
+Similar to the standard [Delete event](#methods-events-events-delete) method.
+
+## Streams
+Methods to retrieve and manipulate [streams](#data-structure-stream).
+
+### Get streams
+`GET /streams`
+Gets the accessible streams hierarchy.
+Parameters: parentId, state, includeDeletionsSince
+
+### Create stream
+`POST /streams`
+Creates a new stream.
+
+### Update stream
+`PUT /streams/{id}`
+Modifies the stream.
+Parameters: id, update
+
+### Delete stream
+`DELETE /streams/{id}`
+Trashes or deletes the specified stream, depending on its current state: - If the stream is not already in the trash, it will be moved to the trash (i.e. flagged as `trashed`) - If the stream is already in the trash, it will be irreversibly
+Parameters: id, mergeEventsWithParent
+
+## Accesses
+Methods to retrieve and manipulate [accesses](#data-structure-access), e.g. for sharing. Any app token can manage shared accesses it created. Full access management is available to personal tokens.
+
+### Get accesses
+`GET /accesses`
+Gets accesses that were created by your access token, unless you're using a personal token then it returns all accesses. Only returns accesses that are active when making the request. To include accesses that have expired or were deleted, u
+Parameters: includeExpired, includeDeletions
+
+### Get one access
+`GET /accesses/{id}`
+Returns the access identified by `{id}`. The id can be either: - **bare** `<base>`, returns the current head row. - **composite** `<base>:<serial>` matching the current head's serial, returns the current head row. - **composite** `<base>:<s
+Parameters: id, includeHistory
+
+### Create access
+`POST /accesses`
+Creates a new access. You can only create accesses whose permissions are a subset of those granted to your own access token. **v2 behaviour change** (Pryv.io ≥ 2.0.0-pre.X): when an `app` access creates a `shared` access scoped under it, th
+Parameters: randomAlias
+
+### Update access
+`PUT /accesses/{id}`
+Updates the access identified by `{id}`. Each successful update mutates the head row, snapshots the prior state into history, and bumps the access's `serial`. The returned access carries the new wire-format composite id `<base>:<serial>` (o
+Parameters: id, update
+
+### Delete access
+`DELETE /accesses/{id}`
+Deletes the specified access. Personal accesses can delete any access. App accesses can delete shared accesses they created. Deleting an app access deletes the shared ones it created. All accesses can also perform a self-delete unless a for
+Parameters: id
+
+### Check app authorization
+`POST /accesses/check-app`
+For the app authorization process. Checks if the app requesting authorization already has access with the same permissions (and on the same device, if applicable), and returns details of the requested permissions' streams (for display) if n
+Parameters: requestingAppId, deviceName, requestedPermissions
+
+## Access Info
+`GET /access-info`
+Retrieves information about the access in use.
+
+## Webhooks
+Methods to retrieve and manipulate [webhooks](#data-structure-webhook). These methods are only allowed for app and personal accesses.
+
+### Get webhooks
+`GET /webhooks`
+Gets manageable webhooks. Only returns webhooks that were created by the access, unless you are using a personal access which returns all existing webhooks in the user's account.
+
+### Get one webhook
+`GET /webhooks/{id}`
+Fetches a specific webhook. Only returns a webhook if it was created by the access, unless you are using a personal access which is allowed to fetch any existing webhook in the user's account.
+Parameters: id
+
+### Create webhook
+`POST /webhooks`
+Creates a new webhook. You can only create webhooks with `app` and `shared` accesses.
+
+### Update webhook
+`PUT /webhooks/{id}`
+Modifies the webhook. You can only modify webhooks with the access that was used to create them, unless you are using a personal token. Updating the `state` to `active` resets the `currentRetries` counter.
+Parameters: id, update
+
+### Delete webhook
+`DELETE /webhooks/{id}`
+Deletes the specified webhook. You can only delete webhooks with the access that was used to create them, unless you are using a personal token.
+Parameters: id
+
+### Test webhook
+`POST /webhooks/{id}/test`
+Sends a post request containing a message called `test` to the URL of the specified webhook's `url`. You can only test webhooks with the access that was used to create them, unless you are using a personal token.
+Parameters: id
+
+## Shared secrets
+Hand a secret to a third party by a one-time random **key** instead of embedding the credential (typically an apiEndpoint carrying an access token) in a URL, where it would persist in browser history, `Referer` headers and server access log
+
+### Create shared secret
+`POST /shared-secrets`
+Stores a secret and returns a one-time key for it. The `key` is returned **once** and is not recoverable afterwards. Requires an access whose `secretSharing` feature permission is not `forbidden`.
+Parameters: ttl, title, onConsumed, secret, signature, keyHash
+
+### Redeem shared secret
+`POST /shared-secrets/retrieve`
+Redeems a key for its secret. **Unauthenticated** (the key is the credential), so no access token is required. Succeeds exactly once; every later attempt returns the creator's `onConsumed` message. Unknown or malformed keys receive a single
+Parameters: key, signature
+
+### Get shared secret status
+`POST /shared-secrets/status`
+Returns the status and metadata of a shared secret **without consuming it**. Available to the access that created the secret or to a personal token. Never returns the secret payload. An item past its TTL is reported as expired even before i
+Parameters: key
+
+## Followed slices
+Methods to retrieve and manipulate [followed slices](#data-structure-followed-slice).
+
+### Get followed slices
+`GET /followed-slices`
+Gets followed slices.
+
+### Create followed slice
+`POST /followed-slices`
+Creates a new followed slice.
+
+### Update followed slice
+`PUT /followed-slices/{id}`
+Modifies the specified followed slice.
+Parameters: id, update
+
+### Delete followed slice
+`DELETE /followed-slices/{id}`
+Deletes the specified followed slice.
+Parameters: id
+
+## Profile sets
+Methods to read and write profile sets. Profile sets are plain key-value stores of user-level settings.
+
+### Get app profile
+`GET /profile/app`
+Gets the app's dedicated profile set, which contains app-level settings for the user. Available to app accesses.
+
+### Update app profile
+`PUT /profile/app`
+Adds, updates or delete app profile keys. Available to app accesses. - To add or update a key, just set its value - To delete a key, set its value to `null` Existing keys not included in the update are left untouched.
+Parameters: update
+
+### Get public profile
+`GET /profile/public`
+Gets the public profile set, which contains the information the user makes publicly available (e.g. avatar image). Available to all accesses.
+
+### Update public profile
+`PUT /profile/public`
+Adds, updates or delete public profile keys. Available to personal accesses. - To add or update a key, just set its value - To delete a key, set its value to `null` Existing keys not included in the update are left untouched.
+Parameters: update
+
+### Get private profile
+`GET /profile/private`
+Gets the private profile set. Available to personal accesses.
+
+### Update private profile
+`PUT /profile/private`
+Adds, updates or delete private profile keys. Available to personal accesses. - To add or update a key, just set its value - To delete a key, set its value to `null` Existing keys not included in the update are left untouched.
 
-| Field | Type | Notes |
-|---|---|---|
-| `id` | string | server-generated (cuid) unless provided |
-| `streamIds` | string[] | required — streams it belongs to (`streamId` singular is deprecated) |
-| `time` | number | Unix epoch seconds, float; defaults to now |
-| `duration` | number? | period events; `null` while "running" |
-| `type` | string | `{category}/{format}`, e.g. `mass/kg`, `note/txt`, `position/wgs84` |
-| `content` | any | shape depends on `type` |
-| `description` | string? | free-text comment |
-| `attachments` | object[] | read-only: `{ id, fileName, type, size, readToken }` |
-| `clientData` | object? | app-private metadata; prefix keys with your app id |
-| `trashed` | boolean? | see lifecycle below |
-| `created/createdBy/modified/modifiedBy` | — | read-only audit fields |
-
-Lifecycle: first DELETE → `trashed: true`; second DELETE → permanent
-deletion (a deletion record `{ id, deleted }` remains queryable for sync).
-
-### Streams
-
-Containers for events, organized as a tree:
-
-| Field | Type | Notes |
-|---|---|---|
-| `id` | string | unique; can be set at creation (else slugified from name) |
-| `name` | string | unique among siblings |
-| `parentId` | string? | `null` = root level |
-| `children` | stream[] | read-only on get |
-| `clientData`, `trashed`, audit fields | | as for events |
-
-System streams (account fields like email) are predefined per platform and
-not editable through the streams API.
-
-### Accesses (tokens + permissions)
-
-Three types:
-
-- **personal** — full account access; obtained by trusted apps via
-  `auth.login` (username + password). Most third-party apps never see one.
-- **app** — what your app should use; obtained via the auth flow (§5),
-  scoped by `permissions`.
-- **shared** — for person-to-person sharing; created by users or apps.
-
-Permission object: `{ "streamId": "...", "level": "read" | "contribute" |
-"manage" | "create-only" }`. `streamId: "*"` means all streams. Child
-streams inherit; deeper permissions override. `create-only` allows reading
-own creations + creating, but not updating/deleting.
-
-Key access fields: `id`, `token`, `apiEndpoint` (read-only, full endpoint
-with token), `type`, `name`, `permissions`, `expireAfter` (seconds, at
-creation) / `expires` (read-only timestamp), `clientData`, `lastUsed`.
-
-### Event types
-
-Types are strings `{category}/{format}`. The validated catalogue a platform
-enforces is at the URL given by service info's `eventTypes` field —
-canonical copy: https://pryv.github.io/event-types/flat.json (source repo:
-https://github.com/pryv/data-types). Unknown types are accepted but not
-validated, unless the platform restricts them.
-
-**Rule for agents recording data:** look the type up in the catalogue
-first and write `content` matching the declared schema (e.g. `mass/kg`
-content is a number). Only fall back to `note/txt` for genuinely free-form
-content — typed events are what make the data portable across apps.
-
-High-frequency variants are prefixed: `series:mass/kg` (see §7).
-
-### Querying events
-
-`events.get` parameters: `fromTime`, `toTime`, `streams`, `types`,
-`sortAscending`, `skip`, `limit`, `state` (`default|trashed|all`),
-`modifiedSince`, `includeDeletions`, `running`.
-
-- Stream filtering supports boolean queries:
-  `{"any":["a","b"], "all":["c"], "not":["d"]}`.
-- Content queries (if `features.contentQueries` in service info): `content`
-  and `clientData` accept arrays of conditions on dot-paths, operators
-  `eq, neq, in, exists, gt, gte, lt, lte, prefix` — e.g.
-  `[{"path":"drug.codes.atc","op":"eq","value":"N02BE01"}]`.
-
----
-
-## 4. API surface map
-
-Full details per method: https://pryv.github.io/reference/ . All paths are
-relative to the user's API endpoint.
-
-### Events
-| Method | Call |
-|---|---|
-| events.get | `GET /events` |
-| events.getOne | `GET /events/{id}` (`includeHistory`) |
-| events.create | `POST /events` (multipart to attach files) |
-| events.update | `PUT /events/{id}` |
-| events.delete | `DELETE /events/{id}` (trash, then permanent) |
-| events.addAttachment | `POST /events/{id}` (multipart) |
-| events.getAttachment | `GET /events/{id}/{fileId}[/{fileName}]` (`readToken` works without auth header) |
-| events.deleteAttachment | `DELETE /events/{id}/{fileId}` |
-
-### Streams
-| Method | Call |
-|---|---|
-| streams.get | `GET /streams` (`parentId`, `state`) |
-| streams.create | `POST /streams` |
-| streams.update | `PUT /streams/{id}` |
-| streams.delete | `DELETE /streams/{id}` (`mergeEventsWithParent`) |
-
-### Accesses (app management of its own + shared accesses)
-| Method | Call |
-|---|---|
-| accesses.get | `GET /accesses` |
-| accesses.getOne | `GET /accesses/{id}` (`includeHistory`) |
-| accesses.create | `POST /accesses` |
-| accesses.update | `PUT /accesses/{id}` |
-| accesses.delete | `DELETE /accesses/{id}` (revoke) |
-| getAccessInfo | `GET /access-info` — what the current token is/can do |
-
-Note (API v2): after an update, an access id becomes composite
-(`{base}:{serial}`); using a stale id returns 409.
-
-### Profile (key-value stores)
-`GET|PUT /profile/app` (app token), `GET|PUT /profile/public`,
-`GET|PUT /profile/private` (personal token).
-
-### Account & auth (trusted apps / personal token only)
-`POST /auth/login`, `POST /auth/logout`, `GET /account`, `PUT /account`,
-`POST /account/change-password`, `POST /account/request-password-reset`,
-`POST /account/reset-password`. MFA (if enabled): `POST /mfa/activate`,
-`/mfa/confirm`, `/mfa/challenge`, `/mfa/verify`, `/mfa/deactivate`,
-`/mfa/recover`.
-
-### Webhooks (see §7)
-`GET|POST /webhooks`, `GET|PUT|DELETE /webhooks/{id}`,
-`POST /webhooks/{id}/test`.
-
-### Audit
-API calls are audited; audit records are exposed as events with types
-`log/user-api` and `log/user-api-error` (query them via `events.get`). The
-legacy `GET /audit/logs` endpoint is deprecated.
-
-### Admin / system
-Platform-operator APIs are documented separately:
-https://pryv.github.io/reference-admin/ and
-https://pryv.github.io/reference-system/ . Not relevant for app agents.
-
----
-
-## 5. The app auth flow (how an app obtains a token)
-
-OAuth-like, polling-based. Reference: https://pryv.github.io/reference/#authenticate-your-app
-
-1. `GET {serviceInfoUrl}` → read the `access` URL.
-2. `POST {access}` with:
-
-       {
-         "requestingAppId": "my-app-id",
-         "requestedPermissions": [
-           { "streamId": "heart", "defaultName": "Heart rate", "level": "contribute" }
-         ],
-         "languageCode": "en"
-       }
-
-   (`defaultName` is used to create the stream if it doesn't exist yet.
-   Optional: `expireAfter`, `clientData`, `returnURL`, `deviceName`.)
-3. Response `status: "NEED_SIGNIN"` with `authUrl`, `key`, `poll`,
-   `poll_rate_ms`.
-4. Send the user to `authUrl` (browser/webview) — they sign in or create an
-   account and accept/refuse the permissions (the consent pages are served
-   by the platform; the standard implementation is
-   https://github.com/pryv/app-web-user-account).
-5. Poll `GET {poll}` every `poll_rate_ms` until:
-   - `status: "ACCEPTED"` → `apiEndpoint` (token included) — store it;
-   - `status: "REFUSED"` → give up gracefully.
-
-With lib-js this whole flow is wrapped (see §6: `pryv.Auth.setupAuth` in
-the browser, `Service.startAccessRequest`/`pollAccessRequest` headless).
-
----
-
-## 6. The `pryv` JavaScript library (lib-js)
-
-Repo: https://github.com/pryv/lib-js — works in Node (≥20) and browsers.
-
-Install / import:
+## Account management
+Methods to manage the user's account.
 
-    npm install pryv
-    const pryv = require('pryv');
-
-Browser bundles: `https://api.pryv.com/lib-js/pryv.js` (ES5) or
-`pryv-es6.js`; add-on npm packages `@pryv/socket.io` (live changes),
-`@pryv/monitor` (polling monitor).
-
-### Talk to an account (you have an apiEndpoint)
-
-    const connection = new pryv.Connection('https://{token}@{user}.pryv.me/');
-    const accessInfo = await connection.accessInfo();          // what can I do?
-    const result = await connection.get('events', { limit: 20 });
-
-    // batch (auto-chunked above 1000 calls):
-    const results = await connection.api([
-      { method: 'streams.create', params: { id: 'heart', name: 'Heart' } },
-      { method: 'events.create', params: { streamIds: ['heart'], type: 'frequency/bpm', content: 61 } }
-    ]);
-
-    // large result sets, streamed per event:
-    await connection.getEventsStreamed({ fromTime: 0 }, e => { /* each event */ });
-
-    // event with a file attachment (Node):
-    await connection.createEventWithFile(
-      { streamIds: ['docs'], type: 'picture/attached' }, './photo.jpg');
-
-### Platform-level (you have a service info URL)
-
-    const service = new pryv.Service('https://reg.pryv.me/service/info');
-    const info = await service.info();
-    // trusted apps only:
-    const connection = await service.login(username, password, 'my-app-id');
-
-### Auth flow
-
-Browser (visual login button + popup consent):
-
-    const authSettings = {
-      spanButtonID: 'pryv-button',
-      authRequest: { requestingAppId: 'my-app-id', requestedPermissions: [...] },
-      onStateChange: async (state) => {
-        if (state.id === pryv.Browser.AuthStates.AUTHORIZED) {
-          const connection = await pryv.connectFromKey(state.key, serviceInfoUrl);
-        }
-      }
-    };
-    await pryv.Browser.setupAuth(authSettings, 'https://reg.pryv.me/service/info');
-
-Headless / CLI (poll yourself):
-
-    const auth = await service.startAccessRequest(authRequest);
-    // show auth.authUrl to the user, then:
-    let res; do { await sleep(auth.pollRateMs); res = await service.pollAccessRequest(auth.poll); }
-    while (res.status === 'NEED_SIGNIN');
-    if (res.status === 'ACCEPTED') { const connection = await service.connectFromKey(auth.key); }
-
-Useful utilities: `pryv.utils.extractTokenAndAPIEndpoint(apiEndpoint)`,
-`service.apiEndpointFor(username, token)`,
-`connection.getLatestByContent(path, values)` (content-query helper),
-`service.supportsContentQueries()`, `service.supportsHF()`.
-
----
-
-## 7. Change notifications and high-frequency data
-
-### Webhooks
-
-`POST /webhooks` with `{ "url": "https://your-server/hook" }` (app or
-personal token). Pryv.io POSTs
-`{ "messages": ["eventsChanged"|"streamsChanged"|"accessesChanged"|"systemBoot"], "meta": {...} }`
-on changes — then *you* query what changed (`events.get` with
-`modifiedSince`). Throttled by `minIntervalMs`; failed deliveries retried
-up to `maxRetries`. Guide: https://pryv.github.io/guides/webhooks/
-
-### Socket.IO
-
-Live in-browser/Node notifications: connect to
-`https://{username}.{domain}/{username}?auth={token}` (Socket.IO 2.x),
-listen for `eventsChanged` / `streamsChanged` / `accessesChanged`, call API
-methods via `socket.emit('{method.id}', params, callback)`. lib-js add-on:
-`@pryv/socket.io`.
-
-### High-frequency series
-
-For sampled signals (Hz-rate sensor data), use `series:{type}` events
-(e.g. `series:frequency/bpm`) and append points in `flatJSON` format:
-
-    POST /events/{id}/series
-    { "format": "flatJSON", "fields": ["deltaTime", "value"],
-      "points": [[0, 61], [1, 62]] }
-
-`deltaTime` is seconds relative to the holder event's `time`. Batch across
-events: `POST /series/batch`. Retrieve: `GET /events/{id}/series`. Not all
-platforms enable HF (`service.supportsHF()`).
-
----
-
-## 8. Self-hosting (open-pryv.io)
-
-To run a platform yourself: https://github.com/pryv/open-pryv.io — single
-Node.js binary (`bin/master.js`) or Docker image `pryvio/open-pryv.io`.
-PostgreSQL (default) or SQLite storage; built-in registration, MFA,
-Let's Encrypt/ACME, multi-core clustering. The repo has its own AGENTS.md
-with a full orientation for coding agents — read it before contributing.
-Operator guides: https://pryv.github.io/customer-resources/
-
----
-
-## 9. Practical agent guidance
-
-- Start from `GET {serviceInfoUrl}` — never assume pryv.me URL shapes hold
-  on other platforms.
-- Use an **app access** with the narrowest permissions that work; ask for
-  `expireAfter` when the access is short-lived.
-- Respect types: check the event-type catalogue before writing; prefer
-  structured types over `note/txt`.
-- Timestamps are Unix epoch **seconds** (float), not milliseconds.
-- Batch writes with `connection.api([...])` / `POST /` instead of N
-  sequential calls.
-- For sync scenarios, poll with `modifiedSince` + `includeDeletions`
-  rather than re-fetching everything.
-- Cross-check library versions on npm (`pryv`), not on stale forks.
-- Problems with these docs or the API? File at
-  https://github.com/pryv/open-pryv.io/issues (single tracker — agents may
-  draft the issue text for their user).
+### Get account information
+`GET /account`
+**(DEPRECATED)** Please use events methods instead. Retrieves the user's account information.
+
+### Update account information
+`PUT /account`
+**(DEPRECATED)** Please use events methods instead. Modifies the user's account information.
+Parameters: update
+
+### Change password
+`POST /account/change-password`
+Modifies the user's password. Enforces password complexity, reuse and minimum age rules if enabled (set via the corresponding platform settings).
+Parameters: oldPassword, newPassword
+
+### Change username
+`POST /account/change-username`
+Changes the user's username. Requires a personal access token. Accesses already issued under the previous username keep working: the old name is retained as a routable alias, and the access-info response for those accesses reports the new (
+Parameters: newUsername
+
+### Username changes
+`GET /account/username-changes`
+Returns how many username changes the user has performed, the operator-configured limit, and how many remain. Requires a personal access token.
+
+### Request password reset
+`POST /account/request-password-reset`
+Requests the resetting of the user's password. An e-mail containing an expiring reset token (e.g. in a link) will be sent to the user. This method requires that the `appId` and `Origin` (or `Referer`) header comply with the [trusted app ver
+Parameters: appId
+
+### Reset password
+`POST /account/reset-password`
+Resets the user's password, authorizing the request with the given reset token (see [request password reset](#methods-account-account-requestPasswordReset) ). Enforces password complexity, reuse and minimum age rules if enabled (set via the
+Parameters: resetToken, newPassword, appId
+
+# Data structure
+
+## Event
+See also: [core concepts](/concepts/#events).
+
+## Stream
+See also: [core concepts](/concepts/#streams).
+
+## Access
+See also: [core concepts](/concepts/#accesses).
+
+## Followed slice
+See also: [core concepts](/concepts/#followed-slices).
+
+## Account information
+User account information.
+
+## HF series
+High-frequency series are collections of homogenous data points. To store a HF series in Pryv.io, you must first [create a HF event](#create-hf-event). Series data is encoded in the "flatJSON" format: - Each data point in a series has a `"d
+
+## Webhook
+Webhooks provide push notifications to web servers using HTTP POST requests. Once created, they will run, executing a HTTP POST request to the provided URL for each [data change](#with-webhooks) in the user account. When the webhooks servic
+
+## Item deletion
+A record of a deleted item for sync purposes.
+
+## Key-value
+An object (key-value map) for client apps to store additional data about the containing item (stream, event, etc.), such as a color, a reference to an associated icon, or other app-specific metadata. ### Adding, updating and removing client
+
+## Error
+
+## streams query
+The `streams` parameter for [events.get](#get-events) query accepts an **array** of streamIds or a **streams query** for more complex requests. **Syntax:** The streams query must have at least one `any` property, with an optional `not`: ```
+
+## Content query
+The `content` and `clientData` parameters of [events.get](#get-events) each accept an **array of conditions** on the corresponding event field. All conditions (across both parameters) must match (AND); they combine freely with the other que
+
+## Item identifier
+A string uniquely identifying an item for a given user. For some types of items (e.g. "structural" ones such as streams), the identifier can be optionally set by API clients; otherwise it is generated by the server. **Event ids are always [
+
+## Timestamp
+A positive floating-point number representing a number of seconds since any reference date and time, **independently from the time zone**. Because date and time synchronization between server time and client time is done by the client simpl
+
+## Integrity
+An integrity hash computed from the JSON object it is contained in. The hash is prefixed with the data structure it is computed for, as well as a representation version.
+
+# System API
+
+# Basics
+This document describes Pryv.io's **system-level** API, allowing developers to create and manage user accounts.
+
+## Services involved
+Unlike user account data, which is fully managed by the core server hosting each account, managing the accounts themselves (e.g. retrieval, creation, deletion) is handled by the core servers *and* the central register server (AKA user accou
+
+## API endpoint
+The methods are called via HTTPS on the register or core server depending on the method: - Register: `https://reg.{domain}` or `https://{hostname}/reg` for DNS-less setup. - Core: `https://{core-subdomain}.{domain}` or `https://{hostname}` 
+
+## Account creation
+The steps for creating a new Pryv.io account are the following: 1. The client calls the register server to get a list of available hostings (core server locations), see [Get Hostings](/reference-system/#get-hostings). 2. The client calls th
+
+# API methods
+
+
+## Admin
+Methods for platform administration. These calls are limited to accredited persons and are flagged as `Admin only`. Admin api calls are tagged with <span class="admin-tag"><span title="Admin Only" class="label">A</span></span> They must car
+
+### Get users
+`GET /admin/users`
+Get the list of all users registered on the platform.
+Parameters: toHTML
+
+### Get core servers
+`GET /admin/servers`
+Get the list of all core servers with the number of users on them.
+
+### Get users on core server
+`GET /admin/servers/{serverName}/users`
+Get the list of all users registered on a specific core server.
+Parameters: serverName
+
+### Rename core server
+`GET /admin/servers/{srcServerName}/rename/{dstServerName}`
+Rename a core server, thus reassigning the users from srcServer to dstServer.
+Parameters: srcServerName, dstServerName
+
+## Service
+Methods for collecting service information such as details about the platform and the API, connected apps or hostings (core server locations).
+
+### Get hostings
+`GET /hostings`
+Get the list of all available hostings for data storage locations.
+
+### Get apps
+`GET /apps`
+Retrieve the list of applications connected to the platform.
+
+### Get app
+`GET /apps/{appid}`
+Retrieve information about a given application.
+Parameters: appid
+
+## Users
+Methods for managing users.
+
+### Create user
+`POST /users`
+Creates a new user account. The method's parameters can be customized with the [system streams configuration](/customer-resources/system-streams/). Enforces password complexity rules if enabled (set via the corresponding platform settings).
+Parameters: appId, username, password, email, invitationToken, language, referer
+
+### Check username
+`GET /{username}/check_username`
+For the single node mode please use [this](/reference/#check-username) API endpoint. Check the availability and validity of a given username.
+Parameters: username
+
+### Check email existence
+`GET /{email}/check_email`
+Check the existence of an account's email.
+Parameters: email
+
+### Get username from email
+`GET /{email}/username`
+Get the username of a Pryv.io account according to the given email. This API method can be disabled in the [platform configuration](https://pryv.github.io/reference-admin/#platform-settings). On multi-node platforms that store identifiers p
+Parameters: email
+
+### Get core
+`GET /cores`
+Get the core of a Pryv.io account according to the given username or email. You must provide **only** one of them.
+Parameters: username, email
+
+### Delete user
+`DELETE /users/{username}`
+Deletes a user account. This method must be enabled in the platform configuration. You should fetch the URL of the core where the user data is stored using the [Get core](#get-core) method. - When performed by the account owner, this method
+Parameters: username
+
+### Create access request
+`POST /reg/access`
+Creates a new access authorization request. The requesting app calls this method, then polls the returned URL until the user accepts or refuses the request. This implements the Pryv.io OAuth-like authorization flow.
+Parameters: requestingAppId, requestedPermissions, returnURL, clientData
+
+### Poll access request
+`GET /reg/access/{key}`
+Polls the status of a pending access request. The requesting app calls this periodically until it receives `ACCEPTED`, `REFUSED`, or `ERROR`. Possible statuses: `NEED_SIGNIN` (waiting), `ACCEPTED` (token issued), `REFUSED`, `ERROR`.
+Parameters: key
+
+### Accept/Refuse access request
+`POST /reg/access/{key}`
+Updates the state of an access request. Called by the auth page after the user has signed in and accepted or refused the permissions.
+Parameters: key, status, username, token
+
+### Check invitation token
+`POST /access/invitationtoken/check`
+Checks whether an invitation token is valid. Returns plain text `true` or `false`. Used when user registration is limited to holders of valid invitation tokens.
+Parameters: invitationtoken
+
+### List invitation tokens
+`GET /reg/admin/invitations`
+Lists all invitation tokens configured on the platform. Requires admin authorization.
+
+### Generate invitation tokens
+`GET /reg/admin/invitations/post`
+Generates new invitation tokens. Requires admin authorization.
+Parameters: count, message
+
+### Update DNS records
+`POST /reg/records`
+Admin endpoint for updating runtime DNS entries (e.g. ACME challenge records for SSL certificate provisioning). Records are persisted to PlatformDB and propagated to all cores in a multi-core deployment. Requires admin authorization.
+Parameters: subdomain, records
+
+# Admin API
+
+# Basics
+This document describes Pryv.io's **administration** API, allowing to configure the platform parameters and manage platform users.
+
+## Administration service
+The administration service has its own API and authentication mechanism.
+
+## Authorization
+All requests for retrieving and manipulating admin data must carry a valid JSON web token that is obtained at login. It must be assigned to the `authorization` header.
+
+# API methods
+The methods are called via HTTPS on the administration server: `https://lead.{domain}`.
+
+## Authentication
+Methods for authenticating admin users.
+
+### Login user
+`POST /auth/login`
+Authenticates the user against the provided credentials.
+Parameters: username, password
+
+### Logout user
+`POST /auth/logout`
+Terminates a session by invalidating its JSON web token (the user will have to login again). Simply provide the JSON web token in own of the [the supported ways](/reference-admin/#authorization), no request body is required.
+
+## Admin users
+Methods for managing admin users.
+
+### Retrieve admin users information
+`GET /users`
+Retrieves the admin users information.
+
+### Retrieve admin user information
+`GET /users/{username}`
+Retrieves the admin user's information.
+Parameters: username
+
+### Create an admin user
+`POST /users`
+Creates an admin user.
+Parameters: username, password, permissions
+
+### Update an admin user's permissions
+`PUT /users/{username}/permissions`
+Updates an admin user's permissions.
+Parameters: permissions
+
+### Reset an admin user's password
+`POST /users/{username}/reset-password`
+Resets an admin user's password.
+Parameters: username
+
+### Delete admin user
+`DELETE /users/{username}`
+Delete admin account.
+Parameters: username
+
+## Platform settings
+Methods for managing platform settings.
+
+### Retrieve platform settings
+`GET /admin/settings`
+Retrieves the platform settings.
+
+### Update platform settings
+`PUT /admin/settings`
+Updates the platform settings and saves them.
+Parameters: update
+
+### Apply settings changes
+`POST /admin/notify`
+Reboots desired services with latest platform settings.
+Parameters: services
+
+### Retrieve platform migrations
+`GET /admin/migrations`
+Retrieves the available platform settings migrations. To apply them use [Apply configuration migrations](#apply-configuration-migrations).
+
+### Apply configuration migrations
+`POST /admin/migrations/apply`
+Apply the available platform configuration migrations. This will upgrade your platform.yml file to the latest available version. Use [Retrieve platform migrations](#retrieve-platform-migrations) to see available migrations.
+
+## Platform users
+Methods for managing platform users.
+
+### Retrieve platform user information
+`GET /platform-users/{username}`
+Retrieves the platform user's information.
+Parameters: username
+
+### Delete user
+`DELETE /platform-users/{username}`
+Delete user account from the Pryv.io platform. **This deletion is final**.
+Parameters: username
+
+### Deactivate MFA for user
+`DELETE /platform-users/{username}/mfa`
+Deactivate MFA for a user account from the Pryv.io platform.
+Parameters: username
+
+# Data structure
+
+## Admin user
+An admin user's information.
+
+## Admin permissions
+An admin user's permissions.
+
+## Platform user
+A platform user's information.
