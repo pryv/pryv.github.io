@@ -366,7 +366,7 @@ Methods to manage the user's account.
 
 ### Get account information
 `GET /account`
-**(DEPRECATED)** Please use events methods instead. Retrieves the user's account information. The `emails` array is the exception: it is only readable here, not through events methods.
+**(DEPRECATED)** Please use events methods instead. Retrieves the user's account information.
 
 ### Update account information
 `PUT /account`
@@ -397,10 +397,56 @@ Parameters: appId
 Resets the user's password, authorizing the request with the given reset token (see [request password reset](#methods-account-account-requestPasswordReset) ). Enforces password complexity, reuse and minimum age rules if enabled (set via the
 Parameters: resetToken, newPassword, appId
 
-### Verify email address
-`POST /account/verify-email`
-Marks one of the account's email addresses as verified, using the one-time token that was mailed to that address. The token is the credential, so this method takes **no access token**: it is called by the verification page the operator conf
-Parameters: token, appId
+## Account delegation
+Methods to manage account delegation: letting one account (a *delegate*, e.g. a parent or guardian) control another (a *controlled account*, e.g. a child or dependent). A controlled account invites a delegate with [invite a delegate](#metho
+
+### Invite a delegate
+`POST /delegations/attach-request`
+Called by a controlled account to invite another account to become its delegate. Creates a pending invite the delegate can accept with [accept a delegation](#methods-delegations-delegations-acceptAttach). Requires a personal access token.
+Parameters: delegateUsername
+
+### Accept a delegation
+`POST /delegations/controlled/{controlled}/accept`
+Called by an invited delegate to accept a pending delegation from the controlled account `{controlled}`. Idempotent: re-accepting an already active relationship returns the settled record. Requires a personal access token.
+Parameters: controlled
+
+### Refuse a delegation
+`POST /delegations/controlled/{controlled}/refuse`
+Called by an invited delegate to decline a pending delegation from the controlled account `{controlled}`. Requires a personal access token.
+Parameters: controlled
+
+### Cancel a sent invite
+`POST /delegations/delegates/{delegate}/cancel`
+Called by a controlled account to cancel a pending invite it sent to `{delegate}`. Because cancelling removes a relationship record, it requires a *genuine* direct login on the controlled account: a delegate token is refused.
+Parameters: delegate
+
+### List delegates
+`GET /delegations/delegates`
+Lists the delegates that control this account (from the controlled account's view). Requires a personal access token.
+
+### List controlled accounts
+`GET /delegations/controlled`
+Lists the accounts this account controls as a delegate (from the delegate's view). Requires a personal access token.
+
+### Create a controlled account
+`POST /delegations/controlled`
+Called by a delegate to create a brand-new controlled account, active from birth, with this account as its delegate. The new account has no email and no usable password unless supplied, so it is reachable only through its delegates until so
+Parameters: username, email, password, core, language
+
+### Get a delegate token
+`POST /delegations/controlled/{controlled}/token`
+Called by a delegate to obtain a delegate access token for an active controlled account `{controlled}`. The returned token is a personal-class token over the controlled account, and its `apiEndpoint` points at the controlled account's core 
+Parameters: controlled
+
+### Detach a delegate
+`DELETE /delegations/delegates/{delegate}`
+Called by a controlled account to remove a delegate `{delegate}`. This is the authoritative teardown: it kills the delegate's token and control access on this account, then best-effort notifies the delegate; a still-pending invite is cancel
+Parameters: delegate
+
+### Dismiss a stale controlled entry
+`DELETE /delegations/controlled/{controlled}`
+Called by a delegate to remove a `stale` controlled-account entry from its own list (local housekeeping after the relationship ended on the controlled account). This removes no authority and never touches the controlled account. Only a `sta
+Parameters: controlled
 
 # Data structure
 
@@ -509,7 +555,7 @@ Methods for managing users.
 ### Create user
 `POST /users`
 Creates a new user account. The method's parameters can be customized with the [system streams configuration](/customer-resources/system-streams/). Enforces password complexity rules if enabled (set via the corresponding platform settings).
-Parameters: appId, username, password, email, invitationToken, language, referer, emailProof
+Parameters: appId, username, password, email, invitationToken, language, referer
 
 ### Check username
 `GET /{username}/check_username`
@@ -520,16 +566,6 @@ Parameters: username
 `GET /{email}/check_email`
 Check the existence of an account's email.
 Parameters: email
-
-### Request an email challenge
-`POST /email-challenge`
-Mails a one-time code to an address, so the holder can prove it before an account is created. This method exists only for platforms that require a verified email address at sign-up (`account.emailVerification.requireAtRegistration`); elsewh
-Parameters: email, language
-
-### Verify an email challenge
-`POST /email-challenge/verify`
-Exchanges a correct code for a proof that [create user](#create-user) accepts. The proof is bound to the address, single-use, and valid for `account.emailVerification.registrationProofMaxAgeMs` (30 minutes by default). A code tolerates `acc
-Parameters: email, code
 
 ### Get username from email
 `GET /{email}/username`
