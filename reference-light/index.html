@@ -352,6 +352,39 @@ Authorization: Basic {Base64 encoded token}
 </div><table class="definitions"><tr><th><code>streamId</code></th><td><div class="header"><span class="type"><a href="#data-structure-identifier">identifier</a></span></div><div class="description"><p>The id of the requested stream.</p>
 </div></td></tr><tr><th><code>level</code></th><td><div class="header"><span class="type"><code>read</code>|<code>contribute</code>|<code>manage</code></span></div><div class="description"><p>The required permission level.</p>
 </div></td></tr><tr><th><code>defaultName</code></th><td><div class="header"><span class="type">string</span></div><div class="description"><p>The name to create the stream if needed (in the language of the user).</p>
+</div></td></tr></table></td></tr><tr><th><code>consent</code></th><td><div class="header"><span class="type">object</span><span class="label label-default optional">optional</span></div><div class="description"><p>How the authentication page should present each requested permission. Its lists name permission ids: a stream permission’s <code>streamId</code>, or a feature permission’s <code>feature</code>.</p>
+<table>
+<thead>
+<tr>
+<th>The permission is</th>
+<th>Write it as</th>
+<th>The user sees</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>required for the app to work</td>
+<td>listed in <code>mandatory</code></td>
+<td>ticked and locked, with a “required by this app” note</td>
+</tr>
+<tr>
+<td>optional, expected to be kept</td>
+<td>in neither list</td>
+<td>ticked, and they may untick it</td>
+</tr>
+<tr>
+<td>optional, chosen deliberately</td>
+<td>listed in <code>optIn</code></td>
+<td><strong>unticked</strong>, and they may tick it</td>
+</tr>
+</tbody>
+</table>
+<p>Where consent is your lawful basis under the GDPR, prefer <code>optIn</code>: <a href="https://gdpr.eu/recital-32-conditions-for-consent/">Recital 32</a> states that pre-ticked boxes do not constitute consent.</p>
+<p>A core that does not support this ignores the whole object, so the authentication falls back to all-or-nothing rather than failing. The result below echoes <code>consent</code> only when the core understood it, which is how you detect support.</p>
+<p>The request fails with <code>invalid-parameters</code> (HTTP 400) if an id matches no requested permission or matches more than one, if an id appears in both lists, or if a requested permission uses level <code>none</code>.</p>
+</div><table class="definitions"><tr><th><code>allowUserChoice</code></th><td><div class="header"><span class="type">boolean</span><span class="label label-default optional">optional</span></div><div class="description"><p>Whether the user may grant a subset. Default <code>false</code>: the consent is all or nothing, whatever the lists below say.</p>
+</div></td></tr><tr><th><code>mandatory</code></th><td><div class="header"><span class="type">array of strings</span><span class="label label-default optional">optional</span></div><div class="description"><p>Ids of permissions the user cannot leave out.</p>
+</div></td></tr><tr><th><code>optIn</code></th><td><div class="header"><span class="type">array of strings</span><span class="label label-default optional">optional</span></div><div class="description"><p>Ids of permissions presented NOT pre-selected, so the user has to choose them.</p>
 </div></td></tr></table></td></tr><tr><th><code>languageCode</code></th><td><div class="header"><span class="type">string</span><span class="label label-default optional">optional</span></div><div class="description"><p>The two-letter ISO (639-1) code of the language in which to display user instructions, if possible. Default: <code>en</code>.</p>
 </div></td></tr><tr><th><code>returnURL</code></th><td><div class="header"><span class="type">string</span><span class="label label-default optional">optional</span></div><div class="description"><p>The URL to redirect the user to after authentication completes.
 Required if you are not using polling to retrieve the authentication result (see Result below).</p>
@@ -373,6 +406,7 @@ Responses to polling requests are the same as those from the auth request.</p>
 </div></td></tr><tr><th><code>poll_rate_ms</code></th><td><div class="header"><span class="type">number</span></div><div class="description"><p>The rate at which the poll URL can be polled, in milliseconds.</p>
 </div></td></tr><tr><th><code>requestingAppId</code></th><td><div class="header"><span class="type">string</span></div><div class="description"><p>The app identifier provided during the auth request.</p>
 </div></td></tr><tr><th><code>requestedPermissions</code></th><td><div class="header"><span class="type">string</span></div><div class="description"><p>The permissions provided during the auth request.</p>
+</div></td></tr><tr><th><code>consent</code></th><td><div class="header"><span class="type">object</span><span class="label label-default optional">optional</span></div><div class="description"><p>The resolved consent form: the requested permissions with their annotations attached, as the authentication page renders them. Present ONLY when the request carried a <code>consent</code> object that this core understood, so its absence means the authentication will be all-or-nothing. Carries <code>allowUserChoice</code> and <code>permissions</code>, each entry being the requested permission plus <code>mandatory: true</code> or <code>optIn: true</code> where they apply.</p>
 </div></td></tr><tr><th><code>lang</code></th><td><div class="header"><span class="type">string</span><span class="label label-default optional">optional</span></div><div class="description"><p>The language code provided during the auth request.</p>
 </div></td></tr><tr><th><code>returnURL</code></th><td><div class="header"><span class="type">string</span><span class="label label-default optional">optional</span></div><div class="description"><p>The return URL provided during the auth request.</p>
 </div></td></tr><tr><th><code>clientData</code></th><td><div class="header"><span class="type"><a href="#data-structure-key-value">key-value</a></span><span class="label label-default optional">optional</span></div><div class="description"><p>The client data provided during the auth request.</p>

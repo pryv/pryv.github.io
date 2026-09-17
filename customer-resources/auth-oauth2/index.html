@@ -126,6 +126,30 @@
 <p>There are no coarse wildcard scopes: every grant is an explicit, granular permission set — the same expressiveness as a native <code dir="auto">accesses.create</code> permissions array, including per-stream levels (<code dir="auto">read</code>, <code dir="auto">contribute</code>, <code dir="auto">manage</code>, <code dir="auto">create-only</code>) and feature permissions such as <code dir="auto">{"feature": "selfRevoke", "setting": "forbidden"}</code>.</p>
 <p>The <code dir="auto">scope</code> parameter carries exactly <strong>one consent-offer reference</strong>: <code dir="auto">scope=cmc:&lt;offer-name&gt;</code>. The offer is a cross-account consent request your app account publishes once (with the permission list and the consent texts shown to the user); the platform operator registers it on your OAuth client under <code dir="auto">&lt;offer-name&gt;</code>. At authorization time the server resolves the offer and the consent screen displays each permission.</p>
 <p><strong>All-or-nothing by default.</strong> Unless the offer sets <code dir="auto">allowUserChoice: true</code>, the consent is take-it-or-leave-it: the user accepts the whole permission set or denies (no cherry-picking). Set <code dir="auto">allowUserChoice: true</code> in your offer to let the user untick individual permissions — and flag any entry your app cannot run without as <code dir="auto">mandatory: true</code> so it stays locked (the user’s only way to withhold it is to deny the whole request). The minted access always carries <strong>exactly the granted subset</strong>, so always read the effective grant (see below) rather than assuming the full offer.</p>
+<p><strong>How each entry opens.</strong> Once the offer allows user choice, an entry can also carry <code dir="auto">optIn: true</code>, which makes the consent screen present it <strong>unticked</strong>, so the user has to choose it. The three states are:</p>
+<table>
+<thead>
+<tr>
+<th>Entry carries</th>
+<th>The user sees</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code dir="auto">mandatory: true</code></td>
+<td>ticked and locked, with a “required by this app” note</td>
+</tr>
+<tr>
+<td>neither flag</td>
+<td>ticked, and they may untick it</td>
+</tr>
+<tr>
+<td><code dir="auto">optIn: true</code></td>
+<td>unticked, and they may tick it</td>
+</tr>
+</tbody>
+</table>
+<p><code dir="auto">optIn</code> is display-only: it decides how the screen opens, never what may be granted, so an opt-in entry the user leaves unticked is simply absent from the grant. An entry may not carry both flags. Where consent is your lawful basis under the GDPR, prefer <code dir="auto">optIn</code>: <a href="https://gdpr.eu/recital-32-conditions-for-consent/">Recital 32</a> states that pre-ticked boxes do not constitute consent.</p>
 <p>Two consequences worth designing for:</p>
 <ul>
 <li><strong>The grant is a durable consent on the user’s account.</strong> The user can revoke it (or narrow it) at any time from their account tooling; revocation makes your next token refresh fail with <code dir="auto">invalid_grant</code> (re-run the authorization flow), and narrowing propagates to the next refreshed access. Revocation targets the durable consent (the data-grant): deleting it breaks the refresh chain, but a session access token already minted stays valid until its own short expiry (≤ 1 hour by default), so account tooling and UIs should revoke the data-grant rather than rely on any single access token expiring.</li>
