@@ -111,17 +111,28 @@ configure the trusted-app session cookie. They share the letters “sso” and
 nothing else.</p></div></aside>
 <div class="sl-heading-wrapper level-h2"><h2 id="the-flow">The flow</h2><a class="sl-anchor-link" href="#the-flow"><span aria-hidden="true" class="sl-anchor-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="m12.11 15.39-3.88 3.88a2.52 2.52 0 0 1-3.5 0 2.47 2.47 0 0 1 0-3.5l3.88-3.88a1 1 0 1 0-1.42-1.42l-3.88 3.89a4.48 4.48 0 0 0 6.33 6.33l3.89-3.88a1 1 0 0 0-1.42-1.42m8.58-12.08a4.49 4.49 0 0 0-6.33 0l-3.89 3.88a1 1 0 1 0 1.42 1.42l3.88-3.88a2.52 2.52 0 0 1 3.5 0 2.47 2.47 0 0 1 0 3.5l-3.88 3.88a1 1 0 0 0 0 1.42 1 1 0 0 0 1.42 0l3.88-3.89a4.49 4.49 0 0 0 0-6.33M8.83 15.17a1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.92-4.92a1 1 0 1 0-1.42-1.42l-4.92 4.92a1 1 0 0 0 0 1.42"></path></svg></span><span class="sr-only" data-pagefind-ignore>Section titled “The flow”</span></a></div>
 <ol>
-<li>The auth app fetches <code dir="auto">GET /auth/sso/providers</code> (public: id + label only, no
-secrets) and renders a “Sign in with <label>” button per provider.</li>
-<li>The button sends the browser to <code dir="auto">GET /auth/sso/&lt;provider&gt;/start</code>. The core
-sets a signed state cookie and 302s to the provider’s authorization endpoint.</li>
-<li>The user authenticates at the provider; the provider 302s back to
-<code dir="auto">/auth/sso/&lt;provider&gt;/callback</code> with a code.</li>
-<li>The core exchanges the code, validates the id_token, and resolves the account
+<li>
+<p>The auth app fetches <code dir="auto">GET /auth/sso/providers</code> (public: id + label only, no
+secrets) and renders a “Sign in with <label>” button per provider.</p>
+</li>
+<li>
+<p>The button sends the browser to <code dir="auto">GET /auth/sso/&lt;provider&gt;/start</code>. The core
+sets a signed state cookie and 302s to the provider’s authorization endpoint.
+The auth app may add <code dir="auto">?ssoReturn=&lt;opaque string&gt;</code> (at most 2048 characters, in
+the form-urlencoded alphabet) to remember its own return context; the core
+stores it in the signed state cookie without reading it, and never sends it to
+the provider. A value that is too long or malformed is refused with <code dir="auto">400</code>.</p>
+</li>
+<li>
+<p>The user authenticates at the provider; the provider 302s back to
+<code dir="auto">/auth/sso/&lt;provider&gt;/callback</code> with a code.</p>
+</li>
+<li>
+<p>The core exchanges the code, validates the id_token, and resolves the account
 (see <a href="#account-linking">Account linking</a>). It then mints a normal personal
 session and 302s to <code dir="auto">sso.landingPageURL</code> with the result on the URL
 <strong>fragment</strong> (never the query, so nothing SSO-related reaches the landing
-host’s access log or the Referer header):
+host’s access log or the Referer header):</p>
 <ul>
 <li><code dir="auto">#ssoStatus=login&amp;ssoUser=&lt;username&gt;&amp;ssoKey=&lt;one-time-key&gt;</code> on success;</li>
 <li><code dir="auto">#ssoStatus=mfa&amp;ssoUser=&lt;username&gt;&amp;ssoMfaToken=&lt;token&gt;&amp;ssoMfaMethod=&lt;m&gt;</code>
@@ -129,8 +140,16 @@ when the account has MFA active;</li>
 <li><code dir="auto">#ssoError=&lt;code&gt;</code> on refusal (<code dir="auto">no-account</code>, <code dir="auto">email-not-verified</code>,
 <code dir="auto">sso-failed</code>).</li>
 </ul>
+<p>When the start carried <code dir="auto">ssoReturn</code>, it is appended unchanged as
+<code dir="auto">&amp;ssoReturn=&lt;string&gt;</code> on every one of those outcomes, so the landing page can
+finish the flow the user started (an auth-flow <code dir="auto">returnURL</code>, or an in-app
+hand-off page). It is echoed only once the state cookie has verified, so a
+value that did not come from a genuine start of this sign-in is never
+reflected. Put nothing secret in it: the start URL is a GET and is written to
+the core’s request log.</p>
 </li>
-<li>The landing page reads the fragment, clears it, and:
+<li>
+<p>The landing page reads the fragment, clears it, and:</p>
 <ul>
 <li>on <code dir="auto">login</code>, POSTs the key to <code dir="auto">/&lt;username&gt;/shared-secrets/retrieve</code> (no
 credentials needed) and receives the session token once; the token was
