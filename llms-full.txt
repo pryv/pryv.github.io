@@ -58,7 +58,7 @@ To authenticate users in your app, and thus for users to grant your app access t
 ### Auth request
 `[object Object]`
 The API endpoint to use is given by the [service information's](#service-info) `access` property.
-Parameters: requestingAppId, requestedPermissions, consent, languageCode, returnURL, clientData, authUrl, serviceInfo, deviceName, expireAfter, token, actAs, referer
+Parameters: requestingAppId, requestedPermissions, consent, languageCode, returnURL, clientData, authUrl, serviceInfo, deviceName, expireAfter, token, actAs, cmcInvites, referer
 
 ### Poll request
 `[object Object]`
@@ -406,19 +406,19 @@ Called by a controlled account to invite another account to become its delegate.
 Parameters: delegateUsername
 
 ### Accept a delegation
-`POST /delegations/controlled/{controlled}/accept`
-Called by an invited delegate to accept a pending delegation from the controlled account `{controlled}`. Idempotent: re-accepting an already active relationship returns the settled record. Requires a personal access token.
-Parameters: controlled
+`POST /delegations/controlled/{username}/accept`
+Called by an invited delegate to accept a pending delegation from the controlled account `{username}`. Idempotent: re-accepting an already active relationship returns the settled record. Requires a personal access token.
+Parameters: username
 
 ### Refuse a delegation
-`POST /delegations/controlled/{controlled}/refuse`
-Called by an invited delegate to decline a pending delegation from the controlled account `{controlled}`. Requires a personal access token.
-Parameters: controlled
+`POST /delegations/controlled/{username}/refuse`
+Called by an invited delegate to decline a pending delegation from the controlled account `{username}`. Requires a personal access token.
+Parameters: username
 
 ### Cancel a sent invite
-`POST /delegations/delegates/{delegate}/cancel`
-Called by a controlled account to cancel a pending invite it sent to `{delegate}`. Because cancelling removes a relationship record, it requires a *genuine* direct login on the controlled account: a delegate token is refused.
-Parameters: delegate
+`POST /delegations/delegates/{username}/cancel`
+Called by a controlled account to cancel a pending invite it sent to `{username}`. Because cancelling removes a relationship record, it requires a *genuine* direct login on the controlled account: a delegate token is refused.
+Parameters: username
 
 ### List delegates
 `GET /delegations/delegates`
@@ -434,19 +434,19 @@ Called by a delegate to create a brand-new controlled account, active from birth
 Parameters: username, email, password, core, language
 
 ### Get a delegate token
-`POST /delegations/controlled/{controlled}/token`
-Called by a delegate to obtain a delegate access token for an active controlled account `{controlled}`. The returned token is a personal-class token over the controlled account, and its `apiEndpoint` points at the controlled account's core 
-Parameters: controlled
+`POST /delegations/controlled/{username}/token`
+Called by a delegate to obtain a delegate access token for an active controlled account `{username}`. The returned token is a personal-class token over the controlled account, and its `apiEndpoint` points at the controlled account's core so
+Parameters: username
 
 ### Detach a delegate
-`DELETE /delegations/delegates/{delegate}`
-Called by a controlled account to remove a delegate `{delegate}`. This is the authoritative teardown: it kills the delegate's token and control access on this account, then best-effort notifies the delegate; a still-pending invite is cancel
-Parameters: delegate
+`DELETE /delegations/delegates/{username}`
+Called by a controlled account to remove a delegate `{username}`. This is the authoritative teardown: it kills the delegate's token and control access on this account, then best-effort notifies the delegate; a still-pending invite is cancel
+Parameters: username, keepAccessIds
 
 ### Dismiss a stale controlled entry
-`DELETE /delegations/controlled/{controlled}`
+`DELETE /delegations/controlled/{username}`
 Called by a delegate to remove a `stale` controlled-account entry from its own list (local housekeeping after the relationship ended on the controlled account). This removes no authority and never touches the controlled account. Only a `sta
-Parameters: controlled
+Parameters: username
 
 # Data structure
 
@@ -585,7 +585,7 @@ Parameters: username
 ### Create access request
 `POST /reg/access`
 Creates a new access authorization request. The requesting app calls this method, then polls the returned URL until the user accepts or refuses the request. This implements the Pryv.io OAuth-like authorization flow.
-Parameters: requestingAppId, requestedPermissions, returnURL, clientData, credentialHandoff
+Parameters: requestingAppId, requestedPermissions, returnURL, clientData, credentialHandoff, cmcInvites
 
 ### Poll access request
 `GET /reg/access/{key}`
@@ -595,7 +595,7 @@ Parameters: key
 ### Accept/Refuse access request
 `POST /reg/access/{key}`
 Updates the state of an access request. Called by the auth page after the user has signed in and accepted or refused the permissions.
-Parameters: key, status, username, token
+Parameters: key, status, username, token, cmcInvites, reasonId
 
 ### Check invitation token
 `POST /access/invitationtoken/check`
