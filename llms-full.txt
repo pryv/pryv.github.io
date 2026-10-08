@@ -97,31 +97,35 @@ Parameters: username, password, appId
 Terminates a personal access session by invalidating its access token (the user will have to login again). Simply provide the Authorization token in own of [the supported ways](/reference/#authorization), no request body is required.
 
 ## Multi-factor authentication
-Methods for handling multi-factor authentication (MFA) on top of the usual [Login method](#methods-auth-auth-login).
+Methods for handling multi-factor authentication (MFA) on top of the usual [Login method](#methods-auth-auth-login). Two methods exist: an authenticator app (`totp`) and `sms`; which ones a platform offers, and how SMS codes are sent, is se
 
 ### Login with MFA
 `POST /auth/login`
-Proxied [Login](#methods-auth-auth-login) call that initiates MFA authentication, when MFA is activated for the current user.
+Proxied [Login](#methods-auth-auth-login) call that initiates MFA authentication, when MFA is activated for the current user. Instead of the personal token, the result carries an `mfaToken` to complete the login with [Verify MFA challenge](
 
 ### Activate MFA
 `POST /mfa/activate`
-Initiates the MFA activation flow for a given Pryv.io user, triggering the MFA challenge. Requires a personal token as [authorization](#basics-authorization), which should be obtained during a prior [Login call](#methods-auth-auth-login).
+Initiates the MFA activation flow for a given Pryv.io user: for `totp` the result carries the secret to add to the authenticator app, for `sms` a code is sent to the given phone. The enrolment takes effect once [confirmed](#methods-mfa-mfa-
+Parameters: method, phone, password, code
 
 ### Confirm MFA activation
 `POST /mfa/confirm`
-Confirms the MFA activation by verifying the MFA challenge triggered by a prior [MFA activation call](#methods-mfa-mfa-activate). Requires a MFA session token as [authorization](#basics-authorization).
+Confirms the MFA activation by verifying the MFA challenge triggered by a prior [MFA activation call](#methods-mfa-mfa-activate). On success the enrolment is saved (replacing the previous one, if any) and recovery codes are returned. Requir
+Parameters: code
 
 ### Trigger MFA challenge
 `POST /mfa/challenge`
-Triggers the MFA challenge, depending on the chosen MFA method (e.g. send a verification code by SMS). Requires a MFA session token as [authorization](#basics-authorization).
+Triggers the MFA challenge again, depending on the chosen MFA method: for `sms`, sends a new code (the login and the activation already send one); for `totp`, nothing is sent (the code is on the user's device) and the result names the metho
 
 ### Verify MFA challenge
 `POST /mfa/verify`
-Verifies the MFA challenge triggered by a prior [MFA challenge call](#methods-mfa-mfa-challenge). Requires a MFA session token as [authorization](#basics-authorization).
+Verifies the second factor of a [login with MFA](#methods-mfa-mfa-login) and completes the login. Requires the MFA session token of the login as [authorization](#basics-authorization). The session is refused once the account's enrolment has
+Parameters: code
 
 ### Deactivate MFA
 `POST /mfa/deactivate`
-Deactivate MFA for a given Pryv.io user. Requires a personal token as [authorization](#basics-authorization).
+Deactivate MFA for a given Pryv.io user. Requires a personal token as [authorization](#basics-authorization), obtained by the account's own [Login call](#methods-auth-auth-login) (a delegated personal access is refused with `403 delegation-
+Parameters: password, code
 
 ### Recover MFA
 `POST /mfa/recover`
@@ -281,7 +285,8 @@ Parameters: id
 
 ### Create webhook
 `POST /webhooks`
-Creates a new webhook. You can only create webhooks with `app` and `shared` accesses.
+Creates a new webhook. You can only create webhooks with `app` and `shared` accesses. Only `url` and `scopes` are accepted; every other field of the [webhook](#data-structure-webhook) (id, state, retry settings, run counters, tracking prope
+Parameters: url, scopes
 
 ### Update webhook
 `PUT /webhooks/{id}`
@@ -295,7 +300,7 @@ Parameters: id
 
 ### Test webhook
 `POST /webhooks/{id}/test`
-Sends a post request containing a message called `test` to the URL of the specified webhook's `url`. You can only test webhooks with the access that was used to create them, unless you are using a personal token.
+Sends a post request containing a message called `test` to the URL of the specified webhook's `url`. You can only test webhooks with the access that was used to create them, unless you are using a personal token. The call follows the same r
 Parameters: id
 
 ## Shared secrets

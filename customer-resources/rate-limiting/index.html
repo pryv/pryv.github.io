@@ -86,8 +86,18 @@
 <tbody>
 <tr>
 <td>Per-account backoff on failed second factors: after <code dir="auto">freeFailures</code> (3) failures, each further failure delays the next attempt, doubling from 2 s to 300 s; answers <code dir="auto">429 too-many-attempts</code> with <code dir="auto">Retry-After</code></td>
-<td>MFA <code dir="auto">verify</code>, <code dir="auto">confirm</code>, <code dir="auto">challenge</code></td>
+<td>MFA <code dir="auto">verify</code>, <code dir="auto">confirm</code>, <code dir="auto">challenge</code>, and the step-up of <code dir="auto">deactivate</code> and of an <code dir="auto">activate</code> replacing an active enrolment</td>
 <td><code dir="auto">services.mfa.attempts</code> (see <a href="/customer-resources/mfa/">MFA</a>)</td>
+</tr>
+<tr>
+<td>SMS send limits: one SMS every 30 s per MFA session, 5 per user per hour, 10 per phone number per day; answers <code dir="auto">429 too-many-attempts</code> with <code dir="auto">retryAfterSeconds</code></td>
+<td>MFA login, <code dir="auto">activate</code>, <code dir="auto">challenge</code> (SMS method)</td>
+<td><code dir="auto">services.mfa.methods.sms.sendLimits</code> (see <a href="/customer-resources/mfa/#sms-codes-and-send-limits">MFA</a>)</td>
+</tr>
+<tr>
+<td>Ceiling on pending MFA sessions per core (10 000 by default); answers <code dir="auto">429 too-many-requests</code> with <code dir="auto">Retry-After</code></td>
+<td>MFA login, <code dir="auto">activate</code></td>
+<td><code dir="auto">services.mfa.sessions.maxPending</code></td>
 </tr>
 <tr>
 <td>Ceiling on pending access requests per core (10 000 by default, 16 KiB each); answers <code dir="auto">429 too-many-requests</code> with <code dir="auto">Retry-After: 60</code></td>
