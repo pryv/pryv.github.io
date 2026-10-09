@@ -285,12 +285,12 @@ Parameters: id
 
 ### Create webhook
 `POST /webhooks`
-Creates a new webhook. You can only create webhooks with `app` and `shared` accesses. Only `url` and `scopes` are accepted; every other field of the [webhook](#data-structure-webhook) (id, state, retry settings, run counters, tracking prope
+Creates a new webhook. You can only create webhooks with `app` and `shared` accesses. An access carrying the feature permission `{ "feature": "webhooks", "setting": "forbidden" }` cannot create webhooks (`403 forbidden`). Only `url` and `sc
 Parameters: url, scopes
 
 ### Update webhook
 `PUT /webhooks/{id}`
-Modifies the webhook. You can only modify webhooks with the access that was used to create them, unless you are using a personal token. Updating the `state` to `active` resets the `currentRetries` counter.
+Modifies the webhook. You can only modify webhooks with the access that was used to create them, unless you are using a personal token. Updating the `state` to `active` resets the `currentRetries` counter. Refused (`403 forbidden`) for an a
 Parameters: id, update
 
 ### Delete webhook
