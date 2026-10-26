@@ -58,7 +58,7 @@ To authenticate users in your app, and thus for users to grant your app access t
 ### Auth request
 `[object Object]`
 The API endpoint to use is given by the [service information's](#service-info) `access` property.
-Parameters: requestingAppId, requestedPermissions, consent, languageCode, returnURL, clientData, authUrl, serviceInfo, deviceName, expireAfter, token, actAs, actAsManagedOnly, cmcInvites, referer
+Parameters: requestingAppId, requestedPermissions, consent, languageCode, returnURL, clientData, authUrl, serviceInfo, deviceName, expireAfter, token, actAs, actAsManagedOnly, cmcInvites, externalId, referer
 
 ### Poll request
 `[object Object]`
@@ -397,6 +397,25 @@ Parameters: newUsername
 `GET /account/username-changes`
 Returns how many username changes the user has performed, the operator-configured limit, and how many remain. Requires a personal access token.
 
+### Claim an external id
+`POST /account/external-ids`
+Links a third-party record id (an EHR patient id, for example) to the account, in a namespace registered by the platform administrator. Requires a personal access token. See the [External ids guide](/customer-resources/external-ids/). The c
+Parameters: namespace, blindedValue
+
+### List external ids
+`GET /account/external-ids`
+Lists the external ids linked to the account, one per namespace. Requires a personal access token. A blinded value is never returned.
+
+### Replace an external id
+`PUT /account/external-ids/{namespace}`
+Replaces the account's id in the namespace with a new one: the new id is linked, then the old one is released. Requires a personal access token. When the account holds nothing in the namespace, it behaves as [claim an external id](#methods-
+Parameters: namespace, blindedValue
+
+### Release an external id
+`DELETE /account/external-ids/{namespace}`
+Unlinks the account's id in the namespace. The id can then be claimed again, by any account. Requires a personal access token. Idempotent: the answer is the same when the account held nothing in the namespace.
+Parameters: namespace
+
 ### Request password reset
 `POST /account/request-password-reset`
 Requests the resetting of the user's password. An e-mail containing an expiring reset token (e.g. in a link) will be sent to the user. This method requires that the `appId` and `Origin` (or `Referer`) header comply with the [trusted app ver
@@ -474,6 +493,9 @@ See also: [core concepts](/concepts/#followed-slices).
 
 ## Account information
 User account information.
+
+## External id
+A third-party record id (an EHR patient id, for example) linked to the account, in a namespace registered by the platform administrator. An account holds at most one id per namespace, and an id belongs to at most one account on the whole pl
 
 ## HF series
 High-frequency series are collections of homogenous data points. To store a HF series in Pryv.io, you must first [create a HF event](#create-hf-event). Series data is encoded in the "flatJSON" format: - Each data point in a series has a `"d
@@ -565,7 +587,7 @@ Methods for managing users.
 ### Create user
 `POST /users`
 Creates a new user account. The method's parameters can be customized with the [system streams configuration](/customer-resources/system-streams/). Enforces password complexity rules if enabled (set via the corresponding platform settings).
-Parameters: appId, username, password, email, invitationToken, language, referer
+Parameters: appId, username, password, email, invitationToken, language, referer, externalId
 
 ### Check username
 `GET /{username}/check_username`
@@ -586,6 +608,11 @@ Parameters: email
 `GET /cores`
 Get the core of a Pryv.io account according to the given username or email. You must provide **only** one of them.
 Parameters: username, email
+
+### Get core holding an external id
+`POST /ext-id/cores`
+Get the base URL of the core holding an [external id](/customer-resources/external-ids/): the core of the one account that claimed it. It never tells which account. No authentication. On a DNS-less setup the route is `https://{hostname}/reg
+Parameters: namespace, blindedValue
 
 ### Delete user
 `DELETE /users/{username}`
