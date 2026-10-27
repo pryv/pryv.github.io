@@ -15,7 +15,7 @@ info:
     url: https://opensource.org/licenses/MIT
 x-generated-from:
   referenceVersion: 2.0.0-pre
-  commit: 8b90458
+  commit: 9eec243
 servers:
   - url: https://reg.{domain}
     description: "Register service (methods marked x-pryv-server: register)"
@@ -804,6 +804,17 @@ paths:
             - `external-id-already-claimed`: (`externalId` in `forced` mode) Another account holds the id (`data: { namespace, reason: 'value-taken' }`, never which account). Nothing is reserved: send the user to sign in with the account that holds it.
           x-pryv-error-ids:
             - external-id-already-claimed
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/error-response"
+        "503":
+          description: |-
+            Specific errors:
+
+            - `cross-core-registration-failed`: (Multi-core platform) The registration landed on one core for another core's hosting, and that core could not take it: it is unreachable, or it refused the forward itself. Nothing is created; retry later. A refusal of the registration by that core (e.g. `409 item-already-exists`) is answered as that core answered it. From an open-pryv.io release later than 2.0.0-rc.61 (earlier releases answer `500 unexpected-error` in these cases, and for any refusal by the other core).
+          x-pryv-error-ids:
+            - cross-core-registration-failed
           content:
             application/json:
               schema:
