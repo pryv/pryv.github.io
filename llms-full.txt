@@ -540,6 +540,33 @@ Parameters: serverName
 Rename a core server, thus reassigning the users from srcServer to dstServer.
 Parameters: srcServerName, dstServerName
 
+### External ids
+Namespaces of [external ids](/customer-resources/external-ids/) and the release of an id claimed by the wrong account. Served by every core under `/system/admin/` (not by the register server), with the admin key. The guide explains the mode
+
+#### List external-id namespaces
+`GET /system/admin/ext-id-ns`
+Lists the namespaces of the platform (from open-pryv.io 2.0.0-rc.58). The salt of a namespace is never returned. Not audited (a read).
+
+#### Get an external-id namespace
+`GET /system/admin/ext-id-ns/{namespace}`
+Gets one namespace (from open-pryv.io 2.0.0-rc.58), never its salt. Not audited (a read).
+Parameters: namespace
+
+#### Create or update an external-id namespace
+`PUT /system/admin/ext-id-ns/{namespace}`
+Creates the namespace, or updates its label or default mode (from open-pryv.io 2.0.0-rc.58). On creation the server generates the namespace's salt; it never changes afterwards and is never returned. Answers `201 Created` on creation, `200 O
+Parameters: namespace, label, defaultMode
+
+#### Delete an external-id namespace
+`DELETE /system/admin/ext-id-ns/{namespace}`
+Deletes the namespace (from open-pryv.io 2.0.0-rc.58). Refused while any account holds an id of the namespace, unless `force` is set: then only the namespace row goes, and each core's reconcile (`bin/reconcile-user-cores.js --ext-ids`) repo
+Parameters: namespace, force
+
+#### Release an external id claimed by the wrong account
+`POST /system/admin/ext-id/release`
+Removes the link between an id and the account that holds it, so the right account can claim it (from open-pryv.io 2.0.0-rc.60). Send it to the core that holds the id; another core answers `307` with that core in `server` (and the `Location
+Parameters: namespace, blindedValue, reason
+
 ## Service
 Methods for collecting service information such as details about the platform and the API, connected apps or hostings (core server locations).
 

@@ -114,6 +114,7 @@
 </tr>
 </tbody>
 </table>
+<p>These routes, and the admin release below, are also in the <a href="/reference-system/#external-ids">system API reference</a> and its <a href="/open-api/">OpenAPI definition</a>.</p>
 <ul>
 <li><strong>Name</strong>: 2 to 63 characters, lower-case letters, digits and <code dir="auto">-</code>, starting with a letter or a digit (<code dir="auto">^[a-z0-9][a-z0-9-]{1,62}$</code>).</li>
 <li><strong>Salt</strong>: the server generates a random salt when it creates the namespace. The salt never changes and is never returned. A <code dir="auto">PUT</code> on an existing namespace only updates its label and default mode.</li>
@@ -188,6 +189,7 @@
 <li>Sent to a core that does not hold the id, the request answers <code dir="auto">307</code> to the core that does (<code dir="auto">{ "server": "&lt;that core&gt;" }</code>): send it again there.</li>
 <li>The patient can claim the id right after.</li>
 </ul>
+<p>Reference entry: <a href="/reference-system/#release-an-external-id-claimed-by-the-wrong-account">Release an external id claimed by the wrong account</a>.</p>
 <p>A deployment whose mail templates were seeded before this release does not have <code dir="auto">external-id-released</code> yet: add it with <code dir="auto">bin/mail.js templates set</code> (the bundled default is in <code dir="auto">components/mail/templates/external-id-released</code>). The notice can be switched off with <code dir="auto">services.email.enabled.externalIdReleased: false</code>.</p>
 <div class="sl-heading-wrapper level-h2"><h2 id="operators">Operators</h2><a class="sl-anchor-link" href="#operators"><span aria-hidden="true" class="sl-anchor-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="m12.11 15.39-3.88 3.88a2.52 2.52 0 0 1-3.5 0 2.47 2.47 0 0 1 0-3.5l3.88-3.88a1 1 0 1 0-1.42-1.42l-3.88 3.89a4.48 4.48 0 0 0 6.33 6.33l3.89-3.88a1 1 0 0 0-1.42-1.42m8.58-12.08a4.49 4.49 0 0 0-6.33 0l-3.89 3.88a1 1 0 1 0 1.42 1.42l3.88-3.88a2.52 2.52 0 0 1 3.5 0 2.47 2.47 0 0 1 0 3.5l-3.88 3.88a1 1 0 0 0 0 1.42 1 1 0 0 0 1.42 0l3.88-3.89a4.49 4.49 0 0 0 0-6.33M8.83 15.17a1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.92-4.92a1 1 0 1 0-1.42-1.42l-4.92 4.92a1 1 0 0 0 0 1.42"></path></svg></span><span class="sr-only" data-pagefind-ignore>Section titled “Operators”</span></a></div>
 <p>Run the reconcile on each core:</p>

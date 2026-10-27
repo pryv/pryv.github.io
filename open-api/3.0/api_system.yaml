@@ -15,7 +15,7 @@ info:
     url: https://opensource.org/licenses/MIT
 x-generated-from:
   referenceVersion: 2.0.0-pre
-  commit: eb2ec03
+  commit: 8b90458
 servers:
   - url: https://reg.{domain}
     description: "Register service (methods marked x-pryv-server: register)"
@@ -31,6 +31,7 @@ servers:
         default: pryv.me
 tags:
   - name: Admin
+  - name: External ids
   - name: Service
   - name: Users
 paths:
@@ -192,12 +193,16 @@ paths:
                     description: |-
                       The count of reassigned users.
                       It can be 0 if `srcServerName` did not match any existing core server.
+                  externalIds:
+                    type: number
+                    description: "The number of [external-id](https://pryv.github.io/reference-system/#external-ids) index rows moved to the new core name (from open-pryv.io 2.0.0-rc.60). Run the rename with the renamed core stopped: a claim it commits after the rename would still carry the old name."
                   meta:
                     $ref: "#/components/schemas/meta"
               examples:
                 renaming-a-core-server:
                   value:
                     count: 1
+                    externalIds: 0
         "400":
           description: |-
             Specific errors:
@@ -205,6 +210,332 @@ paths:
             - `INVALID_DATA`: The server name (source or destination) is invalid because of an unrecognized format.
           x-pryv-error-ids:
             - INVALID_DATA
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/error-response"
+        default:
+          $ref: "#/components/responses/usual-errors"
+      security:
+        - adminKey: []
+  /system/admin/ext-id-ns:
+    get:
+      operationId: extIdNamespaces.list
+      summary: List external-id namespaces
+      tags:
+        - External ids
+      x-pryv-method-ids:
+        - extIdNamespaces.list
+      description: Lists the namespaces of the platform (from open-pryv.io 2.0.0-rc.58). The salt of a namespace is never returned. Not audited (a read).
+      x-pryv-server: core
+      responses:
+        "200":
+          description: 200 OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  namespaces:
+                    type: array
+                    items:
+                      type: object
+                    description: "One object per namespace, ordered by name: `namespace` (the name), `createdAt` (a [timestamp](https://pryv.github.io/reference/#data-structure-timestamp)), `label` (shown to users on the auth page) and `defaultMode` (`hint` or `forced`)."
+                  meta:
+                    $ref: "#/components/schemas/meta"
+              examples:
+                listing-the-namespaces:
+                  value:
+                    namespaces:
+                      - namespace: clinic-ehr
+                        createdAt: 1792800000
+                        label: Clinic patient record
+                        defaultMode: hint
+        default:
+          $ref: "#/components/responses/usual-errors"
+      security:
+        - adminKey: []
+  /system/admin/ext-id-ns/{namespace}:
+    get:
+      operationId: extIdNamespaces.get
+      summary: Get an external-id namespace
+      tags:
+        - External ids
+      x-pryv-method-ids:
+        - extIdNamespaces.get
+      description: Gets one namespace (from open-pryv.io 2.0.0-rc.58), never its salt. Not audited (a read).
+      x-pryv-server: core
+      parameters:
+        - in: path
+          name: namespace
+          required: true
+          schema:
+            type: string
+          description: The namespace name.
+      responses:
+        "200":
+          description: 200 OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  namespace:
+                    type: object
+                    description: "`namespace`, `createdAt`, `label` and `defaultMode`, as in the list."
+                  meta:
+                    $ref: "#/components/schemas/meta"
+              examples:
+                getting-a-namespace:
+                  value:
+                    namespace:
+                      namespace: clinic-ehr
+                      createdAt: 1792800000
+                      label: Clinic patient record
+                      defaultMode: hint
+        "400":
+          description: |-
+            Specific errors:
+
+            - `invalid-parameters-format`: The name does not follow the namespace name rule.
+          x-pryv-error-ids:
+            - invalid-parameters-format
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/error-response"
+        "404":
+          description: |-
+            Specific errors:
+
+            - `unknown-resource`: No namespace has this name.
+          x-pryv-error-ids:
+            - unknown-resource
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/error-response"
+        default:
+          $ref: "#/components/responses/usual-errors"
+      security:
+        - adminKey: []
+    put:
+      operationId: extIdNamespaces.set
+      summary: Create or update an external-id namespace
+      tags:
+        - External ids
+      x-pryv-method-ids:
+        - extIdNamespaces.set
+      description: Creates the namespace, or updates its label or default mode (from open-pryv.io 2.0.0-rc.58). On creation the server generates the namespace's salt; it never changes afterwards and is never returned. Answers `201 Created` on creation, `200 OK` on an update. Audited, without a user.
+      x-pryv-server: core
+      parameters:
+        - in: path
+          name: namespace
+          required: true
+          schema:
+            type: string
+          description: "The namespace name: 2 to 63 characters, lowercase letters, digits and `-`, starting with a letter or a digit (`^[a-z0-9][a-z0-9-]{1,62}$`)."
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                label:
+                  type: string
+                  description: The name shown to users on the auth page, 1 to 80 characters. Defaults to the namespace name on creation; unchanged on an update when omitted.
+                defaultMode:
+                  type: string
+                  enum:
+                    - hint
+                    - forced
+                  description: The mode of an auth request or a registration that carries an id of this namespace without a `mode`. Defaults to `hint` on creation; unchanged on an update when omitted. `forced` is honoured from open-pryv.io 2.0.0-rc.59.
+            examples:
+              creating-a-namespace:
+                value:
+                  label: Clinic patient record
+      responses:
+        "201":
+          description: 201 Created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  namespace:
+                    type: object
+                    description: "The namespace after the call: `namespace`, `createdAt`, `label` and `defaultMode` (no salt). The same body comes with `200 OK` on an update."
+                  meta:
+                    $ref: "#/components/schemas/meta"
+              examples:
+                creating-a-namespace:
+                  value:
+                    namespace:
+                      namespace: clinic-ehr
+                      createdAt: 1792800000
+                      label: Clinic patient record
+                      defaultMode: hint
+        "400":
+          description: |-
+            Specific errors:
+
+            - `invalid-parameters-format`: The name, the label or the default mode does not follow the rules above.
+          x-pryv-error-ids:
+            - invalid-parameters-format
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/error-response"
+        default:
+          $ref: "#/components/responses/usual-errors"
+      security:
+        - adminKey: []
+    delete:
+      operationId: extIdNamespaces.delete
+      summary: Delete an external-id namespace
+      tags:
+        - External ids
+      x-pryv-method-ids:
+        - extIdNamespaces.delete
+      description: "Deletes the namespace (from open-pryv.io 2.0.0-rc.58). Refused while any account holds an id of the namespace, unless `force` is set: then only the namespace row goes, and each core's reconcile (`bin/reconcile-user-cores.js --ext-ids`) reports its local ids of that namespace and keeps them. A deleted salt cannot be recovered: every id of the namespace is orphaned. Answers `204 No Content`. Audited, without a user."
+      x-pryv-server: core
+      parameters:
+        - in: path
+          name: namespace
+          required: true
+          schema:
+            type: string
+          description: The namespace name.
+        - in: query
+          name: force
+          required: false
+          schema:
+            type: boolean
+          description: "`true` to delete the namespace even though ids of it are held."
+      responses:
+        "204":
+          description: 204 No Content
+        "400":
+          description: |-
+            Specific errors:
+
+            - `invalid-parameters-format`: The name does not follow the namespace name rule.
+          x-pryv-error-ids:
+            - invalid-parameters-format
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/error-response"
+        "404":
+          description: |-
+            Specific errors:
+
+            - `unknown-resource`: No namespace has this name.
+          x-pryv-error-ids:
+            - unknown-resource
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/error-response"
+        "409":
+          description: |-
+            Specific errors:
+
+            - `external-id-namespace-in-use`: Accounts hold ids of the namespace and `force` is not set.
+          x-pryv-error-ids:
+            - external-id-namespace-in-use
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/error-response"
+        default:
+          $ref: "#/components/responses/usual-errors"
+      security:
+        - adminKey: []
+  /system/admin/ext-id/release:
+    post:
+      operationId: extIdRelease
+      summary: Release an external id claimed by the wrong account
+      tags:
+        - External ids
+      x-pryv-method-ids:
+        - extIdRelease
+      description: |-
+        Removes the link between an id and the account that holds it, so the right account can claim it (from open-pryv.io 2.0.0-rc.60). Send it to the core that holds the id; another core answers `307` with that core in `server` (and the `Location` header): send the call again there. The answer never names the account.
+
+        The account that held the id gets an `account.externalIds.adminRelease` entry in its own audit trail (the namespace and the reason, never the value) and, when the platform sends mail, the `external-id-released` mail with the namespace label and the reason (setting `services.email.enabled.externalIdReleased`, template `services.email.externalIdReleasedTemplate`). The holder reads the reason as written: keep it factual and free of anyone else's data. A failed mail does not undo the release. The call itself is audited without a user. See the guide, [Releasing an id claimed by the wrong account](https://pryv.github.io/customer-resources/external-ids/#releasing-an-id-claimed-by-the-wrong-account).
+      x-pryv-server: core
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                namespace:
+                  type: string
+                  description: The namespace of the id.
+                blindedValue:
+                  type: string
+                  description: The blinded value of the id, computed as for a claim.
+                reason:
+                  type: string
+                  description: Why the id is released, 1 to 500 characters, shown to the account that held it.
+              required:
+                - namespace
+                - blindedValue
+                - reason
+            examples:
+              releasing-an-id:
+                value:
+                  namespace: clinic-ehr
+                  blindedValue: <blinded value>
+                  reason: Claimed by the wrong account; the patient will link it again.
+      responses:
+        "200":
+          description: 200 OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  released:
+                    type: boolean
+                    enum:
+                      - true
+                    description: The id was released.
+                  notified:
+                    type: string
+                    enum:
+                      - mail
+                      - audit-only
+                    description: "`mail` when the mail to the account was sent, `audit-only` when only its audit trail records the release: mail not configured, the notice switched off, the account has no email address, or the send failed."
+                  meta:
+                    $ref: "#/components/schemas/meta"
+              examples:
+                releasing-an-id:
+                  value:
+                    released: true
+                    notified: mail
+        "400":
+          description: |-
+            Specific errors:
+
+            - `invalid-parameters-format`: A parameter is missing or malformed, or the namespace does not exist (the value is never echoed).
+          x-pryv-error-ids:
+            - invalid-parameters-format
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/error-response"
+        "404":
+          description: |-
+            Specific errors:
+
+            - `unknown-resource`: No account holds this id. Also when this core's index names it for an account that no longer exists here: the reconcile (`bin/reconcile-user-cores.js --ext-ids`) cleans such a row.
+          x-pryv-error-ids:
+            - unknown-resource
           content:
             application/json:
               schema:
