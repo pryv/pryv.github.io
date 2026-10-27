@@ -117,6 +117,11 @@
 </thead>
 <tbody>
 <tr>
+<td><code dir="auto">400</code></td>
+<td><code dir="auto">invalid-parameters-format</code>, <code dir="auto">data: { email, reason: "recipient-rejected" }</code></td>
+<td>The mail server refused the address for good (unknown domain or mailbox). Ask the holder to check it. The challenge is released. Releases up to 2.0.0-rc.62 answered <code dir="auto">500</code> here.</td>
+</tr>
+<tr>
 <td><code dir="auto">403</code></td>
 <td><code dir="auto">forbidden</code>, <code dir="auto">data.emailVerificationRequired: false</code></td>
 <td>This platform does not gate sign-up. You should not have called this.</td>
@@ -158,7 +163,7 @@
 <ul>
 <li><code dir="auto">remove</code> refuses the primary address;</li>
 <li><code dir="auto">setPrimary</code> only accepts an address that is already on the account <strong>and</strong> <code dir="auto">verified</code>, so a newly added address cannot become primary until its link has been used;</li>
-<li><code dir="auto">resend</code> mails a fresh link and kills the previous one, subject to a per-address cooldown (5 minutes by default).</li>
+<li><code dir="auto">resend</code> mails a fresh link and kills the previous one, subject to a per-address cooldown (5 minutes by default). If the mail server refuses the address for good, the update answers <code dir="auto">400 invalid-parameters-format</code> with <code dir="auto">data: { email, reason: "recipient-rejected" }</code> (releases up to 2.0.0-rc.62 answered <code dir="auto">500</code>).</li>
 </ul>
 <p>Adding an address another account already holds answers <code dir="auto">409 item-already-exists</code>. The refusals above answer <code dir="auto">400 invalid-operation</code>, with <code dir="auto">data.email</code> and, for the cooldown, <code dir="auto">data.retryAfterSeconds</code>.</p>
 <div class="sl-heading-wrapper level-h3"><h3 id="the-verification-page">The verification page</h3><a class="sl-anchor-link" href="#the-verification-page"><span aria-hidden="true" class="sl-anchor-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="m12.11 15.39-3.88 3.88a2.52 2.52 0 0 1-3.5 0 2.47 2.47 0 0 1 0-3.5l3.88-3.88a1 1 0 1 0-1.42-1.42l-3.88 3.89a4.48 4.48 0 0 0 6.33 6.33l3.89-3.88a1 1 0 0 0-1.42-1.42m8.58-12.08a4.49 4.49 0 0 0-6.33 0l-3.89 3.88a1 1 0 1 0 1.42 1.42l3.88-3.88a2.52 2.52 0 0 1 3.5 0 2.47 2.47 0 0 1 0 3.5l-3.88 3.88a1 1 0 0 0 0 1.42 1 1 0 0 0 1.42 0l3.88-3.89a4.49 4.49 0 0 0 0-6.33M8.83 15.17a1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.92-4.92a1 1 0 1 0-1.42-1.42l-4.92 4.92a1 1 0 0 0 0 1.42"></path></svg></span><span class="sr-only" data-pagefind-ignore>Section titled “The verification page”</span></a></div>
