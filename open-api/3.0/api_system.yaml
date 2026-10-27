@@ -1,461 +1,1336 @@
-openapi: 3.0.0
+openapi: 3.0.3
 info:
-  description: Description of Pryv.io System API in Open API 3.0 standard format
+  title: Pryv.io system API
   version: 2.0.0-pre
-  title: Pryv.io System API
+  description: |-
+    The Pryv.io system API: account creation, platform services and administration calls.
+
+    Generated from the [API reference](https://pryv.github.io/reference-system/) at every documentation build: do not edit by hand. The reference is the authoritative description; report differences at https://github.com/pryv/open-pryv.io/issues.
+
+    Methods flagged admin-only take the platform admin key in the `Authorization` header.
   contact:
     url: https://github.com/pryv/open-pryv.io/issues
   license:
     name: MIT
     url: https://opensource.org/licenses/MIT
+x-generated-from:
+  referenceVersion: 2.0.0-pre
+  commit: 92c796a
+servers:
+  - url: https://reg.{domain}
+    description: "Register service (methods marked x-pryv-server: register)"
+    variables:
+      domain:
+        default: pryv.me
+  - url: https://{core}.{domain}
+    description: "Core server (methods marked x-pryv-server: core)"
+    variables:
+      core:
+        default: core
+      domain:
+        default: pryv.me
+tags:
+  - name: Admin
+  - name: Service
+  - name: Users
 paths:
-  /admin/users:
+  /system/admin/users:
     get:
-      description: Get the list of all users registered on the platform.
       operationId: users.get
-      parameters:
-        - name: toHTML
-          description: If `true`, format the resulting users list as HTML tables.
-          required: false
-          in: query
+      summary: Get users
+      tags:
+        - Admin
+      x-pryv-method-ids:
+        - users.get
+      description: Get the list of all users registered on the platform.
+      x-pryv-server: core
       responses:
         "200":
+          description: 200 OK
           content:
             application/json:
               schema:
-                - type: array
+                type: object
+                properties:
+                  users:
+                    type: array
+                    items:
+                      type: object
+                    description: "One object per user: `username`, `id`, `email` and `language`, plus `core`, the URL of the core that hosts the account, on a multi-core platform."
+                  meta:
+                    $ref: "#/components/schemas/meta"
+              examples:
+                fetching-the-users-list-for-a-pryv-io-platform:
+                  value:
+                    users:
+                      - username: user1
+                        id: c000000000000000000000046
+                        email: red.miller@mail.ch
+                        language: en
+                      - username: user2
+                        id: c000000000000000000000047
+                        email: user2@gmail.com
+                        language: fr
+        default:
+          $ref: "#/components/responses/usual-errors"
+      security:
+        - adminKey: []
   /admin/servers:
     get:
-      description: Get the list of all core servers with the number of users on them.
       operationId: servers.get
+      summary: Get core servers
+      tags:
+        - Admin
+      x-pryv-method-ids:
+        - servers.get
+      description: Get the list of all core servers with the number of users on them.
+      x-pryv-server: register
       responses:
         "200":
+          description: 200 OK
           content:
             application/json:
               schema:
-                - type: object
-  "/admin/servers/{serverName}/users":
+                type: object
+                properties:
+                  servers:
+                    type: object
+                    description: Object mapping each available core server to its user count.
+                  meta:
+                    $ref: "#/components/schemas/meta"
+              examples:
+                fetching-the-core-servers-list-for-a-pryv-io-pla:
+                  value:
+                    servers:
+                      core1.pryv.me: 1337
+                      core2.pryv.me: 42
+        default:
+          $ref: "#/components/responses/usual-errors"
+      security:
+        - adminKey: []
+  /admin/servers/{serverName}/users:
     get:
-      description: Get the list of all users registered on a specific core server.
       operationId: servers.users.get
+      summary: Get users on core server
+      tags:
+        - Admin
+      x-pryv-method-ids:
+        - servers.users.get
+      description: Get the list of all users registered on a specific core server.
+      x-pryv-server: register
       parameters:
-        - name: serverName
+        - in: path
+          name: serverName
+          required: true
+          schema:
+            type: string
           description: The name of the core server.
-          required: true
-          in: query
-        - name: serverName
       responses:
         "200":
+          description: 200 OK
           content:
             application/json:
               schema:
-                - type: array
-  "/admin/servers/{srcServerName}/rename/{dstServerName}":
+                type: object
+                properties:
+                  users:
+                    type: array
+                    items: {}
+                    description: Array of user data.
+                  meta:
+                    $ref: "#/components/schemas/meta"
+              examples:
+                fetching-the-users-list-for-a-specifc-core-serve:
+                  value:
+                    users:
+                      - username: user1
+                        email: red.miller@mail.ch
+                        language: en
+                        invitationToken: enjoy
+                        referer: "null"
+                        id: c000000000000000000000046
+                        registeredTimestamp: "1557743399558"
+                        server: core1.pryv.me
+                        registeredDate: Mon, 13 May 2019 10:29:59 GMT
+        default:
+          $ref: "#/components/responses/usual-errors"
+      security:
+        - adminKey: []
+  /admin/servers/{srcServerName}/rename/{dstServerName}:
     get:
-      description: Rename a core server, thus reassigning the users from srcServer to
-        dstServer.
       operationId: servers.rename
+      summary: Rename core server
+      tags:
+        - Admin
+      x-pryv-method-ids:
+        - servers.rename
+      description: Rename a core server, thus reassigning the users from srcServer to dstServer.
+      x-pryv-server: register
       parameters:
-        - name: srcServerName
+        - in: path
+          name: srcServerName
+          required: true
+          schema:
+            type: string
           description: The current name of the core server to rename.
+        - in: path
+          name: dstServerName
           required: true
-          in: query
-        - name: dstServerName
+          schema:
+            type: string
           description: The new name of the core server.
-          required: true
-          in: query
-        - name: srcServerName
-        - name: dstServerName
       responses:
         "200":
+          description: 200 OK
           content:
             application/json:
               schema:
-                - type: number
+                type: object
+                properties:
+                  count:
+                    type: number
+                    description: |-
+                      The count of reassigned users.
+                      It can be 0 if `srcServerName` did not match any existing core server.
+                  meta:
+                    $ref: "#/components/schemas/meta"
+              examples:
+                renaming-a-core-server:
+                  value:
+                    count: 1
         "400":
-          description: INVALID_DATA
+          description: |-
+            Specific errors:
+
+            - `INVALID_DATA`: The server name (source or destination) is invalid because of an unrecognized format.
+          x-pryv-error-ids:
+            - INVALID_DATA
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/error-response"
+        default:
+          $ref: "#/components/responses/usual-errors"
+      security:
+        - adminKey: []
   /hostings:
     get:
-      description: Get the list of all available hostings for data storage locations.
       operationId: hostings.get
+      summary: Get hostings
+      tags:
+        - Service
+      x-pryv-method-ids:
+        - hostings.get
+      description: Get the list of all available hostings for data storage locations.
+      x-pryv-server: register
       responses:
         "200":
+          description: 200 OK
           content:
             application/json:
               schema:
-                - type: Object
+                type: object
+                properties:
+                  regions:
+                    type: object
+                    description: |-
+                      Object containing multiple regions, containing themselves multiple zones, containing themselves multiple **hostings**.
+                      You need to use the `availableCore` URL as endpoint for the [Create user API method](https://pryv.github.io/reference-system/#create-user).
+                  meta:
+                    $ref: "#/components/schemas/meta"
+              examples:
+                fetching-the-hostings-for-a-pryv-io-platform:
+                  value:
+                    regions:
+                      europe:
+                        name: Europe
+                        localizedName:
+                          fr: Europe
+                        zones:
+                          switzerland:
+                            name: Switzerland
+                            localizedName:
+                              fr: Suisse
+                            hostings:
+                              core1:
+                                url: https://my-hosting-provider.ch
+                                name: Pilot core server
+                                description: The single PoC core server
+                                available: true
+                                availableCore: https://my-core.ch
+        default:
+          $ref: "#/components/responses/usual-errors"
+      security: []
   /apps:
     get:
-      description: Retrieve the list of applications connected to the platform.
       operationId: apps.get
+      summary: Get apps
+      tags:
+        - Service
+      x-pryv-method-ids:
+        - apps.get
+      description: Retrieve the list of applications connected to the platform.
+      x-pryv-server: register
       responses:
         "200":
+          description: 200 OK
           content:
             application/json:
               schema:
-                - type: array
-  "/apps/{appid}":
+                type: object
+                properties:
+                  apps:
+                    type: array
+                    items: {}
+                    description: An array listing all the applications connected to the Pryv.io platform.
+                  meta:
+                    $ref: "#/components/schemas/meta"
+              examples:
+                retrieving-the-list-of-applications-connected-to:
+                  value:
+                    apps:
+                      - id: pryv-csv-importer
+                        displayName: CSV Importer
+                        description: Import existing data from CSV files
+                        iconURL: https://pryv.github.io/static-web/apps/pryv-csv-importer/icon512.png
+                        appURL: http://pryv.github.io/dev-tools/csv-importer
+                        active: false
+                        onboarding: false
+                        category: Other
+                        support:
+                          - iPad
+                          - iPhone
+                          - Web
+                        settingsPageURL: http://pryv.github.io/dev-tools/csv-importer
+                      - id: ifttt-all
+                        displayName: IFTTT
+                        description: Connect Pryv to over 100 other products and services with Pryv Recipes on IFTTT
+                        iconURL: https://pryv.github.io/static-web/apps/ifttt-all/icon512.png
+                        appURL: https://ifttt.com/pryv
+                        active: false
+                        onboarding: false
+                        category: Other
+                        support:
+                          - iPad
+                          - iPhone
+                          - Web
+                        settingsPageURL: https://ifttt.com/pryv
+        default:
+          $ref: "#/components/responses/usual-errors"
+      security: []
+  /apps/{appid}:
     get:
-      description: Retrieve information about a given application.
       operationId: apps.getOne
+      summary: Get app
+      tags:
+        - Service
+      x-pryv-method-ids:
+        - apps.getOne
+      description: Retrieve information about a given application.
+      x-pryv-server: register
       parameters:
-        - name: appid
-          description: The id of the application to look for.
+        - in: path
+          name: appid
           required: true
-          in: query
-        - name: appid
+          schema:
+            type: string
+          description: The id of the application to look for.
       responses:
         "200":
+          description: 200 OK
           content:
             application/json:
               schema:
-                - type: object
+                type: object
+                properties:
+                  app:
+                    type: object
+                    description: An object listing information about the given application.
+                  meta:
+                    $ref: "#/components/schemas/meta"
+              examples:
+                retrieving-information-about-a-given-application:
+                  value:
+                    app:
+                      id: pryv-csv-importer
+                      displayName: CSV Importer
+                      description: Import existing data from CSV files
+                      iconURL: https://pryv.github.io/static-web/apps/pryv-csv-importer/icon512.png
+                      appURL: http://pryv.github.io/dev-tools/csv-importer
+                      active: false
+                      onboarding: false
+                      category: Other
+                      support:
+                        - iPad
+                        - iPhone
+                        - Web
+                      settingsPageURL: http://pryv.github.io/dev-tools/csv-importer
+        default:
+          $ref: "#/components/responses/usual-errors"
+      security: []
   /users:
     post:
-      description: >-
-        Creates a new user account. The method's parameters can be
-        customized with the [system streams
-        configuration](/customer-resources/system-streams/).
-
+      operationId: users.create
+      summary: Create user
+      tags:
+        - Users
+      x-pryv-method-ids:
+        - users.create
+      description: |-
+        Creates a new user account. The method's parameters can be customized with the [system streams configuration](https://pryv.github.io/customer-resources/system-streams/).
         Enforces password complexity rules if enabled (set via the corresponding platform settings).
 
-
         Before Pryv.io 1.6, this route was served by the register server on `/user`
-      operationId: users.create
-      responses:
-        "200":
-          content:
-            application/json:
-              schema:
-                - type: string
-                - type: string
-        "400":
-          description: invalid-parameters-format
+      x-pryv-server: core
       requestBody:
+        required: true
         content:
           application/json:
             schema:
               type: object
               properties:
                 appId:
+                  type: string
                   description: Your app's unique identifier.
-                  type: string
                 username:
+                  type: string
                   description: The user's username.
-                  type: string
                 password:
+                  type: string
                   description: The user's password.
-                  type: string
                 email:
+                  type: string
                   description: The user's e-mail address, used for password retrieval.
-                  type: string
                 invitationToken:
-                  description: >
-                    An invitation token, necessary when users registration is limited
-                    to a specific set of users.
-
+                  type: string
+                  description: |-
+                    An invitation token, necessary when users registration is limited to a specific set of users.
                     Platform administrators may limit users registration by configuring a list of authorized invitation tokens.
-
                     If this is not the case, users registration is open to everyone and this parameter can be omitted.
-                  type: string
                 language:
+                  type: string
                   description: The user's preferred language as a 2-letter ISO language code.
-                  type: string
                 referer:
-                  description: A referer id potentially used for analytics.
                   type: string
-  "/{username}/check_username":
-    get:
-      description: >-
-        For the single node mode please use
-        [this](/reference/#check-username) API endpoint.
+                  description: A referer id potentially used for analytics.
+                externalId:
+                  type: object
+                  description: "A record id of your system to link to the new account: `{ namespace, blindedValue, mode? }`, as in the `externalId` of the [auth request](https://pryv.github.io/reference/#auth-request) (see [External ids](https://pryv.github.io/customer-resources/external-ids/)). An id nobody holds is linked to the new account. An id another account holds leaves the new account unlinked in `hint` mode (send the user to sign in with the account that holds it), and refuses the registration with `409 external-id-already-claimed` in `forced` mode, before anything is reserved. A malformed value or an unknown namespace refuse the registration before anything is reserved. Requires an open-pryv.io release later than 2.0.0-rc.56, and 2.0.0-rc.59 or later for the `forced` mode (an older core refuses it with `invalid-parameters-format`)."
+              required:
+                - appId
+                - username
+                - password
+                - email
+            examples:
+              creating-a-user:
+                value:
+                  appId: default
+                  username: user-123-abc
+                  password: ChjUzDXwaTG2qdV
+                  email: joseph-brenner@pryv.me
+                  invitationToken: o3in4o2
+                  language: en
+                  referer: hospital-A
+      responses:
+        "200":
+          description: 200 OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  username:
+                    type: string
+                    description: A confirmation of the user's username.
+                  apiEndpoint:
+                    type: string
+                    description: The apiEndpoint to reach this account. It includes a personal access token.
+                  externalIdLinked:
+                    type: boolean
+                    description: "Present when the registration carried an `externalId`: `true` when the id is now linked to the new account, `false` when another account holds it or it could not be linked."
+                  meta:
+                    $ref: "#/components/schemas/meta"
+              examples:
+                creating-a-user:
+                  value:
+                    username: user-123-abc
+                    apiEndpoint: https://{personal-token}@user-123-abc.pryv.me/
+        "400":
+          description: |-
+            Specific errors:
 
+            - `invalid-parameters-format`: The password does not match password complexity rules (if enabled), or the `externalId` is malformed or names an unknown namespace (`data.param` names the field, never the value).
+          x-pryv-error-ids:
+            - invalid-parameters-format
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/error-response"
+        "409":
+          description: |-
+            Specific errors:
+
+            - `external-id-already-claimed`: (`externalId` in `forced` mode) Another account holds the id (`data: { namespace, reason: 'value-taken' }`, never which account). Nothing is reserved: send the user to sign in with the account that holds it.
+          x-pryv-error-ids:
+            - external-id-already-claimed
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/error-response"
+        default:
+          $ref: "#/components/responses/usual-errors"
+      security: []
+  /{username}/check_username:
+    get:
+      operationId: username.check
+      summary: Check username
+      tags:
+        - Users
+      x-pryv-method-ids:
+        - username.check
+      description: |-
+        For the single node mode please use [this](https://pryv.github.io/reference/#check-username) API endpoint.
 
         Check the availability and validity of a given username.
-      operationId: username.check
+      x-pryv-server: register
       parameters:
-        - name: username
+        - in: path
+          name: username
+          required: true
+          schema:
+            type: string
           description: The username to check.
-          required: true
-          in: query
-        - name: username
       responses:
         "200":
+          description: 200 OK
           content:
             application/json:
               schema:
-                - type: boolean
-                - type: string
+                type: object
+                properties:
+                  reserved:
+                    type: boolean
+                    description: Set to `true` if the given username is already taken, `false` otherwise.
+                  reason:
+                    type: string
+                    description: |-
+                      Optional indication of the reason why the username is reserved.
+                      If it mentions `RESERVED_USER_NAME`, this means that the given username is part of
+                      the reserved usernames list configured within the register service.
+                  meta:
+                    $ref: "#/components/schemas/meta"
+              examples:
+                checking-availability-and-validity-of-a-given-us:
+                  value:
+                    reserved: false
+                special-case-where-the-username-is-part-of-the-r:
+                  value:
+                    reserved: true
+                    reason: RESERVED_USER_NAME
         "400":
-          description: INVALID_USERNAME
-  "/{email}/check_email":
-    get:
-      description: Check the existence of an account's email.
-      operationId: emails.check
-      parameters:
-        - name: email
-          description: The email address to check.
-          required: true
-          in: query
-        - name: email
-      responses:
-        "200":
-          content:
-            application/json:
-              schema:
-                - type: boolean
-        "400":
-          description: INVALID_EMAIL
-  "/{email}/username":
-    get:
-      description: >-
-        Get the username of a Pryv.io account according to the given email.
-        This API method can be disabled in the [platform
-        configuration](https://pryv.github.io/reference-admin/#platform-settings).
+          description: |-
+            Specific errors:
 
+            - `INVALID_USERNAME`: The given username is invalid because of an unrecognized format.
+          x-pryv-error-ids:
+            - INVALID_USERNAME
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/error-response"
+        default:
+          $ref: "#/components/responses/usual-errors"
+      security: []
+  /{email}/check_email:
+    get:
+      operationId: emails.check
+      summary: Check email existence
+      tags:
+        - Users
+      x-pryv-method-ids:
+        - emails.check
+      description: Check the existence of an account's email.
+      x-pryv-server: register
+      parameters:
+        - in: path
+          name: email
+          required: true
+          schema:
+            type: string
+          description: The email address to check.
+      responses:
+        "200":
+          description: 200 OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  exists:
+                    type: boolean
+                    description: Set to `true` if the email address is already registered, `false` otherwise.
+                  meta:
+                    $ref: "#/components/schemas/meta"
+              examples:
+                checking-the-existence-of-an-account-s-email-add:
+                  value:
+                    exists: false
+        "400":
+          description: |-
+            Specific errors:
+
+            - `INVALID_EMAIL`: The email address is invalid because of an unrecognized format.
+          x-pryv-error-ids:
+            - INVALID_EMAIL
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/error-response"
+        default:
+          $ref: "#/components/responses/usual-errors"
+      security: []
+  /{email}/username:
+    get:
+      operationId: email.username.get
+      summary: Get username from email
+      tags:
+        - Users
+      x-pryv-method-ids:
+        - email.username.get
+      description: |-
+        Get the username of a Pryv.io account according to the given email. This API method can be disabled in the [platform configuration](https://pryv.github.io/reference-admin/#platform-settings).
 
         On multi-node platforms that store identifiers pseudonymised, a node that does not host the requested account answers with a `307` redirect to the account's home node — the home node URL is also returned in a `{ "server": "<url>" }` JSON body for clients that do not follow redirects automatically. The home node resolves and returns the username. Clients that follow redirects (including the official libraries) handle this transparently; single-node platforms answer directly without a redirect.
-      operationId: email.username.get
+      x-pryv-server: register
       parameters:
-        - name: email
-          description: The email address to look for.
+        - in: path
+          name: email
           required: true
-          in: query
-        - name: email
+          schema:
+            type: string
+          description: The email address to look for.
       responses:
         "200":
+          description: 200 OK
           content:
             application/json:
               schema:
-                - type: string
+                type: object
+                properties:
+                  username:
+                    type: string
+                    description: The username linked to the given email.
+                  meta:
+                    $ref: "#/components/schemas/meta"
+              examples:
+                retrieving-a-username-from-a-given-email:
+                  value:
+                    username: user-123-abc
         "404":
-          description: UNKNOWN_EMAIL
+          description: |-
+            Specific errors:
+
+            - `UNKNOWN_EMAIL`: The given email address is unknown (unregistered).
+          x-pryv-error-ids:
+            - UNKNOWN_EMAIL
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/error-response"
+        default:
+          $ref: "#/components/responses/usual-errors"
+      security: []
   /cores:
     get:
-      description: Get the core of a Pryv.io account according to the given username
-        or email. You must provide **only** one of them.
       operationId: cores.get
+      summary: Get core
+      tags:
+        - Users
+      x-pryv-method-ids:
+        - cores.get
+      description: Get the core of a Pryv.io account according to the given username or email. You must provide **only** one of them.
+      x-pryv-server: register
       parameters:
-        - name: username
+        - in: query
+          name: username
+          required: true
+          schema:
+            type: string
           description: The username to look for.
+        - in: query
+          name: email
           required: true
-          in: query
-        - name: email
-          description: >-
-            The email to look for. When using the email parameter, you will
-            always get a core returned, even if no such email is registered.
-
+          schema:
+            type: string
+          description: |-
+            The email to look for. When using the email parameter, you will always get a core returned, even if no such email is registered.
             This is meant to prevent email discovery.
-          required: true
-          in: query
       responses:
         "200":
+          description: 200 OK
           content:
             application/json:
               schema:
-                - type: object
-  "/users/{username}":
+                type: object
+                properties:
+                  core:
+                    type: object
+                    description: The core by username
+                  meta:
+                    $ref: "#/components/schemas/meta"
+              examples:
+                retrieving-the-core-url-for-a-given-username:
+                  value:
+                    core:
+                      url: https://co1.pryv.me/
+                retrieving-the-core-url-for-a-non-existing-email:
+                  value:
+                    core:
+                      url: https://co3.pryv.me/
+        default:
+          $ref: "#/components/responses/usual-errors"
+      security: []
+  /ext-id/cores:
+    post:
+      operationId: extIdCores.get
+      summary: Get core holding an external id
+      tags:
+        - Users
+      x-pryv-method-ids:
+        - extIdCores.get
+      description: |-
+        Get the base URL of the core holding an [external id](https://pryv.github.io/customer-resources/external-ids/): the core of the one account that claimed it. It never tells which account. No authentication. On a DNS-less setup the route is `https://{hostname}/reg/ext-id/cores`.
+
+        It is a `POST` so the blinded value never appears in a URL. An unknown namespace and an id nobody claimed give the same answer, `404 unknown-resource`.
+
+        Every lookup counts toward a budget per client address (an IPv4 address, or the /64 of an IPv6 address), kept by each core and shared with the refused claims of [claim an external id](https://pryv.github.io/reference/#claim-an-external-id): at most 10 in a one-minute window opened by the first. Past it the lookup is refused with `429 too-many-attempts` until the window ends. The address is read through `http.trustedProxies`.
+      x-pryv-server: register
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                namespace:
+                  type: string
+                  description: The namespace of the id.
+                blindedValue:
+                  type: string
+                  description: "The blinded value of the record id, `HMAC(K_namespace, recordId)`: base64url without padding, 16 to 64 bytes once decoded."
+              required:
+                - namespace
+                - blindedValue
+            examples:
+              finding-the-core-that-holds-an-external-id:
+                value:
+                  namespace: clinic-ehr
+                  blindedValue: 5axJiZtfRrrFmLoDoJc9LWUadGJBz-ByjoE8SAAHBz4
+      responses:
+        "200":
+          description: 200 OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  server:
+                    type: string
+                    description: The base URL of the core holding the id.
+                  meta:
+                    $ref: "#/components/schemas/meta"
+              examples:
+                finding-the-core-that-holds-an-external-id:
+                  value:
+                    server: https://co1.pryv.me/
+        "400":
+          description: |-
+            Specific errors:
+
+            - `invalid-parameters-format`: The blinded value is malformed. The error never echoes the value.
+          x-pryv-error-ids:
+            - invalid-parameters-format
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/error-response"
+        "404":
+          description: |-
+            Specific errors:
+
+            - `unknown-resource`: The namespace is unknown, or no account holds the id.
+          x-pryv-error-ids:
+            - unknown-resource
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/error-response"
+        "429":
+          description: |-
+            Specific errors:
+
+            - `too-many-attempts`: More than 10 lookups or refused claims within one minute from this client address on this core. The id is not looked up. Retry after the `Retry-After` header (seconds), also given as `error.data.retryAfterSeconds`.
+          x-pryv-error-ids:
+            - too-many-attempts
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/error-response"
+        default:
+          $ref: "#/components/responses/usual-errors"
+      security: []
+  /users/{username}:
     delete:
-      description: >-
-        Deletes a user account. This method must be enabled in the platform
-        configuration. You should fetch the URL of the core where the user data
-        is stored using the [Get core](#get-core) method.
-
-        - When performed by the account owner, this method requires a personal token.
-
-        - For platform administrators, please refer to [its Delete user method](/reference-admin/#delete-user).
-
-        - For Open Pryv.io users, this method requires to provide the [auth:adminAccessKey](https://github.com/pryv/open-pryv.io#config) as `Authorization` header.
       operationId: users.delete
+      summary: Delete user
+      tags:
+        - Users
+      x-pryv-method-ids:
+        - users.delete
+      description: |-
+        Deletes a user account. This method must be enabled in the platform configuration. You should fetch the URL of the core where the user data is stored using the [Get core](https://pryv.github.io/reference-system/#get-core) method.
+        - When performed by the account owner, this method requires a personal token.
+        - For platform administrators, please refer to [its Delete user method](https://pryv.github.io/reference-admin/#delete-user).
+        - For Open Pryv.io users, this method requires to provide the [auth:adminAccessKey](https://github.com/pryv/open-pryv.io#config) as `Authorization` header.
+      x-pryv-server: core
+      x-pryv-trusted-only: true
       parameters:
-        - name: username
-          description: The username of the account to delete.
+        - in: path
+          name: username
           required: true
-          in: query
-        - name: username
+          schema:
+            type: string
+          description: The username of the account to delete.
       responses:
         "200":
+          description: 200 OK
           content:
             application/json:
               schema:
-                - type: object
+                type: object
+                properties:
+                  userDeletion:
+                    type: object
+                    description: The deleted user.
+                  meta:
+                    $ref: "#/components/schemas/meta"
+              examples:
+                deleting-a-user:
+                  value:
+                    userDeletion:
+                      username: mark-kaminski
+        default:
+          $ref: "#/components/responses/usual-errors"
+      security: []
   /reg/access:
     post:
-      description: >-
-        Creates a new access authorization request. The requesting app
-        calls this method, then polls
-
-        the returned URL until the user accepts or refuses the request.
-
-        This implements the Pryv.io OAuth-like authorization flow.
       operationId: access.create
-      responses:
-        "201":
-          content:
-            application/json:
-              schema:
-                - type: string
-                - type: string
-                - type: string
-                - type: number
+      summary: Create access request
+      tags:
+        - Users
+      x-pryv-method-ids:
+        - access.create
+      description: |-
+        Creates a new access authorization request. The requesting app calls this method, then polls
+        the returned URL until the user accepts or refuses the request.
+        This implements the Pryv.io OAuth-like authorization flow.
+      x-pryv-server: register
       requestBody:
+        required: true
         content:
           application/json:
             schema:
               type: object
               properties:
                 requestingAppId:
+                  type: string
                   description: The id of the app requesting access.
-                  type: string
                 requestedPermissions:
+                  type: array
+                  items:
+                    type: object
+                    description: "Described in the reference as: permission object."
                   description: The permissions requested by the app.
-                  type: array of permission objects
                 returnURL:
-                  description: An optional URL to redirect the user to after accepting or
-                    refusing.
                   type: string
+                  description: An optional URL to redirect the user to after accepting or refusing.
                 clientData:
-                  description: Optional metadata the requesting app wants to attach to the
-                    request.
                   type: object
-  "/reg/access/{key}":
+                  description: Optional metadata the requesting app wants to attach to the request.
+                credentialHandoff:
+                  type: string
+                  description: Ask that the token be delivered through a one-time shared secret rather than returned in the poll. The only accepted value is `shared-secret`; anything else is a `400 invalid-parameters`. When the server understands it, the `ACCEPTED` poll carries a `handoff` key instead of `token` (see [Poll access request](https://pryv.github.io/reference-system/#poll-access-request)) and the 201 echoes `credentialHandoff` back. An older core drops the field and echoes nothing, so the request degrades to inline `token` delivery.
+                cmcInvites:
+                  type: array
+                  items:
+                    type: object
+                    description: "Described in the reference as: invite object."
+                  description: "[Cross-account messaging](https://pryv.github.io/guides/cross-account-messaging/#consent-invites-in-the-authorisation-request) invites the user should answer on the auth page, next to the app access: 1 to 8 entries `{ capabilityUrl, mandatory?, for?, accessName? }`, with no other key. `capabilityUrl` is an absolute `http` or `https` URL of at most 2048 characters; `mandatory` a boolean (default `false`); `for` `self` (default) or `target` (the account the access is granted for, when the user acts for an account they manage); `accessName` the name of the data grant minted by accepting the invite, 1 to 256 characters, stored as sent (the server does not use it; the auth page passes it to the accept). A malformed list is a `400 invalid-parameters`. The request's size ceiling (`access:maxRequestBytes`) still applies. The 201 echoes the normalised list only when the server understood it; an older core drops the field. Requires open-pryv.io 2.0.0-rc.32 or later; `accessName` requires open-pryv.io 2.0.0-rc.36 or later, and an older core refuses an entry carrying it with `400 invalid-parameters`."
+                actAs:
+                  type: string
+                  description: "Who the access may be granted for, when the user controls other accounts through [account delegation](https://pryv.github.io/guides/account-delegation/#granting-an-app-access-for-a-controlled-account): `allow` (the default behaviour when omitted), `deny` (the signed-in account only) or a username to preselect. Any other value is a `400 invalid-parameters`."
+                actAsManagedOnly:
+                  type: boolean
+                  description: "`true` when the access must be granted for an account the user manages, never for the signed-in account. Requires `actAs` (`allow` or a username): `true` without `actAs` or with `actAs: 'deny'`, or a value that is not a boolean, is a `400 invalid-parameters`; `false` is the same as not sending it. A hint the auth page enforces, not the server: the reference auth page lists only managed accounts and, when none can be used, refuses with `reasonId: 'MANAGED_ACCOUNT_UNAVAILABLE'`. The 201 echoes `actAsManagedOnly: true` only when the server understood it; an older core drops the field. Requires open-pryv.io 2.0.0-rc.36 or later."
+              required:
+                - requestingAppId
+                - requestedPermissions
+      responses:
+        "201":
+          description: 201 Created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    description: The current status of the request (`NEED_SIGNIN`).
+                  key:
+                    type: string
+                    description: The polling key. Use it to poll and to build the auth URL.
+                  poll:
+                    type: string
+                    description: The full URL to poll for status updates.
+                  poll_rate_ms:
+                    type: number
+                    description: The recommended polling interval in milliseconds.
+                  credentialHandoff:
+                    type: string
+                    description: Echoed as `shared-secret` only when the request carried it and the server understood it. Its absence tells the app it will receive inline `token` delivery.
+                  cmcInvites:
+                    type: array
+                    items:
+                      type: object
+                      description: "Described in the reference as: invite object."
+                    description: Echoed, normalised (`mandatory` and `for` filled in, `accessName` only on an entry that carried it), only when the request carried `cmcInvites` and the server understood them. The `NEED_SIGNIN` poll carries the same list for the auth page.
+                  actAsManagedOnly:
+                    type: boolean
+                    enum:
+                      - true
+                    description: "Echoed as `true` only when the request carried `actAsManagedOnly: true` and the server understood it. The `NEED_SIGNIN` poll carries it too, for the auth page."
+                  meta:
+                    $ref: "#/components/schemas/meta"
+        default:
+          $ref: "#/components/responses/usual-errors"
+      security: []
+  /reg/access/{key}:
     get:
-      description: >-
-        Polls the status of a pending access request. The requesting app
-        calls this periodically
-
+      operationId: access.poll
+      summary: Poll access request
+      tags:
+        - Users
+      x-pryv-method-ids:
+        - access.poll
+      description: |-
+        Polls the status of a pending access request. The requesting app calls this periodically
         until it receives `ACCEPTED`, `REFUSED`, or `ERROR`.
 
-
         Possible statuses: `NEED_SIGNIN` (waiting), `ACCEPTED` (token issued), `REFUSED`, `ERROR`.
-      operationId: access.poll
+      x-pryv-server: register
       parameters:
-        - name: key
-          description: The polling key returned by [Create access
-            request](#create-access-request).
+        - in: path
+          name: key
           required: true
-          in: query
-        - name: key
+          schema:
+            type: string
+          description: The polling key returned by [Create access request](https://pryv.github.io/reference-system/#create-access-request).
       responses:
         "200":
+          description: 200 OK
           content:
             application/json:
               schema:
-                - type: string
-                - type: string
-                - type: string
-                - type: string
+                type: object
+                properties:
+                  status:
+                    type: string
+                    description: The current status.
+                  username:
+                    type: string
+                    description: (When `ACCEPTED`) The username that granted the access.
+                  token:
+                    type: string
+                    description: "(When `ACCEPTED`, inline delivery) The personal or app token. Absent when the request asked for `credentialHandoff: 'shared-secret'` and the server delivers a `handoff` instead."
+                  apiEndpoint:
+                    type: string
+                    description: (When `ACCEPTED`) The API endpoint for subsequent requests. Token-less when a `handoff` is delivered.
+                  handoff:
+                    type: object
+                    description: '(When `ACCEPTED` and the request asked for `credentialHandoff`) A one-time credential hand-off in place of `token`, shaped `{ "type": "shared-secret", "key": "<eventId>.<random>" }`. Retrieve the credential exactly once with `POST {apiEndpoint}shared-secrets/retrieve` (body `{ "key": "<key>" }`, unauthenticated), which returns `{ "secret": { "username", "token", "apiEndpoint" } }`; a second retrieve answers `403 shared-secret-unavailable`. See [Shared secrets](https://pryv.github.io/reference-system/#shared-secrets).'
+                  cmcInvites:
+                    type: array
+                    items: {}
+                    description: "(When `NEED_SIGNIN`) The request's normalised `cmcInvites`, with `accessName` on the entries that carried it, for the auth page. (When `ACCEPTED`) The outcome the auth page posted for each invite, in the request's order: `{ acceptEventId, dataGrantAccessId?, acceptedFor?: 'self' }`, `{ declined: true }` or `{ reason }`, carried with inline and hand-off delivery alike. The outcomes are a hint from the auth page, not verified by the server; each requester learns the truth from its own inbox. Absent when the request carried no invites or the page posted no outcomes."
+                  actAsManagedOnly:
+                    type: boolean
+                    enum:
+                      - true
+                    description: (When `NEED_SIGNIN`) `true` when the request asked that the access be granted for an account the user manages only. Absent otherwise, and never on `ACCEPTED`.
+                  reasonId:
+                    type: string
+                    description: (When `REFUSED` or `ERROR`) The reason code the auth page posted. `REFUSED_MANDATORY_CONSENT` means the user declined a mandatory invite of `cmcInvites`; `MANDATORY_CONSENT_FAILED` that a mandatory invite could not be accepted (`message` names the invite and the error id); `MANAGED_ACCOUNT_UNAVAILABLE` that the request asked for `actAsManagedOnly` and the user had no managed account to grant the access for (`message` names the cause).
+                  meta:
+                    $ref: "#/components/schemas/meta"
+        default:
+          $ref: "#/components/responses/usual-errors"
+      security: []
     post:
-      description: >-
-        Updates the state of an access request. Called by the auth page
-        after the user has
-
-        signed in and accepted or refused the permissions.
       operationId: access.update
+      summary: Accept/Refuse access request
+      tags:
+        - Users
+      x-pryv-method-ids:
+        - access.update
+      description: |-
+        Updates the state of an access request. Called by the auth page after the user has
+        signed in and accepted or refused the permissions.
+
+        On a request whose `externalId` is in `forced` mode, `ACCEPTED` is checked before anything is written: the token must be an app access of `username` and that account must hold the id (see the `externalId` of the [auth request](https://pryv.github.io/reference/#auth-request)). The token is posted inline; a `handoff` or `externalIdDeclined` field is refused with `invalid-parameters` (HTTP 400). A refused acceptance leaves the request `NEED_SIGNIN`.
+      x-pryv-server: register
       parameters:
-        - name: key
-      responses:
-        "200":
-          content:
-            application/json:
-              schema:
-                - type: string
+        - in: path
+          name: key
+          required: true
+          schema:
+            type: string
+          description: The polling key.
       requestBody:
+        required: true
         content:
           application/json:
             schema:
               type: object
               properties:
                 status:
-                  description: "The new status: `ACCEPTED`, `REFUSED`, `ERROR`, or `REDIRECTED`."
                   type: string
+                  description: "The new status: `ACCEPTED`, `REFUSED` or `ERROR`. Any other value is refused with `invalid-parameters` (HTTP 400); `REDIRECTED` is no longer accepted since open-pryv.io 2.0.0-rc.36."
                 username:
+                  type: string
                   description: (Required when `ACCEPTED`) The username granting the access.
-                  type: string
                 token:
-                  description: (Required when `ACCEPTED`) The token for the access.
                   type: string
-  /access/invitationtoken/check:
-    post:
-      description: >-
-        Checks whether an invitation token is valid. Returns plain text
-        `true` or `false`.
-
-        Used when user registration is limited to holders of valid invitation tokens.
-      operationId: invitationtoken.check
+                  description: (Required when `ACCEPTED`) The token for the access.
+                cmcInvites:
+                  type: array
+                  items:
+                    type: object
+                    description: "Described in the reference as: outcome object."
+                  description: "(Only with `ACCEPTED`, only on a request that carried `cmcInvites`) One outcome per invite of the request, in its order: `{ acceptEventId, dataGrantAccessId?, acceptedFor?: 'self' }`, `{ declined: true }` or `{ reason }` (ids and reasons at most 256 characters). A list of the wrong length or shape, or one sent with another status or on a request without invites, is a `400 invalid-parameters` and the request is left unchanged. Served back as `cmcInvites` in the `ACCEPTED` bodies."
+                reasonId:
+                  type: string
+                  description: (With `REFUSED` or `ERROR`) A reason code, stored as given. The reference auth page posts `REFUSED_MANDATORY_CONSENT` when the user declined a mandatory invite of `cmcInvites`, before it writes anything, `MANDATORY_CONSENT_FAILED` when a mandatory invite could not be accepted, with a `message` naming the invite and the platform's error id, and `MANAGED_ACCOUNT_UNAVAILABLE` when the request carried `actAsManagedOnly` and no account the user manages could be used, with a `message` naming the cause.
+              required:
+                - status
+                - username
+                - token
       responses:
         "200":
+          description: 200 OK
           content:
             application/json:
               schema:
-                - type: string
+                type: object
+                properties:
+                  status:
+                    type: string
+                    description: The updated status.
+                  meta:
+                    $ref: "#/components/schemas/meta"
+        "400":
+          description: |-
+            Specific errors:
+
+            - `external-id-mismatch`: (`forced` mode) The token is not an app access of `username` (`data.reason: 'token-invalid'`), or the account does not hold the id (`data.reason: 'not-holder'`, which counts in the [external id lookup](https://pryv.github.io/reference-system/#get-core-holding-an-external-id) budget).
+          x-pryv-error-ids:
+            - external-id-mismatch
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/error-response"
+        "429":
+          description: |-
+            Specific errors:
+
+            - `too-many-attempts`: (`forced` mode) The client address is over the external id budget. The request is left unchanged.
+          x-pryv-error-ids:
+            - too-many-attempts
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/error-response"
+        "503":
+          description: |-
+            Specific errors:
+
+            - `external-id-check-unavailable`: (`forced` mode) The holder check could not run (`data.reason` says why). Retry.
+          x-pryv-error-ids:
+            - external-id-check-unavailable
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/error-response"
+        default:
+          $ref: "#/components/responses/usual-errors"
+      security: []
+  /access/invitationtoken/check:
+    post:
+      operationId: invitationtoken.check
+      summary: Check invitation token
+      tags:
+        - Users
+      x-pryv-method-ids:
+        - invitationtoken.check
+      description: |-
+        Checks whether an invitation token is valid. Returns plain text `true` or `false`.
+        Used when user registration is limited to holders of valid invitation tokens.
+
+        Every check counts toward a budget per client address (an IPv4 address, or the /64 of an IPv6 address), kept by each core: at most 10 checks in a one-minute window opened by the first. Past it the check is refused with `429 too-many-attempts` until the window ends. The address is read through `http.trustedProxies`.
+      x-pryv-server: register
       requestBody:
+        required: true
         content:
           application/json:
             schema:
               type: object
               properties:
                 invitationtoken:
-                  description: The invitation token to verify.
                   type: string
+                  description: The invitation token to verify.
+              required:
+                - invitationtoken
+      responses:
+        "200":
+          description: 200 OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  "":
+                    type: string
+                    description: "Plain text: `true` if valid, `false` otherwise."
+                  meta:
+                    $ref: "#/components/schemas/meta"
+        "429":
+          description: |-
+            Specific errors:
+
+            - `too-many-attempts`: More than 10 checks within one minute from this client address (an IPv6 address counts toward its /64) on this core. The token is not checked. Retry after the `Retry-After` header (seconds), also given as `error.data.retryAfterSeconds`.
+          x-pryv-error-ids:
+            - too-many-attempts
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/error-response"
+        default:
+          $ref: "#/components/responses/usual-errors"
+      security: []
   /reg/admin/invitations:
     get:
-      description: Lists all invitation tokens configured on the platform. Requires
-        admin authorization.
       operationId: invitations.list
+      summary: List invitation tokens
+      tags:
+        - Users
+      x-pryv-method-ids:
+        - invitations.list
+      description: Lists all invitation tokens configured on the platform. Requires admin authorization.
+      x-pryv-server: register
       responses:
         "200":
+          description: 200 OK
           content:
             application/json:
               schema:
-                - type: array
+                type: object
+                properties:
+                  invitations:
+                    type: array
+                    items: {}
+                    description: The list of invitation tokens.
+                  meta:
+                    $ref: "#/components/schemas/meta"
+        default:
+          $ref: "#/components/responses/usual-errors"
+      security:
+        - adminKey: []
   /reg/admin/invitations/post:
     get:
-      description: Generates new invitation tokens. Requires admin authorization.
       operationId: invitations.generate
+      summary: Generate invitation tokens
+      tags:
+        - Users
+      x-pryv-method-ids:
+        - invitations.generate
+      description: Generates new invitation tokens. Requires admin authorization.
+      x-pryv-server: register
       parameters:
-        - name: count
-          description: "Number of tokens to generate (default: 1)."
+        - in: query
+          name: count
           required: true
-          in: query
-        - name: message
-          description: Optional description for the generated tokens.
+          schema:
+            type: number
+          description: "Number of tokens to generate (default: 1)."
+        - in: query
+          name: message
           required: false
-          in: query
+          schema:
+            type: string
+          description: Optional description for the generated tokens.
       responses:
         "200":
+          description: 200 OK
           content:
             application/json:
               schema:
-                - type: object
+                type: object
+                properties:
+                  data:
+                    type: object
+                    description: The generated invitation tokens.
+                  meta:
+                    $ref: "#/components/schemas/meta"
+        default:
+          $ref: "#/components/responses/usual-errors"
+      security:
+        - adminKey: []
   /reg/records:
     post:
-      description: >-
-        Admin endpoint for updating runtime DNS entries (e.g. ACME
-        challenge records for SSL
-
-        certificate provisioning). Records are persisted to PlatformDB and propagated to all
-
-        cores in a multi-core deployment. Requires admin authorization.
       operationId: dns.records
-      responses:
-        "200":
-          content:
-            application/json:
-              schema:
-                - type: string
-                - type: string
+      summary: Update DNS records
+      tags:
+        - Users
+      x-pryv-method-ids:
+        - dns.records
+      description: |-
+        Admin endpoint for updating runtime DNS entries (e.g. ACME challenge records for SSL
+        certificate provisioning). Records are persisted to PlatformDB and propagated to all
+        cores in a multi-core deployment. Requires admin authorization.
+
+        DNS records are answered before usernames, so a new record under the name of an
+        existing account is refused with `409 item-already-exists` (an existing record can
+        still be updated), and a record name cannot be registered as a username.
+      x-pryv-server: register
       requestBody:
+        required: true
         content:
           application/json:
             schema:
               type: object
               properties:
                 subdomain:
-                  description: The subdomain to set records for.
                   type: string
+                  description: The subdomain to set records for.
                 records:
-                  description: 'The DNS records to set (e.g. `{ "TXT": "challenge-value" }`).'
                   type: object
+                  description: 'The DNS records to set (e.g. `{ "TXT": "challenge-value" }`).'
+              required:
+                - subdomain
+                - records
+      responses:
+        "200":
+          description: 200 OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  subdomain:
+                    type: string
+                    description: The subdomain.
+                  status:
+                    type: string
+                    description: "`ok` on success."
+                  meta:
+                    $ref: "#/components/schemas/meta"
+        default:
+          $ref: "#/components/responses/usual-errors"
+      security:
+        - adminKey: []
 components:
-  schemas: {}
+  schemas:
+    error:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Identifier for the error.
+        message:
+          type: string
+          description: A human-readable description of the error.
+        data:
+          description: Additional machine-readable details (specified for each error if relevant).
+        subErrors:
+          type: array
+          items:
+            $ref: "#/components/schemas/error"
+          description: Lists the detailed causes of the main error, if any.
+      title: Error
+    meta:
+      type: object
+      properties:
+        apiVersion:
+          description: The version of the API in the form `{major}.{minor}.{revision}`. Mirrored in HTTP header `API-Version`.
+        serverTime:
+          description: The current server time as a [timestamp](https://pryv.github.io/reference-system/#data-structure-timestamp). Keeping track of server time is necessary to properly handle time in API calls.
+        serial:
+          description: The serial will change every time the core or register is updated. If you compare it with the serial of a previous response and notice a difference, you should reload the service information.
+      description: Metadata included in every method result.
+    error-response:
+      type: object
+      properties:
+        error:
+          $ref: "#/components/schemas/error"
+        meta:
+          $ref: "#/components/schemas/meta"
+      required:
+        - error
+  responses:
+    usual-errors:
+      description: |-
+        Usual errors, possible on any call:
+
+        - `invalid-request-structure` (400): The request's structure is not that expected; for example: invalid JSON syntax, unexpected multipart structure when uploading file attachments.
+        - `invalid-parameters-format` (400): The request's parameters do not follow the expected format. The error's `data` contains an array of validation errors.
+        - `unknown-referenced-resource` (400): One or more referenced resource(s) can't be found. The error's `data.{method-parameter-key}` (e.g. `data.streamId`) contains the unknown reference(s).
+        - `invalid-access-token` (401): The access token is missing or invalid.
+        - `forbidden` (403): The given access token does not grant permission for this operation. See [accesses](https://pryv.github.io/reference-system/#data-structure-access) for more details about accesses and permissions.
+        - `unknown-resource` (404): The resource can't be found.
+        - `removed-method` (410): The resource or method has been removed from the API.
+        - `too-many-results` (413): The `events.get` method in batch or websocket call yielded too many results. Call the API method directly, narrow the request scope or page the request.
+        - `user-account-relocated` (301): The user has relocated her account to another server. Both the `Location` header and the error's `data` contain the equivalent URL pointing to the physical server now hosting the user's account. This error can only occur between the moment the account is relocated and the moment your DNS is updated to point to the new server. So we're stretching the HTTP convention a little, in that the returned URL should not be used permanently (only until `{username}.pryv.me` points to the correct server again). It's up to you to decide whether to keep it for the duration of the session (if you use sessions), for a given time, etc.
+        - `user-intervention-required` (402): The request cannot be served temporarily because the user's account has exceeded its limits. The user must log into her account and fix the issue.
+        - `wrong-core` (421): **Multi-core deployments only.** The request reached a core that does not host the requested user account.
+        The error's `data.coreUrl` contains the correct API endpoint for this user. Clients MUST retry the
+        request directly against `coreUrl`. An HTTP redirect is not used because cross-origin redirects strip
+        the `Authorization` header.
+        - `external-id-already-claimed` (409): An [external id](https://pryv.github.io/customer-resources/external-ids/) cannot be linked to the account. The error's `data` contains `namespace` and `reason`: `value-taken` when another account holds the id (the error never says which), `namespace-taken` when the account already holds another id in that namespace.
+        - `external-id-mismatch` (400): An [auth request](https://pryv.github.io/reference-system/#auth-request) in `forced` mode cannot be accepted for this account. The error's `data` contains `namespace` and `reason`: `token-invalid` when the posted token does not belong to the posted username, `not-holder` when the account does not hold the request's external id (the error never says who does). The request stays `NEED_SIGNIN`.
+        - `external-id-check-unavailable` (503): The core could not check who holds the external id of a `forced` [auth request](https://pryv.github.io/reference-system/#auth-request) (`data.reason` says why). The request stays `NEED_SIGNIN`; retry the acceptance.
+        - `external-id-namespace-in-use` (409): **Admin routes only.** An external-id namespace cannot be deleted while ids are still claimed in it. The error's `data.namespace` names it. Delete it with `force=true` to remove the namespace anyway.
+      x-pryv-error-ids:
+        - invalid-request-structure
+        - invalid-parameters-format
+        - unknown-referenced-resource
+        - invalid-access-token
+        - forbidden
+        - unknown-resource
+        - removed-method
+        - too-many-results
+        - user-account-relocated
+        - user-intervention-required
+        - wrong-core
+        - external-id-already-claimed
+        - external-id-mismatch
+        - external-id-check-unavailable
+        - external-id-namespace-in-use
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/error-response"
+  securitySchemes:
+    adminKey:
+      type: apiKey
+      in: header
+      name: Authorization
+      description: Platform admin key.
