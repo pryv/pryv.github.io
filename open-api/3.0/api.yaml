@@ -15,7 +15,7 @@ info:
     url: https://opensource.org/licenses/MIT
 x-generated-from:
   referenceVersion: 2.0.0-pre
-  commit: 2572ac6
+  commit: 1445fe2
 servers:
   - url: https://{username}.{domain}
     description: Account endpoint, DNS form
@@ -5395,7 +5395,7 @@ components:
           allOf:
             - $ref: "#/components/schemas/identifier"
           description: |-
-            The identifier for the stream. Automatically generated if not set when creating the stream; **slugified if necessary**.
+            The identifier for the stream. Automatically generated if not set when creating the stream. An id made only of lowercase letters, digits and dashes (1 to 100 characters) is kept exactly as given; any other id is **slugified** (e.g. `pas encodé de bleu!` becomes `pas-encode-de-bleu`).
 
             Unique.
 
@@ -5509,6 +5509,8 @@ components:
                 description: |-
                   To be used with `level` property only.
                   The id of the stream or the tag the permission applies to, or `*` for all streams/tags. Stream permissions are recursively applied to child streams.
+
+                  A stream permission may name a stream that does not exist yet: it is stored as given and applies once a stream with that id is created. To have the stream created along with the permission, add a `defaultName` (the name to give it); [create access](https://pryv.github.io/reference/#methods-accesses-accesses-create) and [update access](https://pryv.github.io/reference/#methods-accesses-accesses-update) called with a personal access then create it (at the root of its store) or untrash it, and `defaultName` is not stored.
               tag:
                 anyOf:
                   - $ref: "#/components/schemas/identifier"
@@ -5516,6 +5518,8 @@ components:
                 description: |-
                   To be used with `level` property only.
                   The id of the stream or the tag the permission applies to, or `*` for all streams/tags. Stream permissions are recursively applied to child streams.
+
+                  A stream permission may name a stream that does not exist yet: it is stored as given and applies once a stream with that id is created. To have the stream created along with the permission, add a `defaultName` (the name to give it); [create access](https://pryv.github.io/reference/#methods-accesses-accesses-create) and [update access](https://pryv.github.io/reference/#methods-accesses-accesses-update) called with a personal access then create it (at the root of its store) or untrash it, and `defaultName` is not stored.
               level:
                 type: string
                 enum:
