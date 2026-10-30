@@ -15,7 +15,7 @@ info:
     url: https://opensource.org/licenses/MIT
 x-generated-from:
   referenceVersion: 2.0.0-pre
-  commit: 699a192
+  commit: d569e2e
 servers:
   - url: https://{username}.{domain}
     description: Account endpoint, DNS form
@@ -101,7 +101,7 @@ paths:
                     description: The root URL of the platform's account app (self-service account management, e.g. app-web-user-account), when the platform names one. The lib-js sign-in button uses it for its *Manage my account* link.
                   features:
                     type: object
-                    description: "Capabilities of the platform, so clients need not probe for them. Among them: `noHF` (no high-frequency series), `contentQueries` (content queries on [events.get](https://pryv.github.io/reference/#get-events)), `mfa.methods` (active multi-factor methods), `emailVerification`, and `delegation` (`true` when [account delegation](https://pryv.github.io/guides/account-delegation/) is available: an auth page may then offer to grant an app access for an account the user controls). An absent key means an older server: treat the capability as unknown."
+                    description: "Capabilities of the platform, so clients need not probe for them. Among them: `noHF` (no high-frequency series), `contentQueries` (content queries on [events.get](https://pryv.github.io/reference/#get-events)), `mfa.methods` (active multi-factor methods), `emailVerification`, `delegation` (`true` when [account delegation](https://pryv.github.io/guides/account-delegation/) is available: an auth page may then offer to grant an app access for an account the user controls), and `autoDeletion` (present when an account holder may [schedule the deletion of the account](https://pryv.github.io/reference/#methods-account-account-getAutoDeletion): `triggers` (`date`, and `inactivity` where the platform records account use), `actions` (the actions a holder may choose, `delete` only where the holder may delete the account themselves; may be empty), `reminderLeadDays` (days before the deletion the reminders are sent, e.g. `[60, 30, 7, 1]`), `bounds` (`minDays`, `maxDays`, `minLeadDays`), `userOverride`, `allowUserOptOut` and `mailAvailable`; absent when the platform turned the feature off). An absent key means an older server: treat the capability as unknown."
                   meta:
                     $ref: "#/components/schemas/meta"
               examples:
@@ -4539,6 +4539,526 @@ paths:
             - `forbidden`: The request was not made with a personal access token.
           x-pryv-error-ids:
             - forbidden
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/error-response"
+        default:
+          $ref: "#/components/responses/usual-errors"
+      security:
+        - tokenHeader: []
+        - tokenQuery: []
+  /account/auto-deletion:
+    get:
+      operationId: account.getAutoDeletion
+      summary: Get auto-deletion
+      tags:
+        - Account management
+      x-pryv-method-ids:
+        - account.getAutoDeletion
+      description: |-
+        Returns the account's auto-deletion schedule: the policy in effect and where it comes from, the holder's own setting, the latest use of the account, the deletion date and the reminders. Requires a personal access token; a delegate's token may read it (but not [change it](https://pryv.github.io/reference/#methods-account-account-setAutoDeletion)). Reading it is a use of the account, like any call.
+
+        An account can be deleted at a date its holder chose, or after a period without use, chosen by the holder or preset by the platform. By default a platform has no preset: accounts are never deleted unless their holder asks. A platform preset covers only plain accounts that have an email address (not group accounts, not accounts under a delegation), and its clock starts the first time it applies to the account. Reminder mails are sent before the deletion (by default 60, 30, 7 and 1 day before), and no account is deleted less than the platform's minimum notice (by default 7 days) after its first notice. See [Account auto-deletion](https://pryv.github.io/customer-resources/account-auto-deletion/) for the platform settings.
+
+        Available when [service info](https://pryv.github.io/reference/#service-info) advertises `features.autoDeletion`; otherwise both methods answer `unavailable-method`.
+      x-pryv-trusted-only: true
+      responses:
+        "200":
+          description: 200 OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  autoDeletion:
+                    type: object
+                    properties:
+                      effective:
+                        type: object
+                        properties:
+                          source:
+                            type: string
+                            enum:
+                              - user
+                              - operator
+                              - none
+                            description: "`user`: the holder's own setting; `operator`: the platform's preset; `none`: neither, the account is not scheduled for deletion (`mode` is then `never`)."
+                          mode:
+                            type: string
+                            enum:
+                              - never
+                              - date
+                              - inactivity
+                            description: "`date`: deletion at a fixed instant; `inactivity`: deletion after a period without use; `never`: no deletion."
+                          date:
+                            allOf:
+                              - $ref: "#/components/schemas/timestamp"
+                            description: 'With `mode: "date"`: the instant of the deletion.'
+                          inactivityDays:
+                            type: number
+                            description: 'With `mode: "inactivity"`: the period without use, in days.'
+                          action:
+                            type: string
+                            enum:
+                              - delete
+                              - transfer
+                            description: What happens at the deadline. Only `delete` is offered today; `transfer` is to come.
+                        description: The policy in effect for the account.
+                      setting:
+                        type: object
+                        nullable: true
+                        description: "The holder's own setting, `null` when the account follows the platform's policy: `mode`, `date` or `inactivityDays` as in `effective`, `action`, `acknowledgedNoReminders` (`true` when it was set on an account that cannot receive reminders) and `updatedAt` (when it was last changed)."
+                      lastActivity:
+                        type: object
+                        properties:
+                          personal:
+                            type: number
+                            nullable: true
+                            description: Latest use of the account's personal accesses (its own sign-ins), `null` when none was used.
+                          app:
+                            type: number
+                            nullable: true
+                            description: Latest use of the account's app accesses.
+                          delegate:
+                            type: number
+                            nullable: true
+                            description: "Latest use by a [delegate](https://pryv.github.io/reference/#methods-delegations-) of the account: it counts as use of the account."
+                          max:
+                            type: number
+                            nullable: true
+                            description: "The latest of all. It never moves backwards: deleting an access does not make the account look unused for longer."
+                          by:
+                            type: string
+                            enum:
+                              - owner
+                              - delegate
+                            nullable: true
+                            description: "Who used the account last: the holder (personal or app access) or a delegate."
+                        description: The latest use of the account, the clock of the `inactivity` mode. A sign-in counts, and so does every call made with a personal or an app access (an app the holder connected keeps the account in use). Calls made with shared accesses never count.
+                      deadline:
+                        type: number
+                        nullable: true
+                        description: The deletion date the policy sets, which the reminders count down to; `null` when nothing is scheduled. In `inactivity` mode it moves with every use of the account.
+                      deleteAt:
+                        type: number
+                        nullable: true
+                        description: "When the account is actually due for deletion: the deadline, or later when the minimum notice holds the deletion back (no account is deleted less than the platform's minimum notice, by default 7 days, after its first notice)."
+                      deadlineReason:
+                        type: string
+                        enum:
+                          - date
+                          - inactivity
+                          - minimum-notice
+                        nullable: true
+                        description: "What sets `deleteAt`: the chosen date, the period without use, or the minimum notice."
+                      nextReminderAt:
+                        type: number
+                        nullable: true
+                        description: When the next reminder mail is due, `null` when none is left.
+                      remindersSent:
+                        type: array
+                        items:
+                          type: object
+                        description: The reminders sent for the current deadline, each `{ leadDays, at }` (how many days before the deadline it was due, and when it was sent). Empty when the deadline moved since.
+                      blocked:
+                        type: object
+                        nullable: true
+                        description: "`{ reason, at }` when the schedule is held: `reason` is `no-email` when the account lost its email address under a setting made without `acknowledgeNoReminders` (the schedule resumes once an address is set again), or names the check that refused the deletion (the same checks as a direct account deletion, for example an account controlling a delegated account that has no email address). `null` otherwise."
+                      mail:
+                        type: string
+                        enum:
+                          - available
+                          - no-email
+                          - not-configured
+                        description: "Whether reminders can reach the account: `no-email` when it has no email address, `not-configured` when the platform sends no mail."
+                      bounds:
+                        type: object
+                        description: "What the holder may choose: `minDays` and `maxDays` (the range of `inactivityDays`), `minLeadDays` (how many days from now a `date` must be at least)."
+                      userOverride:
+                        type: boolean
+                        description: Whether the holder may choose a date or a period.
+                      allowUserOptOut:
+                        type: boolean
+                        description: Whether the holder may set `never` while a platform preset covers the account.
+                      actions:
+                        type: array
+                        items:
+                          type: string
+                        description: The actions the holder may choose (`delete` only where the holder may delete the account themselves); empty when none.
+                    description: The account's auto-deletion schedule. Times are [timestamps](https://pryv.github.io/reference/#data-structure-timestamp) (seconds).
+                  meta:
+                    $ref: "#/components/schemas/meta"
+              examples:
+                an-account-the-holder-asked-to-delete-after-one-:
+                  value:
+                    autoDeletion:
+                      effective:
+                        source: user
+                        mode: inactivity
+                        inactivityDays: 365
+                        action: delete
+                      setting:
+                        mode: inactivity
+                        inactivityDays: 365
+                        action: delete
+                        updatedAt: 1733097600
+                      lastActivity:
+                        personal: 1735516800
+                        app: 1735686000
+                        delegate: null
+                        max: 1735686000
+                        by: owner
+                      deadline: 1767222000
+                      deleteAt: 1767222000
+                      deadlineReason: inactivity
+                      nextReminderAt: 1762038000
+                      remindersSent: []
+                      blocked: null
+                      mail: available
+                      bounds:
+                        minDays: 90
+                        maxDays: 3650
+                        minLeadDays: 14
+                      userOverride: true
+                      allowUserOptOut: true
+                      actions:
+                        - delete
+        "403":
+          description: |-
+            Specific errors:
+
+            - `forbidden`: The request was not made with a personal access token.
+          x-pryv-error-ids:
+            - forbidden
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/error-response"
+        "451":
+          description: |-
+            Specific errors:
+
+            - `unavailable-method`: The platform has turned the feature off.
+          x-pryv-error-ids:
+            - unavailable-method
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/error-response"
+        default:
+          $ref: "#/components/responses/usual-errors"
+      security:
+        - tokenHeader: []
+        - tokenQuery: []
+    put:
+      operationId: account.setAutoDeletion
+      summary: Set auto-deletion
+      tags:
+        - Account management
+      x-pryv-method-ids:
+        - account.setAutoDeletion
+      description: |-
+        Sets when the account is deleted. Requires a personal access token of the account's own sign-in: a delegate's token is refused, even with the password. Answers the schedule under the new setting, as [get auto-deletion](https://pryv.github.io/reference/#methods-account-account-getAutoDeletion) does.
+
+        - `mode: "date"` deletes the account at `date`; `mode: "inactivity"` after `inactivityDays` days without use; `mode: "never"` never; `mode: "default"` removes the holder's setting, and the platform's policy (its preset, or none) applies again.
+        - **Password.** A change that arms a schedule or brings the deletion nearer needs the account password in `password`: from no schedule to a date or a period, a shorter period, an earlier date, a switch between `date` and `inactivity`, or back to a platform preset nearer than the holder's own setting. Clearing the schedule or moving the deletion later needs none. The change is judged on the policy in effect, not on the holder's setting alone: leaving `never` for the platform's preset (`mode: "default"`) arms a schedule and needs the password. Wrong passwords count like failed sign-ins.
+        - **What the platform allows** (see `bounds`, `userOverride`, `allowUserOptOut` and `actions` in the answer, and `features.autoDeletion` in [service info](https://pryv.github.io/reference/#service-info)): `inactivityDays` between `minDays` and `maxDays` (by default 90 to 3650), a `date` at least `minLeadDays` days from now (by default 14), a chosen date or period only when `userOverride` is true, `never` while a platform preset covers the account only when `allowUserOptOut` is true, `inactivity` only where the platform records account use (`features.autoDeletion.triggers`). The `delete` action is offered only where the holder may delete the account themselves (platform setting `user-account.delete` with `personalToken`): nobody schedules what they could not do directly.
+        - **No reminder possible.** On an account that has no email address, or on a platform that sends no mail, a date or a period is accepted only with `acknowledgeNoReminders: true`.
+        - **Confirmation.** Every change, clearing included, is confirmed by a mail to the account's email address; that mail is the first notice of a schedule. A mail that fails does not fail the change.
+      x-pryv-trusted-only: true
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                mode:
+                  type: string
+                  enum:
+                    - default
+                    - never
+                    - date
+                    - inactivity
+                  description: "The setting: `date`, `inactivity`, `never`, or `default` to follow the platform's policy."
+                date:
+                  type: string
+                  description: "With `mode: \"date\"` (required then, refused otherwise): an ISO-8601 instant with a time and an offset or `Z`, for example `2027-06-01T23:59:59+02:00`. A date alone (`2027-06-01`) is refused: it is a different instant in every timezone. To let a user pick a day, convert it to an instant on the client (the end of that day in the user's timezone, say). Answered as a timestamp."
+                inactivityDays:
+                  type: number
+                  description: 'With `mode: "inactivity"` (required then, refused otherwise): the period without use after which the account is deleted, a whole number of days.'
+                action:
+                  type: string
+                  enum:
+                    - delete
+                    - transfer
+                  description: "With `date` or `inactivity`: what happens at the deadline. Default `delete`, the only action offered today (`transfer` is to come); an action the platform does not offer is refused."
+                acknowledgeNoReminders:
+                  type: boolean
+                  enum:
+                    - true
+                  description: Required to set a date or a period on an account that cannot receive reminders (`mail` other than `available`).
+                password:
+                  type: string
+                  description: The account password, required when the change arms a schedule or brings the deletion nearer.
+              required:
+                - mode
+            examples:
+              deletion-at-a-fixed-date-arming-a-schedule-the-p:
+                value:
+                  mode: date
+                  date: 2027-06-01T23:59:59+02:00
+                  password: B|_|tt3rfly!
+              back-to-the-platform-s-policy-moving-the-deletio:
+                value:
+                  mode: default
+      responses:
+        "200":
+          description: 200 OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  autoDeletion:
+                    type: object
+                    properties:
+                      effective:
+                        type: object
+                        properties:
+                          source:
+                            type: string
+                            enum:
+                              - user
+                              - operator
+                              - none
+                            description: "`user`: the holder's own setting; `operator`: the platform's preset; `none`: neither, the account is not scheduled for deletion (`mode` is then `never`)."
+                          mode:
+                            type: string
+                            enum:
+                              - never
+                              - date
+                              - inactivity
+                            description: "`date`: deletion at a fixed instant; `inactivity`: deletion after a period without use; `never`: no deletion."
+                          date:
+                            allOf:
+                              - $ref: "#/components/schemas/timestamp"
+                            description: 'With `mode: "date"`: the instant of the deletion.'
+                          inactivityDays:
+                            type: number
+                            description: 'With `mode: "inactivity"`: the period without use, in days.'
+                          action:
+                            type: string
+                            enum:
+                              - delete
+                              - transfer
+                            description: What happens at the deadline. Only `delete` is offered today; `transfer` is to come.
+                        description: The policy in effect for the account.
+                      setting:
+                        type: object
+                        nullable: true
+                        description: "The holder's own setting, `null` when the account follows the platform's policy: `mode`, `date` or `inactivityDays` as in `effective`, `action`, `acknowledgedNoReminders` (`true` when it was set on an account that cannot receive reminders) and `updatedAt` (when it was last changed)."
+                      lastActivity:
+                        type: object
+                        properties:
+                          personal:
+                            type: number
+                            nullable: true
+                            description: Latest use of the account's personal accesses (its own sign-ins), `null` when none was used.
+                          app:
+                            type: number
+                            nullable: true
+                            description: Latest use of the account's app accesses.
+                          delegate:
+                            type: number
+                            nullable: true
+                            description: "Latest use by a [delegate](https://pryv.github.io/reference/#methods-delegations-) of the account: it counts as use of the account."
+                          max:
+                            type: number
+                            nullable: true
+                            description: "The latest of all. It never moves backwards: deleting an access does not make the account look unused for longer."
+                          by:
+                            type: string
+                            enum:
+                              - owner
+                              - delegate
+                            nullable: true
+                            description: "Who used the account last: the holder (personal or app access) or a delegate."
+                        description: The latest use of the account, the clock of the `inactivity` mode. A sign-in counts, and so does every call made with a personal or an app access (an app the holder connected keeps the account in use). Calls made with shared accesses never count.
+                      deadline:
+                        type: number
+                        nullable: true
+                        description: The deletion date the policy sets, which the reminders count down to; `null` when nothing is scheduled. In `inactivity` mode it moves with every use of the account.
+                      deleteAt:
+                        type: number
+                        nullable: true
+                        description: "When the account is actually due for deletion: the deadline, or later when the minimum notice holds the deletion back (no account is deleted less than the platform's minimum notice, by default 7 days, after its first notice)."
+                      deadlineReason:
+                        type: string
+                        enum:
+                          - date
+                          - inactivity
+                          - minimum-notice
+                        nullable: true
+                        description: "What sets `deleteAt`: the chosen date, the period without use, or the minimum notice."
+                      nextReminderAt:
+                        type: number
+                        nullable: true
+                        description: When the next reminder mail is due, `null` when none is left.
+                      remindersSent:
+                        type: array
+                        items:
+                          type: object
+                        description: The reminders sent for the current deadline, each `{ leadDays, at }` (how many days before the deadline it was due, and when it was sent). Empty when the deadline moved since.
+                      blocked:
+                        type: object
+                        nullable: true
+                        description: "`{ reason, at }` when the schedule is held: `reason` is `no-email` when the account lost its email address under a setting made without `acknowledgeNoReminders` (the schedule resumes once an address is set again), or names the check that refused the deletion (the same checks as a direct account deletion, for example an account controlling a delegated account that has no email address). `null` otherwise."
+                      mail:
+                        type: string
+                        enum:
+                          - available
+                          - no-email
+                          - not-configured
+                        description: "Whether reminders can reach the account: `no-email` when it has no email address, `not-configured` when the platform sends no mail."
+                      bounds:
+                        type: object
+                        description: "What the holder may choose: `minDays` and `maxDays` (the range of `inactivityDays`), `minLeadDays` (how many days from now a `date` must be at least)."
+                      userOverride:
+                        type: boolean
+                        description: Whether the holder may choose a date or a period.
+                      allowUserOptOut:
+                        type: boolean
+                        description: Whether the holder may set `never` while a platform preset covers the account.
+                      actions:
+                        type: array
+                        items:
+                          type: string
+                        description: The actions the holder may choose (`delete` only where the holder may delete the account themselves); empty when none.
+                    description: The account's auto-deletion schedule. Times are [timestamps](https://pryv.github.io/reference/#data-structure-timestamp) (seconds).
+                  meta:
+                    $ref: "#/components/schemas/meta"
+              examples:
+                deletion-at-a-fixed-date-arming-a-schedule-the-p:
+                  value:
+                    autoDeletion:
+                      effective:
+                        source: user
+                        mode: date
+                        date: 1811887199
+                        action: delete
+                      setting:
+                        mode: date
+                        date: 1811887199
+                        action: delete
+                        updatedAt: 1735689600
+                      lastActivity:
+                        personal: 1735689600
+                        app: null
+                        delegate: null
+                        max: 1735689600
+                        by: owner
+                      deadline: 1811887199
+                      deleteAt: 1811887199
+                      deadlineReason: date
+                      nextReminderAt: 1806703199
+                      remindersSent: []
+                      blocked: null
+                      mail: available
+                      bounds:
+                        minDays: 90
+                        maxDays: 3650
+                        minLeadDays: 14
+                      userOverride: true
+                      allowUserOptOut: true
+                      actions:
+                        - delete
+                back-to-the-platform-s-policy-moving-the-deletio:
+                  value:
+                    autoDeletion:
+                      effective:
+                        source: none
+                        mode: never
+                        action: delete
+                      setting: null
+                      lastActivity:
+                        personal: 1735689600
+                        app: null
+                        delegate: null
+                        max: 1735689600
+                        by: owner
+                      deadline: null
+                      deleteAt: null
+                      deadlineReason: null
+                      nextReminderAt: null
+                      remindersSent: []
+                      blocked: null
+                      mail: available
+                      bounds:
+                        minDays: 90
+                        maxDays: 3650
+                        minLeadDays: 14
+                      userOverride: true
+                      allowUserOptOut: true
+                      actions:
+                        - delete
+        "400":
+          description: |-
+            Specific errors:
+
+            - `invalid-parameters-format`: A parameter is malformed or unknown: `date` is not an instant with a time and an offset, or `date` / `inactivityDays` is missing for its mode or given with another one (`data.param` names it).
+            - `auto-deletion-out-of-bounds`: `inactivityDays` is outside the platform's range, or `date` is nearer than `minLeadDays`; `data` names the parameter (`param`) and the bound (`minDays` and `maxDays`, or `minLeadDays`).
+            - `auto-deletion-no-email`: No reminder can reach the account (`data.reason`: `no-email`, or `mail-not-configured`): send `acknowledgeNoReminders: true` to set it anyway.
+          x-pryv-error-ids:
+            - invalid-parameters-format
+            - auto-deletion-out-of-bounds
+            - auto-deletion-no-email
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/error-response"
+        "403":
+          description: |-
+            Specific errors:
+
+            - `forbidden`: The request was not made with a personal access token.
+            - `auto-deletion-delegate-refused`: The request was made with a delegate's token: only the account's own sign-in changes the setting.
+            - `auto-deletion-password-required`: The change arms a schedule or brings the deletion nearer: send the account password in `password`.
+            - `auto-deletion-wrong-password`: The password does not match; nothing was changed.
+            - `auto-deletion-opt-out-not-allowed`: `never` while a platform preset covers the account, on a platform that does not allow opting out (`allowUserOptOut: false`).
+            - `auto-deletion-override-not-allowed`: The platform does not let the holder choose: `data.reason` is `user-override-disabled` (no date or period may be chosen) or `inactivity-unavailable` (the platform does not record account use, so only a date can be set).
+            - `auto-deletion-action-not-allowed`: The action is not offered on this platform; `data: { action, available }`.
+          x-pryv-error-ids:
+            - forbidden
+            - auto-deletion-delegate-refused
+            - auto-deletion-password-required
+            - auto-deletion-wrong-password
+            - auto-deletion-opt-out-not-allowed
+            - auto-deletion-override-not-allowed
+            - auto-deletion-action-not-allowed
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/error-response"
+        "429":
+          description: |-
+            Specific errors:
+
+            - `too-many-attempts`: Too many wrong passwords for the account or from the client address. Retry after the `Retry-After` header (seconds).
+          x-pryv-error-ids:
+            - too-many-attempts
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/error-response"
+        "451":
+          description: |-
+            Specific errors:
+
+            - `unavailable-method`: The platform has turned the feature off.
+          x-pryv-error-ids:
+            - unavailable-method
           content:
             application/json:
               schema:

@@ -395,6 +395,15 @@ Parameters: namespace, blindedValue
 Unlinks the account's id in the namespace. The id can then be claimed again, by any account. Requires a personal access token. Idempotent: the answer is the same when the account held nothing in the namespace.
 Parameters: namespace
 
+### Get auto-deletion
+`GET /account/auto-deletion`
+Returns the account's auto-deletion schedule: the policy in effect and where it comes from, the holder's own setting, the latest use of the account, the deletion date and the reminders. Requires a personal access token; a delegate's token m
+
+### Set auto-deletion
+`PUT /account/auto-deletion`
+Sets when the account is deleted. Requires a personal access token of the account's own sign-in: a delegate's token is refused, even with the password. Answers the schedule under the new setting, as [get auto-deletion](#methods-account-acco
+Parameters: mode, date, inactivityDays, action, acknowledgeNoReminders, password
+
 ### Request password reset
 `POST /account/request-password-reset`
 Requests the resetting of the user's password. An e-mail containing an expiring reset token (e.g. in a link) will be sent to the user. This method requires that the `appId` and `Origin` (or `Referer`) header comply with the [trusted app ver
