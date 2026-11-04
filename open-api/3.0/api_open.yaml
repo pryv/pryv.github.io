@@ -15,7 +15,7 @@ info:
     url: https://opensource.org/licenses/MIT
 x-generated-from:
   referenceVersion: 2.0.0-pre
-  commit: "0600642"
+  commit: d599bf2
 servers:
   - url: https://{username}.{domain}
     description: Account endpoint, DNS form
@@ -172,52 +172,47 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  apiEndpoint:
-                    type: string
-                    description: The API endpoint containing the authorization token, built with the account's current username. See [app guidelines](https://pryv.github.io/guides/app-guidelines/).
-                  token:
-                    type: string
-                    description: The personal access token to use for further API calls.
-                  preferredLanguage:
-                    type: string
-                    description: The user's preferred language as a 2-letter ISO language code.
-                  passwordExpires:
-                    allOf:
-                      - $ref: "#/components/schemas/timestamp"
-                    description: "_If password maximum age rule is enabled_: The time the password will expire, according to platform setting `PASSWORD_AGE_MAX_DAYS`."
-                  passwordCanBeChanged:
-                    allOf:
-                      - $ref: "#/components/schemas/timestamp"
-                    description: "_If password minimum age rule is enabled_: The time after which the password can be changed, according to platform setting `PASSWORD_AGE_MIN_DAYS`. Can be in the past."
-                  meta:
-                    $ref: "#/components/schemas/meta"
+                anyOf:
+                  - type: object
+                    properties:
+                      apiEndpoint:
+                        type: string
+                        description: The API endpoint containing the authorization token, built with the account's current username. See [app guidelines](https://pryv.github.io/guides/app-guidelines/).
+                      token:
+                        type: string
+                        description: The personal access token to use for further API calls.
+                      preferredLanguage:
+                        type: string
+                        description: The user's preferred language as a 2-letter ISO language code.
+                      passwordExpires:
+                        allOf:
+                          - $ref: "#/components/schemas/timestamp"
+                        description: "_If password maximum age rule is enabled_: The time the password will expire, according to platform setting `PASSWORD_AGE_MAX_DAYS`."
+                      passwordCanBeChanged:
+                        allOf:
+                          - $ref: "#/components/schemas/timestamp"
+                        description: "_If password minimum age rule is enabled_: The time after which the password can be changed, according to platform setting `PASSWORD_AGE_MIN_DAYS`. Can be in the past."
+                      meta:
+                        $ref: "#/components/schemas/meta"
+                  - type: object
+                    properties:
+                      mfaToken:
+                        type: string
+                        description: An expiring MFA session token to be used all along the MFA flow (challenge, verification).
+                      mfaMethod:
+                        type: string
+                        enum:
+                          - totp
+                          - sms
+                        description: The method of the account's enrolment, so the app prompts for the right code (authenticator app or SMS).
+                      meta:
+                        $ref: "#/components/schemas/meta"
               examples:
                 example-1:
                   value:
                     apiEndpoint: https://c000000000000000000000002@chuangzi.pryv.me/
                     token: c000000000000000000000002
                     preferredLanguage: zh
-        "302":
-          description: 302 Found
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  mfaToken:
-                    type: string
-                    description: An expiring MFA session token to be used all along the MFA flow (challenge, verification).
-                  mfaMethod:
-                    type: string
-                    enum:
-                      - totp
-                      - sms
-                    description: The method of the account's enrolment, so the app prompts for the right code (authenticator app or SMS).
-                  meta:
-                    $ref: "#/components/schemas/meta"
-              examples:
                 login-when-mfa-is-activated:
                   value:
                     mfaToken: 215bcc40-1296-11ea-9ff7-453ff2437834
@@ -332,8 +327,8 @@ paths:
                   method: totp
                   password: B|_|tt3rfly!
       responses:
-        "302":
-          description: 302 Found
+        "200":
+          description: 200 OK
           content:
             application/json:
               schema:
