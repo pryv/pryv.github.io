@@ -15,7 +15,7 @@ info:
     url: https://opensource.org/licenses/MIT
 x-generated-from:
   referenceVersion: 2.0.0-pre
-  commit: fa21914
+  commit: f15918f
 servers:
   - url: https://{username}.{domain}
     description: Account endpoint, DNS form
@@ -4534,6 +4534,196 @@ paths:
             - `forbidden`: The request was not made with a personal access token.
           x-pryv-error-ids:
             - forbidden
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/error-response"
+        default:
+          $ref: "#/components/responses/usual-errors"
+      security:
+        - tokenHeader: []
+        - tokenQuery: []
+  /account/address-aliases:
+    post:
+      operationId: account.addressAliases.create
+      summary: Create an address alias
+      tags:
+        - Account management
+      x-pryv-method-ids:
+        - account.addressAliases.create
+      description: |-
+        Mints an address alias of the account: a name other than its username, `a-` followed by 8 lower-case letters or digits, chosen by the server (nothing is taken from the request). Requires a personal access token.
+
+        An address alias is an address of the account like its username: the platform routes `https://<alias>.<domain>/` to the account's core. The owner gives it to an app instead of the username, for instance as the base of a [per-user resource](https://pryv.github.io/customer-resources/auth-oauth2/#per-user-resource-addresses); an OAuth consent at that address makes the app's grant adopt it, so the app knows the account by that name only and its tokens are used at that address only. One grant per address alias. An account holds at most 10.
+      x-pryv-trusted-only: true
+      responses:
+        "201":
+          description: 201 Created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  addressAlias:
+                    type: object
+                    description: "The new alias: `alias`, `apiEndpoint` (the account's API at that name, without a token) and `heldBy` (`null`: no access holds it yet)."
+                  meta:
+                    $ref: "#/components/schemas/meta"
+              examples:
+                example-1:
+                  value:
+                    addressAlias:
+                      alias: a-7k2m9q4x
+                      apiEndpoint: https://a-7k2m9q4x.pryv.me/
+                      heldBy: null
+        "400":
+          description: |-
+            Specific errors:
+
+            - `invalid-operation`: The account holds 10 address aliases already (`data.addressAliasesLimit`), or as many aliases of any kind as the platform allows (`data.maxAliasesPerAccount`).
+            - `invalid-parameters-format`: The request carries a parameter (an alias value, for instance).
+          x-pryv-error-ids:
+            - invalid-operation
+            - invalid-parameters-format
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/error-response"
+        "403":
+          description: |-
+            Specific errors:
+
+            - `forbidden`: The request was not made with a personal access token.
+          x-pryv-error-ids:
+            - forbidden
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/error-response"
+        default:
+          $ref: "#/components/responses/usual-errors"
+      security:
+        - tokenHeader: []
+        - tokenQuery: []
+    get:
+      operationId: account.addressAliases.list
+      summary: List the address aliases
+      tags:
+        - Account management
+      x-pryv-method-ids:
+        - account.addressAliases.list
+      description: Lists the account's address aliases, with the access that holds each one. Requires a personal access token.
+      x-pryv-trusted-only: true
+      responses:
+        "200":
+          description: 200 OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  addressAliases:
+                    type: array
+                    items:
+                      type: object
+                    description: "One per address alias: `alias`, `apiEndpoint` (the account's API at that name, without a token) and `heldBy`: `null` while no access holds it, else `{ accessId, clientId }`, the access that holds it (in practice the OAuth grant that adopted it) and, for a grant, its client."
+                  addressAliasesLimit:
+                    type: number
+                    description: "The most address aliases an account may hold: 10."
+                  meta:
+                    $ref: "#/components/schemas/meta"
+              examples:
+                example-1:
+                  value:
+                    addressAliases:
+                      - alias: a-7k2m9q4x
+                        apiEndpoint: https://a-7k2m9q4x.pryv.me/
+                        heldBy:
+                          accessId: ckuvfszyz0004p1ld8ho9vk1b
+                          clientId: health-app
+                      - alias: a-p3n8w1rz
+                        apiEndpoint: https://a-p3n8w1rz.pryv.me/
+                        heldBy: null
+                    addressAliasesLimit: 10
+        "403":
+          description: |-
+            Specific errors:
+
+            - `forbidden`: The request was not made with a personal access token.
+          x-pryv-error-ids:
+            - forbidden
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/error-response"
+        default:
+          $ref: "#/components/responses/usual-errors"
+      security:
+        - tokenHeader: []
+        - tokenQuery: []
+  /account/address-aliases/{alias}:
+    delete:
+      operationId: account.addressAliases.delete
+      summary: Delete an address alias
+      tags:
+        - Account management
+      x-pryv-method-ids:
+        - account.addressAliases.delete
+      description: |-
+        Releases the name (it reaches the account no more; a consent adopting it at that moment is refused), then withdraws the grant that holds it, if any: its sessions end, its refresh tokens stop working, the app must ask again. Requires a personal access token.
+
+        Withdrawing the grant otherwise (deleting its access) releases its address alias too. A grant that expired, or that predates its client's revoke, is replaced at the app's next consent without releasing the alias.
+      x-pryv-trusted-only: true
+      parameters:
+        - in: path
+          name: alias
+          required: true
+          schema:
+            type: string
+          description: The address alias to delete.
+      responses:
+        "200":
+          description: 200 OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  addressAliasDeletion:
+                    type: object
+                    description: "`{ alias }`: the deleted alias."
+                  relatedDeletions:
+                    type: array
+                    items:
+                      type: object
+                    description: "`{ id }` of each access deleted with it (the grant that held it and its sessions)."
+                  meta:
+                    $ref: "#/components/schemas/meta"
+              examples:
+                example-1:
+                  value:
+                    addressAliasDeletion:
+                      alias: a-7k2m9q4x
+                    relatedDeletions:
+                      - id: ckuvfszyz0004p1ld8ho9vk1b
+        "403":
+          description: |-
+            Specific errors:
+
+            - `forbidden`: The request was not made with a personal access token.
+          x-pryv-error-ids:
+            - forbidden
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/error-response"
+        "404":
+          description: |-
+            Specific errors:
+
+            - `unknown-resource`: `alias` is not an address alias of this account.
+          x-pryv-error-ids:
+            - unknown-resource
           content:
             application/json:
               schema:

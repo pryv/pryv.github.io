@@ -395,6 +395,19 @@ Parameters: namespace, blindedValue
 Unlinks the account's id in the namespace. The id can then be claimed again, by any account. Requires a personal access token. Idempotent: the answer is the same when the account held nothing in the namespace.
 Parameters: namespace
 
+### Create an address alias
+`POST /account/address-aliases`
+Mints an address alias of the account: a name other than its username, `a-` followed by 8 lower-case letters or digits, chosen by the server (nothing is taken from the request). Requires a personal access token. An address alias is an addre
+
+### List the address aliases
+`GET /account/address-aliases`
+Lists the account's address aliases, with the access that holds each one. Requires a personal access token.
+
+### Delete an address alias
+`DELETE /account/address-aliases/{alias}`
+Releases the name (it reaches the account no more; a consent adopting it at that moment is refused), then withdraws the grant that holds it, if any: its sessions end, its refresh tokens stop working, the app must ask again. Requires a perso
+Parameters: alias
+
 ### Get auto-deletion
 `GET /account/auto-deletion`
 Returns the account's auto-deletion schedule: the policy in effect and where it comes from, the holder's own setting, the latest use of the account, the deletion date and the reminders. Requires a personal access token; a delegate's token m
