@@ -15,7 +15,7 @@ info:
     url: https://opensource.org/licenses/MIT
 x-generated-from:
   referenceVersion: 2.0.0-pre
-  commit: d4a9e93
+  commit: c4f7f5b
 servers:
   - url: https://{username}.{domain}
     description: Account endpoint, DNS form
@@ -4804,23 +4804,23 @@ paths:
                           app:
                             type: number
                             nullable: true
-                            description: Latest use of the account's app accesses.
+                            description: Latest use of the account's app accesses (an app a delegate granted included), reported even where it does not count as use.
                           delegate:
                             type: number
                             nullable: true
-                            description: "Latest use by a [delegate](https://pryv.github.io/reference/#methods-delegations-) of the account: it counts as use of the account."
+                            description: "Latest use of the own token of a [delegate](https://pryv.github.io/reference/#methods-delegations-) of the account: it counts as use of the account."
                           max:
                             type: number
                             nullable: true
-                            description: "The latest of all. It never moves backwards: deleting an access does not make the account look unused for longer."
+                            description: "The latest use that counts. It never moves backwards: deleting an access does not make the account look unused for longer."
                           by:
                             type: string
                             enum:
                               - owner
                               - delegate
                             nullable: true
-                            description: "Who used the account last: the holder (personal or app access) or a delegate."
-                        description: The latest use of the account, the clock of the `inactivity` mode. A sign-in counts, and so does every call made with a personal or an app access (an app the holder connected keeps the account in use). Calls made with shared accesses never count.
+                            description: "Who used the account last, among the uses that count: the holder or a delegate."
+                        description: "The latest use of the account, the clock of the `inactivity` mode. A sign-in counts, and so does every call made with a personal access: the holder's own, or a delegate's. Calls made with app accesses count only where the platform says so (`account.autoDeletion.inactivity.countAppUse`, off by default): an app syncing in the background is not the holder using the account. Calls made with shared accesses never count."
                       deadline:
                         type: number
                         nullable: true
@@ -4892,12 +4892,12 @@ paths:
                         personal: 1735516800
                         app: 1735686000
                         delegate: null
-                        max: 1735686000
+                        max: 1735516800
                         by: owner
-                      deadline: 1767222000
-                      deleteAt: 1767222000
+                      deadline: 1767052800
+                      deleteAt: 1767052800
                       deadlineReason: inactivity
-                      nextReminderAt: 1762038000
+                      nextReminderAt: 1761868800
                       remindersSent: []
                       blocked: null
                       mail: available
@@ -5054,23 +5054,23 @@ paths:
                           app:
                             type: number
                             nullable: true
-                            description: Latest use of the account's app accesses.
+                            description: Latest use of the account's app accesses (an app a delegate granted included), reported even where it does not count as use.
                           delegate:
                             type: number
                             nullable: true
-                            description: "Latest use by a [delegate](https://pryv.github.io/reference/#methods-delegations-) of the account: it counts as use of the account."
+                            description: "Latest use of the own token of a [delegate](https://pryv.github.io/reference/#methods-delegations-) of the account: it counts as use of the account."
                           max:
                             type: number
                             nullable: true
-                            description: "The latest of all. It never moves backwards: deleting an access does not make the account look unused for longer."
+                            description: "The latest use that counts. It never moves backwards: deleting an access does not make the account look unused for longer."
                           by:
                             type: string
                             enum:
                               - owner
                               - delegate
                             nullable: true
-                            description: "Who used the account last: the holder (personal or app access) or a delegate."
-                        description: The latest use of the account, the clock of the `inactivity` mode. A sign-in counts, and so does every call made with a personal or an app access (an app the holder connected keeps the account in use). Calls made with shared accesses never count.
+                            description: "Who used the account last, among the uses that count: the holder or a delegate."
+                        description: "The latest use of the account, the clock of the `inactivity` mode. A sign-in counts, and so does every call made with a personal access: the holder's own, or a delegate's. Calls made with app accesses count only where the platform says so (`account.autoDeletion.inactivity.countAppUse`, off by default): an app syncing in the background is not the holder using the account. Calls made with shared accesses never count."
                       deadline:
                         type: number
                         nullable: true
