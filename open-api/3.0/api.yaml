@@ -15,7 +15,7 @@ info:
     url: https://opensource.org/licenses/MIT
 x-generated-from:
   referenceVersion: 2.0.0-pre
-  commit: 141fb16
+  commit: dc8062f
 servers:
   - url: https://{username}.{domain}
     description: Account endpoint, DNS form
@@ -101,7 +101,7 @@ paths:
                     description: The root URL of the platform's account app (self-service account management, e.g. app-web-user-account), when the platform names one. The lib-js sign-in button uses it for its *Manage my account* link.
                   features:
                     type: object
-                    description: "Capabilities of the platform, so clients need not probe for them. Among them: `noHF` (no high-frequency series), `contentQueries` (content queries on [events.get](https://pryv.github.io/reference/#get-events)), `mfa.methods` (active multi-factor methods), `emailVerification`, `delegation` (`true` when [account delegation](https://pryv.github.io/guides/account-delegation/) is available: an auth page may then offer to grant an app access for an account the user controls), and `autoDeletion` (present when an account holder may [schedule the deletion of the account](https://pryv.github.io/reference/#methods-account-account-getAutoDeletion): `triggers` (`date`, and `inactivity` where the platform records account use), `actions` (the actions a holder may choose, `delete` only where the holder may delete the account themselves; may be empty), `reminderLeadDays` (days before the deletion the reminders are sent, e.g. `[60, 30, 7, 1]`), `bounds` (`minDays`, `maxDays`, `minLeadDays`), `userOverride`, `allowUserOptOut` and `mailAvailable`; absent when the platform turned the feature off). An absent key means an older server: treat the capability as unknown."
+                    description: 'Capabilities of the platform, so clients need not probe for them. Among them: `noHF` (no high-frequency series), `contentQueries` (content queries on [events.get](https://pryv.github.io/reference/#get-events)), `mfa.methods` (active multi-factor methods), `emailVerification`, `passwordResetByEmail` (`true` when a [password-reset request](https://pryv.github.io/reference/#methods-account-account-requestPasswordReset) mails a reset link: the reset mail is switched on and mail is configured; the request answers the same either way, so a client can tell "check your mailbox" from "ask the platform operator"), `delegation` (`true` when [account delegation](https://pryv.github.io/guides/account-delegation/) is available: an auth page may then offer to grant an app access for an account the user controls), and `autoDeletion` (present when an account holder may [schedule the deletion of the account](https://pryv.github.io/reference/#methods-account-account-getAutoDeletion): `triggers` (`date`, and `inactivity` where the platform records account use), `actions` (the actions a holder may choose, `delete` only where the holder may delete the account themselves; may be empty), `reminderLeadDays` (days before the deletion the reminders are sent, e.g. `[60, 30, 7, 1]`), `bounds` (`minDays`, `maxDays`, `minLeadDays`), `userOverride`, `allowUserOptOut` and `mailAvailable`; absent when the platform turned the feature off). An absent key means an older server: treat the capability as unknown.'
                   meta:
                     $ref: "#/components/schemas/meta"
               examples:
