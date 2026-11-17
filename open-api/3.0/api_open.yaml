@@ -15,7 +15,7 @@ info:
     url: https://opensource.org/licenses/MIT
 x-generated-from:
   referenceVersion: 2.0.0-pre
-  commit: ac27d95
+  commit: 5c297aa
 servers:
   - url: https://{username}.{domain}
     description: Account endpoint, DNS form
@@ -42,6 +42,7 @@ tags:
   - name: Accesses
   - name: Webhooks
   - name: Shared secrets
+  - name: Audit
   - name: Profile sets
   - name: Account management
   - name: Account delegation
@@ -1240,7 +1241,8 @@ paths:
           description: |-
             Specific errors:
 
-            - `invalid-operation`: The referenced stream is in the trash, and we prevent the recording of new events into trashed streams.
+            - `invalid-operation`: The referenced stream is in the trash, and we prevent the recording of new events into trashed streams. Also answered for an event in an [account stream](https://pryv.github.io/customer-resources/system-streams/) that breaks its rules: the event names more than one account stream, or another stream next to it; the account field is not editable; the account field is the email (change it with [update account information](https://pryv.github.io/reference/#methods-account-account-update)).
+            - `invalid-event-type`: The type starts with `series:` but is not a known High-Frequency series type (`data.type`): free types cannot use that prefix.
 
             Or (hfs.create): Specific errors:
 
@@ -1248,6 +1250,7 @@ paths:
             - `invalid-parameters-format`: The event content's format is invalid. Events of type High-frequency have a read-only content.
           x-pryv-error-ids:
             - invalid-operation
+            - invalid-event-type
           content:
             application/json:
               schema:
@@ -1420,9 +1423,15 @@ paths:
           description: |-
             Specific errors:
 
+            - `invalid-operation`: The update turns a normal event into a High-Frequency series event or the reverse, or breaks the rules of an [account stream](https://pryv.github.io/customer-resources/system-streams/): the event would be in more than one account stream, or in another stream next to it; it would move from one account stream to another; the account field is not editable; the account field is the email (change it with [update account information](https://pryv.github.io/reference/#methods-account-account-update)).
+            - `invalid-event-type`: The new type starts with `series:` but is not a known High-Frequency series type (`data.type`): free types cannot use that prefix.
+
+            Or (hfs.update): Specific errors:
+
             - `invalid-parameters-format`: The event content's format is invalid. Events of type High-frequency have a read-only content.
           x-pryv-error-ids:
-            - invalid-parameters-format
+            - invalid-operation
+            - invalid-event-type
           content:
             application/json:
               schema:
@@ -2147,7 +2156,7 @@ paths:
           description: |-
             Specific errors:
 
-            - `invalid-item-id`: The specified id is invalid (e.g. it's a reserved word such as `null`).
+            - `invalid-item-id`: The specified id is invalid: a reserved word such as `null` or `..`, or (since 2.0.0-rc.85) a path-style id (`:_cmc:…`, kept as given) holding whitespace or a control character.
           x-pryv-error-ids:
             - invalid-item-id
           content:
@@ -2466,6 +2475,8 @@ paths:
 
             - `invalid-item-id`: The specified token is invalid (e.g. it's a reserved word such as `null`).
             - `invalid-operation`: With `randomAlias`: the account already holds `accesses.maxAliasesPerAccount` aliases (`data: { maxAliasesPerAccount }`). Delete the accesses the account no longer uses (an expired access keeps its alias until it is deleted), or create the access without `randomAlias`. No alias is reserved by a refused request.
+
+            Also answered for a permission on an [account stream](https://pryv.github.io/customer-resources/system-streams/) that the access cannot hold (`data.param` names the stream id): an unknown account stream, a hidden account stream, a level other than `read` or `none` on an account field or on the account root stream.
           x-pryv-error-ids:
             - invalid-item-id
             - invalid-operation
@@ -2655,7 +2666,7 @@ paths:
           description: |-
             Specific errors:
 
-            - `invalid-operation`: Chain rule violation. `data.offendingChildren` lists shared accesses that would be orphaned by a narrowing; `data.parentExpires` / `data.requestedExpires` are set for expiry-chain rejections.
+            - `invalid-operation`: Chain rule violation. `data.offendingChildren` lists shared accesses that would be orphaned by a narrowing; `data.parentExpires` / `data.requestedExpires` are set for expiry-chain rejections. Also answered for a permission on an [account stream](https://pryv.github.io/customer-resources/system-streams/) that the access cannot hold, as for [create access](https://pryv.github.io/reference/#methods-accesses-accesses-create).
           x-pryv-error-ids:
             - invalid-operation
           content:
@@ -3671,6 +3682,153 @@ paths:
       security:
         - tokenHeader: []
         - tokenQuery: []
+  /audit/summary:
+    get:
+      operationId: audit.getSummary
+      summary: Get audit summary
+      tags:
+        - Audit
+      x-pryv-method-ids:
+        - audit.getSummary
+      description: |-
+        Counts the account's audit rows per hour, day or week over `[fromTime, toTime)`, by method
+        class, with the failed calls as an overlay: an activity chart over any range without
+        listing the rows. Personal accesses only (the account owner's, or a delegate's personal
+        access). Available from 2.0.0-rc.86.
+
+        Each row counts in one class of its method id, whatever its outcome: `reads`, `writes`,
+        `session` or `other`, the classes of `usage` in the [access](https://pryv.github.io/reference/#data-structure-access)
+        structure; `total` is their sum. `errors` counts the failed calls among them (a failed
+        `events.get` is one read and one error). The batch envelope (`callBatch`) is not counted;
+        the calls inside a batch are. The figures cover what the platform records: methods the
+        operator's audit filter leaves out are not counted, so they can differ from an access's
+        lifetime `usage` counters. The summary never counts a row that
+        [events.get](https://pryv.github.io/reference/#methods-events-events-get) would not list to the same caller.
+
+        The answer has one bucket per period of the range, zeros included, in ascending order. The
+        range is not widened: the first and last buckets may be partial, and the first bucket's
+        `time` can be earlier than `fromTime`. A range spans at most 750 buckets (31 days by hour,
+        about 2 years by day). Summaries of one account run one at a time, and only a few run at
+        once on a server: a call that cannot get its turn soon is refused rather than kept
+        waiting.
+      parameters:
+        - in: query
+          name: fromTime
+          required: true
+          schema:
+            allOf:
+              - $ref: "#/components/schemas/timestamp"
+          description: Start of the range (included).
+        - in: query
+          name: toTime
+          required: false
+          schema:
+            allOf:
+              - $ref: "#/components/schemas/timestamp"
+          description: "End of the range (excluded); must be later than `fromTime`. Default: now."
+        - in: query
+          name: bucket
+          required: true
+          schema:
+            type: string
+            enum:
+              - hour
+              - day
+              - week
+          description: The period of a bucket. Weeks start on Monday.
+        - in: query
+          name: timezone
+          required: false
+          schema:
+            type: string
+          description: |-
+            IANA time zone name (e.g. `Europe/Zurich`) in which buckets are aligned: local hours,
+            local midnights, local Mondays. A day is 23 or 25 hours long across a daylight saving
+            change. Default: `UTC`.
+        - in: query
+          name: accessIds
+          required: false
+          schema:
+            type: array
+            items:
+              $ref: "#/components/schemas/identifier"
+          description: |-
+            Count only the rows of these accesses (1 to 50 ids, letters, digits, `_`, `:` and `-`).
+            A base id counts every version of the access; a composite id (`{id}:{serial}`) that
+            version only. A row matching several ids counts once; an unknown id counts nothing.
+            Default: the whole trail.
+          style: form
+          explode: true
+      responses:
+        "200":
+          description: 200 OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  summary:
+                    type: object
+                    description: |-
+                      `{ bucket, timezone, fromTime, toTime, buckets }`: the effective parameters, and
+                      `buckets`, an array of `{ time, total, reads, writes, session, other, errors }` where
+                      `time` is the bucket's start.
+                  meta:
+                    $ref: "#/components/schemas/meta"
+        "400":
+          description: |-
+            Specific errors:
+
+            - `invalid-parameters-format`: A parameter is missing or malformed, the time zone is unknown, `toTime` is not later than
+            `fromTime`, or the range spans more than 750 buckets (`data.maxBuckets`).
+            - `invalid-operation`: The range holds too many audit rows to be summarised in one call
+            (`data.reason: 'summary-too-large'`): ask for a shorter range. No partial answer is given.
+          x-pryv-error-ids:
+            - invalid-parameters-format
+            - invalid-operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/error-response"
+        "403":
+          description: |-
+            Specific errors:
+
+            - `forbidden`: The access is not a personal access.
+          x-pryv-error-ids:
+            - forbidden
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/error-response"
+        "429":
+          description: |-
+            Specific errors:
+
+            - `too-many-requests`: Too many summaries are pending (for the account or on the server), or the summary was
+            interrupted: retry later. No partial answer is given.
+          x-pryv-error-ids:
+            - too-many-requests
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/error-response"
+        "451":
+          description: |-
+            Specific errors:
+
+            - `unavailable-method`: The audit trail is switched off on this platform.
+          x-pryv-error-ids:
+            - unavailable-method
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/error-response"
+        default:
+          $ref: "#/components/responses/usual-errors"
+      security:
+        - tokenHeader: []
+        - tokenQuery: []
   /profile/app:
     get:
       operationId: profile.getApp
@@ -3893,10 +4051,7 @@ paths:
         - Account management
       x-pryv-method-ids:
         - account.get
-      description: |-
-        **(DEPRECATED)** Please use events methods instead.
-
-        Retrieves the user's account information.
+      description: Retrieves the user's account information. Most account fields can also be read as events of the account streams.
       x-pryv-trusted-only: true
       responses:
         "200":
@@ -3934,10 +4089,7 @@ paths:
         - Account management
       x-pryv-method-ids:
         - account.update
-      description: |-
-        **(DEPRECATED)** Please use events methods instead.
-
-        Modifies the user's account information.
+      description: Modifies the user's account information, including the `emails` operations (see the errors below). Editable account fields can also be changed as events of the account streams.
       x-pryv-trusted-only: true
       requestBody:
         required: true
@@ -3979,6 +4131,17 @@ paths:
                         pryvLab: https://{personal-token}@user-123-abc.pryv.me/
                         ownDomain: https://{personal-token}@user-123-abc.${DOMAIN}/
                         dnsLess: https://{personal-token}@${HOSTNAME}/user-123-abc
+        "400":
+          description: |-
+            Specific errors:
+
+            - `invalid-operation`: The update names an account field that is not editable (`data.field`), or an `emails` operation is refused (`data.email`; see the [email verification guide](https://pryv.github.io/guides/email-verification/)).
+          x-pryv-error-ids:
+            - invalid-operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/error-response"
         default:
           $ref: "#/components/responses/usual-errors"
       security:
@@ -5369,6 +5532,73 @@ paths:
         default:
           $ref: "#/components/responses/usual-errors"
       security: []
+  /account/verify-email:
+    post:
+      operationId: account.verifyEmail
+      summary: Verify email address
+      tags:
+        - Account management
+      x-pryv-method-ids:
+        - account.verifyEmail
+      description: |-
+        Marks an email address of the account as verified, with the token mailed to that address when it was added or resent through the `emails` operations of [update account information](https://pryv.github.io/reference/#methods-account-account-update). The mailed link opens the page set by the platform (`auth.emailVerificationPageURL`) with the `verifyToken` and `username` query parameters; that page calls this method. See the [email verification guide](https://pryv.github.io/guides/email-verification/).
+
+        No access token: the mailed token is the credential. This method requires that the `appId` and `Origin` (or `Referer`) header comply with the [trusted app verification](https://pryv.github.io/reference/#basics-trusted-apps-verification).
+      x-pryv-trusted-only: true
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                token:
+                  type: string
+                  description: The verification token mailed to the address (the `verifyToken` query parameter of the link).
+                appId:
+                  type: string
+                  description: Your app's unique identifier.
+              required:
+                - token
+                - appId
+            examples:
+              example-1:
+                value:
+                  token: q8Hn2Lr5sT0vW3yZ6bC9dF1gJ4kM7nP0rS3uX6zA2cE
+                  appId: my-app-id
+      responses:
+        "200":
+          description: 200 OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  email:
+                    type: string
+                    description: The address now verified.
+                  meta:
+                    $ref: "#/components/schemas/meta"
+              examples:
+                example-1:
+                  value:
+                    email: alice.work@example.com
+        "401":
+          description: |-
+            Specific errors:
+
+            - `invalid-access-token`: The token is unknown, expired, already used or belongs to another account: one answer for all of them. Offer to send a new link.
+          x-pryv-error-ids:
+            - invalid-access-token
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/error-response"
+        default:
+          $ref: "#/components/responses/usual-errors"
+      security:
+        - tokenHeader: []
+        - tokenQuery: []
   /delegations/attach-request:
     post:
       operationId: delegations.requestAttach
@@ -6346,7 +6576,9 @@ components:
             3. `write` when `last` starts with `create`, `update`, `delete`, `set`, `replace`, `claim`, `release`, `change`, `accept`, `refuse`, `cancel`, `detach`, `dismiss`, `issue`, `notify`, `request`, `reset`, `verify`, `test`, `transfer`, `deactivate` or `erase`, or is `adminRelease` or `extIdRelease`;
             4. anything else is `other`.
 
-            `usage` is not part of the access's [integrity](https://pryv.github.io/reference/#data-structure-integrity): a client verifying it removes `usage` before hashing, like `lastUsed`, `calls` and `apiEndpoint`, which are not hashed either.
+            The same classes count the audit trail over time in [get audit summary](https://pryv.github.io/reference/#methods-audit-audit-getSummary) (from 2.0.0-rc.86).
+
+            `usage` is not part of the access's [integrity](https://pryv.github.io/reference/#data-structure-integrity): `@pryv/stable-object-representation` leaves it out from version 1.2.0 on, like `lastUsed`, `calls` and `apiEndpoint`, which are not hashed either; with an older version of the library, remove `usage` before hashing.
         expireAfter:
           type: number
           description: |-
@@ -6752,7 +6984,7 @@ components:
         An integrity hash computed from the JSON object it is contained in.
         The hash is prefixed with the data structure it is computed for, as well as a representation version.
 
-        The integrity of an access verifies on the object the API returns, also after the access has been updated (from 2.0.0-rc.84): hash it with `@pryv/stable-object-representation` once `usage` is removed (the library itself leaves out `integrity`, `lastUsed`, `calls` and `apiEndpoint`). A copy returned without credentials (token removed, counterparty URLs rewritten, as in `accessDeletions` or an app's listing of accesses it does not hold the token of) cannot be re-hashed by its receiver: the value is the server's record, which a holder of the credentials can verify after restoring them.
+        The integrity of an access verifies on the object the API returns, also after the access has been updated (from 2.0.0-rc.84): hash it with `@pryv/stable-object-representation`, which leaves out `integrity`, `lastUsed`, `calls`, `apiEndpoint` and, from version 1.2.0 on, `usage` (with an older version, remove `usage` first). A copy returned without credentials (token removed, counterparty URLs rewritten, as in `accessDeletions` or an app's listing of accesses it does not hold the token of) cannot be re-hashed by its receiver: the value is the server's record, which a holder of the credentials can verify after restoring them.
     meta:
       type: object
       properties:
@@ -6785,6 +7017,10 @@ components:
         - `unknown-resource` (404): The resource can't be found.
         - `removed-method` (410): The resource or method has been removed from the API.
         - `too-many-results` (413): The `events.get` method in batch or websocket call yielded too many results. Call the API method directly, narrow the request scope or page the request.
+        - `payload-too-large` (413): The request is larger than the platform accepts: an attached file over the upload size limit, an oversized access request body, or an image with too many pixels to be previewed.
+        - `missing-header` (400): A required HTTP header is missing, e.g. `Content-Type` on a request with a body, or the authorization header of a High-Frequency series call (answered `401` on a series query).
+        - `unsupported-content-type` (415): The request's `Content-Type` is not one the method accepts (`application/json`, and for some methods `application/x-www-form-urlencoded` or `multipart/form-data`).
+        - `unavailable-method` (451): The method is switched off on this platform (e.g. account auto-deletion, account transfers without account delegation, shared secrets).
         - `user-account-relocated` (301): The user has relocated her account to another server. Both the `Location` header and the error's `data` contain the equivalent URL pointing to the physical server now hosting the user's account. This error can only occur between the moment the account is relocated and the moment your DNS is updated to point to the new server. So we're stretching the HTTP convention a little, in that the returned URL should not be used permanently (only until `{username}.pryv.me` points to the correct server again). It's up to you to decide whether to keep it for the duration of the session (if you use sessions), for a given time, etc.
         - `user-intervention-required` (402): The request cannot be served temporarily because the user's account has exceeded its limits. The user must log into her account and fix the issue.
         - `wrong-core` (421): **Multi-core deployments only.** The request reached a core that does not host the requested user account.
@@ -6804,6 +7040,10 @@ components:
         - unknown-resource
         - removed-method
         - too-many-results
+        - payload-too-large
+        - missing-header
+        - unsupported-content-type
+        - unavailable-method
         - user-account-relocated
         - user-intervention-required
         - wrong-core

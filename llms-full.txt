@@ -321,6 +321,14 @@ Parameters: key, signature
 Returns the status and metadata of a shared secret **without consuming it**. Available to the access that created the secret or to a personal token. Never returns the secret payload. An item past its TTL is reported as expired even before i
 Parameters: key
 
+## Audit
+The audit trail of an account records each API call made on it. Its rows are read with [events.get](#methods-events-events-get) on the `:_audit:` streams (`:_audit:access-{accessId}`, `:_audit:action-{methodId}`); the method below computes 
+
+### Get audit summary
+`GET /audit/summary`
+Counts the account's audit rows per hour, day or week over `[fromTime, toTime)`, by method class, with the failed calls as an overlay: an activity chart over any range without listing the rows. Personal accesses only (the account owner's, o
+Parameters: fromTime, toTime, bucket, timezone, accessIds
+
 ## Profile sets
 Methods to read and write profile sets. Profile sets are plain key-value stores of user-level settings.
 
@@ -355,11 +363,11 @@ Methods to manage the user's account.
 
 ### Get account information
 `GET /account`
-**(DEPRECATED)** Please use events methods instead. Retrieves the user's account information.
+Retrieves the user's account information. Most account fields can also be read as events of the account streams.
 
 ### Update account information
 `PUT /account`
-**(DEPRECATED)** Please use events methods instead. Modifies the user's account information.
+Modifies the user's account information, including the `emails` operations (see the errors below). Editable account fields can also be changed as events of the account streams.
 Parameters: update
 
 ### Change password
@@ -426,6 +434,11 @@ Parameters: appId
 `POST /account/reset-password`
 Resets the user's password, authorizing the request with the given reset token (see [request password reset](#methods-account-account-requestPasswordReset) ). Enforces password complexity, reuse and minimum age rules if enabled (set via the
 Parameters: resetToken, newPassword, appId
+
+### Verify email address
+`POST /account/verify-email`
+Marks an email address of the account as verified, with the token mailed to that address when it was added or resent through the `emails` operations of [update account information](#methods-account-account-update). The mailed link opens the
+Parameters: token, appId
 
 ## Account delegation
 Methods to manage account delegation: letting one account (a *delegate*, e.g. a parent or guardian) control another (a *controlled account*, e.g. a child or dependent). A controlled account invites a delegate with [invite a delegate](#metho
@@ -611,17 +624,27 @@ Methods for managing users.
 ### Create user
 `POST /users`
 Creates a new user account. The method's parameters can be customized with the [system streams configuration](/customer-resources/system-streams/). Enforces password complexity rules if enabled (set via the corresponding platform settings).
-Parameters: appId, username, password, email, invitationToken, language, referer, externalId
+Parameters: appId, username, password, email, invitationToken, language, referer, emailProof, externalId
 
 ### Check username
 `GET /{username}/check_username`
-For the single node mode please use [this](/reference/#check-username) API endpoint. Check the availability and validity of a given username.
+Check the availability and validity of a given username. On a DNS-less setup the route is `https://{hostname}/reg/{username}/check_username`.
 Parameters: username
 
 ### Check email existence
 `GET /{email}/check_email`
-Check the existence of an account's email.
+Check whether an account holds an email address. Every call counts in a lookup budget per client address, shared with the other public email lookups. On a DNS-less setup the route is `https://{hostname}/reg/{email}/check_email`.
 Parameters: email
+
+### Request an email challenge
+`POST /email-challenge`
+First step of the email verification at registration, on platforms where the operator requires a proved address before an account is created (`account.emailVerification.requireAtRegistration`, off by default). Mails a one-time code to the a
+Parameters: email, language
+
+### Verify an email challenge
+`POST /email-challenge/verify`
+Second step of the email verification at registration: exchanges the code mailed by [request an email challenge](#request-an-email-challenge) for an `emailProof`, to pass to [create user](#create-user). The proof is bound to the address and
+Parameters: email, code
 
 ### Get username from email
 `GET /{email}/username`
@@ -676,6 +699,11 @@ Parameters: count, message
 `POST /reg/records`
 Admin endpoint for updating runtime DNS entries (e.g. ACME challenge records for SSL certificate provisioning). Records are persisted to PlatformDB and propagated to all cores in a multi-core deployment. Requires admin authorization. DNS re
 Parameters: subdomain, records
+
+### Delete DNS records
+`DELETE /reg/records/{subdomain}`
+Admin endpoint removing the runtime DNS entries of a subdomain set with [update DNS records](#update-dns-records). The removal is persisted to PlatformDB and propagated to all cores in a multi-core deployment. Requires admin authorization (
+Parameters: subdomain
 
 # Admin API
 

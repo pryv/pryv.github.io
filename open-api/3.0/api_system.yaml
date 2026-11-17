@@ -15,7 +15,7 @@ info:
     url: https://opensource.org/licenses/MIT
 x-generated-from:
   referenceVersion: 2.0.0-pre
-  commit: ac27d95
+  commit: 5c297aa
 servers:
   - url: https://reg.{domain}
     description: "Register service (methods marked x-pryv-server: register)"
@@ -744,6 +744,9 @@ paths:
                 referer:
                   type: string
                   description: A referer id potentially used for analytics.
+                emailProof:
+                  type: string
+                  description: The proof that the holder controls `email`, from [verify an email challenge](https://pryv.github.io/reference-system/#verify-an-email-challenge). Required on platforms that require email verification at registration; ignored otherwise.
                 externalId:
                   type: object
                   description: "A record id of your system to link to the new account: `{ namespace, blindedValue, mode? }`, as in the `externalId` of the [auth request](https://pryv.github.io/reference/#auth-request) (see [External ids](https://pryv.github.io/customer-resources/external-ids/)). An id nobody holds is linked to the new account. An id another account holds leaves the new account unlinked in `hint` mode (send the user to sign in with the account that holds it), and refuses the registration with `409 external-id-already-claimed` in `forced` mode, before anything is reserved. A malformed value or an unknown namespace refuse the registration before anything is reserved. Requires an open-pryv.io release later than 2.0.0-rc.56, and 2.0.0-rc.59 or later for the `forced` mode (an older core refuses it with `invalid-parameters-format`)."
@@ -790,9 +793,20 @@ paths:
           description: |-
             Specific errors:
 
-            - `invalid-parameters-format`: The password does not match password complexity rules (if enabled), or the `externalId` is malformed or names an unknown namespace (`data.param` names the field, never the value).
+            - `invalid-parameters-format`: A parameter is missing or malformed, the password does not match password complexity rules (if enabled), or the `externalId` is malformed or names an unknown namespace (`data.param` names the field, never the value). For the registration fields, each entry of the `data` array carries a `code` naming the field and the fault: `appid-invalid`, `username-required`, `username-invalid`, `password-required`, `password-invalid`, `email-required`, `email-invalid`, `invitationToken-invalid`, `referer-invalid` or `language-invalid` (with `message` and `param`).
           x-pryv-error-ids:
             - invalid-parameters-format
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/error-response"
+        "403":
+          description: |-
+            Specific errors:
+
+            - `forbidden`: The platform requires email verification at registration and `emailProof` is missing, expired or not for this `email` (`data.emailVerificationRequired: true`).
+          x-pryv-error-ids:
+            - forbidden
           content:
             application/json:
               schema:
@@ -830,10 +844,7 @@ paths:
         - Users
       x-pryv-method-ids:
         - username.check
-      description: |-
-        For the single node mode please use [this](https://pryv.github.io/reference/#check-username) API endpoint.
-
-        Check the availability and validity of a given username.
+      description: Check the availability and validity of a given username. On a DNS-less setup the route is `https://{hostname}/reg/{username}/check_username`.
       x-pryv-server: register
       parameters:
         - in: path
@@ -852,13 +863,7 @@ paths:
                 properties:
                   reserved:
                     type: boolean
-                    description: Set to `true` if the given username is already taken, `false` otherwise.
-                  reason:
-                    type: string
-                    description: |-
-                      Optional indication of the reason why the username is reserved.
-                      If it mentions `RESERVED_USER_NAME`, this means that the given username is part of
-                      the reserved usernames list configured within the register service.
+                    description: "`true` if registration would refuse the username: an account holds it (as its username or a former one), or the platform answers that name itself (reserved names, DNS records). `false` otherwise."
                   meta:
                     $ref: "#/components/schemas/meta"
               examples:
@@ -868,14 +873,13 @@ paths:
                 special-case-where-the-username-is-part-of-the-r:
                   value:
                     reserved: true
-                    reason: RESERVED_USER_NAME
         "400":
           description: |-
             Specific errors:
 
-            - `INVALID_USERNAME`: The given username is invalid because of an unrecognized format.
+            - `invalid-parameters-format`: The username is malformed: the `data` array entry carries `code: 'username-invalid'`.
           x-pryv-error-ids:
-            - INVALID_USERNAME
+            - invalid-parameters-format
           content:
             application/json:
               schema:
@@ -891,7 +895,7 @@ paths:
         - Users
       x-pryv-method-ids:
         - emails.check
-      description: Check the existence of an account's email.
+      description: Check whether an account holds an email address. Every call counts in a lookup budget per client address, shared with the other public email lookups. On a DNS-less setup the route is `https://{hostname}/reg/{email}/check_email`.
       x-pryv-server: register
       parameters:
         - in: path
@@ -908,22 +912,225 @@ paths:
               schema:
                 type: object
                 properties:
-                  exists:
+                  reserved:
                     type: boolean
-                    description: Set to `true` if the email address is already registered, `false` otherwise.
+                    description: "`false`: no account holds the address (an address an account holds answers `409 item-already-exists`)."
                   meta:
                     $ref: "#/components/schemas/meta"
               examples:
                 checking-the-existence-of-an-account-s-email-add:
                   value:
-                    exists: false
+                    reserved: false
         "400":
           description: |-
             Specific errors:
 
-            - `INVALID_EMAIL`: The email address is invalid because of an unrecognized format.
+            - `invalid-parameters-format`: The address is malformed: the `data` array entry carries `code: 'email-invalid'`.
           x-pryv-error-ids:
-            - INVALID_EMAIL
+            - invalid-parameters-format
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/error-response"
+        "409":
+          description: |-
+            Specific errors:
+
+            - `item-already-exists`: An account holds the address (`data.email`).
+          x-pryv-error-ids:
+            - item-already-exists
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/error-response"
+        "429":
+          description: |-
+            Specific errors:
+
+            - `too-many-attempts`: The email-lookup budget of this client address is spent. Retry after the `Retry-After` header (seconds).
+          x-pryv-error-ids:
+            - too-many-attempts
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/error-response"
+        default:
+          $ref: "#/components/responses/usual-errors"
+      security: []
+  /email-challenge:
+    post:
+      operationId: emailChallenge.request
+      summary: Request an email challenge
+      tags:
+        - Users
+      x-pryv-method-ids:
+        - emailChallenge.request
+      description: |-
+        First step of the email verification at registration, on platforms where the operator requires a proved address before an account is created (`account.emailVerification.requireAtRegistration`, off by default). Mails a one-time code to the address; exchange it with [verify an email challenge](https://pryv.github.io/reference-system/#verify-an-email-challenge) for the `emailProof` that [create user](https://pryv.github.io/reference-system/#create-user) then requires. See the [email verification guide](https://pryv.github.io/guides/email-verification/).
+
+        The code has 8 characters, shown as `XXXX-XXXX`; it is single-use and short-lived (10 minutes by default). Requesting a new code invalidates the previous one for that address. No authentication; the limits are kept per address. On a DNS-less setup the route is `https://{hostname}/reg/email-challenge`.
+      x-pryv-server: register
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  description: The address to prove.
+                language:
+                  type: string
+                  description: The language of the mail, as a 2-letter ISO language code (the platform's default language otherwise).
+              required:
+                - email
+            examples:
+              requesting-a-code:
+                value:
+                  email: joseph-brenner@pryv.me
+                  language: en
+      responses:
+        "200":
+          description: 200 OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  sent:
+                    type: boolean
+                    description: "`true`: the code was mailed."
+                  meta:
+                    $ref: "#/components/schemas/meta"
+              examples:
+                requesting-a-code:
+                  value:
+                    sent: true
+        "400":
+          description: |-
+            Specific errors:
+
+            - `invalid-parameters-format`: The address is malformed, or the mail server refused it for good (`data: { email, reason: 'recipient-rejected' }`; the challenge is released).
+          x-pryv-error-ids:
+            - invalid-parameters-format
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/error-response"
+        "403":
+          description: |-
+            Specific errors:
+
+            - `forbidden`: The platform does not require email verification at registration (`data.emailVerificationRequired: false`).
+          x-pryv-error-ids:
+            - forbidden
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/error-response"
+        "409":
+          description: |-
+            Specific errors:
+
+            - `item-already-exists`: An account already holds the address (`data.email`).
+          x-pryv-error-ids:
+            - item-already-exists
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/error-response"
+        "429":
+          description: |-
+            Specific errors:
+
+            - `too-many-attempts`: A limit was reached: `data.reason` is `cooldown` (wait `data.retryAfterSeconds`, also in the `Retry-After` header), `daily-limit` or `failure-budget` (come back later). The lookups of the address also count in the per-client-address email-lookup budget.
+          x-pryv-error-ids:
+            - too-many-attempts
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/error-response"
+        default:
+          $ref: "#/components/responses/usual-errors"
+      security: []
+  /email-challenge/verify:
+    post:
+      operationId: emailChallenge.verify
+      summary: Verify an email challenge
+      tags:
+        - Users
+      x-pryv-method-ids:
+        - emailChallenge.verify
+      description: "Second step of the email verification at registration: exchanges the code mailed by [request an email challenge](https://pryv.github.io/reference-system/#request-an-email-challenge) for an `emailProof`, to pass to [create user](https://pryv.github.io/reference-system/#create-user). The proof is bound to the address and expires (30 minutes by default). The separator and the case of the code do not matter. In a cluster the code verifies on any core. On a DNS-less setup the route is `https://{hostname}/reg/email-challenge/verify`."
+      x-pryv-server: register
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  description: The address the code was sent to.
+                code:
+                  type: string
+                  description: The code, as the holder typed it.
+              required:
+                - email
+                - code
+            examples:
+              exchanging-a-code-for-a-proof:
+                value:
+                  email: joseph-brenner@pryv.me
+                  code: K7M4-P9RX
+      responses:
+        "200":
+          description: 200 OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  emailProof:
+                    type: string
+                    description: The proof to pass as `emailProof` to [create user](https://pryv.github.io/reference-system/#create-user).
+                  meta:
+                    $ref: "#/components/schemas/meta"
+              examples:
+                exchanging-a-code-for-a-proof:
+                  value:
+                    emailProof: chtplghfp0000hqjx814u6393
+        "401":
+          description: |-
+            Specific errors:
+
+            - `invalid-access-token`: The code is wrong, unknown or expired (one answer for all). `data.attemptsRemaining` says how many tries the pending code has left.
+          x-pryv-error-ids:
+            - invalid-access-token
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/error-response"
+        "403":
+          description: |-
+            Specific errors:
+
+            - `forbidden`: The platform does not require email verification at registration (`data.emailVerificationRequired: false`).
+          x-pryv-error-ids:
+            - forbidden
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/error-response"
+        "429":
+          description: |-
+            Specific errors:
+
+            - `too-many-attempts`: The attempts on the code are spent (`data.reason: 'exhausted'`): the code is discarded, request a new one.
+          x-pryv-error-ids:
+            - too-many-attempts
           content:
             application/json:
               schema:
@@ -972,9 +1179,9 @@ paths:
           description: |-
             Specific errors:
 
-            - `UNKNOWN_EMAIL`: The given email address is unknown (unregistered).
+            - `unknown-email`: The given email address is unknown (unregistered).
           x-pryv-error-ids:
-            - UNKNOWN_EMAIL
+            - unknown-email
           content:
             application/json:
               schema:
@@ -1132,7 +1339,7 @@ paths:
       description: |-
         Deletes a user account. This method must be enabled in the platform configuration. You should fetch the URL of the core where the user data is stored using the [Get core](https://pryv.github.io/reference-system/#get-core) method.
         - When performed by the account owner, this method requires a personal token.
-        - For platform administrators, please refer to [its Delete user method](https://pryv.github.io/reference-admin/#delete-user).
+        - For platform administrators, please refer to [its Delete user method](https://pryv.github.io/reference-admin/#delete-a-user-full).
         - For Open Pryv.io users, this method requires to provide the [auth:adminAccessKey](https://github.com/pryv/open-pryv.io#config) as `Authorization` header.
       x-pryv-server: core
       x-pryv-trusted-only: true
@@ -1585,6 +1792,109 @@ paths:
                     description: "`ok` on success."
                   meta:
                     $ref: "#/components/schemas/meta"
+        "400":
+          description: |-
+            Specific errors:
+
+            - `invalid-parameters`: The body is not an object, `subdomain` or `records` is missing or of the wrong type, or the record is not a valid DNS record (the message names the first problem).
+          x-pryv-error-ids:
+            - invalid-parameters
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/error-response"
+        "404":
+          description: |-
+            Specific errors:
+
+            - `unknown-resource`: The admin key is missing or wrong.
+          x-pryv-error-ids:
+            - unknown-resource
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/error-response"
+        "409":
+          description: |-
+            Specific errors:
+
+            - `item-already-exists`: The subdomain has no record yet and an account holds that name.
+          x-pryv-error-ids:
+            - item-already-exists
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/error-response"
+        "500":
+          description: |-
+            Specific errors:
+
+            - `unexpected-error`: The record could not be stored.
+          x-pryv-error-ids:
+            - unexpected-error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/error-response"
+        default:
+          $ref: "#/components/responses/usual-errors"
+      security:
+        - adminKey: []
+  /reg/records/{subdomain}:
+    delete:
+      operationId: dns.records.delete
+      summary: Delete DNS records
+      tags:
+        - Users
+      x-pryv-method-ids:
+        - dns.records.delete
+      description: Admin endpoint removing the runtime DNS entries of a subdomain set with [update DNS records](https://pryv.github.io/reference-system/#update-dns-records). The removal is persisted to PlatformDB and propagated to all cores in a multi-core deployment. Requires admin authorization (a missing or wrong key answers `404`, like the other admin routes).
+      x-pryv-server: register
+      parameters:
+        - in: path
+          name: subdomain
+          required: true
+          schema:
+            type: string
+          description: The subdomain whose records are removed.
+      responses:
+        "200":
+          description: 200 OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  subdomain:
+                    type: string
+                    description: The subdomain.
+                  status:
+                    type: string
+                    description: "`deleted` on success."
+                  meta:
+                    $ref: "#/components/schemas/meta"
+        "404":
+          description: |-
+            Specific errors:
+
+            - `unknown-resource`: No DNS record for this subdomain (or the admin key is missing or wrong).
+          x-pryv-error-ids:
+            - unknown-resource
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/error-response"
+        "500":
+          description: |-
+            Specific errors:
+
+            - `unexpected-error`: The record could not be removed.
+          x-pryv-error-ids:
+            - unexpected-error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/error-response"
         default:
           $ref: "#/components/responses/usual-errors"
       security:
@@ -1640,6 +1950,10 @@ components:
         - `unknown-resource` (404): The resource can't be found.
         - `removed-method` (410): The resource or method has been removed from the API.
         - `too-many-results` (413): The `events.get` method in batch or websocket call yielded too many results. Call the API method directly, narrow the request scope or page the request.
+        - `payload-too-large` (413): The request is larger than the platform accepts: an attached file over the upload size limit, an oversized access request body, or an image with too many pixels to be previewed.
+        - `missing-header` (400): A required HTTP header is missing, e.g. `Content-Type` on a request with a body, or the authorization header of a High-Frequency series call (answered `401` on a series query).
+        - `unsupported-content-type` (415): The request's `Content-Type` is not one the method accepts (`application/json`, and for some methods `application/x-www-form-urlencoded` or `multipart/form-data`).
+        - `unavailable-method` (451): The method is switched off on this platform (e.g. account auto-deletion, account transfers without account delegation, shared secrets).
         - `user-account-relocated` (301): The user has relocated her account to another server. Both the `Location` header and the error's `data` contain the equivalent URL pointing to the physical server now hosting the user's account. This error can only occur between the moment the account is relocated and the moment your DNS is updated to point to the new server. So we're stretching the HTTP convention a little, in that the returned URL should not be used permanently (only until `{username}.pryv.me` points to the correct server again). It's up to you to decide whether to keep it for the duration of the session (if you use sessions), for a given time, etc.
         - `user-intervention-required` (402): The request cannot be served temporarily because the user's account has exceeded its limits. The user must log into her account and fix the issue.
         - `wrong-core` (421): **Multi-core deployments only.** The request reached a core that does not host the requested user account.
@@ -1659,6 +1973,10 @@ components:
         - unknown-resource
         - removed-method
         - too-many-results
+        - payload-too-large
+        - missing-header
+        - unsupported-content-type
+        - unavailable-method
         - user-account-relocated
         - user-intervention-required
         - wrong-core
