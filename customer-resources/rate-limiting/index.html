@@ -98,6 +98,12 @@
 <td>2.0.0-rc.47</td>
 </tr>
 <tr>
+<td>Password checks in progress, per API worker: at most <code dir="auto">passwordCheckConcurrency</code> (2) password hashes and checks (and OAuth client-secret checks) at a time, with up to <code dir="auto">passwordCheckQueue</code> (50) waiting at most 10 s for a turn. Beyond that the call is refused unchecked: <code dir="auto">429 too-many-requests</code> with <code dir="auto">Retry-After: 5</code> on the API, <code dir="auto">503</code> with <code dir="auto">error: "temporarily_unavailable"</code> and <code dir="auto">Retry-After</code> on the OAuth endpoints. A refusal is not a failed attempt. Keep the concurrency below the thread pool size (<code dir="auto">UV_THREADPOOL_SIZE</code>, 16 in the Docker image, 4 otherwise); <code dir="auto">0</code> disables the limit.</td>
+<td><code dir="auto">auth/login</code>, <code dir="auto">account.changePassword</code>, <code dir="auto">account/reset-password</code>, <code dir="auto">mfa/recover</code>, the MFA step-up by password, registration, <code dir="auto">POST /oauth2/token</code> (client secret), <code dir="auto">/introspect</code>, <code dir="auto">/revoke</code></td>
+<td><code dir="auto">auth.passwordCheckConcurrency</code>, <code dir="auto">auth.passwordCheckQueue</code></td>
+<td>2.0.0-rc.87</td>
+</tr>
+<tr>
 <td>Failed second factors: 5 wrong codes end the pending MFA session (<code dir="auto">401 invalid-access-token</code>, the user logs in again); per account, after 3 failures each further one delays the next attempt, doubling from 2 s to 300 s, <code dir="auto">429 too-many-attempts</code> with <code dir="auto">Retry-After</code></td>
 <td>MFA <code dir="auto">verify</code>, <code dir="auto">confirm</code>, <code dir="auto">challenge</code>, and a step-up by code</td>
 <td><code dir="auto">services.mfa.attempts</code> (see <a href="/customer-resources/mfa/#authenticator-app-totp">MFA</a>)</td>
