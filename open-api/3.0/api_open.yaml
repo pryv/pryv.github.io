@@ -15,7 +15,7 @@ info:
     url: https://opensource.org/licenses/MIT
 x-generated-from:
   referenceVersion: 2.0.0-pre
-  commit: 59a1fe9
+  commit: 99da344
 servers:
   - url: https://{username}.{domain}
     description: Account endpoint, DNS form
@@ -102,7 +102,7 @@ paths:
                     description: The root URL of the platform's account app (self-service account management, e.g. app-web-user-account), when the platform names one. The lib-js sign-in button uses it for its *Manage my account* link.
                   features:
                     type: object
-                    description: 'Capabilities of the platform, so clients need not probe for them. Among them: `noHF` (no high-frequency series), `contentQueries` (content queries on [events.get](https://pryv.github.io/reference/#get-events)), `mfa.methods` (active multi-factor methods), `emailVerification`, `passwordResetByEmail` (`true` when a [password-reset request](https://pryv.github.io/reference/#methods-account-account-requestPasswordReset) mails a reset link: the reset mail is switched on and mail is configured; the request answers the same either way, so a client can tell "check your mailbox" from "ask the platform operator"), `delegation` (`true` when [account delegation](https://pryv.github.io/guides/account-delegation/) is available: an auth page may then offer to grant an app access for an account the user controls), and `autoDeletion` (present when an account holder may [schedule the deletion of the account](https://pryv.github.io/reference/#methods-account-account-getAutoDeletion): `triggers` (`date`, and `inactivity` where the platform records account use), `actions` (the actions a holder may choose, `delete` only where the holder may delete the account themselves; may be empty), `reminderLeadDays` (days before the deletion the reminders are sent, e.g. `[60, 30, 7, 1]`), `bounds` (`minDays`, `maxDays`, `minLeadDays`), `userOverride`, `allowUserOptOut` and `mailAvailable`; absent when the platform turned the feature off). An absent key means an older server: treat the capability as unknown.'
+                    description: 'Capabilities of the platform, so clients need not probe for them. Among them: `noHF` (no high-frequency series), `contentQueries` (content queries on [events.get](https://pryv.github.io/reference/#get-events)), `mfa.methods` (active multi-factor methods), `emailVerification`, `passwordResetByEmail` (`true` when a [password-reset request](https://pryv.github.io/reference/#methods-account-account-requestPasswordReset) mails a reset link: the reset mail is switched on and mail is configured; the request answers the same either way, so a client can tell "check your mailbox" from "ask the platform operator"), `delegation` (`true` when [account delegation](https://pryv.github.io/guides/account-delegation/) is available: an auth page may then offer to grant an app access for an account the user controls), and `autoDeletion` (present when an account holder may [schedule the deletion of the account](https://pryv.github.io/reference/#methods-account-account-getAutoDeletion): `triggers` (`date`, and `inactivity` where the platform records account use), `actions` (the actions a holder may choose: `delete` only where the holder may delete the account themselves, `transfer` where account delegation, mail and an account app make a transfer to a beneficiary possible; may be empty), `reminderLeadDays` (days before the deletion the reminders are sent, e.g. `[60, 30, 7, 1]`), `bounds` (`minDays`, `maxDays`, `minLeadDays`), `userOverride`, `allowUserOptOut` and `mailAvailable`; absent when the platform turned the feature off). An absent key means an older server: treat the capability as unknown.'
                   meta:
                     $ref: "#/components/schemas/meta"
               examples:
@@ -4997,12 +4997,12 @@ paths:
                             enum:
                               - delete
                               - transfer
-                            description: What happens at the deadline. Only `delete` is offered today; `transfer` is to come.
+                            description: "What happens at the deadline: `delete`, or `transfer` to a beneficiary (holder's setting only; a platform preset always deletes)."
                         description: The policy in effect for the account.
                       setting:
                         type: object
                         nullable: true
-                        description: "The holder's own setting, `null` when the account follows the platform's policy: `mode`, `date` or `inactivityDays` as in `effective`, `action`, `acknowledgedNoReminders` (`true` when it was set on an account that cannot receive reminders) and `updatedAt` (when it was last changed)."
+                        description: "The holder's own setting, `null` when the account follows the platform's policy: `mode`, `date` or `inactivityDays` as in `effective`, `action`, `transfer` (with `action: \"transfer\"`: `email`, `notifyBeneficiary`, `fallback`, and `identityGiven: true` when a name or a date of birth is stored; those are never answered), `acknowledgedNoReminders` (`true` when it was set on an account that cannot receive reminders) and `updatedAt` (when it was last changed)."
                       lastActivity:
                         type: object
                         properties:
@@ -5079,7 +5079,14 @@ paths:
                         type: array
                         items:
                           type: string
-                        description: The actions the holder may choose (`delete` only where the holder may delete the account themselves); empty when none.
+                        description: "The actions the holder may choose: `delete` only where the holder may delete the account themselves, `transfer` where the platform can run a [transfer](https://pryv.github.io/customer-resources/account-auto-deletion/#transfer-to-a-beneficiary) (account delegation on, mail, an account app); empty when none."
+                      transfer:
+                        type: object
+                        nullable: true
+                        description: "The current or last transfer of the account, `null` when there was none: `status` (`named`: the beneficiary was told at setup; `open`: the claim window is open; `claimed`: claimed by an account, its acceptance pending; `completed`, `declined`, `cancelled`, `lapsed`: the window ended without a claim and the account was kept; `fallback-delete`), `email` (the beneficiary's address), `beneficiaryNotifiedAt`, `openedAt` and `endsAt` (the claim window), `claimedBy` (`{ username, at }`), `failedClaims` (`{ count, lastAt }`: claims made with a wrong link; they refuse nothing), `ownerNotifiedAt`, `closedAt` and `closedReason` (`owner-activity`, `delegate-activity`, `owner-change`, `declined`). Never the beneficiary's name or date of birth."
+                      claimWindowDays:
+                        type: number
+                        description: How long a beneficiary has to claim the account once a transfer starts, in days.
                     description: The account's auto-deletion schedule. Times are [timestamps](https://pryv.github.io/reference/#data-structure-timestamp) (seconds).
                   meta:
                     $ref: "#/components/schemas/meta"
@@ -5160,6 +5167,7 @@ paths:
         - **What the platform allows** (see `bounds`, `userOverride`, `allowUserOptOut` and `actions` in the answer, and `features.autoDeletion` in [service info](https://pryv.github.io/reference/#service-info)): `inactivityDays` between `minDays` and `maxDays` (by default 90 to 3650), a `date` at least `minLeadDays` days from now (by default 14), a chosen date or period only when `userOverride` is true, `never` while a platform preset covers the account only when `allowUserOptOut` is true, `inactivity` only where the platform records account use (`features.autoDeletion.triggers`). The `delete` action is offered only where the holder may delete the account themselves (platform setting `user-account.delete` with `personalToken`): nobody schedules what they could not do directly.
         - **No reminder possible.** On an account that has no email address, or on a platform that sends no mail, a date or a period is accepted only with `acknowledgeNoReminders: true`.
         - **Confirmation.** Every change, clearing included, is confirmed by a mail to the account's email address; that mail is the first notice of a schedule. A mail that fails does not fail the change.
+        - **Transfer.** With `action: "transfer"` the account is not deleted at the deadline: a claim window opens, the beneficiary is mailed a claim link and becomes the account's controller ([account delegation](https://pryv.github.io/guides/account-delegation/)) by claiming it with [transfer claim](https://pryv.github.io/reference/#methods-account-account-transferClaim). Setting or changing a transfer (beneficiary, `fallback`, `notifyBeneficiary`, name or date of birth) needs the password, and so does going from `transfer` to `delete`. With `notifyBeneficiary: "atSetup"` the beneficiary is mailed at once, with a link to [decline](https://pryv.github.io/reference/#methods-account-account-transferDecline). In `inactivity` mode, use of the account before a claim cancels the transfer and restarts the clock. At the end of the window without a claim, `fallback` applies: `keep` leaves the account (the setting becomes `never`, or the platform's policy where opting out is not allowed), `delete` erases it as a scheduled deletion would. See [Account auto-deletion](https://pryv.github.io/customer-resources/account-auto-deletion/#transfer-to-a-beneficiary).
       x-pryv-trusted-only: true
       requestBody:
         required: true
@@ -5187,7 +5195,10 @@ paths:
                   enum:
                     - delete
                     - transfer
-                  description: "With `date` or `inactivity`: what happens at the deadline. Default `delete`, the only action offered today (`transfer` is to come); an action the platform does not offer is refused."
+                  description: "With `date` or `inactivity`: what happens at the deadline, `delete` (default) or `transfer`; an action the platform does not offer is refused."
+                transfer:
+                  type: object
+                  description: "With `action: \"transfer\"` (refused otherwise): `email` (required, the beneficiary's address, not the account's own), `notifyBeneficiary` (required: `atSetup` mails the beneficiary now with a decline link, `atTrigger` only when the transfer starts), `fallback` (required: `delete` or `keep`, what happens without a claim; `delete` only where the holder may delete the account), and optionally `name` and `dateOfBirth` (`YYYY-MM-DD`). Name and date of birth are only used by the platform operator to identify a beneficiary the email cannot reach; they are stored encrypted, never answered, and erased when the transfer ends. Sending either replaces both (`\"\"` and `\"\"` remove them); sending neither keeps them for the same beneficiary."
                 acknowledgeNoReminders:
                   type: boolean
                   enum:
@@ -5247,12 +5258,12 @@ paths:
                             enum:
                               - delete
                               - transfer
-                            description: What happens at the deadline. Only `delete` is offered today; `transfer` is to come.
+                            description: "What happens at the deadline: `delete`, or `transfer` to a beneficiary (holder's setting only; a platform preset always deletes)."
                         description: The policy in effect for the account.
                       setting:
                         type: object
                         nullable: true
-                        description: "The holder's own setting, `null` when the account follows the platform's policy: `mode`, `date` or `inactivityDays` as in `effective`, `action`, `acknowledgedNoReminders` (`true` when it was set on an account that cannot receive reminders) and `updatedAt` (when it was last changed)."
+                        description: "The holder's own setting, `null` when the account follows the platform's policy: `mode`, `date` or `inactivityDays` as in `effective`, `action`, `transfer` (with `action: \"transfer\"`: `email`, `notifyBeneficiary`, `fallback`, and `identityGiven: true` when a name or a date of birth is stored; those are never answered), `acknowledgedNoReminders` (`true` when it was set on an account that cannot receive reminders) and `updatedAt` (when it was last changed)."
                       lastActivity:
                         type: object
                         properties:
@@ -5329,7 +5340,14 @@ paths:
                         type: array
                         items:
                           type: string
-                        description: The actions the holder may choose (`delete` only where the holder may delete the account themselves); empty when none.
+                        description: "The actions the holder may choose: `delete` only where the holder may delete the account themselves, `transfer` where the platform can run a [transfer](https://pryv.github.io/customer-resources/account-auto-deletion/#transfer-to-a-beneficiary) (account delegation on, mail, an account app); empty when none."
+                      transfer:
+                        type: object
+                        nullable: true
+                        description: "The current or last transfer of the account, `null` when there was none: `status` (`named`: the beneficiary was told at setup; `open`: the claim window is open; `claimed`: claimed by an account, its acceptance pending; `completed`, `declined`, `cancelled`, `lapsed`: the window ended without a claim and the account was kept; `fallback-delete`), `email` (the beneficiary's address), `beneficiaryNotifiedAt`, `openedAt` and `endsAt` (the claim window), `claimedBy` (`{ username, at }`), `failedClaims` (`{ count, lastAt }`: claims made with a wrong link; they refuse nothing), `ownerNotifiedAt`, `closedAt` and `closedReason` (`owner-activity`, `delegate-activity`, `owner-change`, `declined`). Never the beneficiary's name or date of birth."
+                      claimWindowDays:
+                        type: number
+                        description: How long a beneficiary has to claim the account once a transfer starts, in days.
                     description: The account's auto-deletion schedule. Times are [timestamps](https://pryv.github.io/reference/#data-structure-timestamp) (seconds).
                   meta:
                     $ref: "#/components/schemas/meta"
@@ -5401,11 +5419,13 @@ paths:
           description: |-
             Specific errors:
 
-            - `invalid-parameters-format`: A parameter is malformed or unknown: `date` is not an instant with a time and an offset, or `date` / `inactivityDays` is missing for its mode or given with another one (`data.param` names it).
+            - `invalid-parameters-format`: A parameter is malformed or unknown: `date` is not an instant with a time and an offset, or `date` / `inactivityDays` is missing for its mode or given with another one, or `transfer` without `action: "transfer"` and a date or a period (`data.param` names it).
+            - `auto-deletion-transfer-invalid`: The `transfer` settings are not valid; `data.param` names the field (`email`, `notifyBeneficiary`, `fallback`, `dateOfBirth`).
             - `auto-deletion-out-of-bounds`: `inactivityDays` is outside the platform's range, or `date` is nearer than `minLeadDays`; `data` names the parameter (`param`) and the bound (`minDays` and `maxDays`, or `minLeadDays`).
             - `auto-deletion-no-email`: No reminder can reach the account (`data.reason`: `no-email`, or `mail-not-configured`): send `acknowledgeNoReminders: true` to set it anyway.
           x-pryv-error-ids:
             - invalid-parameters-format
+            - auto-deletion-transfer-invalid
             - auto-deletion-out-of-bounds
             - auto-deletion-no-email
           content:
@@ -5455,6 +5475,192 @@ paths:
             - `unavailable-method`: The platform has turned the feature off.
           x-pryv-error-ids:
             - unavailable-method
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/error-response"
+        default:
+          $ref: "#/components/responses/usual-errors"
+      security:
+        - tokenHeader: []
+        - tokenQuery: []
+  /account/auto-deletion/transfer-claim:
+    post:
+      operationId: account.transferClaim
+      summary: Claim a transferred account
+      tags:
+        - Account management
+      x-pryv-method-ids:
+        - account.transferClaim
+      description: |-
+        Claims an account its holder set to be transferred, with the token of the claim link mailed to the beneficiary (no access token: the link is the credential). Called on the core of the account being transferred (the username in the link), with `claimant`: the account, on any core of the platform, that takes over. Not available inside a batch call. This method requires that the `appId` and `Origin` (or `Referer`) header comply with the [trusted app verification](https://pryv.github.io/reference/#basics-trusted-apps-verification).
+
+        The first claim binds the transfer to `claimant` and sends it a delegation invite on the holder's behalf (`status: "invited"`). The claimant accepts it with [accept attach](https://pryv.github.io/guides/account-delegation/) (`delegations.acceptAttach`) on its own core, signed in to its own account; the next claim then completes the transfer (`status: "completed"`): the claimant controls the account, the holder's auto-deletion setting is cleared, the beneficiary's name and date of birth are erased, and both are mailed. A repeat by the same account answers the same; an invite that expired inside the window is sent again; a claimant that already controls the account completes the transfer at once.
+
+        A valid link always proceeds. Claims with a wrong link count on the client address's budget of failed secrets (as wrong passwords do) and are reported to the holder (`transfer.failedClaims`); they refuse nothing else.
+      x-pryv-trusted-only: true
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                appId:
+                  type: string
+                  description: Your app's unique identifier.
+                token:
+                  type: string
+                  description: The token of the claim link.
+                claimant:
+                  type: string
+                  description: The username of the account taking over.
+              required:
+                - appId
+                - token
+                - claimant
+            examples:
+              example-1:
+                value:
+                  appId: my-app-id
+                  token: Zc1tPa6iKqZp7oF2b0p3jw0K6RkzN1mWl8E2u3V4x5Y
+                  claimant: user-123-abc
+      responses:
+        "200":
+          description: 200 OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  transfer:
+                    type: object
+                    description: "`{ status, username }`: `status` is `invited` (accept the invite on the claimant's core, then claim again) or `completed`; `username` is the transferred account."
+                  meta:
+                    $ref: "#/components/schemas/meta"
+              examples:
+                example-1:
+                  value:
+                    transfer:
+                      status: invited
+                      username: chuangzi
+        "403":
+          description: |-
+            Specific errors:
+
+            - `auto-deletion-transfer-invalid-link`: The token is not valid (unknown, replaced by a newer transfer, or the transfer was cancelled or declined). One answer for all cases.
+          x-pryv-error-ids:
+            - auto-deletion-transfer-invalid-link
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/error-response"
+        "409":
+          description: |-
+            Specific errors:
+
+            - `auto-deletion-transfer-claimed`: Another account already claimed this transfer.
+          x-pryv-error-ids:
+            - auto-deletion-transfer-claimed
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/error-response"
+        "410":
+          description: |-
+            Specific errors:
+
+            - `auto-deletion-transfer-expired`: The claim window has ended.
+          x-pryv-error-ids:
+            - auto-deletion-transfer-expired
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/error-response"
+        "429":
+          description: |-
+            Specific errors:
+
+            - `too-many-attempts`: Too many failed secrets from the client address. Retry after the `Retry-After` header (seconds).
+          x-pryv-error-ids:
+            - too-many-attempts
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/error-response"
+        default:
+          $ref: "#/components/responses/usual-errors"
+      security:
+        - tokenHeader: []
+        - tokenQuery: []
+  /account/auto-deletion/transfer-decline:
+    post:
+      operationId: account.transferDecline
+      summary: Decline a transfer
+      tags:
+        - Account management
+      x-pryv-method-ids:
+        - account.transferDecline
+      description: "Declines a transfer, with the token of the decline link mailed to the beneficiary (no access token: the link is the credential). Not available inside a batch call; same trusted app verification as [claim](https://pryv.github.io/reference/#methods-account-account-transferClaim). The holder is mailed and the holder's `fallback` applies: before the deadline the setting becomes a deletion on the same schedule (`delete`) or `never` (`keep`); during the claim window the account is kept at once, or erased at the platform's next pass. Declining again answers the same."
+      x-pryv-trusted-only: true
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                appId:
+                  type: string
+                  description: Your app's unique identifier.
+                token:
+                  type: string
+                  description: The token of the decline link.
+              required:
+                - appId
+                - token
+            examples:
+              example-1:
+                value:
+                  appId: my-app-id
+                  token: q8Hn2Lr5sT0vW3yZ6bC9dF1gJ4kM7nP0rS3uX6zA2cE
+      responses:
+        "200":
+          description: 200 OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  declined:
+                    type: boolean
+                    enum:
+                      - true
+                    description: The transfer is declined.
+                  meta:
+                    $ref: "#/components/schemas/meta"
+              examples:
+                example-1:
+                  value:
+                    declined: true
+        "403":
+          description: |-
+            Specific errors:
+
+            - `auto-deletion-transfer-invalid-link`: The token is not valid, or the transfer can no longer be declined. A beneficiary who already claimed may still decline: the delegation invite is withdrawn.
+          x-pryv-error-ids:
+            - auto-deletion-transfer-invalid-link
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/error-response"
+        "409":
+          description: |-
+            Specific errors:
+
+            - `auto-deletion-transfer-claimed`: The claimant already accepted the delegation invite: the transfer is completed, a decline comes too late.
+          x-pryv-error-ids:
+            - auto-deletion-transfer-claimed
           content:
             application/json:
               schema:
@@ -7075,7 +7281,7 @@ components:
         - `payload-too-large` (413): The request is larger than the platform accepts: an attached file over the upload size limit, an oversized access request body, or an image with too many pixels to be previewed.
         - `missing-header` (400): A required HTTP header is missing, e.g. `Content-Type` on a request with a body, or the authorization header of a High-Frequency series call (answered `401` on a series query).
         - `unsupported-content-type` (415): The request's `Content-Type` is not one the method accepts (`application/json`, and for some methods `application/x-www-form-urlencoded` or `multipart/form-data`).
-        - `unavailable-method` (451): The method is switched off on this platform (e.g. account auto-deletion, shared secrets).
+        - `unavailable-method` (451): The method is switched off on this platform (e.g. account auto-deletion, account transfers without account delegation, shared secrets).
         - `api-unavailable` (503): The server cannot serve the request right now, e.g. a feature that is not set up on this platform, or (from open-pryv.io 2.0.0-rc.87, PostgreSQL engine) a database statement of the request ran past the platform's time limit and was stopped. Nothing of a stopped statement is kept, so the same request can be retried; for an expensive read, narrowing the request (time range, streams, `limit`) is the better answer. A response already streaming when this happens is cut short instead.
         - `user-account-relocated` (301): The user has relocated her account to another server. Both the `Location` header and the error's `data` contain the equivalent URL pointing to the physical server now hosting the user's account. This error can only occur between the moment the account is relocated and the moment your DNS is updated to point to the new server. So we're stretching the HTTP convention a little, in that the returned URL should not be used permanently (only until `{username}.pryv.me` points to the correct server again). It's up to you to decide whether to keep it for the duration of the session (if you use sessions), for a given time, etc.
         - `user-intervention-required` (402): The request cannot be served temporarily because the user's account has exceeded its limits. The user must log into her account and fix the issue.

@@ -2,6 +2,8 @@
 
 > Dense machine-readable dump of the API reference. Full HTML version: https://pryv.github.io/reference/
 
+> Regulation and standard coverage (GDPR, HIPAA, Swiss nLPD, ISO 27001, SOC 2 and more) is in the Pryv compliance matrix: https://pryv.github.io/compliance-matrix/llms.txt
+
 # Basics
 
 ## API endpoint
@@ -423,7 +425,17 @@ Returns the account's auto-deletion schedule: the policy in effect and where it 
 ### Set auto-deletion
 `PUT /account/auto-deletion`
 Sets when the account is deleted. Requires a personal access token of the account's own sign-in: a delegate's token is refused, even with the password. Answers the schedule under the new setting, as [get auto-deletion](#methods-account-acco
-Parameters: mode, date, inactivityDays, action, acknowledgeNoReminders, password
+Parameters: mode, date, inactivityDays, action, transfer, acknowledgeNoReminders, password
+
+### Claim a transferred account
+`POST /account/auto-deletion/transfer-claim`
+Claims an account its holder set to be transferred, with the token of the claim link mailed to the beneficiary (no access token: the link is the credential). Called on the core of the account being transferred (the username in the link), wi
+Parameters: appId, token, claimant
+
+### Decline a transfer
+`POST /account/auto-deletion/transfer-decline`
+Declines a transfer, with the token of the decline link mailed to the beneficiary (no access token: the link is the credential). Not available inside a batch call; same trusted app verification as [claim](#methods-account-account-transferCl
+Parameters: appId, token
 
 ### Request password reset
 `POST /account/request-password-reset`

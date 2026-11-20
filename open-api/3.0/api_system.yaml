@@ -15,7 +15,7 @@ info:
     url: https://opensource.org/licenses/MIT
 x-generated-from:
   referenceVersion: 2.0.0-pre
-  commit: 59a1fe9
+  commit: 99da344
 servers:
   - url: https://reg.{domain}
     description: "Register service (methods marked x-pryv-server: register)"
@@ -1964,7 +1964,7 @@ components:
         - `payload-too-large` (413): The request is larger than the platform accepts: an attached file over the upload size limit, an oversized access request body, or an image with too many pixels to be previewed.
         - `missing-header` (400): A required HTTP header is missing, e.g. `Content-Type` on a request with a body, or the authorization header of a High-Frequency series call (answered `401` on a series query).
         - `unsupported-content-type` (415): The request's `Content-Type` is not one the method accepts (`application/json`, and for some methods `application/x-www-form-urlencoded` or `multipart/form-data`).
-        - `unavailable-method` (451): The method is switched off on this platform (e.g. account auto-deletion, shared secrets).
+        - `unavailable-method` (451): The method is switched off on this platform (e.g. account auto-deletion, account transfers without account delegation, shared secrets).
         - `api-unavailable` (503): The server cannot serve the request right now, e.g. a feature that is not set up on this platform, or (from open-pryv.io 2.0.0-rc.87, PostgreSQL engine) a database statement of the request ran past the platform's time limit and was stopped. Nothing of a stopped statement is kept, so the same request can be retried; for an expensive read, narrowing the request (time range, streams, `limit`) is the better answer. A response already streaming when this happens is cut short instead.
         - `user-account-relocated` (301): The user has relocated her account to another server. Both the `Location` header and the error's `data` contain the equivalent URL pointing to the physical server now hosting the user's account. This error can only occur between the moment the account is relocated and the moment your DNS is updated to point to the new server. So we're stretching the HTTP convention a little, in that the returned URL should not be used permanently (only until `{username}.pryv.me` points to the correct server again). It's up to you to decide whether to keep it for the duration of the session (if you use sessions), for a given time, etc.
         - `user-intervention-required` (402): The request cannot be served temporarily because the user's account has exceeded its limits. The user must log into her account and fix the issue.
